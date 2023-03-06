@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+/// A source file or other file included in a package. The Files are uniquely identified by their
+/// SHA256 hash value, and one File can be referenced by multiple FileTrees, which represent the
+/// file's location in the context of one package.
+model File {
+  id        Int      @id @default(autoincrement())
+  sha256    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  filetrees         FileTree[]
+  licenseFindings   LicenseFinding[]
+  copyrightFindings CopyrightFinding[]
+}
+
+/// A package consisting of its source code files.
+model Package {
+  id        Int      @id @default(autoincrement())
+  name      String
+  version   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fileTrees FileTree[]
+}
+
+/// File in the context of a package.
+model FileTree {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  /// The path of the file in the package.
+  path      String
+
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
+
+  sha256 String
+  file   File   @relation(fields: [sha256], references: [sha256])
+
+  @@index([packageId])
+  @@index([sha256])
+}
+
+/// A license finding in a file.
+model LicenseFinding {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  scanner           String
+  licenseExpression String
+  startLine         Int
+  endLine           Int
+  score             Float
+
+  file   File   @relation(fields: [sha256], references: [sha256])
+  sha256 String
+
+  licenseFindingCurations LicenseFindingCuration[]
+
+  @@index([sha256])
+}
+
+/// A curation of a license finding.
+model LicenseFindingCuration {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  licenseExpression String
+
+  licenseFindingId Int
+  licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id])
+
+  @@index([licenseFindingId])
+}
+
+/// A copyright finding in a file.
+model CopyrightFinding {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  startLine Int
+  endLine   Int
+  copyright String
+
+  file   File   @relation(fields: [sha256], references: [sha256])
+  sha256 String
+
+  copyrightFindingCurations CopyrightFindingCuration[]
+
+  @@index([sha256])
+}
+
+/// A curation of a copyright finding.
+model CopyrightFindingCuration {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  copyright String
+
+  copyrightFindingId Int
+  copyrightFinding   CopyrightFinding @relation(fields: [copyrightFindingId], references: [id])
+
+  @@index([copyrightFindingId])
+}
