@@ -5,3 +5,5 @@ SPDX-License-Identifier: MIT
 -->
 
 # Double Open Server
+
+![General design diagram](design.excalidraw.png)
