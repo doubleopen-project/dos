@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 const express = require('express');
 
 const app = express();

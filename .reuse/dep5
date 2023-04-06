@@ -1,0 +1,39 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Double Open Server
+Source: https://github.com/doubleopen-project/dos
+
+Files: package-lock.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: turbo.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/api/package-lock.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/api/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/api/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/client/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/scanner_agent/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/eslint-config-custom/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
