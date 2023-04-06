@@ -1,0 +1,25 @@
+{
+    "name": "dos-monorepo",
+    "version": "0.0.0",
+    "license": "MIT",
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "clean": "turbo run clean",
+        "dev": "turbo run dev --no-cache  --continue",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "lint:fix": "turbo run lint:fix",
+        "lint:report": "turbo run lint:report",
+        "lint": "turbo run lint"
+    },
+    "devDependencies": {},
+    "dependencies": {},
+    "engines": {
+        "node": ">=18.x",
+        "npm": ">=9.5.0"
+    },
+    "packageManager": "npm@9.5.0"
+}
