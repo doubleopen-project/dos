@@ -4,6 +4,7 @@
     "license": "MIT",
     "scripts": {
         "build": "tsup src/server.ts --format cjs",
+        "lint": "eslint",
         "start": "node dist/server.js"
     },
     "dependencies": {
