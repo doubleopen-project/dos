@@ -42,7 +42,7 @@ Files: packages/eslint-config-custom-server/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: ppackages/tsconfig/base.json
+Files: packages/tsconfig/base.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
