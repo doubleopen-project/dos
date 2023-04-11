@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: MIT
 
 import express from 'express';
-import router from './routes/router';
 
 const app = express();
 
-app.use('/', router);
+app.use('/', (req, res) => {
+    res.status(200).json({
+      "message": "Hello World"
+    });
+})
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () =>
-  console.log(`Server listening on port ${PORT}`),
+app.listen(5000, () =>
+  console.log('Server listening on port 5000!'),
 );
