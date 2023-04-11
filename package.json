@@ -7,6 +7,13 @@
         "apps/*"
     ],
     "scripts": {
+        "build:client": "turbo run build --filter=client --no-daemon",
+        "build:scanner_agent": "turbo run build --filter=scanner_agent --no-daemon",
+        "build:api": "turbo run build --filter=api --no-daemon",
+        "heroku-postbuild": "if [ $CLIENT_ENV ]; then npm run prod-client; elif [ $SERVER_ENV ]; then npm run prod-api; elif [ $SCANNER_ENV ]; then npm run prod-scanner_agent; else echo no environment detected, please set CLIENT_ENV, SERVER_ENV, or SCANNER_ENV; fi",
+        "prod-client": "npm run build:client",
+        "prod-scanner_agent": "npm run build:scanner_agent",
+        "prod-api": "npm run build:api",
         "build": "turbo run build",
         "clean": "turbo run clean",
         "dev": "turbo run dev --no-cache --continue --no-daemon",
