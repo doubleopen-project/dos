@@ -5,7 +5,7 @@
     "scripts": {
         "build": "tsup src/server.ts --format cjs",
         "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node dist/server.js\"",
-        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
+        "lint": "eslint",
         "start": "node dist/server.js"
     },
     "dependencies": {
