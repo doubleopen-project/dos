@@ -14,10 +14,6 @@ Files: turbo.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/api/package-lock.json
-Copyright: 2023 HH Partners
-License: CC-BY-4.0
-
 Files: apps/api/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
@@ -34,6 +30,14 @@ Files: apps/scanner_agent/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
+Files: apps/scanner_agent/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
 Files: packages/eslint-config-custom/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/eslint-config-custom-server/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
