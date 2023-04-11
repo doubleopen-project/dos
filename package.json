@@ -15,9 +15,6 @@
         "lint:report": "turbo run lint:report",
         "lint": "turbo run lint"
     },
-    "dependencies": {
-        "eslint-config-custom": "*"
-    },
     "devDependencies": {
         "turbo": "^1.8.8"
     },
