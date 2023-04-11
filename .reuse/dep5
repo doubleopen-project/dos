@@ -43,10 +43,14 @@ Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Files: packages/tsconfig/base.json
 =======
 Files: ppackages/tsconfig/base.json
 >>>>>>> 0d78fbf (Added missing license information)
+=======
+Files: packages/tsconfig/base.json
+>>>>>>> 3d1c2df (Fixed typo)
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
