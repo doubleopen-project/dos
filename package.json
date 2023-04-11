@@ -9,7 +9,7 @@
     "scripts": {
         "build": "turbo run build",
         "clean": "turbo run clean",
-        "dev": "turbo run dev --no-cache  --continue",
+        "dev": "turbo run dev --no-cache --continue --no-daemon",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "lint:fix": "turbo run lint:fix",
         "lint:report": "turbo run lint:report",
@@ -19,11 +19,11 @@
         "eslint-config-custom": "*"
     },
     "devDependencies": {
-        
+        "turbo": "^1.8.8"
     },
     "engines": {
-        "node": ">=18.x",
-        "npm": ">=9.5.0"
+        "node": "18.15.0",
+        "npm": "9.5.0"
     },
     "packageManager": "npm@9.5.0"
 }
