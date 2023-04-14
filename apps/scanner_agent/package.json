@@ -3,10 +3,10 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "build": "tsup src/index.ts --format cjs",
-        "dev": "tsup src/index.ts --format cjs --watch --onSuccess \"node dist/index.js\"",
+        "build": "tsup src/server.ts --format cjs",
+        "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
-        "start": "node dist/index.js"
+        "start": "node dist/server.js"
     },
     "dependencies": {
         "express": "^4.18.2"
