@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import express from 'express';
+import express, { Request, Response, Router } from 'express';
 
-const router = express.Router();
+const router: Router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
     res.status(200).json({
         "message": "Hello World"
     });
