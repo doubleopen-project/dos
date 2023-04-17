@@ -4,5 +4,9 @@
 
 module.exports = {
     root: true,
-    extends: ["eslint-config-custom-server"],
+    extends: ["custom-server"],
+    parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ["./tsconfig.json", "./tsconfig.eslint.json"],
+    }
 };
