@@ -22,6 +22,10 @@ Files: apps/api/tsconfig.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
+Files: apps/api/tsconfig.eslint.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
 Files: apps/client/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
@@ -31,6 +35,10 @@ Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
 Files: apps/scanner_agent/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: apps/scanner_agent/tsconfig.eslint.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
