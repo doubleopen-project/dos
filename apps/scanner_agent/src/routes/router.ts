@@ -16,7 +16,7 @@ const router = express.Router();
 // Node: Hello World
 router.get("/", (req, res) => {
     res.status(200).json({
-        "message": "Hello World from Scanner Agent"
+        "Message": "Hello World from Scanner Agent"
     });
 });
 
@@ -37,7 +37,7 @@ router.get("/job/:id", async(req, res) => {
 
     if (job === null) {
         res.status(404).json({
-            "message": "No such job in the work queue!"
+            "Message": "No such job in the work queue!"
         }).end();
     } else {
         let state = await job.getState();

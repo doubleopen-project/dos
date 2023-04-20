@@ -13,7 +13,7 @@ import throng from "throng";
 const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
 
 // How many workers for ScanCode
-const WORKERS = process.env.WEB_CONCURRENCY || 2;
+const WORKERS = process.env.WEB_CONCURRENCY || 1;
 
 // The maximum number of jobs each worker should process at once. This will need
 // to be tuned for your application. If each job is mostly waiting on network 
@@ -48,5 +48,6 @@ const start = () => {
 
 // Initialise the clustered worker process
 throng({
-    workers: WORKERS, start
+    workers: WORKERS, 
+    start
 });
