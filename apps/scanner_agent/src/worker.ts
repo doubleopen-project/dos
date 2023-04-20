@@ -19,7 +19,7 @@ const WORKERS = process.env.WEB_CONCURRENCY || 1;
 // to be tuned for your application. If each job is mostly waiting on network 
 // responses it can be much higher. If each job is CPU-intensive, it might need
 // to be much lower.
-let maxJobsPerWorker: number = 10;
+let maxJobsPerWorker = 10;
 
 const sleep = async (ms: number) => {
     return new Promise(resolve => setTimeout(resolve, ms));
