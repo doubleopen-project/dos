@@ -144,3 +144,6 @@ dist/
 apps/api/package-lock.json
 apps/client/package-lock.json
 apps/scanner_agent/package-lock.json
+
+# Redis DB dump
+dump.rdb
