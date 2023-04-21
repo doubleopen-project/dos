@@ -7,7 +7,7 @@ import router from './routes/router';
 
 const app: Application = express();
 
-app.use('/', router);
+app.use('/api', router);
 
 const PORT: number = process.env.PORT? parseInt(process.env.PORT) : 5000;
 
