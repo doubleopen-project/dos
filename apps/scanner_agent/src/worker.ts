@@ -26,9 +26,7 @@ const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CO
 const maxJobsPerWorker: number = 10;
 
 const sleep = async (ms: number): Promise<unknown> => {
-    return new Promise((resolve)  => {
-        setTimeout(resolve, ms);
-    });
+    return new Promise((resolve)  => setTimeout(resolve, ms));
 }
 
 const start = (): void => {
@@ -43,7 +41,7 @@ const start = (): void => {
         while (progress < 100) {
             await sleep(100);
             progress++;
-            job.progress(progress);
+            await job.progress(progress);
             console.log("Process id: ", job.id, " progress: ", progress);
         }
         return {
