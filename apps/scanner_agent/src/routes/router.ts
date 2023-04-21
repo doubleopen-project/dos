@@ -27,6 +27,13 @@ router.get("/", (req: Request, res: Response) => {
 
 // Node: POST a new scanner job. This is yet empty (dummy job)
 router.post("/job", async (req: Request, res: Response) => {
+
+    // Check the request validity
+    //if (!req.body) {
+    //    return res.status(500).json({"Message": "Bad request"});
+    //}
+    
+
     const job: Queue.Job = await workQueue.add({});
     
     res.status(201).json({
@@ -46,7 +53,8 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         });
     } else {
         const state: string = await job.getState();
-        const progress: number = job.progress();
+        // This weirdness is needed to get rid of the "Unsafe assignment of an 'any' value" in eslint
+        const progress: number | undefined = await job.progress() as unknown as number | undefined;
         const finishedOn: number | undefined = job.finishedOn;
         res.status(200).json({
             id, 
@@ -57,40 +65,27 @@ router.get("/job/:id", async(req: Request, res: Response) => {
     }
 });
 
-// Trying to write the same functions using a different structure to make Lint happy
+// Node: Query all jobs in the work queue
+router.get("/jobs", async(req: Request, res: Response) => {
+    const jobs: Queue.Job[] = await workQueue.getJobs(["active", "waiting", "completed"]);
+    const jobList: any[] = [];
 
-router.post("/jobtemp", function(req: Request, res: Response) {
+    for (const job of jobs) {
+        const state: string = await job.getState();
+        // This weirdness is needed to get rid of the "Unsafe assignment of an 'any' value" in eslint
+        const progress: number | undefined = await job.progress() as unknown as number | undefined;
+        const finishedOn: number | undefined = job.finishedOn;
+        jobList.push({
+            id: job.id,
+            name: job.name,
+            state,
+            progress,
+            finishedOn
+        });
+    }
 
-    workQueue.add({})
-        .then(function(jobResolved: Queue.Job) {
-            const job: Queue.Job = jobResolved;
-            return res.status(201).json({
-                id: job.id,
-                name: job.name
-            })
-        })
-        .catch(function(err: string) {
-            console.log("Failed to push a job to the queue, reason", err);
-            return res.status(500).json({"Message": "Internal server error: Bull"});
-        }) 
+    res.status(200).json(jobList);
+
 });
-
-router.get("/jobtemp/:id", function(req: Request, res: Response) {
-    const id: string = req.params.id;
-    
-    workQueue.getJob(id)
-        .then(function(jobResolved: Queue.Job | null) {
-            if (jobResolved) {
-                // TODO
-            }
-        })
-        .catch(function() {
-            return res.status(404).json({
-                "Message": "No such job in the work queue!"
-            });
-        })
-});
-
-
 
 export default router;
