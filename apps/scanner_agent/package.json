@@ -4,9 +4,11 @@
     "license": "MIT",
     "scripts": {
         "build": "tsup src/server.ts --format cjs",
+        "build:worker": "tsup src/worker.ts --format cjs",
         "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node dist/server.js",
+        "start:worker": "node dist/worker.js",
         "worker": "tsup src/worker.ts --format cjs --watch --onSuccess \"node dist/worker.js\""
     },
     "dependencies": {
