@@ -49,6 +49,10 @@ const start = (): void => {
         }
     });
 
+    workQueue.on("completed", job => {
+        console.log("Job", job.id, "completed with result", job.returnvalue);
+    });
+
 }
 
 // Initialise the clustered worker process
