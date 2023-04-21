@@ -31,6 +31,8 @@ const sleep = async (ms: number): Promise<unknown> => {
 
 const start = (): void => {
     
+    console.log("Worker is alive");
+
     // Connect to the named work queue
     const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
 
