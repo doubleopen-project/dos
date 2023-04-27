@@ -19,17 +19,6 @@ const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
 
 app.use('/', router);
 
-// Listen to global events to get notified about the job statuses
-workQueue.on('global:waiting', (jobId: number, result: string) => {
-  console.log(`Job ${jobId} waiting`);
-});
-workQueue.on('global:active', (jobId: number, result: string) => {
-  console.log(`Job ${jobId} active`);
-});
-workQueue.on('global:completed', (jobId: number, result: string) => {
-  console.log(`Job ${jobId} completed`);
-});
-
 app.listen(PORT, () =>
   console.log(`Scanner Agent server listening on port ${PORT}`),
 );

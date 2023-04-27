@@ -25,15 +25,9 @@ router.get("/", (req: Request, res: Response) => {
     return;
 });
 
-// Node: POST a new scanner job. This is yet empty (dummy job)
+// Node: POST a new scanner job
 router.post("/job", async (req: Request, res: Response) => {
-
-    // Check the request validity
-    //if (!req.body) {
-    //    return res.status(500).json({"Message": "Bad request"});
-    //}
-    
-
+    // TODO: Add job details as body of request
     const job: Queue.Job = await workQueue.add({});
     
     res.status(201).json({
@@ -65,27 +59,22 @@ router.get("/job/:id", async(req: Request, res: Response) => {
     }
 });
 
-// Node: Query all jobs in the work queue
+// Node: Query statuses of all active/waiting jobs in the work queue
 router.get("/jobs", async(req: Request, res: Response) => {
-    const jobs: Queue.Job[] = await workQueue.getJobs(["active", "waiting", "completed"]);
+    const jobs: Queue.Job[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
     const jobList: any[] = [];
 
     for (const job of jobs) {
-        const state: string = await job.getState();
-        // This weirdness is needed to get rid of the "Unsafe assignment of an 'any' value" in eslint
-        const progress: number | undefined = await job.progress() as unknown as number | undefined;
+        const state: string = await job.getState();        
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
             id: job.id,
             name: job.name,
             state,
-            progress,
             finishedOn
         });
     }
-
     res.status(200).json(jobList);
-
 });
 
 export default router;
