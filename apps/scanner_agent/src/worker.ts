@@ -10,14 +10,10 @@
 eslint-disable @typescript-eslint/no-misused-promises
 */
 
-import Queue, { Job } from "bull";
+import Queue from "bull";
 import throng from "throng";
 import fetch from "cross-fetch"
-
-interface JobStatusRequest {
-    method: string;
-    body: string;
-}
+import { ResolveOptions } from "dns";
 
 // URL address and node of DOS to send job status updates to
 const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
@@ -96,9 +92,12 @@ const start = (): void => {
 }
 
 // Create a request to send the job status to DOS
-const createRequest = (id: number, status: string): JobStatusRequest => {
+const createRequest = (id: number, status: string): RequestInit => {
     return {
         method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             id: id,
             name: "Scanner Agent",
@@ -109,7 +108,7 @@ const createRequest = (id: number, status: string): JobStatusRequest => {
 
 // Send the job status to DOS
 const postJobStatus = async (id: number, status: string): Promise<any> => {
-    const request: JobStatusRequest = createRequest(id, status);
+    const request: RequestInit = createRequest(id, status);
     try {
         const response: globalThis.Response = await fetch(postStatusUrl, request);
         const data: unknown = await response.json();
