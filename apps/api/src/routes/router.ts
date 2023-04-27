@@ -12,11 +12,7 @@ const router: Router = express.Router();
 
 router.use(bodyParser.json() as RequestHandler);
 
-const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'localhost:5001/';
-
-interface MyRequest {
-    method: string
-}
+const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'https://localhost:5001/';
 
 router.get('/', (req: Request, res: Response) => {
     res.status(200).json({
@@ -44,30 +40,33 @@ router.get('/request-upload-url', (req: Request, res: Response) => {
     })
 })
 
-router.post('/add-job', async (req: Request, res: Response) => {
+router.post('/addjob', async (req: Request, res: Response) => {
     /*
     TODO: implement sending job to scanner
         - send Object Key to Scanner Agent (does it come from user?)
         - response from Scanner Agent successful: save Job to database
         - error handling
-    First implementation: no body needed for request
+    First implementation: request body is empty
     */
+    try {
+        const postJobUrl: string = scannerUrl + 'job';
+        const request: RequestInit = {
+            method: 'POST',
+            body: JSON.stringify({})
+        }
 
-    const postJobUrl: string = scannerUrl + 'job';
-
-    console.log(postJobUrl);
-
-    const request: MyRequest = {
-        method: 'POST'
+        const response: globalThis.Response = await fetch(postJobUrl, request);
+        const data: unknown = await response.json();
+        res.status(200).json({
+            data: data
+        })
+        
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ "Message": "Internal server error"});
     }
 
-    const response: globalThis.Response = await fetch(postJobUrl, request);
 
-    const data: unknown = await response.json();
-
-    res.status(200).json({
-        data: data
-    })
 })
 
 interface CustomRequest<T> extends Request {
@@ -89,17 +88,31 @@ router.put('/jobstatus', (req: CustomRequest<ScannerJob>, res: Response) => {
         - log job id and status to console
     */
 
-    const job: ScannerJob = {
-        id: req.body.id,
-        name: req.body.name,
-        status: req.body.status
+    try {
+        if (req.body.id && req.body.name && req.body.status) {
+            const job: ScannerJob = {
+                id: req.body.id,
+                name: req.body.name,
+                status: req.body.status
+            }
+
+            console.log("Received job id: " + job.id + " , name: " + job.name + ", status: " + job.status)
+
+            res.status(200).json({
+                "Message": "Received job id: " + job.id + " with status: " + job.status
+            })
+        } else {
+            res.status(400).json({
+                "Message": "Bad Request"
+            })
+        }
+
+
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ "Message": "Internal server error: ", error });
     }
 
-    console.log("Received job id: " + job.id + " , name: " + job.name + ", status: " + job.status)
-
-    res.status(200).json({
-        "Message": "Received job status"
-    })
 })
 
 export default router;
