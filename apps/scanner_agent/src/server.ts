@@ -4,7 +4,7 @@
 
 import express, { Application } from 'express';
 import router from './routes/router';
-import { listObjects, listBuckets, uploadFile } from './helpers/s3Operations';
+import { listObjects, listBuckets, uploadFile, downloadDirectory } from './helpers/s3Operations';
 
 const app: Application = express();
 
@@ -14,12 +14,13 @@ const PORT: number = process.env.PORT? parseInt(process.env.PORT) : 5001;
 app.use('/', router);
 
 // Test the S3 operations
-//(async () => {
+(async () => {
 //    console.log("Testing S3 operations");
 //    console.log(await listBuckets());
 //    console.log(await listObjects("doubleopen2"));
 //    console.log(await uploadFile("doubleopen2", "test.txt", "Hello World!"));
-//})();
+    console.log(await downloadDirectory("doubleopen2", "test1"));
+})();
 
 app.listen(PORT, () =>
   console.log(`Scanner Agent server listening on port ${PORT}`),
