@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2023 HH Partners
+# 
+# SPDX-License-Identifier: MIT
+
+# This directory is used to download the files for ScanCode scanning jobs,
+# to their respective temporary subfolders.
+#
+# The directory itself will be tracked by git, but never its contents!
+
+# Ignore everything in this directory
+*
+
+# ...except this file, which will only serve as a placemark for git
+!.gitignore
