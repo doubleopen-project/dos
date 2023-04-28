@@ -12,8 +12,7 @@ eslint-disable @typescript-eslint/no-misused-promises
 
 import Queue from "bull";
 import throng from "throng";
-import fetch from "cross-fetch"
-import { ResolveOptions } from "dns";
+import fetch from "cross-fetch";
 
 // URL address and node of DOS to send job status updates to
 const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
@@ -107,19 +106,17 @@ const createRequest = (id: number, status: string): RequestInit => {
 }
 
 // Send the job status to DOS
-const postJobStatus = async (id: number, status: string): Promise<any> => {
+const postJobStatus = async (id: number, status: string): Promise<string | undefined> => {
     const request: RequestInit = createRequest(id, status);
     try {
         const response: globalThis.Response = await fetch(postStatusUrl, request);
-        const data: unknown = await response.json();
+        const data: string | undefined = await response.json();
         console.log("Response from DOS:", data);
+        return data;
     } catch (error) {
         console.log("Error:", error);
     }
 }
 
 // Initialise the clustered worker process
-throng({
-    workers: WORKERS, 
-    start
-});
+throng({ workers: WORKERS, start: start });

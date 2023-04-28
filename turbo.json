@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".env"],
-  "globalEnv": ["PORT", "REDIS_URL", "WEB_CONCURRENCY", "SCANNER_URL"],
+  "globalEnv": ["PORT", "REDIS_URL", "WEB_CONCURRENCY", "SCANNER_URL", "DOS_URL", "SPACES_ENDPOINT", "SPACES_KEY", "SPACES_SECRET"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
