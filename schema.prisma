@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -33,7 +33,8 @@ model Package {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fileTrees FileTree[]
+  fileTrees         FileTree[]
+  ScannerJobPackage ScannerJobPackage[]
 }
 
 /// File in the context of a package.
@@ -114,4 +115,30 @@ model CopyrightFindingCuration {
   copyrightFinding   CopyrightFinding @relation(fields: [copyrightFindingId], references: [id])
 
   @@index([copyrightFindingId])
+}
+
+/// A scanner job.
+model ScannerJob {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String
+
+  scannerJobPackages ScannerJobPackage[]
+}
+
+/// Joining scanner job and package.
+model ScannerJobPackage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
+
+  scannerJobId String
+  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
+
+  @@index([packageId])
+  @@index([scannerJobId])
 }
