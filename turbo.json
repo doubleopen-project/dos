@@ -10,8 +10,14 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "db:generate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^db:generate"],
       "cache": false,
       "persistent": true
     },
