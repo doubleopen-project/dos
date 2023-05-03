@@ -81,3 +81,7 @@ License: CC-BY-4.0
 Files: packages/tsconfig/node16.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
+
+Files: packages/database/prisma/migrations/*
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
