@@ -69,3 +69,15 @@ License: CC-BY-4.0
 Files: apps/scanner_agent/Procfile
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
+
+Files: packages/database/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/database/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/tsconfig/node16.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
