@@ -7,12 +7,27 @@
 import express, { Request, Response, Router, RequestHandler } from 'express';
 import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
+import { getPresignedPutUrl, s3client } from '../helpers/s3client';
 
 const router: Router = express.Router();
 
 router.use(bodyParser.json() as RequestHandler);
 
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'https://localhost:5001/';
+
+interface CustomRequest<T> extends Request {
+    body: T
+}
+
+interface ScannerJob {
+    id: string;
+    name: string;
+    status: string;
+}
+
+interface PresignedUrlRequest {
+    key: string;
+}
 
 router.get('/', (req: Request, res: Response) => {
     res.status(200).json({
@@ -33,11 +48,37 @@ router.post('/scanresults', (req: Request, res: Response) => {
     })
 })
 
-router.get('/request-upload-url', (req: Request, res: Response) => {
-    // TODO: implement requesting presigned upload url from object storage and send url in response
-    res.status(200).json({
-        "Message": "Upload url"
-    })
+router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>, res: Response) => {
+    // Requesting presigned upload url from object storage and sending url in response
+    try {
+        if (req.body.key) {
+            const bucket: string | undefined = process.env.S3_BUCKET;
+
+            if (bucket) {
+                const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key, bucket, s3client);
+                if (presignedUrl) {
+                    res.status(200).json({
+                        "PresignedUrl": presignedUrl
+                    })
+                } else {
+                    console.log("Error: Presigned URL is undefined");
+                    res.status(200).json({
+                        "PresignedUrl": presignedUrl
+                    })
+                }
+            } else {
+                console.log("Error: Missing S3_BUCKET environment variable");
+                res.status(500).json({ "Message": "Internal server error" });
+            }
+        } else {
+            res.status(400).json({
+                "Message": "Bad Request"
+            })
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ "Message": "Internal server error" });
+    }
 })
 
 router.post('/addjob', async (req: Request, res: Response) => {
@@ -60,24 +101,12 @@ router.post('/addjob', async (req: Request, res: Response) => {
         res.status(200).json({
             data: data
         })
-        
+
     } catch (error) {
         console.log("Error: ", error);
-        res.status(500).json({ "Message": "Internal server error"});
+        res.status(500).json({ "Message": "Internal server error" });
     }
-
-
 })
-
-interface CustomRequest<T> extends Request {
-    body: T
-}
-
-interface ScannerJob {
-    id: string;
-    name: string;
-    status: string;
-}
 
 router.put('/jobstatus', (req: CustomRequest<ScannerJob>, res: Response) => {
     /*
