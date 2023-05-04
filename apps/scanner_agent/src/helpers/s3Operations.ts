@@ -48,30 +48,30 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
 }
 
 // Download an entire directory of files from a bucket to a local directory
-export const downloadDirectory = async (bucketName: string, directoryName: string): Promise<string | undefined> => {
+export const downloadDirectory = async (bucketName: string, dirS3: string, baseDir: string): Promise<string> => {
     
     // Don't try to retrieve from an empty directory
-    if (await isDirectoryEmpty(bucketName, directoryName)) {
-        return "Error: S3 directory " + directoryName + " is empty or non-existing";
+    if (await isDirectoryEmpty(bucketName, dirS3)) {
+        console.log("Error: trying to download an empty or non-existing directory from S3");
+        return "error";
     }
-    
+
     // Retrieve a list of all files in the directory
     let files: any[] = [];
     try {
         const listObjectsV2Result = await s3Client.listObjectsV2({
             Bucket: bucketName,
-            Prefix: directoryName
+            Prefix: dirS3
         });
         files = listObjectsV2Result.Contents || [];
-        console.log(files);
     } catch (err) {
         console.log("Error: listing files in a directory", err);
+        return "error";
     }
 
     // Download the S3 directory to a local directory
-    const localDirectory = "/tmp/scanjobs/";
     await Promise.all(files.map(async (file) => {
-        const filePath = path.join(localDirectory, file.Key || "");
+        const filePath = path.join(baseDir, file.Key || "");
         const dirPath = path.dirname(filePath);
         
         // Create the local directory if it does not exist
@@ -100,10 +100,11 @@ export const downloadDirectory = async (bucketName: string, directoryName: strin
                 fs.writeFileSync(filePath, bodyContents as string);
             } catch (err) {
                 console.log("Error: downloading a file", err);
+                return "error";
             }
         })();
     }));
-    return "Success: downloaded directory " + directoryName + " from S3";
+    return "success";
 }
 
 // Is a S3 directory empty?
