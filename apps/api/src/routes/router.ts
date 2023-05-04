@@ -55,15 +55,18 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
             const bucket: string | undefined = process.env.S3_BUCKET;
 
             if (bucket) {
-                const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key, bucket, s3client);
+                const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key, bucket, s3client());
+                
                 if (presignedUrl) {
                     res.status(200).json({
+                        "Success": "true",
                         "PresignedUrl": presignedUrl
                     })
                 } else {
                     console.log("Error: Presigned URL is undefined");
                     res.status(200).json({
-                        "PresignedUrl": presignedUrl
+                        "Success": "false",
+                        "PresignedUrl": "undefined"
                     })
                 }
             } else {
