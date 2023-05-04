@@ -6,16 +6,18 @@
 eslint-disable @typescript-eslint/no-misused-promises
 */
 
-import express, { Request, Response, Router } from 'express';
+import express, { Request, RequestHandler, Response, Router } from 'express';
 import Queue from 'bull';
+import bodyParser from 'body-parser';
+
+const router: Router = express.Router();
+router.use(bodyParser.json() as RequestHandler);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL || "redis://127.0.0.1:6379";
 
 // Create/connect to a named work queue
 const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
-
-const router: Router = express.Router();
 
 // Node: Hello World
 router.get("/", (req: Request, res: Response) => {
@@ -25,15 +27,42 @@ router.get("/", (req: Request, res: Response) => {
     return;
 });
 
+interface CustomRequest<T> extends Request {
+    body: T;
+}
+
+interface ScannerJob {
+    directory: string;
+}
+
 // Node: POST a new scanner job
-router.post("/job", async (req: Request, res: Response) => {
-    // TODO: Add job details as body of request
-    const job: Queue.Job = await workQueue.add({});
-    
-    res.status(201).json({
-        id: job.id,
-        name: job.name
-    });
+router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
+
+    // Job details are in the request body
+
+    try {
+        if (!req.body.directory) {
+            res.status(400).json({
+                "Message": "Missing directory in POST /job"
+            });
+            return;
+        }
+
+        const job: Queue.Job = await workQueue.add({
+            directory: req.body.directory
+        })
+        
+        res.status(201).json({
+            id: job.id,
+            data: job.data
+        });
+    } catch (error) {
+
+        console.log(error);
+        res.status(500).json({
+            "Message": "Error in POST /job"
+        });
+    }
 });
 
 // Node: Query job details for job [id]
@@ -47,13 +76,11 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         });
     } else {
         const state: string = await job.getState();
-        // This weirdness is needed to get rid of the "Unsafe assignment of an 'any' value" in eslint
-        const progress: number | undefined = await job.progress() as unknown as number | undefined;
         const finishedOn: number | undefined = job.finishedOn;
         res.status(200).json({
-            id, 
+            id: job.id, 
+            data: job.data,
             state, 
-            progress, 
             finishedOn
         });
     }
@@ -69,7 +96,7 @@ router.get("/jobs", async(req: Request, res: Response) => {
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
             id: job.id,
-            name: job.name,
+            data: job.data,
             state,
             finishedOn
         });
