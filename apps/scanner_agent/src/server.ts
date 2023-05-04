@@ -19,7 +19,7 @@ app.use('/', router);
 //    console.log(await listBuckets());
 //    console.log(await listObjects("doubleopen2"));
 //    console.log(await uploadFile("doubleopen2", "test.txt", "Hello World!"));
-    console.log(await downloadDirectory("doubleopen2", "test1"));
+//    console.log(await downloadDirectory("doubleopen2", "test1"));
 })();
 
 app.listen(PORT, () =>
