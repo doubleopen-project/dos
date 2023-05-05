@@ -14,7 +14,7 @@ import Queue from "bull";
 import throng from "throng";
 import fetch from "cross-fetch";
 import { spawn } from "child_process";
-import { downloadDirectory } from "./helpers/s3Operations";
+import { downloadDirectory } from "s3-helpers";
 
 // URL address and node of DOS to send job status updates to
 const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";

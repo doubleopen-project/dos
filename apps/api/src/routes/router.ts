@@ -7,7 +7,7 @@
 import express, { Request, Response, Router, RequestHandler } from 'express';
 import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
-import { getPresignedPutUrl, s3client } from '../helpers/s3client';
+import { getPresignedPutUrl } from 's3-helpers';
 
 const router: Router = express.Router();
 
@@ -52,27 +52,22 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
     // Requesting presigned upload url from object storage and sending url in response
     try {
         if (req.body.key) {
-            const bucket: string | undefined = process.env.S3_BUCKET;
-
-            if (bucket) {
-                const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key, bucket, s3client());
+            
+            const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
                 
-                if (presignedUrl) {
-                    res.status(200).json({
-                        "Success": "true",
-                        "PresignedUrl": presignedUrl
-                    })
-                } else {
-                    console.log("Error: Presigned URL is undefined");
-                    res.status(200).json({
-                        "Success": "false",
-                        "PresignedUrl": "undefined"
-                    })
-                }
+            if (presignedUrl) {
+                res.status(200).json({
+                    "Success": "true",
+                    "PresignedUrl": presignedUrl
+                })
             } else {
-                console.log("Error: Missing S3_BUCKET environment variable");
-                res.status(500).json({ "Message": "Internal server error" });
+                console.log("Error: Presigned URL is undefined");
+                res.status(200).json({
+                    "Success": "false",
+                    "PresignedUrl": "undefined"
+                })
             }
+
         } else {
             res.status(400).json({
                 "Message": "Bad Request"

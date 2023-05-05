@@ -4,7 +4,7 @@
 
 import express, { Application } from 'express';
 import router from './routes/router';
-import { listObjects, listBuckets, uploadFile, downloadDirectory } from './helpers/s3Operations';
+import { listObjects, listBuckets, uploadFile, downloadDirectory } from 's3-helpers';
 
 const app: Application = express();
 
