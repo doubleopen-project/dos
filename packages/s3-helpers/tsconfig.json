@@ -4,7 +4,10 @@
             "ES2021"
         ],
         "outDir": "./dist",
-        "rootDir": "./src"
+        "rootDir": "./src",
+        "types": [
+			"@types/node"
+		]
     },
     "exclude": [
         "node_modules"
@@ -12,5 +15,5 @@
     "extends": "tsconfig/base.json",
     "include": [
         "src"
-, "../../packages/s3/s3Operations.ts", "../../packages/s3/s3Client.ts"    ]
+    ]
 }

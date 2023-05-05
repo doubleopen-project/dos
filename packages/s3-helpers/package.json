@@ -1,0 +1,19 @@
+{
+    "name": "s3-helpers",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup"
+    },
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.327.0",
+        "@aws-sdk/s3-request-presigner": "^3.327.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.16.4",
+        "tsconfig": "*",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.4"
+    }
+}
