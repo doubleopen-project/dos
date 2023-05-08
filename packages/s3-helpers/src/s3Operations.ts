@@ -4,6 +4,7 @@
 
 // All needed file operations for Digital Ocean Spaces
 
+
 import {
     ListBucketsCommand,
     ListObjectsCommand,
@@ -16,7 +17,9 @@ import {
     PutObjectCommandOutput,
     ListObjectsV2CommandOutput,
     _Object,
-    GetObjectCommandOutput
+    GetObjectCommandOutput,
+    HeadObjectCommand,
+    HeadObjectCommandOutput
 } from '@aws-sdk/client-s3';
 import { s3Client } from './s3Client';
 import * as fs from 'fs';
@@ -132,16 +135,70 @@ const isDirectoryEmpty = async (bucketName: string, directoryName: string): Prom
     }
 }
 
-// Get presigned put url
-export const getPresignedPutUrl = async (key: string): Promise<string | undefined> => {
-    try {
-        //TODO: Check that the object doesn't already exist
-        checkS3ClientEnvs();
+// Check if object exists in bucket
+export const objectExistsCheck = async (key: string): Promise<boolean | undefined> => {
 
-        if (!process.env.SPACES_BUCKET) {
-            throw new Error("SPACES_BUCKET environment variable is missing");
+    checkS3ClientEnvs();
+
+    if (!process.env.SPACES_BUCKET) {
+        throw new Error("SPACES_BUCKET environment variable is missing");
+    }
+
+    try {
+        const bucket: string = process.env.SPACES_BUCKET;
+
+        const headObjCommand: HeadObjectCommand = new HeadObjectCommand({
+            Bucket: bucket,
+            Key: key,
+        });
+
+        const objectResponse: HeadObjectCommandOutput = await s3Client.send(headObjCommand);
+
+        if (objectResponse.$metadata.httpStatusCode === 200) {
+            return true;
         }
 
+        console.log("Object storage status code is: ", objectResponse.$metadata.httpStatusCode);
+        return undefined;
+
+    } catch (error) {
+        // An error is thrown when "await s3Client.send(headObjCommand)" responds with $metadata httpStatusCode 404
+        // So this is the case that the object does not exist
+        const typedError: expectedError = error as expectedError;
+
+        if(typedError && typedError.$metadata && typedError.$metadata.httpStatusCode) {
+            if (typedError.$metadata.httpStatusCode === 404) {
+                return false;
+            }
+        }
+
+        console.log(error);
+        
+        return undefined;
+    }
+}
+
+interface expectedError {
+    $fault: string,
+    $metadata: {
+        httpStatusCode: number,
+        requestId: string,
+        extendedRequestId: string | undefined,
+        cfId: string | undefined,
+        attempts: number,
+        totalRetryDelay: number
+    }
+}
+
+// Get presigned put url
+export const getPresignedPutUrl = async (key: string): Promise<string | undefined> => {
+    checkS3ClientEnvs();
+
+    if (!process.env.SPACES_BUCKET) {
+        throw new Error("SPACES_BUCKET environment variable is missing");
+    }
+
+    try {
         const bucket: string = process.env.SPACES_BUCKET;
 
         const command: PutObjectCommand = new PutObjectCommand({
@@ -153,6 +210,7 @@ export const getPresignedPutUrl = async (key: string): Promise<string | undefine
         return url;
 
     } catch (error) {
+
         console.log(error);
         return undefined;
     }
