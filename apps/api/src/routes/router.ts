@@ -7,7 +7,7 @@
 import express, { Request, Response, Router, RequestHandler } from 'express';
 import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
-import { getPresignedPutUrl } from 's3-helpers';
+import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
 
 const router: Router = express.Router();
 
@@ -52,21 +52,42 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
     // Requesting presigned upload url from object storage and sending url in response
     try {
         if (req.body.key) {
+
+            const objectExists: boolean | undefined = await objectExistsCheck(req.body.key);
+
+            console.log("objectExists: ", objectExists);
             
-            const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
-                
-            if (presignedUrl) {
-                res.status(200).json({
-                    "Success": "true",
-                    "PresignedUrl": presignedUrl
-                })
-            } else {
-                console.log("Error: Presigned URL is undefined");
+            if(objectExists === undefined) {
                 res.status(200).json({
                     "Success": "false",
                     "PresignedUrl": "undefined"
                 })
             }
+
+            if (!objectExists) {
+                const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
+                
+                if (presignedUrl) {
+                    res.status(200).json({
+                        "Success": "true",
+                        "PresignedUrl": presignedUrl
+                    })
+                } else {
+                    console.log("Error: Presigned URL is undefined");
+                    res.status(200).json({
+                        "Success": "false",
+                        "PresignedUrl": "undefined"
+                    })
+                }
+            } else {
+                console.log("Error: Object with key " + req.body.key + " already exists.");
+                res.status(200).json({
+                    "Success": "false",
+                    "PresignedUrl": "undefined"
+                })
+            }
+            
+            
 
         } else {
             res.status(400).json({
