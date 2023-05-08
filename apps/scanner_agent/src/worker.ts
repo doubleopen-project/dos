@@ -61,7 +61,7 @@ const start = (): void => {
             "-v",
             `${dir}:/scanjob`,
             //"scancode-toolkit", 
-            "etsija/scancode:latest",
+            "docker.io/etsija/scancode:latest",
             "-clp",
             "--json-pp",
             "-",
