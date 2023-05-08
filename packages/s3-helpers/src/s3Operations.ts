@@ -10,7 +10,13 @@ import {
     ListObjectsCommandInput,
     PutObjectCommand,
     PutObjectCommandInput,
-    GetObjectCommand
+    GetObjectCommand,
+    ListBucketsCommandOutput,
+    ListObjectsCommandOutput,
+    PutObjectCommandOutput,
+    ListObjectsV2CommandOutput,
+    _Object,
+    GetObjectCommandOutput
 } from '@aws-sdk/client-s3';
 import { s3Client } from './s3Client';
 import * as fs from 'fs';
@@ -20,7 +26,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 // List all buckets in the account
 export const listBuckets = async (): Promise<string | undefined> => {
     try {
-        const data = await s3Client.send(new ListBucketsCommand({}));
+        const data: ListBucketsCommandOutput = await s3Client.send(new ListBucketsCommand({}));
         return JSON.stringify(data.Buckets);
     } catch (err) {
         console.log("Error trying to return a list of S3 buckets", err);
@@ -31,7 +37,7 @@ export const listBuckets = async (): Promise<string | undefined> => {
 export const listObjects = async (bucketName: string): Promise<string | undefined> => {
     const bucketParams: ListObjectsCommandInput = { Bucket: bucketName };
     try {
-        const data = await s3Client.send(new ListObjectsCommand(bucketParams));
+        const data: ListObjectsCommandOutput = await s3Client.send(new ListObjectsCommand(bucketParams));
         return JSON.stringify(data.Contents);
     } catch (err) {
         console.log("Error trying to return a list of S3 bucket objects", err);
@@ -42,7 +48,7 @@ export const listObjects = async (bucketName: string): Promise<string | undefine
 export const uploadFile = async (bucketName: string, fileName: string, fileContent: string): Promise<string | undefined> => {
     const uploadParams: PutObjectCommandInput = { Bucket: bucketName, Key: fileName, Body: fileContent };
     try {
-        const data = await s3Client.send(new PutObjectCommand(uploadParams));
+        const data: PutObjectCommandOutput = await s3Client.send(new PutObjectCommand(uploadParams));
         //console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
         return JSON.stringify(data);
     } catch (err) {
@@ -60,9 +66,9 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
     }
 
     // Retrieve a list of all files in the directory
-    let files: any[] = [];
+    let files: _Object[] = [];
     try {
-        const listObjectsV2Result = await s3Client.listObjectsV2({
+        const listObjectsV2Result: ListObjectsV2CommandOutput = await s3Client.listObjectsV2({
             Bucket: bucketName,
             Prefix: dirS3
         });
@@ -73,9 +79,9 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
     }
 
     // Download the S3 directory to a local directory
-    await Promise.all(files.map(async (file) => {
-        const filePath = path.join(baseDir, file.Key || "");
-        const dirPath = path.dirname(filePath);
+    await Promise.all(files.map(async (file: _Object) => {
+        const filePath: string = path.join(baseDir, file.Key || "");
+        const dirPath: string = path.dirname(filePath);
 
         // Create the local directory if it does not exist
         if (!fs.existsSync(dirPath)) {
@@ -83,7 +89,7 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
         }
 
         // Function to turn the file's body into a string
-        const streamToString = (stream: any) => {
+        const streamToString = (stream: any): Promise<unknown> => {
             const chunks: any[] = [];
             return new Promise((resolve, reject) => {
                 stream.on("data", (chunk: any) => chunks.push(Buffer.from(chunk)));
@@ -93,13 +99,13 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
         }
 
         // Download the file and write it to the local directory
-        (async () => {
+        await (async (): Promise<"error" | undefined> => {
             try {
-                const response = await s3Client.send(new GetObjectCommand({
+                const response: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand({
                     Bucket: bucketName,
                     Key: file.Key
                 }));
-                const bodyContents = await streamToString(response.Body);
+                const bodyContents: unknown = await streamToString(response.Body);
                 fs.writeFileSync(filePath, bodyContents as string);
             } catch (err) {
                 console.log("Error: downloading a file", err);
@@ -112,7 +118,7 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
 
 // Is a S3 directory empty?
 const isDirectoryEmpty = async (bucketName: string, directoryName: string): Promise<boolean> => {
-    const listObjectsV2Result = await s3Client.listObjectsV2({
+    const listObjectsV2Result: ListObjectsV2CommandOutput = await s3Client.listObjectsV2({
         Bucket: bucketName,
         Prefix: directoryName,
         MaxKeys: 2
