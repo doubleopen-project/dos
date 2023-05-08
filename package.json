@@ -16,7 +16,7 @@
         "prod-scanner_agent": "npm run build:scanner_agent && npm run build:worker",
         "prod-api": "npm run build:api",
         "build": "turbo run build",
-        "clean": "turbo run clean",
+        "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf package-lock.json && npx rimraf node_modules",
         "dev": "turbo run dev --no-cache --continue --no-daemon",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "lint:fix": "turbo run lint:fix",
@@ -24,9 +24,10 @@
         "lint": "turbo run lint",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
-        "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent"        
+        "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent"
     },
     "devDependencies": {
+        "rimraf": "^5.0.0",
         "turbo": "^1.8.8"
     },
     "engines": {
