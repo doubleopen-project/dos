@@ -2,10 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-/* This is a first reference implementation of a Bull messaging queue worker.
-   Eventually this will be the one running ScanCode background processes.
-*/
-
 /*
 eslint-disable @typescript-eslint/no-misused-promises
 */
@@ -17,14 +13,17 @@ import { spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
 
 // URL address and node of DOS to send job status updates to
-const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
+// const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
+//const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://host.docker.internal:5000/";
+const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://127.0.0.1:5000/";
 const postStatusUrl: string = dosUrl + "jobstatus";
 
 // Base directory for ScanCode input files
 const baseDir: string = "/tmp/scanjobs/";
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
-const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://127.0.0.1:6379";
+//const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://127.0.0.1:6379";
+const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://host.docker.internal:6379";
 
 // How many workers for ScanCode
 const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CONCURRENCY) : 1;
@@ -37,7 +36,7 @@ const maxJobsPerWorker: number = 10;
 
 const start = (): void => {
     
-    console.log("Worker is alive");
+    console.log("Worker is alive 3");
 
     // Connect to the named work queue
     const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
@@ -45,6 +44,7 @@ const start = (): void => {
     workQueue.process(maxJobsPerWorker, async (job: Queue.Job) => {
 
         const dir: string = baseDir + job.data.directory;
+        console.log("Job directory: ", dir);
 
         // Try to download the directory from S3 and check if it was successful
         const downloadSuccess: string = await downloadDirectory("doubleopen2", job.data.directory, baseDir);
@@ -52,53 +52,60 @@ const start = (): void => {
             job.update("failed"); // Update job status
             throw new Error(`Failed to download directory from S3`);
         }
-    
+
         // Spawn a child process to run ScanCode, using Docker
 
         const options = [
-            "run", 
-            "--rm",
-            "-v",
-            `${dir}:/scanjob:ro`,
+            //"run", 
+            //"--rm",
+            //"-v",
+            //`${dir}:/scanjob:ro`,
             //"scancode-toolkit", 
-            "docker.io/etsija/scancode:latest",
+            //"docker.io/etsija/scancode:latest",
             "-clp",
             "--json-pp",
             "-",
-            "/scanjob"
+            dir
         ];
-        const childProcess = spawn("docker", options);
-
-        // await for output from the child process
-        let result: string = "";
-        let parsedResult: string = "";
-        for await (const chunk of childProcess.stdout) {
-            result += chunk.toString();
-        }
-
-        // await for errors from the child process
-        let error: string = "";
-        for await (const chunk of childProcess.stderr) {
-            error += chunk;
-            job.update("failed"); // Update job status
-        }
         
-        // await for the child process to exit
-        const exitCode: number = await new Promise((resolve, reject) => {
-            childProcess.on("close", resolve);
-        });
+        try {
+            //const childProcess = spawn("docker", options);
+            const childProcess = spawn("scancode", options);
 
-        if (exitCode !== 0) {
-            job.update("failed"); // Update job status
-            throw new Error(`subprocess error exit ${exitCode}, ${error}`);
+            // await for output from the child process
+            let result: string = "";
+            let parsedResult: string = "";
+            for await (const chunk of childProcess.stdout) {
+                result += chunk.toString();
+            }
+
+            // await for errors from the child process
+            let error: string = "";
+            for await (const chunk of childProcess.stderr) {
+                error += chunk;
+                job.update("failed"); // Update job status
+            }
+            
+            // await for the child process to exit
+            const exitCode: number = await new Promise((resolve, reject) => {
+                childProcess.on("close", resolve);
+            });
+
+            if (exitCode !== 0) {
+                job.update("failed"); // Update job status
+                throw new Error(`subprocess error exit ${exitCode}, ${error}`);
+            }
+
+            parsedResult = JSON.parse(result);
+            job.update("completed");
+
+            return {
+                parsedResult
+            }
+        } catch (error) {
+            console.log("Error:", error);
         }
 
-        parsedResult = JSON.parse(result);
-        job.update("completed");
-
-        return {
-            parsedResult
-        }
     });
 
     // Listen to global job events

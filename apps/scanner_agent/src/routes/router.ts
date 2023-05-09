@@ -14,7 +14,7 @@ const router: Router = express.Router();
 router.use(bodyParser.json() as RequestHandler);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
-const REDIS_URL: string = process.env.REDIS_URL || "redis://127.0.0.1:6379";
+const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://127.0.0.1:6379";
 
 // Create/connect to a named work queue
 const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
