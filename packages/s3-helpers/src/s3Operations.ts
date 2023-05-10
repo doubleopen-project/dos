@@ -62,6 +62,8 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
 // Download an entire directory of files from a bucket to a local directory
 export const downloadDirectory = async (bucketName: string, dirS3: string, baseDir: string): Promise<string> => {
 
+    checkS3ClientEnvs();
+
     // Don't try to retrieve from an empty directory
     if (await isDirectoryEmpty(bucketName, dirS3)) {
         console.log("Error: trying to download an empty or non-existing directory from S3");
