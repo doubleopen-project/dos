@@ -1,13 +1,18 @@
-# Use scancode image as base
-FROM docker.io/etsija/scancode
-
-# Then add the node image
+# Base image
 FROM node:18.15.0
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-# Set the working directory to /app
-WORKDIR /app
+# ScanCode
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:deadsnakes/ppa --yes
+RUN apt install -y python3-pip
+RUN pip3 install scancode-toolkit
+
+# DOS
+
+WORKDIR /app/dos
+COPY . .
 
 RUN npm install
 RUN npm run build:worker
