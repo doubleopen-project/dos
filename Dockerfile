@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 HH Partners
+# 
+# SPDX-License-Identifier: MIT
+
 # Base image
 FROM node:18.15.0
 
