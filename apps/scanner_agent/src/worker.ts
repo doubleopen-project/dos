@@ -88,6 +88,14 @@ const start = (): void => {
             parsedResult = JSON.parse(result);
             job.update("completed");
 
+            // Remove the local directory from the container after the job is completed
+            try {
+                spawn("rm", ["-rf", dir]);
+                console.log("Local directory removed: ", dir);
+            } catch (error) {
+                console.log("Error removing the local directory: ", error);
+            }
+            
             return {
                 parsedResult
             }
