@@ -144,23 +144,48 @@ workQueue.on("global:failed", async (jobId: number) => {
 })
 
 workQueue.on("global:completed", async (jobId: number, result: string) => {
-    console.log("Job", jobId, "has been completed with result:", result);
+    console.log("Job", jobId, "has been completed");
     await postJobStatus(jobId, "completed", result);
 })
 
 // Create a request to send the job status to DOS
 const createRequest = (id: number, status: string, result?: string): RequestInit => {
+
+    let requestBody = {
+        id: id,
+        name: "Scanner Agent",
+        status: status,
+        result: undefined // Initialize result as undefined
+      };
+
+    if (result !== undefined) {
+        
+        const parsedResult = JSON.parse(result, (key, value) => {
+            if (typeof value === "string") {
+              try {
+                return JSON.parse(value);
+              } catch (error) {
+                return value;
+              }
+            }
+            return value;
+          });
+      
+        const files = parsedResult.result?.files;
+        console.log(files);
+        requestBody = {
+            ...requestBody,
+            result: files // Assign "files" node as the result
+        };
+    }
+
     return {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Charset": "utf-8"
         },
-        body: JSON.stringify({
-            id: id,
-            name: "Scanner Agent",
-            status: status,
-            result: result
-        })
+        body: JSON.stringify(requestBody)
     }
 }
 

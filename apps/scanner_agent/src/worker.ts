@@ -28,7 +28,7 @@ const maxJobsPerWorker: number = 10;
 
 const start = (): void => {
     
-    console.log("Worker is alive");
+    console.log(Date() + ": Worker is alive");
 
     // Connect to the named work queue
     const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
@@ -52,7 +52,8 @@ const start = (): void => {
 
         const options = [
             "-clp",
-            "--json-pp",
+            "-q",
+            "--json",
             "-",
             dir
         ];
@@ -85,7 +86,6 @@ const start = (): void => {
                 throw new Error(`Subprocess error exit ${exitCode}, ${error}`);
             }
 
-            parsedResult = JSON.parse(result);
             job.update("completed");
 
             // Remove the local directory from the container after the job is completed
@@ -97,7 +97,7 @@ const start = (): void => {
             }
             
             return {
-                parsedResult
+                result
             }
         } catch (error) {
             console.log("Error:", error);
