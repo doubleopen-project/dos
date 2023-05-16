@@ -13,7 +13,7 @@ const router: Router = express.Router();
 
 router.use(bodyParser.json() as RequestHandler);
 
-const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'https://localhost:5001/';
+const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
 
 interface CustomRequest<T> extends Request {
     body: T
@@ -27,6 +27,10 @@ interface ScannerJob {
 
 interface PresignedUrlRequest {
     key: string;
+}
+
+interface NewScannerJobRequest {
+    directory: string;
 }
 
 router.get('/', (req: Request, res: Response) => {
@@ -56,8 +60,8 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
             const objectExists: boolean | undefined = await objectExistsCheck(req.body.key);
 
             console.log("objectExists: ", objectExists);
-            
-            if(objectExists === undefined) {
+
+            if (objectExists === undefined) {
                 res.status(200).json({
                     "Success": "false",
                     "PresignedUrl": "undefined"
@@ -66,7 +70,7 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
 
             if (!objectExists) {
                 const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
-                
+
                 if (presignedUrl) {
                     res.status(200).json({
                         "Success": "true",
@@ -86,8 +90,6 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
                     "PresignedUrl": "undefined"
                 })
             }
-            
-            
 
         } else {
             res.status(400).json({
@@ -100,26 +102,39 @@ router.post('/requestuploadurl', async (req: CustomRequest<PresignedUrlRequest>,
     }
 })
 
-router.post('/addjob', async (req: Request, res: Response) => {
+router.post('/addjob', async (req: CustomRequest<NewScannerJobRequest>, res: Response) => {
     /*
     TODO: implement sending job to scanner
         - send Object Key to Scanner Agent (does it come from user?)
         - response from Scanner Agent successful: save Job to database
         - error handling
     First implementation: request body is empty
+    Second implementation: request body has directory parameter
     */
     try {
-        const postJobUrl: string = scannerUrl + 'job';
-        const request: RequestInit = {
-            method: 'POST',
-            body: JSON.stringify({})
-        }
+        if (req.body.directory) {
+            const postJobUrl: string = scannerUrl + 'job';
+            const request: RequestInit = {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    directory: req.body.directory
+                })
+            }
+            console.log(request.body);
 
-        const response: globalThis.Response = await fetch(postJobUrl, request);
-        const data: unknown = await response.json();
-        res.status(200).json({
-            data: data
-        })
+            const response: globalThis.Response = await fetch(postJobUrl, request);
+            const data: unknown = await response.json();
+            res.status(200).json({
+                data: data
+            })
+        } else {
+            console.log("No directory in request");
+
+            res.status(400).json({
+                "Message": "Bad Request"
+            })
+        }
 
     } catch (error) {
         console.log("Error: ", error);
