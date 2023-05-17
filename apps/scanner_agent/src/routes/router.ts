@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-/*
-eslint-disable @typescript-eslint/no-misused-promises
-*/
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 
 import express, { Request, RequestHandler, Response, Router } from 'express';
 import Queue from 'bull';
@@ -15,7 +14,7 @@ import * as fs from "fs";
 
 // Check if ".env" exists and load environment variables from it
 // Otherwise, use the environment variables provided by cloud provider
-const envPath = "../../.env";
+const envPath: string = "../../.env";
 if (fs.existsSync(envPath)) {
     console.log("Loading environment variables from local .env file");
     dotenv.config({ path: envPath });
@@ -34,7 +33,7 @@ const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://local
 const postStatusUrl: string = dosUrl + "jobstatus";
 
 // Create/connect to a named work queue
-const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
+const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL);
 
 // Node: Hello World
 router.get("/", (req: Request, res: Response) => {
@@ -65,7 +64,7 @@ router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
             return;
         }
 
-        const job: Queue.Job = await workQueue.add({
+        const job: Queue.Job<ScannerJob> = await workQueue.add({
             directory: req.body.directory
         })
         
