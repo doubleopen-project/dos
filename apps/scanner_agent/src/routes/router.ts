@@ -93,7 +93,8 @@ router.get("/job/:id", async(req: Request, res: Response) => {
             id: job.id, 
             data: job.data,
             state, 
-            finishedOn
+            finishedOn,
+            result: JSON.parse(JSON.stringify(job.returnvalue.result))
         });
     }
 });
