@@ -11,11 +11,16 @@ import Queue from 'bull';
 import bodyParser from 'body-parser';
 import fetch from "cross-fetch";
 import * as dotenv from "dotenv";
+import * as fs from "fs";
 
-// Load environment variables
-const result = dotenv.config({ path: "../../.env"});
-if (result.error) {
-    throw result.error;
+// Check if ".env" exists and load environment variables from it
+// Otherwise, use the environment variables provided by cloud provider
+const envPath = "../../.env";
+if (fs.existsSync(envPath)) {
+    console.log("Loading environment variables from local .env file");
+    dotenv.config({ path: envPath });
+} else {
+    console.log("Loading environment variables from cloud provider");
 }
 
 const router: Router = express.Router();
@@ -91,10 +96,9 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         const finishedOn: number | undefined = job.finishedOn;
         res.status(200).json({
             id: job.id, 
-            data: job.data,
             state, 
             finishedOn,
-            result: JSON.parse(JSON.stringify(job.returnvalue.result))
+            result: JSON.parse(job.returnvalue.result)
         });
     }
 });
@@ -109,7 +113,6 @@ router.get("/jobs", async(req: Request, res: Response) => {
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
             id: job.id,
-            data: job.data,
             state,
             finishedOn
         });
@@ -170,13 +173,14 @@ const createRequest = (id: number, status: string, result?: string): RequestInit
               }
             }
             return value;
-          });
+        });
       
-        const files = parsedResult.result?.files;
-        console.log(files);
+        //const scanresult = parsedResult.result?.files;
+        const scanresult = parsedResult.result;
+        console.log(scanresult);
         requestBody = {
             ...requestBody,
-            result: files // Assign "files" node as the result
+            result: scanresult
         };
     }
 
