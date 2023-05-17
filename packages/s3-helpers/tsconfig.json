@@ -4,16 +4,20 @@
             "ES2021"
         ],
         "outDir": "./dist",
-        "rootDir": "./src",
+        "rootDir": "./",
         "types": [
-			"@types/node"
-		]
+            "@types/node",
+            "@types/chai",
+            "@types/mocha"
+        ]
     },
     "exclude": [
         "node_modules"
     ],
     "extends": "tsconfig/base.json",
     "include": [
-        "src"
+        "src",
+        "tests",
+        "tsup.config.ts"
     ]
 }

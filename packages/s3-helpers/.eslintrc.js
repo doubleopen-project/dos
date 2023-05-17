@@ -7,6 +7,6 @@ module.exports = {
     extends: ["custom-server"],
     parserOptions: {
         tsconfigRootDir: __dirname,
-        project: ["./tsconfig.json", "./tsconfig.eslint.json", "./tsconfig.tsup.json"],
-    }
+        project: ["./tsconfig.json", "./tsconfig.eslint.json"],
+    },
 };
