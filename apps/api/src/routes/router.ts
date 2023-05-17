@@ -23,7 +23,7 @@ interface ScannerJob {
     id: string;
     name: string;
     status: string;
-    result: string;
+    result?: string;
 }
 
 interface PresignedUrlRequest {
@@ -154,16 +154,25 @@ router.put('/jobstatus', (req: CustomRequest<ScannerJob>, res: Response) => {
     */
 
     try {
-        if (req.body.id && req.body.name && req.body.status && req.body.result) {
-            const job: ScannerJob = {
-                id: req.body.id,
-                name: req.body.name,
-                status: req.body.status,
-                result: req.body.result
-            }
+        if (req.body.id && req.body.name && req.body.status) {
+            let job: ScannerJob;
 
-            if(job.status === 'completed') {
-                console.log("Job result length: ",job.result.length);
+            if (req.body.status === 'completed' && req.body.result) {
+                job = {
+                    id: req.body.id,
+                    name: req.body.name,
+                    status: req.body.status,
+                    result: req.body.result
+                }
+                if (job.result) {
+                    console.log("Job result length: ", job.result.length);
+                }
+            } else {
+                job = {
+                    id: req.body.id,
+                    name: req.body.name,
+                    status: req.body.status
+                }
             }
 
             console.log("Received job id: " + job.id + " , name: " + job.name + ", status: " + job.status)
