@@ -10,6 +10,18 @@ import Queue from "bull";
 import throng from "throng";
 import { spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
+import * as dotenv from "dotenv";
+import * as fs from "fs";
+
+// Check if ".env" exists and load environment variables from it
+// Otherwise, use the environment variables provided by cloud provider
+const envPath = "../../.env";
+if (fs.existsSync(envPath)) {
+    console.log("Loading environment variables from local .env file");
+    dotenv.config({ path: envPath });
+} else {
+    console.log("Loading environment variables from cloud provider OR Docker --env-file option");
+}
 
 // Base directory for ScanCode input files
 const baseDir: string = "/tmp/scanjobs/";
@@ -36,7 +48,7 @@ const start = (): void => {
     workQueue.process(maxJobsPerWorker, async (job: Queue.Job) => {
 
         const dir: string = baseDir + job.data.directory;
-        console.log("New scan job directory to create: ", dir);
+        console.log("-> create new temp directory for scanjob: ", dir);
 
         // Try to download the directory from S3 and check if it was successful
         const downloadSuccess: string = await downloadDirectory("doubleopen2", job.data.directory, baseDir);
@@ -45,14 +57,14 @@ const start = (): void => {
             job.update("failed"); // Update job status
             throw new Error("Failed to download directory from S3");
         } else {
-            console.log("Successfully downloaded directory from S3");
+            console.log(" -> successfully downloaded directory from S3");
         }
         
         // Spawn a child process to run ScanCode inside this container
 
         const options = [
             "-clp",
-            "-q",
+            "-v",
             "--json",
             "-",
             dir
@@ -91,7 +103,7 @@ const start = (): void => {
             // Remove the local directory from the container after the job is completed
             try {
                 spawn("rm", ["-rf", dir]);
-                console.log("Local directory removed: ", dir);
+                console.log("  -> local directory removed: ", dir);
             } catch (error) {
                 console.log("Error removing the local directory: ", error);
             }
