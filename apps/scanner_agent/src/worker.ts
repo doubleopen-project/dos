@@ -2,20 +2,19 @@
 //
 // SPDX-License-Identifier: MIT
 
-/*
-eslint-disable @typescript-eslint/no-misused-promises
-*/
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 
 import Queue from "bull";
 import throng from "throng";
-import { spawn } from "child_process";
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 
 // Check if ".env" exists and load environment variables from it
 // Otherwise, use the environment variables provided by cloud provider
-const envPath = "../../.env";
+const envPath: string = "../../.env";
 if (fs.existsSync(envPath)) {
     console.log("Loading environment variables from local .env file");
     dotenv.config({ path: envPath });
@@ -62,7 +61,7 @@ const start = (): void => {
         
         // Spawn a child process to run ScanCode inside this container
 
-        const options = [
+        const options: string[] = [
             "-clp",
             "-v",
             "--json",
@@ -71,11 +70,10 @@ const start = (): void => {
         ];
         
         try {
-            const childProcess = spawn("scancode", options);
+            const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
             
             // await for output from the child process
             let result: string = "";
-            let parsedResult: string = "";
             for await (const chunk of childProcess.stdout) {
                 result += chunk.toString();
             }
@@ -89,7 +87,7 @@ const start = (): void => {
             }
             
             // await for the child process to exit
-            const exitCode: number = await new Promise((resolve, reject) => {
+            const exitCode: number = await new Promise((resolve) => {
                 childProcess.on("close", resolve);
             });
 
