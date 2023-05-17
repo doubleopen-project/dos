@@ -94,12 +94,20 @@ router.get("/job/:id", async(req: Request, res: Response) => {
     } else {
         const state: string = await job.getState();
         const finishedOn: number | undefined = job.finishedOn;
-        res.status(200).json({
-            id: job.id, 
-            state, 
-            finishedOn,
-            result: JSON.parse(job.returnvalue.result)
-        });
+        if (state == "completed") {
+            res.status(200).json({
+                id: job.id, 
+                state, 
+                finishedOn,
+                result: JSON.parse(job.returnvalue.result)
+            });
+        } else {
+            res.status(200).json({
+                id: job.id,
+                state,
+                finishedOn
+            });
+        }
     }
 });
 
