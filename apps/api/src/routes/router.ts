@@ -23,6 +23,7 @@ interface ScannerJob {
     id: string;
     name: string;
     status: string;
+    result: string;
 }
 
 interface PresignedUrlRequest {
@@ -144,19 +145,25 @@ router.post('/addjob', async (req: CustomRequest<NewScannerJobRequest>, res: Res
 
 router.put('/jobstatus', (req: CustomRequest<ScannerJob>, res: Response) => {
     /*
-    TODO: implement receiving job status change from scanner agent
+    TODO: implement receiving job status change and possible results from scanner agent
         - save job status to database so that it can be queried from the dos api by the user
+        - save job results to database
         - error handling
-    First implementation:
-        - log job id and status to console
+    First implementation: log job id and status to console
+    Second implementation: receive results when job status changes to completed
     */
 
     try {
-        if (req.body.id && req.body.name && req.body.status) {
+        if (req.body.id && req.body.name && req.body.status && req.body.result) {
             const job: ScannerJob = {
                 id: req.body.id,
                 name: req.body.name,
-                status: req.body.status
+                status: req.body.status,
+                result: req.body.result
+            }
+
+            if(job.status === 'completed') {
+                console.log("Job result length: ",job.result.length);
             }
 
             console.log("Received job id: " + job.id + " , name: " + job.name + ", status: " + job.status)
