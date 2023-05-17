@@ -1,17 +1,22 @@
 {
     "name": "s3-helpers",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/src/index.js",
+    "module": "./dist/src/index.mjs",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
-        "build": "tsup"
+        "build": "tsup",
+        "test": "mocha dist/tests"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.327.0",
         "@aws-sdk/s3-request-presigner": "^3.327.0"
     },
     "devDependencies": {
+        "@types/chai": "^4.3.5",
+        "@types/mocha": "^10.0.1",
         "@types/node": "^18.16.4",
+        "chai": "^4.3.7",
+        "mocha": "^10.2.0",
         "tsconfig": "*",
         "tsup": "^6.7.0",
         "typescript": "^5.0.4"
