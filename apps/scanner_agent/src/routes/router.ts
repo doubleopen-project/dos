@@ -129,7 +129,7 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         const state: string = await job.getState();
         const finishedOn: number | undefined = job.finishedOn;
         if (state === "completed") {
-            const result: string | undefined = job.returnvalue?.result;           
+            const result = job.returnvalue?.result;           
             res.status(200).json({
                 id: job.id, 
                 state, 
