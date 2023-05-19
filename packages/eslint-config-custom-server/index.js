@@ -41,6 +41,14 @@ module.exports = {
                 variableDeclarationIgnoreFunction: true
             }
         ],
-        "no-unused-vars": "error"
+        "no-unused-vars": "error",
+        // These rules might have to be disabled due to suspected bug in linting.
+        // See https://github.com/t3-oss/create-t3-app/blob/next/.eslintrc.cjs
+        //"@typescript-eslint/no-unsafe-argument": "off",
+        //"@typescript-eslint/no-unsafe-assignment": "off",
+        //"@typescript-eslint/no-unsafe-call": "off",
+        //"@typescript-eslint/no-unsafe-member-access": "off",
+        //"@typescript-eslint/no-unsafe-return": "off",
+        //"@typescript-eslint/no-unnecessary-type-assertion": "off",
     }
 };
