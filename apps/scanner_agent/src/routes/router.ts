@@ -11,10 +11,13 @@ import bodyParser from 'body-parser';
 import fetch from "cross-fetch";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
+//import { loadEnv } from "../../common-helpers/envHelper";
 
 //////////////////////////
 // Environment variables
 //////////////////////////
+
+//loadEnv("../../.env");
 
 // Check if ".env" exists and load environment variables from it
 // Otherwise, use the environment variables provided by cloud provider
