@@ -2,4 +2,4 @@
 //
 // SPDX-License-Identifier: MIT
 
-export { loadEnv } from "./envHelper";
+export * from "./envHelper";

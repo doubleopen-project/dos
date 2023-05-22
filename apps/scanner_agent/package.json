@@ -13,6 +13,7 @@
         "@types/throng": "^5.0.4",
         "bull": "^4.10.4",
         "express": "^4.18.2",
+        "common-helpers": "*",
         "s3-helpers": "*",
         "throng": "^5.0.0"
     },

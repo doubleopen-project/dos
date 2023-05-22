@@ -8,22 +8,13 @@ import Queue, { Job } from "bull";
 import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
-import * as dotenv from "dotenv";
-import * as fs from "fs";
+import { loadEnv } from 'common-helpers';
 
 //////////////////////////
 // Environment variables
 //////////////////////////
 
-// Check if ".env" exists and load environment variables from it
-// Otherwise, use the environment variables provided by cloud provider
-const envPath: string = "../../.env";
-if (fs.existsSync(envPath)) {
-    console.log("Loading environment variables from local .env file");
-    dotenv.config({ path: envPath });
-} else {
-    console.log("Loading environment variables from cloud provider OR Docker --env-file option");
-}
+loadEnv("../../.env");
 
 // Base directory for ScanCode input files
 const baseDir: string = "/tmp/scanjobs/";
