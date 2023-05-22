@@ -10,6 +10,7 @@ import Queue, { Job } from 'bull';
 import bodyParser from 'body-parser';
 import fetch from "cross-fetch";
 import { loadEnv } from 'common-helpers';
+import milliseconds from "milliseconds";
 
 //////////////////////////
 // Environment variables
@@ -120,7 +121,7 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         const state: string = await job.getState();
         const finishedOn: number | undefined = job.finishedOn;
         if (state === "completed") {
-            const result = job.returnvalue?.result;           
+            const result = job.returnvalue?.result;
             res.status(200).json({
                 id: job.id, 
                 state, 
@@ -185,6 +186,20 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     console.log("Job", jobId, "has been completed");
     await postJobStatus(jobId, "completed", result);
 })
+
+// Job cleanup from the queue
+const cleanQueue = async () => {
+    const cleanupInterval: number = milliseconds.days(5);
+    try {
+        await workQueue.clean(cleanupInterval, "completed");
+        await workQueue.clean(cleanupInterval, "failed");
+        console.log("Job queue cleanup done!");
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+void cleanQueue();
 
 // Create a request to send the job status to DOS
 const createRequest = (id: Queue.JobId, state: string, result?: string): RequestInit => {

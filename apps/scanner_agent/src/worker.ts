@@ -112,6 +112,7 @@ const start = (): void => {
             return {
                 result
             }
+
         } catch (error) {
             console.log("Error:", error);
         }
