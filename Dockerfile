@@ -21,4 +21,4 @@ COPY . .
 RUN npm install
 RUN npm run build:worker
 
-CMD cd apps/scanner_agent && npm run start:worker
+CMD cd apps/scanner_agent && npm run worker
