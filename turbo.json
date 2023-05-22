@@ -4,10 +4,10 @@
   "globalEnv": ["PORT", "REDIS_URL", "WEB_CONCURRENCY", "SCANNER_URL", "DOS_URL", "SPACES_ENDPOINT", "SPACES_KEY", "SPACES_SECRET", "SPACES_BUCKET"],
   "pipeline": {
     "api:build": {
-      "dependsOn": ["s3-helpers:build"]
+      "dependsOn": ["s3-helpers:build", "common-helpers:build"]
     },
     "scanner-agent:build": {
-      "dependsOn": ["s3-helpers:build"]
+      "dependsOn": ["s3-helpers:build", "common-helpers:build"]
     },
     "build": {
       "dependsOn": ["^build"],

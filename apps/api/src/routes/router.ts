@@ -8,6 +8,9 @@ import express, { Request, Response, Router, RequestHandler } from 'express';
 import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
+import { loadEnv } from 'common-helpers';
+
+loadEnv('../../.env');
 
 const router: Router = express.Router();
 
