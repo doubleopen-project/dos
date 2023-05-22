@@ -101,3 +101,15 @@ License: CC-BY-4.0
 Files: packages/s3-helpers/tsconfig.tsup.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
+
+Files: packages/common-helpers/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/common-helpers/tsconfig.eslint.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/common-helpers/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
