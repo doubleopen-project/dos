@@ -8,12 +8,12 @@ import express, { Request, Response, Router, RequestHandler } from 'express';
 import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
+import { ScannerJob } from 'database';
+import { CustomRequest, NewScannerJobRequest, PresignedUrlRequest, ScannerAgentJobResponse, ScannerJobInt } from '../helpers/api_interfaces';
+import { addNewScannerJob, editScannerJob } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 
 loadEnv('../../.env');
-import { ScannerJob } from 'database';
-import { CustomRequest, NewScannerJobRequest, PresignedUrlRequest, ScannerAgentJobResponse, ScannerJobInt } from '../helpers/api_interfaces';
-import { addNewScannerJob } from '../helpers/db_queries';
 
 const router: Router = express.Router();
 
@@ -95,12 +95,17 @@ router.post('/job', async (req: CustomRequest<NewScannerJobRequest>, res: Respon
         - send Object Key to Scanner Agent
         - response from Scanner Agent successful: save Job to database
         - error handling
-    First implementation: request body is empty
-    Second implementation: request body has directory parameter
-    Third implementation: adding job details to database
     */
     try {
         if (req.body.directory && req.body.packageName && req.body.packageVersion && req.body.packageRegistry) {
+
+            // Adding a new ScannerJob to the database
+            const newScannerJob: ScannerJob = await addNewScannerJob(
+                'created',
+                req.body.packageName,
+                req.body.packageVersion,
+                req.body.packageRegistry
+            );
 
             // Sending a request to Scanner Agent to add new job to the work queue
             const postJobUrl: string = scannerUrl + 'job';
@@ -109,34 +114,30 @@ router.post('/job', async (req: CustomRequest<NewScannerJobRequest>, res: Respon
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    directory: req.body.directory
+                    directory: req.body.directory,
+                    opts: {
+                        jobId: newScannerJob.id
+                    }
                 })
             }
 
             const response: globalThis.Response = await fetch(postJobUrl, request);
-            const saRespData: ScannerAgentJobResponse = await response.json() as ScannerAgentJobResponse;
+            console.log(response);
             
-            // The following is necessary because Queue.JobId type is number | string, and the
-            // database column data type has to be set to one of them, so it has to be a string
-            let scanJobId: string;
-            if(typeof saRespData.id === 'number') {
-                scanJobId = (saRespData.id).toString();
-            } else {
-                scanJobId = saRespData.id
-            }
-            
-            // Adding a new ScannerJob to the database
-            const newScannerJob: ScannerJob = await addNewScannerJob(
-                'addedToQueue',
-                req.body.packageName,
-                req.body.packageVersion,
-                req.body.packageRegistry,
-                scanJobId
-            );
 
-            res.status(200).json({
-                ScannerJob: newScannerJob
-            })
+            // Change ScannerJob state in database to addedToQueue if request was succesfull
+            if(response.status === 201) {
+                const editedScannerJob: ScannerJob = await editScannerJob(newScannerJob.id, {state: 'addedToQueue'})
+                res.status(201).json({
+                    'ScannerJob': editedScannerJob,
+                    'Message': 'Job added to queue'
+                })
+            } else {
+                res.status(202).json({
+                    'ScannerJob': newScannerJob,
+                    'Message': 'Adding job to queue was unsuccessful'
+                })
+            }
         } else {
             console.log("Error: something missing in request");
             
@@ -151,41 +152,37 @@ router.post('/job', async (req: CustomRequest<NewScannerJobRequest>, res: Respon
     }
 })
 
-router.put('/jobstatus', (req: CustomRequest<ScannerJobInt>, res: Response) => {
+router.put('/job-state', async (req: CustomRequest<ScannerJobInt>, res: Response) => {
     /*
-    TODO: implement receiving job status change and possible results from scanner agent
+    TODO: implement receiving job state change and possible results from scanner agent
         - save job state to database so that it can be queried from the dos api by the user
         - save job results to database
         - error handling
-    First implementation: log job id and status to console
-    Second implementation: receive results when job state changes to completed
     */
 
     try {
         if (req.body.id && req.body.name && req.body.state) {
-            let job: ScannerJobInt;
 
-            if (req.body.state === 'completed' && req.body.result) {
-                job = {
-                    id: req.body.id,
-                    name: req.body.name,
-                    state: req.body.state,
-                    result: req.body.result
-                }
-                //TODO: save results to database
-
+            // The following is necessary because Queue.JobId type is number | string, and the
+            // database column data type has to be set to one of them, so it has to be a string
+            let scanJobId: string;
+            if(typeof req.body.id === 'number') {
+                scanJobId = (req.body.id).toString();
             } else {
-                job = {
-                    id: req.body.id,
-                    name: req.body.name,
-                    state: req.body.state
-                }
+                scanJobId = req.body.id
             }
 
-            console.log('Received job id: ' + job.id + ' , name: ' + job.name + ', state: ' + job.state)
+            // Save state change to database
+            const editedScannerJob: ScannerJob = await editScannerJob(scanJobId, {state: req.body.state})
+            
+            if (req.body.state === 'completed' && req.body.result) {
+                //TODO: save results to database
+
+            }
 
             res.status(200).json({
-                'Message': 'Received job id: ' + job.id + ' with state: ' + job.state
+                'EditedJob': editedScannerJob,
+                'Message': 'Received job with id '+ scanJobId + '. Changed state to ' + req.body.state
             })
         } else {
             res.status(400).json({

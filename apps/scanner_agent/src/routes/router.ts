@@ -23,12 +23,12 @@ router.use(bodyParser.json() as RequestHandler);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 //const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://127.0.0.1:6379";
-const REDIS_URL: string = process.env.REDIS_URL || "redis://redis:6379";
+const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
 
 // URL address and node of DOS to send job status updates to
 //const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
-const dosUrl: string = process.env.DOS_URL || "https://localhost:5000/";
-const postStatusUrl: string = dosUrl + "jobstatus";
+const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";
+const postStatusUrl: string = dosUrl + "job-state";
 
 // Create/connect to a named work queue
 const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL);
