@@ -16,10 +16,12 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "db:format": {},
     "db:generate": {
       "cache": false
     },
     "db:migrate:deploy": {},
+    "db:migrate:dev": {},
     "db:push": {
       "cache": false
     },
