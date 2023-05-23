@@ -55,6 +55,8 @@ const start = (): void => {
     /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
+        console.log("-> processing job: ", job.id, " with data: ", job.data);
+
         const jobDirectory: string = String(job.data.directory);
         const dir: string = baseDir + jobDirectory;
         console.log("-> create new temp directory for scanjob: ", dir);
@@ -65,14 +67,15 @@ const start = (): void => {
             console.log("Failed to download directory from S3");
             throw new Error("Failed to download directory from S3");
         } else {
-            console.log(" -> successfully downloaded directory from S3");
+            console.log("-> successfully downloaded directory from S3");
         }
         
         // Spawn a child process to run ScanCode inside this container
 
         const options: string[] = [
             "-clp",
-            "-v",
+            //"-v",
+            "-q",
             "--json",
             "-",
             dir
@@ -106,13 +109,12 @@ const start = (): void => {
             // Remove the local directory from the container after the job is completed
             try {
                 spawn("rm", ["-rf", dir]);
-                console.log("  -> local directory removed: ", dir);
+                console.log("-> local directory removed: ", dir);
             } catch (error) {
                 console.log("Error removing the local directory: ", error);
             }
             
-            // Query the job status
-            console.log(await job.getState());
+            console.log("-> completed job: ", job.id, " with data: ", job.data);
 
             return {
                 result

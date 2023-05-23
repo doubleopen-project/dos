@@ -51,6 +51,7 @@ type ScannerJob = {
 interface JobInfo {
     id: Queue.JobId;
     state: string;
+    data: ScannerJob;
     finishedOn: number | undefined;
 }
 
@@ -111,7 +112,7 @@ router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
 // Node: Query job details for job [id]
 router.get("/job/:id", async(req: Request, res: Response) => {
     const id: Queue.JobId = req.params.id;
-    const job: Queue.Job<ScannerJob> | null = await workQueue.getJob(id);
+    const job: Job<ScannerJob> | null = await workQueue.getJob(id);
 
     if (job === null) {
         res.status(404).json({
@@ -121,10 +122,11 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         const state: string = await job.getState();
         const finishedOn: number | undefined = job.finishedOn;
         if (state === "completed") {
-            const result = job.returnvalue?.result;
+            const result: string = job.returnvalue?.result;
             res.status(200).json({
                 id: job.id, 
                 state, 
+                data: job.data,
                 finishedOn,
                 result: result ? JSON.parse(result) : undefined
             });
@@ -140,15 +142,17 @@ router.get("/job/:id", async(req: Request, res: Response) => {
 
 // Node: Query statuses of all active/waiting jobs in the work queue
 router.get("/jobs", async(_req: Request, res: Response) => {
-    const jobs: Queue.Job[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
+    const jobs: Job<ScannerJob>[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
     const jobList: JobInfo[] = [];
 
     for (const job of jobs) {
-        const state: string = await job.getState();        
+        const state: string = await job.getState();
+        const data: ScannerJob = job.data;
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
             id: job.id,
             state,
+            data: data,
             finishedOn
         });
     }
@@ -188,7 +192,7 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
 })
 
 // Job cleanup from the queue
-const cleanQueue = async () => {
+const cleanQueue = async (): Promise<void> => {
     const cleanupInterval: number = milliseconds.days(5);
     try {
         await workQueue.clean(cleanupInterval, "completed");
@@ -212,20 +216,20 @@ const createRequest = (id: Queue.JobId, state: string, result?: string): Request
       };
 
     if (result !== undefined) {
-        
+        // TODO: Parse the result type-safely
         const parsedResult: ParsedResult = JSON.parse(result, (_key: string, value: string | undefined) => {
             if (typeof value === "string") {
               try {
-                return JSON.parse(value);
+                return JSON.parse(value) as string | undefined;
               } catch (error) {
                 return value;
               }
             }
             return value;
-        });
+        }) as ParsedResult;
       
         const scanresult: string = parsedResult.result;
-        console.log(scanresult);
+        //console.log(scanresult);
         requestBody = {
             ...requestBody,
             result: scanresult
@@ -247,7 +251,7 @@ const postJobStatus = async (id: Queue.JobId, status: string, result?: string): 
     const request: RequestInit = createRequest(id, status, result);
     try {
         const response: globalThis.Response = await fetch(postStatusUrl, request);
-        const data: string | undefined = await response.json();
+        const data: string | undefined = await response.json() as string | undefined;
         console.log("Response from DOS:", data);
         return data;
     } catch (error) {
