@@ -15,7 +15,7 @@
         "heroku-postbuild": "if [ $CLIENT_ENV ]; then npm run prod-client; elif [ $SERVER_ENV ]; then npm run prod-api; elif [ $SCANNER_ENV ]; then npm run prod-scanner_agent; else echo no environment detected, please set CLIENT_ENV, SERVER_ENV, or SCANNER_ENV; fi",
         "prod-client": "npm run build:client",
         "prod-scanner_agent": "npm run build:scanner_agent",
-        "prod-api": "npm run build:api",
+        "prod-api": "npm run db:generate && npm run build:api",
         "db:format": "turbo run db:format",
         "db:generate": "turbo run db:generate",
         "db:migrate:dev": "turbo run db:migrate:dev",
