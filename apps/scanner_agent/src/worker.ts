@@ -32,6 +32,15 @@ const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CO
 const maxJobsPerWorker: number = 10;
 
 //////////////////////////
+// Interfaces and types
+//////////////////////////
+
+// Scan job with its parameters
+type ScannerJob = {
+    directory: string;
+}
+
+//////////////////////////
 // Module implementation
 //////////////////////////
 
@@ -44,7 +53,7 @@ const start = (): void => {
 
     // Next line is needed due to eslint stupidness
     /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
-    workQueue.process(maxJobsPerWorker, async (job: Job) => {
+    workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
         const jobDirectory: string = String(job.data.directory);
         const dir: string = baseDir + jobDirectory;
@@ -54,7 +63,6 @@ const start = (): void => {
         const downloadSuccess: string = await downloadDirectory("doubleopen2", jobDirectory, baseDir);
         if (downloadSuccess !== "success") {
             console.log("Failed to download directory from S3");
-            await job.update("failed");
             throw new Error("Failed to download directory from S3");
         } else {
             console.log(" -> successfully downloaded directory from S3");
@@ -84,22 +92,16 @@ const start = (): void => {
             for await (const chunk of childProcess.stderr) {
                 error += chunk;
                 console.log("Error:", error);
-                // void used here to not wait for the promise to resolve
-                // Otherwise, module execution would be blocked
-                void job.update("failed");
             }
 
             // await for the child process to exit
-            const exitCode = await new Promise<number>((resolve) => {
+            const exitCode: number = await new Promise<number>((resolve) => {
                 childProcess.on("close", resolve);
             });
 
             if (exitCode !== 0) {
-                await job.update("failed");
                 throw new Error(`Subprocess error exit ${exitCode}, ${error}`);
             }
-
-            await job.update("completed");
 
             // Remove the local directory from the container after the job is completed
             try {
@@ -109,6 +111,9 @@ const start = (): void => {
                 console.log("Error removing the local directory: ", error);
             }
             
+            // Query the job status
+            console.log(await job.getState());
+
             return {
                 result
             }
