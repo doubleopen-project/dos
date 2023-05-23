@@ -5,14 +5,13 @@
 import { PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 
-export const addNewScannerJob = async (state: string, packageName: string, packageVersion: string, packageRegistry: string, scanJobId: string): Promise<ScannerJob> => {
+export const addNewScannerJob = async (state: string, packageName: string, packageVersion: string, packageRegistry: string): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
         data: {
             state: state,
             packageName: packageName,
             packageVersion: packageVersion,
-            packageRegistry: packageRegistry,
-            scanJobId: scanJobId
+            packageRegistry: packageRegistry
         }
     });
 }

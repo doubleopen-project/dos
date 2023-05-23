@@ -128,7 +128,6 @@ model ScannerJob {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   state           String
-  scanJobId       String
   packageName     String
   packageVersion  String
   packageRegistry String
