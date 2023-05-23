@@ -10,16 +10,17 @@
     ],
     "scripts": {
         "build": "tsup",
+        "db:format": "prisma format",
         "db:migrate:deploy": "prisma migrate deploy",
         "db:migrate:dev": "prisma migrate dev",
         "db:generate": "prisma generate",
         "db:push": "prisma db push --skip-generate"
     },
     "dependencies": {
-        "@prisma/client": "^4.13.0"
+        "@prisma/client": "^4.14.1"
     },
     "devDependencies": {
-        "prisma": "^4.13.0",
+        "prisma": "^4.14.1",
         "tsup": "^6.7.0",
         "typescript": "^5.0.4"
     }

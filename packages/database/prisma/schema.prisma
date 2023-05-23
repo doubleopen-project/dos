@@ -31,14 +31,15 @@ model File {
 
 /// A package consisting of its source code files.
 model Package {
-  id        Int      @id @default(autoincrement())
-  name      String
-  version   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String
+  version    String
+  sourceUrl  String
+  sourceHash String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  fileTrees         FileTree[]
-  ScannerJobPackage ScannerJobPackage[]
+  fileTrees FileTree[]
 }
 
 /// File in the context of a package.
@@ -123,26 +124,14 @@ model CopyrightFindingCuration {
 
 /// A scanner job.
 model ScannerJob {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  status    String
-
-  scannerJobPackages ScannerJobPackage[]
-}
-
-/// Joining scanner job and package.
-model ScannerJobPackage {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  packageId Int
-  package   Package @relation(fields: [packageId], references: [id])
-
-  scannerJobId String
-  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
-
-  @@index([packageId])
-  @@index([scannerJobId])
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  state           String
+  scanJobId       String
+  packageName     String
+  packageVersion  String
+  packageRegistry String
+  ortVersion      String?
+  scancodeVersion String?
 }
