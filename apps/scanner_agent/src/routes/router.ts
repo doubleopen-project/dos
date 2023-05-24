@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
 import { Request, RequestHandler, Response, Router } from 'express';
-import Queue, { Job } from 'bull';
+import Queue, { Job, JobOptions } from 'bull';
 import bodyParser from 'body-parser';
 import fetch from "cross-fetch";
 import { loadEnv } from 'common-helpers';
@@ -45,6 +45,9 @@ interface CustomRequest<T> extends Request {
 // Scan job with its parameters
 type ScannerJob = {
     directory: string;
+    opts: {
+        jobId: string;
+    }
 }
 
 // Job return information
@@ -88,15 +91,26 @@ router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
     // Job details are in the request body
 
     try {
-        if (!req.body.directory) {
+        if (!req.body.directory || !req.body.opts.jobId) {
             res.status(400).json({
-                "Message": "Missing directory in POST /job"
+                "Message": "Missing directory or job ID in POST /job"
             });
             return;
         }
+
+        // Unique job ID is given by DOS
+        const jobOpts: JobOptions = {
+            jobId: req.body.opts.jobId,
+        };
+        
+        // ...and it is used to add the job to the work queue
         const job: Job<ScannerJob> = await workQueue.add({
-            directory: req.body.directory
-        })
+            directory: req.body.directory,
+            opts: {
+                jobId: req.body.opts.jobId
+            }
+        }, jobOpts);
+        
         res.status(201).json({
             id: job.id,
             data: job.data
