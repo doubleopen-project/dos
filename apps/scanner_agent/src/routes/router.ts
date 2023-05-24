@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-inferrable-types */
-
 import { Request, RequestHandler, Response, Router } from 'express';
 import Queue, { Job, JobOptions } from 'bull';
 import bodyParser from 'body-parser';

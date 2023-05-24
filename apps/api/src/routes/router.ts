@@ -9,7 +9,7 @@ import fetch from 'cross-fetch';
 import bodyParser from 'body-parser';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
 import { ScannerJob } from 'database';
-import { CustomRequest, NewScannerJobRequest, PresignedUrlRequest, ScannerAgentJobResponse, ScannerJobInt } from '../helpers/api_interfaces';
+import { CustomRequest, NewScannerJobRequest, PresignedUrlRequest, ScannerJobInt } from '../helpers/api_interfaces';
 import { addNewScannerJob, editScannerJob } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 

@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-/* eslint-disable @typescript-eslint/no-inferrable-types */
-
 import Queue, { Job } from "bull";
 import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
@@ -17,7 +15,7 @@ import { loadEnv } from 'common-helpers';
 loadEnv("../../.env");
 
 // Base directory for ScanCode input files
-const baseDir: string = "/tmp/scanjobs/";
+const baseDir = "/tmp/scanjobs/";
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://localhost:6379";
@@ -29,7 +27,7 @@ const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CO
 // to be tuned for your application. If each job is mostly waiting on network 
 // responses it can be much higher. If each job is CPU-intensive, it might need
 // to be much lower.
-const maxJobsPerWorker: number = 10;
+const maxJobsPerWorker = 10;
 
 //////////////////////////
 // Interfaces and types
@@ -51,13 +49,11 @@ const start = (): void => {
     // Connect to the named work queue
     const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
 
-    // Next line is needed due to eslint stupidness
-    /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
         console.log("-> processing job: ", job.id, " with data: ", job.data);
 
-        const jobDirectory: string = String(job.data.directory);
+        const jobDirectory = String(job.data.directory);
         const dir: string = baseDir + jobDirectory;
         console.log("-> create new temp directory for scanjob: ", dir);
 
@@ -85,13 +81,13 @@ const start = (): void => {
             const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
             
             // await for output from the child process
-            let result: string = "";
+            let result = "";
             for await (const chunk of childProcess.stdout as AsyncIterable<Buffer | string>) {
                 result += chunk.toString();
             }
 
             // await for errors from the child process
-            let error: string = "";
+            let error = "";
             for await (const chunk of childProcess.stderr) {
                 error += chunk;
                 console.log("Error:", error);
