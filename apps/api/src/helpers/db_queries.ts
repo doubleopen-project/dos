@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: has no exported member 'ScannerJob'
 import { PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 
