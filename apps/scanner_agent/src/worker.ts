@@ -7,6 +7,7 @@ import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
 import { loadEnv } from 'common-helpers';
+import { rimraf } from "rimraf";
 
 //////////////////////////
 // Environment variables
@@ -76,50 +77,52 @@ const start = (): void => {
             "-",
             dir
         ];
+
+        const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
         
-        try {
-            const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
-            
-            // await for output from the child process
-            let result = "";
-            for await (const chunk of childProcess.stdout as AsyncIterable<Buffer | string>) {
-                result += chunk.toString();
-            }
+        const pid = childProcess.pid;
+        console.log(`[${pid}] process spawned for job: ${job.id} with data: ${job.data}`);
+        
+        let result = "";
+        childProcess.stdout.on("data", (data) => {
+            result += data.toString();
+        });
 
-            // await for errors from the child process
-            let error = "";
-            for await (const chunk of childProcess.stderr) {
-                error += chunk;
-                console.log("Error:", error);
-            }
+        let error = "";
+        childProcess.stderr.on("data", (data) => {
+            error += data.toString();
+            console.log(`[${pid}] process error: ${error}`);
+        });
 
-            // await for the child process to exit
-            const exitCode: number = await new Promise<number>((resolve) => {
-                childProcess.on("close", resolve);
+        const processPromise = new Promise<{ result: string }>((resolve, reject) => {
+            childProcess.on("exit", (code) => {
+              console.log(`[${pid}] process exited with code: ${code}`);
+              handleProcessExit()
+                .then(() => resolve({result}))
+                .catch((error) => reject(error));
             });
-
-            if (exitCode !== 0) {
-                throw new Error(`Subprocess error exit ${exitCode}, ${error}`);
-            }
-
-            // Remove the local directory from the container after the job is completed
+          });
+      
+        async function handleProcessExit(): Promise<void> {
             try {
-                spawn("rm", ["-rf", dir]);
-                console.log("-> local directory removed: ", dir);
-            } catch (error) {
-                console.log("Error removing the local directory: ", error);
+                try {
+                    await removeDirectory(dir);
+                    console.log(`[${pid}] process local directory removed: ${dir}`);
+                } catch (error) {
+                    console.log(`[${pid}] process error removing the local directory: ${error}`);
+                }
+            } finally {
+                console.log(`[${pid}] process completed job: ${job.id}`);
             }
-            
-            console.log("-> completed job: ", job.id, " with data: ", job.data);
-
-            return {
-                result
-            }
-
-        } catch (error) {
-            console.log("Error:", error);
         }
-    }); 
+        
+        function removeDirectory(dir: string): Promise<boolean> {
+            return rimraf(dir);
+        }
+
+        // Finally, return the result of the ScanCode process
+        return processPromise;
+    });
 }
 
 // Initialise the clustered worker process

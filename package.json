@@ -36,7 +36,7 @@
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
     },
     "devDependencies": {
-        "rimraf": "^5.0.0",
+        "rimraf": "^5.0.1",
         "turbo": "^1.8.8"
     },
     "engines": {
