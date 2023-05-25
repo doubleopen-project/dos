@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
-import express, { Application } from 'express';
+import { zodiosApp } from "@zodios/express";
 import router from './routes/router';
 
-const app: Application = express();
+const app = zodiosApp();
 
 app.use('/api', router);
 
-const PORT: number = process.env.PORT? parseInt(process.env.PORT) : 5000;
+const PORT = process.env.PORT? parseInt(process.env.PORT) : 5000;
 
 app.listen(PORT, () =>
   console.log(`Server listening on port ${PORT}`),
