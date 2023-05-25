@@ -139,11 +139,8 @@ dist
 # Converted files
 dist/
 
-# apps loc-files
-
-apps/api/package-lock.json
-apps/client/package-lock.json
-apps/scanner_agent/package-lock.json
-
 # Redis DB dump
 dump.rdb
+
+# Generated zod db schemas
+generated-zod-schemas/

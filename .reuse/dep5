@@ -113,3 +113,15 @@ License: CC-BY-4.0
 Files: packages/common-helpers/tsconfig.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
+
+Files: packages/validation-helpers/package.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/validation-helpers/tsconfig.eslint.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
+Files: packages/validation-helpers/tsconfig.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
