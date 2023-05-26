@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import { DBScannerJobSchema } from './db_schemas';
+import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
 export const ApiPostScanResultsRequestBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
@@ -87,12 +88,7 @@ export const ApiPostJobResultsRequestBodySchema = z.object({
         })
         .trim()
         .min(1, 'Id cannot be empty'),
-    result: z.
-        string({
-            required_error: 'Result is required'
-        })
-        .trim()
-        .min(1, 'Result cannot be empty'),
+    result: ScannerJobResultSchema
 })
 
 export const ApiPostJobResultsResponseBodySchema = z.object({
