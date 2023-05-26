@@ -151,6 +151,9 @@ router.post('/job-results', async (req, res) => {
     /*
     TODO: implement receiving job results from scanner agent and saving to database
     */
+    res.status(200).json({
+        message: 'Received results for job with with id ' + req.body.id
+    })
 })
 
 export default router;
