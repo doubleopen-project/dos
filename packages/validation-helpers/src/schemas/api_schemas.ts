@@ -80,6 +80,25 @@ export const ApiPutJobStateResponseBodySchema = z.object({
     message: z.string()
 })
 
+export const ApiPostJobResultsRequestBodySchema = z.object({
+    id: z.
+        string({
+            required_error: 'Id is required'
+        })
+        .trim()
+        .min(1, 'Id cannot be empty'),
+    result: z.
+        string({
+            required_error: 'Result is required'
+        })
+        .trim()
+        .min(1, 'Result cannot be empty'),
+})
+
+export const ApiPostJobResultsResponseBodySchema = z.object({
+    message: z.string()
+})
+
 export const ErrorSchema = z.object({
     message: z.string()
 })

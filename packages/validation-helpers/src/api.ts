@@ -114,10 +114,10 @@ export const dosApi = makeApi([
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiPutJobStateRequestBodySchema
+            schema: schemas.ApiPostJobResultsRequestBodySchema
         }
     ],
-    response: schemas.ApiPutJobStateResponseBodySchema,
+    response: schemas.ApiPostJobResultsResponseBodySchema,
     errors: [
       {
         status: 500,
