@@ -262,7 +262,7 @@ const createRequestResults = (id: Queue.JobId, result: string): RequestInit => {
         }) as ParsedResult;
       
         const scanresult: string = parsedResult.result;
-        //console.log(scanresult);
+        console.log(scanresult);
         requestBody = {
             ...requestBody,
             result: scanresult
@@ -270,7 +270,7 @@ const createRequestResults = (id: Queue.JobId, result: string): RequestInit => {
     }
 
     return {
-        method: "PUT",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Charset": "utf-8"
