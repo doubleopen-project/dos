@@ -8,6 +8,7 @@ import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { downloadDirectory } from "s3-helpers";
 import { loadEnv } from 'common-helpers';
 import { rimraf } from "rimraf";
+import * as path from 'path';
 
 //////////////////////////
 // Environment variables
@@ -16,7 +17,7 @@ import { rimraf } from "rimraf";
 loadEnv("../../.env");
 
 // Base directory for ScanCode input files
-const baseDir = "/tmp/scanjobs/";
+const baseDir = "/tmp/scanjobs";
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://localhost:6379";
@@ -52,19 +53,22 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
-        console.log("-> processing job: ", job.id, " with data: ", job.data);
+        console.log("*** New scanner job arrived: ", job.id, " with data: ", job.data);
 
-        const jobDirectory = String(job.data.directory);
-        const dir: string = baseDir + jobDirectory;
-        console.log("-> create new temp directory for scanjob: ", dir);
+        const jobIdDir = String(job.id);
+        const jobDir = String(job.data.directory);
+        const localJobDir = path.join(baseDir, jobIdDir);
+        const localScanDir = path.join(localJobDir, jobDir);
+        console.log("-> create new local directory for scanjob: ", localScanDir);
 
         // Try to download the directory from S3 and check if it was successful
-        const downloadSuccess: string = await downloadDirectory("doubleopen2", jobDirectory, baseDir);
+        // Also create a unique local directory for the job
+        const downloadSuccess: string = await downloadDirectory("doubleopen2", jobDir, localJobDir);
         if (downloadSuccess !== "success") {
             console.log("Failed to download directory from S3");
             throw new Error("Failed to download directory from S3");
         } else {
-            console.log("-> successfully downloaded directory from S3");
+            console.log("-> successfully downloaded directory", jobDir, "from S3");
         }
         
         // Spawn a child process to run ScanCode inside this container
@@ -75,13 +79,13 @@ const start = (): void => {
             "-q",
             "--json",
             "-",
-            dir
+            localScanDir
         ];
 
         const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
         
         const pid = childProcess.pid;
-        console.log(`[${pid}] process spawned for job: ${job.id} with data: ${job.data}`);
+        console.log(`[${pid}] process spawned for job: ${job.id}`);
         
         let result = "";
         childProcess.stdout.on("data", (data) => {
@@ -106,8 +110,8 @@ const start = (): void => {
         async function handleProcessExit(): Promise<void> {
             try {
                 try {
-                    await removeDirectory(dir);
-                    console.log(`[${pid}] process local directory removed: ${dir}`);
+                    await removeDirectory(path.join(baseDir, jobIdDir));
+                    console.log(`[${pid}] process local directory removed: ${localJobDir}`);
                 } catch (error) {
                     console.log(`[${pid}] process error removing the local directory: ${error}`);
                 }
