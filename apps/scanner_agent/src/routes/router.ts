@@ -25,7 +25,8 @@ const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
 // URL address and node of DOS to send job status updates to
 //const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
 const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";
-const postStatusUrl: string = dosUrl + "job-state";
+const postStateUrl: string = dosUrl + "job-state";
+const postResultsUrl: string = dosUrl + "job-results";
 
 // Create/connect to a named work queue
 const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL);
@@ -55,11 +56,15 @@ interface JobInfo {
     finishedOn: number | undefined;
 }
 
-// Send the job status to DOS
-interface RequestBody {
+// Send the job state to DOS
+interface RequestBodyState {
     id: Queue.JobId;
-    name: string;
     state: string;
+}
+
+// Send the job results to DOS
+interface RequestBodyResults {
+    id: Queue.JobId;
     result: string | undefined;
 }
 
@@ -174,32 +179,33 @@ router.get("/jobs", async(_req: Request, res: Response) => {
 
 workQueue.on("global:waiting", async (jobId: Queue.JobId) => {
     console.log("Job", jobId, "is waiting");
-    await postJobStatus(jobId, "waiting");
+    await postJobState(jobId, "waiting");
 })
 
 workQueue.on("global:active", async (jobId: Queue.JobId) => {
     console.log("Job", jobId, "is active");
-    await postJobStatus(jobId, "active");
+    await postJobState(jobId, "active");
 })
 
 workQueue.on("global:resumed", async (jobId: Queue.JobId) => {
     console.log("Job", jobId, "has been resumed");
-    await postJobStatus(jobId, "resumed");
+    await postJobState(jobId, "resumed");
 })
 
 workQueue.on("global:stalled", async (jobId: Queue.JobId) => {
     console.log("Job", jobId, "has stalled");
-    await postJobStatus(jobId, "stalled");
+    await postJobState(jobId, "stalled");
 })
 
 workQueue.on("global:failed", async (jobId: Queue.JobId) => {
     console.log("Job", jobId, "has failed");
-    await postJobStatus(jobId, "failed");
+    await postJobState(jobId, "failed");
 })
 
 workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     console.log("Job", jobId, "has been completed");
-    await postJobStatus(jobId, "completed", result);
+    await postJobState(jobId, "completed");
+    await postJobResults(jobId, result);
 })
 
 // Job cleanup from the queue
@@ -216,13 +222,29 @@ const cleanQueue = async (): Promise<void> => {
 }
 void cleanQueue();
 
-// Create a request to send the job status to DOS
-const createRequest = (id: Queue.JobId, state: string, result?: string): RequestInit => {
+// Create a request to send the job state to DOS
+const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
 
-    let requestBody: RequestBody = {
+    let requestBody: RequestBodyState = {
         id: id,
-        name: "Scanner Agent",
-        state: state,
+        state: state
+      };
+
+    return {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Charset": "utf-8"
+        },
+        body: JSON.stringify(requestBody)
+    }
+}
+
+// Create a request to send the job results to DOS
+const createRequestResults = (id: Queue.JobId, result: string): RequestInit => {
+
+    let requestBody: RequestBodyResults = {
+        id: id,
         result: undefined // Initialize result as undefined
       };
 
@@ -257,11 +279,24 @@ const createRequest = (id: Queue.JobId, state: string, result?: string): Request
     }
 }
 
-// Send the job status to DOS
-const postJobStatus = async (id: Queue.JobId, status: string, result?: string): Promise<string | undefined> => {
-    const request: RequestInit = createRequest(id, status, result);
+// Send the job state to DOS
+const postJobState = async (id: Queue.JobId, state: string): Promise<string | undefined> => {
+    const request: RequestInit = createRequestState(id, state);
     try {
-        const response: globalThis.Response = await fetch(postStatusUrl, request);
+        const response: globalThis.Response = await fetch(postStateUrl, request);
+        const data: string | undefined = await response.json() as string | undefined;
+        console.log("Response from DOS:", data);
+        return data;
+    } catch (error) {
+        console.log("Error:", error);
+    }
+}
+
+// Send the job results to DOS
+const postJobResults = async (id: Queue.JobId, result: string): Promise<string | undefined> => {
+    const request: RequestInit = createRequestResults(id, result);
+    try {
+        const response: globalThis.Response = await fetch(postResultsUrl, request);
         const data: string | undefined = await response.json() as string | undefined;
         console.log("Response from DOS:", data);
         return data;
