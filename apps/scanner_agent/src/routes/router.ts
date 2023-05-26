@@ -225,7 +225,7 @@ void cleanQueue();
 // Create a request to send the job state to DOS
 const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
 
-    let requestBody: RequestBodyState = {
+    const requestBody: RequestBodyState = {
         id: id,
         state: state
       };
