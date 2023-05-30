@@ -34,7 +34,7 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/upload-url',
-    description: 'Get presigned upload url for S3 object storage',
+    description: 'Get presigned upload URL for S3 object storage',
     parameters: [
         {
             name: 'body',
@@ -84,7 +84,7 @@ export const dosApi = makeApi([
   {
     method: 'put',
     path: '/job-state',
-    description: 'Edit Scanner Job state',
+    description: 'Edit scanner job state',
     parameters: [
         {
             name: 'body',
@@ -109,7 +109,7 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/job-results',
-    description: 'Save Scanner Job results',
+    description: 'Save scanner job results',
     parameters: [
         {
             name: 'body',
