@@ -21,6 +21,7 @@
         "db:migrate:dev": "prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
         "db:migrate:deploy": "prisma migrate deploy --schema ./packages/database/prisma/schema.prisma",
         "db:push": "turbo run db:push",
+        "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
         "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
         "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf package-lock.json && npx rimraf node_modules",
         "clean-build": "npm run clean-dist && turbo run build --no-cache --force",

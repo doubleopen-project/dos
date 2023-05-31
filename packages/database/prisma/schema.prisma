@@ -28,10 +28,16 @@ model File {
   sha256    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  scanned   Boolean
+
+  scannerJobId String
+  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
 
   filetrees         FileTree[]
   licenseFindings   LicenseFinding[]
   copyrightFindings CopyrightFinding[]
+
+  @@index([scannerJobId])
 }
 
 /// A package consisting of its source code files.
@@ -129,13 +135,17 @@ model CopyrightFindingCuration {
 
 /// A scanner job.
 model ScannerJob {
-  id              String   @id @default(uuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  state           String
-  packageName     String
-  packageVersion  String
-  packageRegistry String
-  ortVersion      String?
-  scancodeVersion String?
+  id                     String    @id @default(uuid())
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  state                  String
+  ortVersion             String?
+  scannerName            String?
+  scannerVersion         String?
+  duration               Float?
+  scanStartTS            DateTime?
+  scanEndTS              DateTime?
+  spdxLicenseListVersion String?
+
+  files File[]
 }

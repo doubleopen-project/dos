@@ -36,24 +36,6 @@ export const ApiPostJobRequestBodySchema = z.object({
         })
         .trim()
         .min(1, 'Directory cannot be empty'),
-    packageName: z.
-        string({
-            required_error: 'Package name is required'
-        })
-        .trim()
-        .min(1, 'Package name cannot be empty'),
-    packageVersion: z.
-        string({
-            required_error: 'Package version is required'
-        })
-        .trim()
-        .min(1, 'Package version cannot be empty'),
-    packageRegistry: z.
-        string({
-            required_error: 'Package registry is required'
-        })
-        .trim()
-        .min(1, 'Package registry cannot be empty'),
 })
 
 export const ApiPostJobResponseBodySchema = z.object({

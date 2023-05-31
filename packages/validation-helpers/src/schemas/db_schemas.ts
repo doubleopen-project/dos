@@ -10,9 +10,10 @@ export const DBScannerJobSchema = z
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     state: z.string(),
-    packageName: z.string(),
-    packageVersion: z.string(),
-    packageRegistry: z.string(),
     ortVersion: z.string().optional().nullable(),
     scancodeVersion: z.string().optional().nullable(),
+    duration: z.number().optional().nullable(),
+    scanStartTS: z.coerce.date().optional().nullable(),
+    scanEndTS: z.coerce.date().optional().nullable(),
+    spdxLicenseListVersion: z.string().optional().nullable()
 })

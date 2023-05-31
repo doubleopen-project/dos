@@ -99,18 +99,9 @@ declare const dosApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             directory: zod.ZodString;
-            packageName: zod.ZodString;
-            packageVersion: zod.ZodString;
-            packageRegistry: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             directory: string;
         }, {
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             directory: string;
         }>;
     }];
@@ -120,31 +111,34 @@ declare const dosApi: [{
             createdAt: zod.ZodDate;
             updatedAt: zod.ZodDate;
             state: zod.ZodString;
-            packageName: zod.ZodString;
-            packageVersion: zod.ZodString;
-            packageRegistry: zod.ZodString;
             ortVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
             scancodeVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
+            scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
+            scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
+            spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
         }, "strip", zod.ZodTypeAny, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         }, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         }>;
         message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
@@ -154,11 +148,12 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         };
     }, {
         message: string;
@@ -167,11 +162,12 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         };
     }>;
     errors: [{
@@ -219,31 +215,34 @@ declare const dosApi: [{
             createdAt: zod.ZodDate;
             updatedAt: zod.ZodDate;
             state: zod.ZodString;
-            packageName: zod.ZodString;
-            packageVersion: zod.ZodString;
-            packageRegistry: zod.ZodString;
             ortVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
             scancodeVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
+            scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
+            scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
+            spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
         }, "strip", zod.ZodTypeAny, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         }, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         }>;
         message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
@@ -253,11 +252,12 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         };
     }, {
         message: string;
@@ -266,11 +266,12 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            packageName: string;
-            packageVersion: string;
-            packageRegistry: string;
             ortVersion?: string | null | undefined;
             scancodeVersion?: string | null | undefined;
+            duration?: number | null | undefined;
+            scanStartTS?: Date | null | undefined;
+            scanEndTS?: Date | null | undefined;
+            spdxLicenseListVersion?: string | null | undefined;
         };
     }>;
     errors: [{
@@ -378,6 +379,7 @@ declare const dosApi: [{
                         files_count: number;
                     }>;
                 }, "strip", zod.ZodTypeAny, {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -392,7 +394,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
@@ -407,6 +408,7 @@ declare const dosApi: [{
                         files_count: number;
                     };
                 }, {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -421,7 +423,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
@@ -1524,6 +1525,7 @@ declare const dosApi: [{
                 }>, "many">;
             }, "strip", zod.ZodTypeAny, {
                 headers: {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -1538,7 +1540,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
@@ -1813,6 +1814,7 @@ declare const dosApi: [{
                 }[];
             }, {
                 headers: {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -1827,7 +1829,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
@@ -2105,6 +2106,7 @@ declare const dosApi: [{
             id: string;
             result: {
                 headers: {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -2119,7 +2121,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
@@ -2397,6 +2398,7 @@ declare const dosApi: [{
             id: string;
             result: {
                 headers: {
+                    duration: number;
                     message: string | null;
                     options: {
                         input: string[];
@@ -2411,7 +2413,6 @@ declare const dosApi: [{
                     start_timestamp: string;
                     end_timestamp: string;
                     output_format_version: string;
-                    duration: number;
                     errors: unknown[];
                     warnings: unknown[];
                     extra_data: {
