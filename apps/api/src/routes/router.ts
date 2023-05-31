@@ -83,10 +83,7 @@ router.post('/job', async (req, res) => {
     try {
         // Adding a new ScannerJob to the database
         const newScannerJob = await addNewScannerJob(
-            'created',
-            req.body.packageName,
-            req.body.packageVersion,
-            req.body.packageRegistry
+            'created'
         );
 
         // Sending a request to Scanner Agent to add new job to the work queue
@@ -151,9 +148,37 @@ router.post('/job-results', async (req, res) => {
     /*
     TODO: implement receiving job results from scanner agent and saving to database
     */
-    res.status(200).json({
-        message: 'Received results for job with with id ' + req.body.id
-    })
+
+    try {
+        if (req.body.result.headers.length === 1) {
+            
+            const editedScannerJob = await editScannerJob(
+                req.body.id, 
+                { 
+                    scannerName: req.body.result.headers[0].tool_name,
+                    scannerVersion: req.body.result.headers[0].tool_version,
+                    duration: req.body.result.headers[0].duration,
+                    //TODO: fix these (new Date(...) returns Invalid Date):
+                    //scanStartTS: new Date(req.body.result.headers[0].start_timestamp),
+                    //scanEndTS: new Date(req.body.result.headers[0].end_timestamp),
+                    spdxLicenseListVersion: req.body.result.headers[0].extra_data.spdx_license_list_version
+                }
+            )
+            console.log(editedScannerJob);
+        
+            res.status(200).json({
+                message: 'Received results for job with with id ' + req.body.id
+            })
+        } else {
+            console.log("Alert in job-results! More headers!!!");
+            //TODO: figure out if there could be more header objects and why and what to do then
+        }
+        
+    } catch (error) {
+        
+    }
+
+    
 })
 
 export default router;
