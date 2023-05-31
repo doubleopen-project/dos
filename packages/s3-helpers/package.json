@@ -2,7 +2,7 @@
     "name": "s3-helpers",
     "main": "./dist/src/index.js",
     "module": "./dist/src/index.mjs",
-    "types": "./dist/src/index.d.ts",
+    "types": "./index.d.ts",
     "scripts": {
         "build": "tsup",
         "test": "mocha dist/tests"
