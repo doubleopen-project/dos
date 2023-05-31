@@ -86,6 +86,10 @@ Files: packages/database/prisma/migrations/*
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
+Files: packages/database/tsconfig.eslint.json
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
 Files: packages/s3-helpers/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
