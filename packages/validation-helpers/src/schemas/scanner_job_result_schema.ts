@@ -12,6 +12,7 @@ export const ScannerJobResultSchema = z.object({
       options: z.object({
         input: z.array(z.string()),
         "--copyright": z.boolean(),
+        "--info": z.boolean(),
         "--json": z.string(),
         "--license": z.boolean(),
         "--package": z.boolean()
@@ -157,6 +158,23 @@ export const ScannerJobResultSchema = z.object({
     z.object({
       path: z.string(),
       type: z.string(),
+      name: z.string(),
+      base_name: z.string(),
+      extension: z.string(),
+      size: z.number(),
+      date: z.nullable(z.string()),
+      sha1: z.nullable(z.string()),
+      md5: z.nullable(z.string()),
+      sha256: z.nullable(z.string()),
+      mime_type: z.nullable(z.string()),
+      file_type: z.nullable(z.string()),
+      programming_language: z.nullable(z.string()),
+      is_binary: z.boolean(),
+      is_text: z.boolean(),
+      is_archive: z.boolean(),
+      is_media: z.boolean(),
+      is_source: z.boolean(),
+      is_script: z.boolean(),
       licenses: z.array(
         z.object({
           key: z.string(),
@@ -268,6 +286,9 @@ export const ScannerJobResultSchema = z.object({
         })
       ),
       for_packages: z.array(z.unknown()),
+      files_count: z.number(),
+      dirs_count: z.number(),
+      size_count: z.number(),
       scan_errors: z.array(z.unknown())
     })
   )

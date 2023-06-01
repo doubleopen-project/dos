@@ -6,8 +6,9 @@ import { zodiosRouter } from "@zodios/express";
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
-import { addNewScannerJob, editScannerJob } from '../helpers/db_queries';
+import { addNewFile, addNewScannerJob, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
+import { formatDateString } from "../helpers/date_helpers";
 
 loadEnv('../../.env');
 
@@ -82,9 +83,7 @@ router.post('/job', async (req, res) => {
     */
     try {
         // Adding a new ScannerJob to the database
-        const newScannerJob = await addNewScannerJob(
-            'created'
-        );
+        const newScannerJob = await addNewScannerJob({state: 'created'});
 
         // Sending a request to Scanner Agent to add new job to the work queue
         const postJobUrl = scannerUrl + 'job';
@@ -104,7 +103,11 @@ router.post('/job', async (req, res) => {
 
         // Change ScannerJob state in database to addedToQueue if request was succesfull
         if (response.status === 201) {
-            const editedScannerJob = await editScannerJob(newScannerJob.id, { state: 'addedToQueue' })
+            const editedScannerJob = await editScannerJob({
+                id: newScannerJob.id, 
+                data: { state: 'addedToQueue' }
+            })
+
             res.status(201).json({
                 scannerJob: editedScannerJob,
                 message: 'Job added to queue'
@@ -132,7 +135,10 @@ router.put('/job-state', async (req, res) => {
 
     try {
         // Save state change to database
-        const editedScannerJob = await editScannerJob(req.body.id, { state: req.body.state })
+        const editedScannerJob = await editScannerJob({
+            id: req.body.id, 
+            data: { state: req.body.state }
+        })
 
         res.status(200).json({
             editedScannerJob: editedScannerJob,
@@ -150,21 +156,51 @@ router.post('/job-results', async (req, res) => {
     */
 
     try {
+        //console.log(req.body.result.headers);
+        //console.dir(req.body.result, {depth: null});
+        
+        
         if (req.body.result.headers.length === 1) {
             
             const editedScannerJob = await editScannerJob(
-                req.body.id, 
-                { 
-                    scannerName: req.body.result.headers[0].tool_name,
-                    scannerVersion: req.body.result.headers[0].tool_version,
-                    duration: req.body.result.headers[0].duration,
-                    //TODO: fix these (new Date(...) returns Invalid Date):
-                    //scanStartTS: new Date(req.body.result.headers[0].start_timestamp),
-                    //scanEndTS: new Date(req.body.result.headers[0].end_timestamp),
-                    spdxLicenseListVersion: req.body.result.headers[0].extra_data.spdx_license_list_version
+                {
+                    id: req.body.id, 
+                    data: { 
+                        scannerName: req.body.result.headers[0].tool_name,
+                        scannerVersion: req.body.result.headers[0].tool_version,
+                        duration: req.body.result.headers[0].duration,
+                        scanStartTS: new Date(formatDateString(req.body.result.headers[0].start_timestamp)),
+                        scanEndTS: new Date(formatDateString(req.body.result.headers[0].end_timestamp)),
+                        spdxLicenseListVersion: req.body.result.headers[0].extra_data.spdx_license_list_version
+                    }
                 }
             )
             console.log(editedScannerJob);
+
+            /*
+            for (let i=0; i<100; i++) {
+                console.log(req.body.result.files[i]);
+            }*/
+
+            for (const file of req.body.result.files) {
+                
+                if(file.type === 'file') {
+                    console.log(file.type);
+                    if(file.sha256) {
+                        let dbFile = await findFileWithHash(file.sha256);
+                        if(!dbFile) {
+                            dbFile = await addNewFile({
+                                data: {
+                                    sha256: file.sha256,
+                                    scanned: true,
+                                    scannerJobId: req.body.id
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            
         
             res.status(200).json({
                 message: 'Received results for job with with id ' + req.body.id
