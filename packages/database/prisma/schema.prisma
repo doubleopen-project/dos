@@ -28,10 +28,10 @@ model File {
   sha256    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  scanned   Boolean
+  scanned   Boolean?
 
-  scannerJobId String
-  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
+  scannerJobId String?
+  scannerJob   ScannerJob? @relation(fields: [scannerJobId], references: [id])
 
   filetrees         FileTree[]
   licenseFindings   LicenseFinding[]

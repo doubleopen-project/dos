@@ -6,31 +6,22 @@
 // @ts-ignore: has no exported member 'ScannerJob'
 import { PrismaClient, ScannerJob, File } from 'database';
 const prisma: PrismaClient = new PrismaClient();
+import { CreateFileInput, CreateScannerJobInput, EditScannerJobInput } from 'validation-helpers';
 
-export const addNewScannerJob = async (state: string): Promise<ScannerJob> => {
+export const addNewScannerJob = async (input: CreateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
         data: {
-            state: state
+            state: input.state
         }
     });
 }
 
-interface ScannerJobUpdateData {
-    state?: string;
-    scannerName?: string;
-    scannerVersion?: string;
-    duration?: number;
-    scanStartTS?: Date;
-    scanEndTS?: Date;
-    spdxLicenseListVersion?: string;
-}
-
-export const editScannerJob = async (id: string, data: ScannerJobUpdateData): Promise<ScannerJob> => {
+export const editScannerJob = async (input: EditScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.update({
         where: {
-            id: id
+            id: input.id
         },
-        data: data
+        data: input.data
     })
 }
 
@@ -40,4 +31,10 @@ export const findFileWithHash = async (hash: string): Promise<File | null> => {
             sha256: hash
         },
     })
+}
+
+export const addNewFile = async (input: CreateFileInput): Promise<File> => {
+    return await prisma.file.create({
+        data: input.data
+    });
 }

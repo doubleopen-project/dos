@@ -2,4 +2,5 @@
 //
 // SPDX-License-Identifier: MIT
 
-export * from "./api";
+export * from './api';
+export * from './schemas/db_schemas';

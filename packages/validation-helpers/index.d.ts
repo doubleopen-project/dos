@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import * as zod from 'zod';
+import { z } from 'zod';
 
 declare const dosApi: [{
     method: "post";
@@ -311,18 +312,21 @@ declare const dosApi: [{
                     options: zod.ZodObject<{
                         input: zod.ZodArray<zod.ZodString, "many">;
                         "--copyright": zod.ZodBoolean;
+                        "--info": zod.ZodBoolean;
                         "--json": zod.ZodString;
                         "--license": zod.ZodBoolean;
                         "--package": zod.ZodBoolean;
                     }, "strip", zod.ZodTypeAny, {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
                     }, {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -384,6 +388,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -413,6 +418,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -481,19 +487,19 @@ declare const dosApi: [{
                             extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                         }, "strip", zod.ZodTypeAny, {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }, {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }>, "many">, "many">;
                         extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
@@ -532,6 +538,7 @@ declare const dosApi: [{
                         purl: zod.ZodString;
                     }, "strip", zod.ZodTypeAny, {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -559,7 +566,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -571,11 +577,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -584,6 +590,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }, {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -611,7 +618,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -623,11 +629,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -650,6 +656,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -677,7 +684,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -689,11 +695,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -702,6 +708,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -729,7 +736,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -741,11 +747,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -767,6 +773,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -794,7 +801,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -806,11 +812,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -819,6 +825,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -846,7 +853,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -858,11 +864,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -912,6 +918,7 @@ declare const dosApi: [{
                     purl: zod.ZodString;
                 }, "strip", zod.ZodTypeAny, {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -929,7 +936,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -947,6 +953,7 @@ declare const dosApi: [{
                     datasource_ids: string[];
                 }, {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -964,7 +971,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -984,6 +990,23 @@ declare const dosApi: [{
                 files: zod.ZodArray<zod.ZodObject<{
                     path: zod.ZodString;
                     type: zod.ZodString;
+                    name: zod.ZodString;
+                    base_name: zod.ZodString;
+                    extension: zod.ZodString;
+                    size: zod.ZodNumber;
+                    date: zod.ZodNullable<zod.ZodString>;
+                    sha1: zod.ZodNullable<zod.ZodString>;
+                    md5: zod.ZodNullable<zod.ZodString>;
+                    sha256: zod.ZodNullable<zod.ZodString>;
+                    mime_type: zod.ZodNullable<zod.ZodString>;
+                    file_type: zod.ZodNullable<zod.ZodString>;
+                    programming_language: zod.ZodNullable<zod.ZodString>;
+                    is_binary: zod.ZodBoolean;
+                    is_text: zod.ZodBoolean;
+                    is_archive: zod.ZodBoolean;
+                    is_media: zod.ZodBoolean;
+                    is_source: zod.ZodBoolean;
+                    is_script: zod.ZodBoolean;
                     licenses: zod.ZodArray<zod.ZodObject<{
                         key: zod.ZodString;
                         score: zod.ZodNumber;
@@ -1227,6 +1250,7 @@ declare const dosApi: [{
                         purl: zod.ZodNullable<zod.ZodString>;
                     }, "strip", zod.ZodTypeAny, {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1254,7 +1278,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1271,6 +1294,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }, {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1298,7 +1322,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1315,10 +1338,31 @@ declare const dosApi: [{
                         datasource_id: string;
                     }>, "many">;
                     for_packages: zod.ZodArray<zod.ZodUnknown, "many">;
+                    files_count: zod.ZodNumber;
+                    dirs_count: zod.ZodNumber;
+                    size_count: zod.ZodNumber;
                     scan_errors: zod.ZodArray<zod.ZodUnknown, "many">;
                 }, "strip", zod.ZodTypeAny, {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -1374,6 +1418,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1401,7 +1446,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1418,10 +1462,30 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }, {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -1477,6 +1541,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1504,7 +1569,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1521,6 +1585,8 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }>, "many">;
             }, "strip", zod.ZodTypeAny, {
@@ -1530,6 +1596,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -1564,6 +1631,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1591,7 +1659,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1603,11 +1670,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -1616,6 +1683,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1643,7 +1711,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1655,11 +1722,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -1674,6 +1741,7 @@ declare const dosApi: [{
                 }[];
                 packages: {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -1691,7 +1759,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -1711,6 +1778,24 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -1766,6 +1851,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1793,7 +1879,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1810,6 +1895,8 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }[];
             }, {
@@ -1819,6 +1906,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -1853,6 +1941,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1880,7 +1969,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1892,11 +1980,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -1905,6 +1993,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1932,7 +2021,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -1944,11 +2032,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -1963,6 +2051,7 @@ declare const dosApi: [{
                 }[];
                 packages: {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -1980,7 +2069,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -2000,6 +2088,24 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -2055,6 +2161,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2082,7 +2189,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2099,6 +2205,8 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }[];
             }>;
@@ -2111,6 +2219,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -2145,6 +2254,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2172,7 +2282,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2184,11 +2293,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -2197,6 +2306,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2224,7 +2334,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2236,11 +2345,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -2255,6 +2364,7 @@ declare const dosApi: [{
                 }[];
                 packages: {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -2272,7 +2382,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -2292,6 +2401,24 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -2347,6 +2474,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2374,7 +2502,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2391,6 +2518,8 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }[];
             };
@@ -2403,6 +2532,7 @@ declare const dosApi: [{
                     options: {
                         input: string[];
                         "--copyright": boolean;
+                        "--info": boolean;
                         "--json": string;
                         "--license": boolean;
                         "--package": boolean;
@@ -2437,6 +2567,7 @@ declare const dosApi: [{
                     is_resolved: boolean;
                     resolved_package: ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2464,7 +2595,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2476,11 +2606,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -2489,6 +2619,7 @@ declare const dosApi: [{
                         datasource_id: string;
                     }) & ({} | {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2516,7 +2647,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2528,11 +2658,11 @@ declare const dosApi: [{
                         source_packages: unknown[];
                         file_references: {
                             path: string;
+                            sha256: string | null;
                             extra_data: {};
                             size: number;
                             sha1: string | null;
                             md5: string | null;
-                            sha256: string | null;
                             sha512: string | null;
                         }[][];
                         repository_homepage_url: string;
@@ -2547,6 +2677,7 @@ declare const dosApi: [{
                 }[];
                 packages: {
                     type: string;
+                    sha256: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -2564,7 +2695,6 @@ declare const dosApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
@@ -2584,6 +2714,24 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
+                    sha256: string | null;
+                    date: string | null;
+                    files_count: number;
+                    name: string;
+                    size: number;
+                    sha1: string | null;
+                    md5: string | null;
+                    base_name: string;
+                    extension: string;
+                    mime_type: string | null;
+                    file_type: string | null;
+                    programming_language: string | null;
+                    is_binary: boolean;
+                    is_text: boolean;
+                    is_archive: boolean;
+                    is_media: boolean;
+                    is_source: boolean;
+                    is_script: boolean;
                     licenses: {
                         name: string;
                         homepage_url: string | null;
@@ -2639,6 +2787,7 @@ declare const dosApi: [{
                     }[];
                     package_data: {
                         type: string;
+                        sha256: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2666,7 +2815,6 @@ declare const dosApi: [{
                         size: number | null;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
@@ -2683,6 +2831,8 @@ declare const dosApi: [{
                         datasource_id: string;
                     }[];
                     for_packages: unknown[];
+                    dirs_count: number;
+                    size_count: number;
                     scan_errors: unknown[];
                 }[];
             };
@@ -2718,4 +2868,148 @@ declare const dosApi: [{
     }];
 }];
 
-export { dosApi };
+declare const DBScannerJobSchema: z.ZodObject<{
+    id: z.ZodString;
+    createdAt: z.ZodDate;
+    updatedAt: z.ZodDate;
+    state: z.ZodString;
+    ortVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    scancodeVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    duration: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+    scanStartTS: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
+    scanEndTS: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
+    spdxLicenseListVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    state: string;
+    ortVersion?: string | null | undefined;
+    scancodeVersion?: string | null | undefined;
+    duration?: number | null | undefined;
+    scanStartTS?: Date | null | undefined;
+    scanEndTS?: Date | null | undefined;
+    spdxLicenseListVersion?: string | null | undefined;
+}, {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    state: string;
+    ortVersion?: string | null | undefined;
+    scancodeVersion?: string | null | undefined;
+    duration?: number | null | undefined;
+    scanStartTS?: Date | null | undefined;
+    scanEndTS?: Date | null | undefined;
+    spdxLicenseListVersion?: string | null | undefined;
+}>;
+declare const CreateScannerJobSchema: z.ZodObject<{
+    state: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    state: string;
+}, {
+    state: string;
+}>;
+type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>;
+declare const DBFileSchema: z.ZodObject<{
+    id: z.ZodNumber;
+    sha256: z.ZodString;
+    createdAt: z.ZodOptional<z.ZodDate>;
+    updatedAt: z.ZodOptional<z.ZodDate>;
+    scanned: z.ZodOptional<z.ZodBoolean>;
+    scannerJobId: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    id: number;
+    sha256: string;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    scanned?: boolean | undefined;
+    scannerJobId?: string | undefined;
+}, {
+    id: number;
+    sha256: string;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    scanned?: boolean | undefined;
+    scannerJobId?: string | undefined;
+}>;
+declare const CreateFileSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        sha256: z.ZodString;
+        scanned: z.ZodOptional<z.ZodBoolean>;
+        scannerJobId: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        sha256: string;
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    }, {
+        sha256: string;
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        sha256: string;
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    };
+}, {
+    data: {
+        sha256: string;
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    };
+}>;
+type CreateFileInput = z.infer<typeof CreateFileSchema>;
+declare const ScannerJobUpdateData: z.ZodObject<{
+    id: z.ZodString;
+    data: z.ZodObject<{
+        state: z.ZodOptional<z.ZodString>;
+        scannerName: z.ZodOptional<z.ZodString>;
+        scannerVersion: z.ZodOptional<z.ZodString>;
+        duration: z.ZodOptional<z.ZodNumber>;
+        scanStartTS: z.ZodOptional<z.ZodDate>;
+        scanEndTS: z.ZodOptional<z.ZodDate>;
+        spdxLicenseListVersion: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        state?: string | undefined;
+        scannerName?: string | undefined;
+        scannerVersion?: string | undefined;
+        duration?: number | undefined;
+        scanStartTS?: Date | undefined;
+        scanEndTS?: Date | undefined;
+        spdxLicenseListVersion?: string | undefined;
+    }, {
+        state?: string | undefined;
+        scannerName?: string | undefined;
+        scannerVersion?: string | undefined;
+        duration?: number | undefined;
+        scanStartTS?: Date | undefined;
+        scanEndTS?: Date | undefined;
+        spdxLicenseListVersion?: string | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    data: {
+        state?: string | undefined;
+        scannerName?: string | undefined;
+        scannerVersion?: string | undefined;
+        duration?: number | undefined;
+        scanStartTS?: Date | undefined;
+        scanEndTS?: Date | undefined;
+        spdxLicenseListVersion?: string | undefined;
+    };
+}, {
+    id: string;
+    data: {
+        state?: string | undefined;
+        scannerName?: string | undefined;
+        scannerVersion?: string | undefined;
+        duration?: number | undefined;
+        scanStartTS?: Date | undefined;
+        scanEndTS?: Date | undefined;
+        spdxLicenseListVersion?: string | undefined;
+    };
+}>;
+type EditScannerJobInput = z.infer<typeof ScannerJobUpdateData>;
+
+export { CreateFileInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, EditScannerJobInput, dosApi };
