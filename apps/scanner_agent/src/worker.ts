@@ -76,6 +76,7 @@ const start = (): void => {
         const options: string[] = [
             "-clp",
             //"-v",
+            "-i",
             "-q",
             "--json",
             "-",
