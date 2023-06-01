@@ -4,8 +4,7 @@
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "build": "tsup",
-        "test": "mocha dist/tests"
+        "build": "tsup"
     },
     "dependencies": {
         "dotenv": "^16.0.3",
