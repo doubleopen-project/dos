@@ -1075,10 +1075,10 @@ declare const dosApi: [{
                             rule_relevance: number;
                         }>;
                     }, "strip", zod.ZodTypeAny, {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -1110,10 +1110,10 @@ declare const dosApi: [{
                             rule_relevance: number;
                         };
                     }, {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -1364,10 +1364,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -1487,10 +1487,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -1797,10 +1797,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -2107,10 +2107,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -2420,10 +2420,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -2733,10 +2733,10 @@ declare const dosApi: [{
                     is_source: boolean;
                     is_script: boolean;
                     licenses: {
+                        score: number;
                         name: string;
                         homepage_url: string | null;
                         key: string;
-                        score: number;
                         short_name: string;
                         category: string;
                         is_exception: boolean;
@@ -2902,6 +2902,7 @@ declare const DBScannerJobSchema: z.ZodObject<{
     scanEndTS?: Date | null | undefined;
     spdxLicenseListVersion?: string | null | undefined;
 }>;
+type DBScannerJobType = z.infer<typeof CreateScannerJobSchema>;
 declare const CreateScannerJobSchema: z.ZodObject<{
     state: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -2960,7 +2961,7 @@ declare const CreateFileSchema: z.ZodObject<{
     };
 }>;
 type CreateFileInput = z.infer<typeof CreateFileSchema>;
-declare const ScannerJobUpdateData: z.ZodObject<{
+declare const EditScannerJobSchema: z.ZodObject<{
     id: z.ZodString;
     data: z.ZodObject<{
         state: z.ZodOptional<z.ZodString>;
@@ -3010,6 +3011,75 @@ declare const ScannerJobUpdateData: z.ZodObject<{
         spdxLicenseListVersion?: string | undefined;
     };
 }>;
-type EditScannerJobInput = z.infer<typeof ScannerJobUpdateData>;
+type EditScannerJobInput = z.infer<typeof EditScannerJobSchema>;
+declare const EditFileSchema: z.ZodObject<{
+    id: z.ZodNumber;
+    data: z.ZodObject<{
+        scanned: z.ZodOptional<z.ZodBoolean>;
+        scannerJobId: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    }, {
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    id: number;
+    data: {
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    };
+}, {
+    id: number;
+    data: {
+        scanned?: boolean | undefined;
+        scannerJobId?: string | undefined;
+    };
+}>;
+type EditFileInput = z.infer<typeof EditFileSchema>;
+declare const CreateLicenseFindingSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        scanner: z.ZodString;
+        licenseExpression: z.ZodString;
+        startLine: z.ZodNumber;
+        endLine: z.ZodNumber;
+        score: z.ZodNumber;
+        sha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        sha256: string;
+        scanner: string;
+        licenseExpression: string;
+        startLine: number;
+        endLine: number;
+        score: number;
+    }, {
+        sha256: string;
+        scanner: string;
+        licenseExpression: string;
+        startLine: number;
+        endLine: number;
+        score: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        sha256: string;
+        scanner: string;
+        licenseExpression: string;
+        startLine: number;
+        endLine: number;
+        score: number;
+    };
+}, {
+    data: {
+        sha256: string;
+        scanner: string;
+        licenseExpression: string;
+        startLine: number;
+        endLine: number;
+        score: number;
+    };
+}>;
+type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
 
-export { CreateFileInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, EditScannerJobInput, dosApi };
+export { CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi };

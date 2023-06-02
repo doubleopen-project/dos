@@ -6,7 +6,7 @@ import { zodiosRouter } from "@zodios/express";
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
-import { addNewFile, addNewScannerJob, editScannerJob, findFileWithHash } from '../helpers/db_queries';
+import { addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from "../helpers/date_helpers";
 
@@ -126,19 +126,14 @@ router.post('/job', async (req, res) => {
 })
 
 router.put('/job-state', async (req, res) => {
-    /*
-    TODO: implement receiving job state change and possible results from scanner agent
-        - save job state to database so that it can be queried from the dos api by the user
-        - save job results to database
-        - error handling
-    */
-
     try {
         // Save state change to database
         const editedScannerJob = await editScannerJob({
             id: req.body.id, 
             data: { state: req.body.state }
         })
+
+        //TODO: error handling for editedScannerJob (eg. id not in db)
 
         res.status(200).json({
             editedScannerJob: editedScannerJob,
@@ -177,15 +172,14 @@ router.post('/job-results', async (req, res) => {
             )
             console.log(editedScannerJob);
 
-            /*
-            for (let i=0; i<100; i++) {
-                console.log(req.body.result.files[i]);
-            }*/
+            
+            for (let i=0; i<10; i++) {
+                console.dir(req.body.result.files[i], {depth: null});
+            }
 
             for (const file of req.body.result.files) {
                 
                 if(file.type === 'file') {
-                    console.log(file.type);
                     if(file.sha256) {
                         let dbFile = await findFileWithHash(file.sha256);
                         if(!dbFile) {
@@ -196,6 +190,27 @@ router.post('/job-results', async (req, res) => {
                                     scannerJobId: req.body.id
                                 }
                             });
+                        } else {
+                            await editFile({
+                                id: dbFile.id,
+                                data: {
+                                    scanned: true,
+                                    scannerJobId: req.body.id
+                                }
+                            })
+                        }
+
+                        for (const license of file.licenses) {
+                            await addNewLicenseFinding({
+                                data: {
+                                    scanner: req.body.result.headers[0].tool_name,
+                                    licenseExpression: license.key,
+                                    startLine: license.start_line,
+                                    endLine: license.end_line,
+                                    score: license.score,
+                                    sha256: file.sha256
+                                }
+                            })
                         }
                     }
                 }
