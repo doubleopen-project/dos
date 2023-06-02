@@ -4,10 +4,10 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { PrismaClient, ScannerJob, File } from 'database';
+import { File, LicenseFinding, PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
-import { CreateFileInput, CreateScannerJobInput, EditScannerJobInput } from 'validation-helpers';
-
+import { CreateFileInput, EditFileInput, CreateScannerJobInput, EditScannerJobInput, CreateLicenseFindingInput, DBFileSchema } from 'validation-helpers';
+//DBScannerJobType
 export const addNewScannerJob = async (input: CreateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
         data: {
@@ -35,6 +35,21 @@ export const findFileWithHash = async (hash: string): Promise<File | null> => {
 
 export const addNewFile = async (input: CreateFileInput): Promise<File> => {
     return await prisma.file.create({
+        data: input.data
+    });
+}
+
+export const editFile = async (input: EditFileInput): Promise<File> => {
+    return await prisma.file.update({
+        where: {
+            id: input.id
+        },
+        data: input.data
+    })
+}
+
+export const addNewLicenseFinding = async (input: CreateLicenseFindingInput): Promise<LicenseFinding> => {
+    return await prisma.licenseFinding.create({
         data: input.data
     });
 }

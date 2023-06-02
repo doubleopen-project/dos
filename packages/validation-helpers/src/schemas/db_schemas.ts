@@ -4,8 +4,7 @@
 
 import { z } from 'zod';
 
-export const DBScannerJobSchema = z
-.object({
+export const DBScannerJobSchema = z.object({
     id: z.string(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
@@ -18,20 +17,21 @@ export const DBScannerJobSchema = z
     spdxLicenseListVersion: z.string().optional().nullable()
 })
 
+export type DBScannerJobType = z.infer<typeof CreateScannerJobSchema>
+
 const CreateScannerJobSchema = z.object({
     state: z.string()
 })
 
 export type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>
 
-export const DBFileSchema = z
-.object({
-  id: z.number(),
-  sha256: z.string(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional(),
-  scanned: z.boolean().optional(),
-  scannerJobId: z.string().optional()
+export const DBFileSchema = z.object({
+    id: z.number(),
+    sha256: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    scanned: z.boolean().optional(),
+    scannerJobId: z.string().optional()
 })
 
 const CreateFileSchema = z.object({
@@ -44,7 +44,7 @@ const CreateFileSchema = z.object({
 
 export type CreateFileInput = z.infer<typeof CreateFileSchema>
 
-const ScannerJobUpdateData = z.object({
+const EditScannerJobSchema = z.object({
     id: z.string({
         required_error: 'Id is required'
     }),
@@ -59,4 +59,29 @@ const ScannerJobUpdateData = z.object({
     })
 })
 
-export type EditScannerJobInput = z.infer<typeof ScannerJobUpdateData>
+export type EditScannerJobInput = z.infer<typeof EditScannerJobSchema>
+
+const EditFileSchema = z.object({
+    id: z.number({
+        required_error: 'Id is required'
+    }),
+    data: z.object({
+        scanned: z.boolean().optional(),
+        scannerJobId: z.string().optional()
+    })
+})
+
+export type EditFileInput = z.infer<typeof EditFileSchema>
+
+const CreateLicenseFindingSchema = z.object({
+    data: z.object({
+        scanner: z.string(),
+        licenseExpression: z.string(),
+        startLine: z.number(),
+        endLine: z.number(),
+        score: z.number(),
+        sha256: z.string()
+    })
+})
+
+export type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>
