@@ -85,3 +85,14 @@ const CreateLicenseFindingSchema = z.object({
 })
 
 export type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>
+
+const CreateCopyrightFindingSchema = z.object({
+    data: z.object({
+        startLine: z.number(),
+        endLine: z.number(),
+        copyright: z.string(),
+        sha256: z.string()
+    })
+})
+
+export type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>

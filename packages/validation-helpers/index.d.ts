@@ -539,6 +539,7 @@ declare const dosApi: [{
                     }, "strip", zod.ZodTypeAny, {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -570,7 +571,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -591,6 +591,7 @@ declare const dosApi: [{
                     }, {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -622,7 +623,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -657,6 +657,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -688,7 +689,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -709,6 +709,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -740,7 +741,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -774,6 +774,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -805,7 +806,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -826,6 +826,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -857,7 +858,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -919,6 +919,7 @@ declare const dosApi: [{
                 }, "strip", zod.ZodTypeAny, {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -940,7 +941,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -954,6 +954,7 @@ declare const dosApi: [{
                 }, {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -975,7 +976,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -1251,6 +1251,7 @@ declare const dosApi: [{
                     }, "strip", zod.ZodTypeAny, {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1282,7 +1283,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -1295,6 +1295,7 @@ declare const dosApi: [{
                     }, {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1326,7 +1327,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -1419,6 +1419,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1450,7 +1451,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -1542,6 +1542,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1573,7 +1574,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -1632,6 +1632,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1663,7 +1664,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -1684,6 +1684,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1715,7 +1716,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -1742,6 +1742,7 @@ declare const dosApi: [{
                 packages: {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -1763,7 +1764,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -1852,6 +1852,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1883,7 +1884,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -1942,6 +1942,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -1973,7 +1974,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -1994,6 +1994,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2025,7 +2026,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -2052,6 +2052,7 @@ declare const dosApi: [{
                 packages: {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -2073,7 +2074,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -2162,6 +2162,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2193,7 +2194,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -2255,6 +2255,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2286,7 +2287,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -2307,6 +2307,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2338,7 +2339,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -2365,6 +2365,7 @@ declare const dosApi: [{
                 packages: {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -2386,7 +2387,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -2475,6 +2475,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2506,7 +2507,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -2568,6 +2568,7 @@ declare const dosApi: [{
                     resolved_package: ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2599,7 +2600,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -2620,6 +2620,7 @@ declare const dosApi: [{
                     }) & ({} | {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2651,7 +2652,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string | null;
                         notice_text: string | null;
@@ -2678,6 +2678,7 @@ declare const dosApi: [{
                 packages: {
                     type: string;
                     sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     purl: string;
                     namespace: string | null;
@@ -2699,7 +2700,6 @@ declare const dosApi: [{
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[];
                     notice_text: string | null;
@@ -2788,6 +2788,7 @@ declare const dosApi: [{
                     package_data: {
                         type: string;
                         sha256: string | null;
+                        copyright: string | null;
                         extra_data: {};
                         dependencies: {
                             extra_data: {};
@@ -2819,7 +2820,6 @@ declare const dosApi: [{
                         bug_tracking_url: string | null;
                         code_view_url: string | null;
                         vcs_url: string | null;
-                        copyright: string | null;
                         license_expression: string | null;
                         declared_license: string[] | null;
                         notice_text: string | null;
@@ -2914,22 +2914,22 @@ type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>;
 declare const DBFileSchema: z.ZodObject<{
     id: z.ZodNumber;
     sha256: z.ZodString;
-    createdAt: z.ZodOptional<z.ZodDate>;
-    updatedAt: z.ZodOptional<z.ZodDate>;
+    createdAt: z.ZodDate;
+    updatedAt: z.ZodDate;
     scanned: z.ZodOptional<z.ZodBoolean>;
     scannerJobId: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     id: number;
+    createdAt: Date;
+    updatedAt: Date;
     sha256: string;
-    createdAt?: Date | undefined;
-    updatedAt?: Date | undefined;
     scanned?: boolean | undefined;
     scannerJobId?: string | undefined;
 }, {
     id: number;
+    createdAt: Date;
+    updatedAt: Date;
     sha256: string;
-    createdAt?: Date | undefined;
-    updatedAt?: Date | undefined;
     scanned?: boolean | undefined;
     scannerJobId?: string | undefined;
 }>;
@@ -3081,5 +3081,38 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
+declare const CreateCopyrightFindingSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        startLine: z.ZodNumber;
+        endLine: z.ZodNumber;
+        copyright: z.ZodString;
+        sha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        sha256: string;
+        startLine: number;
+        endLine: number;
+        copyright: string;
+    }, {
+        sha256: string;
+        startLine: number;
+        endLine: number;
+        copyright: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        sha256: string;
+        startLine: number;
+        endLine: number;
+        copyright: string;
+    };
+}, {
+    data: {
+        sha256: string;
+        startLine: number;
+        endLine: number;
+        copyright: string;
+    };
+}>;
+type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
 
-export { CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi };

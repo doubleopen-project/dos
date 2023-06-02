@@ -6,7 +6,7 @@ import { zodiosRouter } from "@zodios/express";
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
-import { addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
+import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from "../helpers/date_helpers";
 
@@ -208,6 +208,17 @@ router.post('/job-results', async (req, res) => {
                                     startLine: license.start_line,
                                     endLine: license.end_line,
                                     score: license.score,
+                                    sha256: file.sha256
+                                }
+                            })
+                        }
+
+                        for (const copyright of file.copyrights) {
+                            await addNewCopyrightFinding({
+                                data: {
+                                    startLine: copyright.start_line,
+                                    endLine: copyright.end_line,
+                                    copyright: copyright.copyright,
                                     sha256: file.sha256
                                 }
                             })
