@@ -43,5 +43,35 @@ export const scannerAgentApi = makeApi([
                 schema: schemas.ErrorSchema
             }
         ]
-    }
+    },
+    {
+        method: "get",
+        path: "/job/:id",
+        description: "Get scanner job status",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.ScannerJobInfoRequestSchema
+            }
+        ],
+        response: schemas.ScannerJobInfoResponseBodySchema,
+        errors: [
+            {
+                status: 500,
+                description: "Internal server error",
+                schema: schemas.ErrorSchema
+            },
+            {
+                status: 400,
+                description: "Bad request",
+                schema: schemas.ErrorSchema
+            },
+            {
+                status: 404,
+                description: "No such job in the work queue",
+                schema: schemas.ErrorSchema
+            }
+        ]
+    },
 ]);

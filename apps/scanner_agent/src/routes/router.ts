@@ -112,15 +112,15 @@ router.post("/job", async (req, res) => {
         });
     }
 });
-/*
+
 // Node: Query job details for job [id]
-router.get("/job/:id", async(req: Request, res: Response) => {
-    const id: Queue.JobId = req.params.id;
-    const job: Job<ScannerJob> | null = await workQueue.getJob(id);
+router.get("/job/:id", async(req, res) => {
+    const id = req.params.id;
+    const job: Job | null = await workQueue.getJob(id);
 
     if (job === null) {
         res.status(404).json({
-            "Message": "No such job in the work queue"
+            error: "No such job in the work queue"
         });
     } else {
         const state: string = await job.getState();
@@ -128,7 +128,7 @@ router.get("/job/:id", async(req: Request, res: Response) => {
         if (state === "completed") {
             const result: string = job.returnvalue?.result;
             res.status(200).json({
-                id: job.id, 
+                id: id, 
                 state, 
                 data: job.data,
                 finishedOn,
@@ -136,7 +136,7 @@ router.get("/job/:id", async(req: Request, res: Response) => {
             });
         } else {
             res.status(200).json({
-                id: job.id,
+                id: id,
                 state,
                 finishedOn
             });
@@ -144,6 +144,7 @@ router.get("/job/:id", async(req: Request, res: Response) => {
     }
 });
 
+/*
 // Node: Query statuses of all active/waiting jobs in the work queue
 router.get("/jobs", async(_req: Request, res: Response) => {
     const jobs: Job<ScannerJob>[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);

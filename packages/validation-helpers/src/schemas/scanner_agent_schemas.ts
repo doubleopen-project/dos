@@ -320,6 +320,20 @@ export const ScannerJobResultSchema = z.object({
   )
 })
 
+export const ScannerJobInfoRequestSchema = z.string({
+    required_error: "Job ID is required"
+})
+
+export const ScannerJobInfoResponseBodySchema = z.object({
+  id: z.string(),
+  state: z.string().optional(),
+  data: z.object({
+      directory: z.string(),
+  }).optional(),
+  finishedOn: z.number().optional(),
+  result: ScannerJobResultSchema.optional()
+})
+
 export const ErrorSchema = z.object({
   error: z.string()
 })
