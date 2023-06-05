@@ -20,6 +20,19 @@ export const scannerAgentApi = makeApi([
         ]
     },
     {
+        method: "get",
+        path: "/jobs",
+        description: "List all jobs",
+        response: schemas.ScannerJoblistResponseBodySchema,
+        errors: [
+            {
+                status: 500,
+                description: "Internal server error",
+                schema: schemas.ErrorSchema
+            }
+        ]
+    },
+    {
         method: "post",
         path: "/job",
         description: "Add scanner job",

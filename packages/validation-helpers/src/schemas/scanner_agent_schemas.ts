@@ -30,6 +30,19 @@ export const ScannerJobResponseBodySchema = z.object({
     })
 })
 
+export const ScannerJoblistRequestSchema = z.object({});
+
+export const ScannerJoblistResponseBodySchema = z.array(
+    z.object({
+        id: z.string(),
+        state: z.string(),
+        data: z.object({
+            directory: z.string(),
+        }),
+        finishedOn: z.number().optional()
+    })
+);
+
 export const ScannerJobResultSchema = z.object({
   headers: z.array(
     z.object({
