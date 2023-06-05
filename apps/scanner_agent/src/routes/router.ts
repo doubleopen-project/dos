@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Request, RequestHandler, Response, Router } from 'express';
+import { zodiosRouter } from "@zodios/express";
+import { scannerAgentApi } from "validation-helpers";
 import Queue, { Job, JobOptions } from 'bull';
 import bodyParser from 'body-parser';
 import fetch from "cross-fetch";
@@ -15,15 +16,12 @@ import milliseconds from "milliseconds";
 
 loadEnv("../../.env");
 
-const router: Router = Router();
-router.use(bodyParser.json() as RequestHandler);
+const router = zodiosRouter(scannerAgentApi);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
-//const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://127.0.0.1:6379";
 const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
 
 // URL address and node of DOS to send job status updates to
-//const dosUrl: string = process.env.DOS_URL? process.env.DOS_URL : "https://localhost:5000/";
 const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";
 const postStateUrl: string = dosUrl + "job-state";
 const postResultsUrl: string = dosUrl + "job-results";
@@ -34,11 +32,6 @@ const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL);
 //////////////////////////
 // Interfaces and types
 //////////////////////////
-
-// Custom request interface
-interface CustomRequest<T> extends Request {
-    body: T;
-}
 
 // Scan job with its parameters
 type ScannerJob = {
@@ -80,33 +73,26 @@ interface ParsedResult {
 //////////////////////////
 
 // Node: Hello World
-router.get("/", (_req: Request, res: Response) => {
+router.get("/", (_req, res) => {
     res.status(200).json({
-        "Message": "Hello World from Scanner Agent"
+        "message": "Scanner Agent is up and listening!"
     });
     return;
 });
 
 // Node: POST a new scanner job
-router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
+router.post("/job", async (req, res) => {
 
     // Job details are in the request body
 
     try {
-        if (!req.body.directory || !req.body.opts.jobId) {
-            res.status(400).json({
-                "Message": "Missing directory or job ID in POST /job"
-            });
-            return;
-        }
-
         // Unique job ID is given by DOS
-        const jobOpts: JobOptions = {
+        const jobOpts = {
             jobId: req.body.opts.jobId,
         };
         
         // ...and it is used to add the job to the work queue
-        const job: Job<ScannerJob> = await workQueue.add({
+        const job: Job = await workQueue.add({
             directory: req.body.directory,
             opts: {
                 jobId: req.body.opts.jobId
@@ -114,17 +100,19 @@ router.post("/job", async (req: CustomRequest<ScannerJob>, res: Response) => {
         }, jobOpts);
         
         res.status(201).json({
-            id: job.id,
-            data: job.data
+            id: jobOpts.jobId,
+            data: {
+                directory: req.body.directory,
+            }
         });
     } catch (error) {
-        console.log(error);
+        console.log("Error:", error);
         res.status(500).json({
-            "Message": "Error in POST /job"
+            "error": "Error in POST /job"
         });
     }
 });
-
+/*
 // Node: Query job details for job [id]
 router.get("/job/:id", async(req: Request, res: Response) => {
     const id: Queue.JobId = req.params.id;
@@ -174,7 +162,7 @@ router.get("/jobs", async(_req: Request, res: Response) => {
     }
     res.status(200).json(jobList);
 });
-
+*/
 // Listen to global job events
 
 workQueue.on("global:waiting", async (jobId: Queue.JobId) => {

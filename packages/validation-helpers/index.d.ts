@@ -3116,6 +3116,28 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
 
 declare const scannerAgentApi: [{
+    method: "get";
+    path: "/";
+    description: "Root endpoint";
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }];
+}, {
     method: "post";
     path: "/job";
     description: "Add scanner job";
@@ -3144,14 +3166,24 @@ declare const scannerAgentApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        jobId: zod.ZodString;
-        directory: zod.ZodString;
+        id: zod.ZodString;
+        data: zod.ZodObject<{
+            directory: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            directory: string;
+        }, {
+            directory: string;
+        }>;
     }, "strip", zod.ZodTypeAny, {
-        directory: string;
-        jobId: string;
+        id: string;
+        data: {
+            directory: string;
+        };
     }, {
-        directory: string;
-        jobId: string;
+        id: string;
+        data: {
+            directory: string;
+        };
     }>;
     errors: [{
         status: 500;
