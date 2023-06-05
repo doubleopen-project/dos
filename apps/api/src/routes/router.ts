@@ -44,7 +44,7 @@ router.post('/upload-url', async (req, res) => {
             res.status(200).json({
                 success: false,
                 presignedUrl: undefined,
-                message: 'Unable to get fetch resource for request. Please try again later.'
+                message: 'Unable to determine if object with the requested key already exists. Please try again later.'
             })
         } else if (!objectExists) {
             const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
@@ -135,22 +135,19 @@ router.post('/job', async (req, res) => {
 
 router.put('/job-state', async (req, res) => {
     try {
-        console.log("Saving state change to database");
-        
         const editedScannerJob = await editScannerJob({
             id: req.body.id,
             data: { state: req.body.state }
         })
 
-        //TODO: error handling for editedScannerJob (eg. id not in db)
-
         res.status(200).json({
             editedScannerJob: editedScannerJob,
             message: 'Received job with id ' + req.body.id + '. Changed state to ' + req.body.state
         })
+
     } catch (error) {
         console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error: ' });
+        res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
     }
 })
 
