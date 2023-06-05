@@ -3115,4 +3115,65 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi };
+declare const scannerAgentApi: [{
+    method: "post";
+    path: "/job";
+    description: "Add scanner job";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            directory: zod.ZodString;
+            opts: zod.ZodObject<{
+                jobId: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                jobId: string;
+            }, {
+                jobId: string;
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            directory: string;
+            opts: {
+                jobId: string;
+            };
+        }, {
+            directory: string;
+            opts: {
+                jobId: string;
+            };
+        }>;
+    }];
+    response: zod.ZodObject<{
+        jobId: zod.ZodString;
+        directory: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        directory: string;
+        jobId: string;
+    }, {
+        directory: string;
+        jobId: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 400;
+        description: string;
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }];
+}];
+
+export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi, scannerAgentApi };

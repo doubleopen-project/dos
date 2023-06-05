@@ -4,3 +4,4 @@
 
 export * from './api';
 export * from './schemas/db_schemas';
+export * from "./scanner_agent";
