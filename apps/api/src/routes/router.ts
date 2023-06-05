@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { zodiosRouter } from "@zodios/express";
+import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
 import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
-import { formatDateString } from "../helpers/date_helpers";
+import { formatDateString } from '../helpers/date_helpers';
 
 loadEnv('../../.env');
 
@@ -16,6 +16,7 @@ const router = zodiosRouter(dosApi);
 
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
 
+//Endpoint for fetching scan results from database
 router.post('/scan-results', (req, res) => {
     /*
     TODO: 
@@ -29,8 +30,9 @@ router.post('/scan-results', (req, res) => {
     })
 })
 
+// Endpoint for requesting presigned upload url from object storage and sending url in response
 router.post('/upload-url', async (req, res) => {
-    // Requesting presigned upload url from object storage and sending url in response
+    
     try {
         const objectExists = await objectExistsCheck(req.body.key);
 
@@ -74,6 +76,7 @@ router.post('/upload-url', async (req, res) => {
     }
 })
 
+// Endpoint for adding a new job and sending job to Scanner Agent to be added to work queue
 router.post('/job', async (req, res) => {
     /*
     TODO: implement sending job to scanner
@@ -82,10 +85,12 @@ router.post('/job', async (req, res) => {
         - error handling
     */
     try {
-        // Adding a new ScannerJob to the database
-        const newScannerJob = await addNewScannerJob({state: 'created'});
+        console.log('Adding a new ScannerJob to the database');
+        
+        const newScannerJob = await addNewScannerJob({ state: 'created' });
 
-        // Sending a request to Scanner Agent to add new job to the work queue
+        console.log('Sending a request to Scanner Agent to add new job to the work queue');
+        
         const postJobUrl = scannerUrl + 'job';
 
         const request = {
@@ -101,10 +106,11 @@ router.post('/job', async (req, res) => {
 
         const response = await fetch(postJobUrl, request);
 
-        // Change ScannerJob state in database to addedToQueue if request was succesfull
         if (response.status === 201) {
+            console.log('Changing ScannerJob state to "addedToQueue"');
+            
             const editedScannerJob = await editScannerJob({
-                id: newScannerJob.id, 
+                id: newScannerJob.id,
                 data: { state: 'addedToQueue' }
             })
 
@@ -113,6 +119,8 @@ router.post('/job', async (req, res) => {
                 message: 'Job added to queue'
             })
         } else {
+            console.log('Created ScannerJob, but adding to queue was unsuccesful');
+            
             res.status(202).json({
                 scannerJob: newScannerJob,
                 message: 'Adding job to queue was unsuccessful'
@@ -127,9 +135,10 @@ router.post('/job', async (req, res) => {
 
 router.put('/job-state', async (req, res) => {
     try {
-        // Save state change to database
+        console.log("Saving state change to database");
+        
         const editedScannerJob = await editScannerJob({
-            id: req.body.id, 
+            id: req.body.id,
             data: { state: req.body.state }
         })
 
@@ -145,22 +154,17 @@ router.put('/job-state', async (req, res) => {
     }
 })
 
+// Receiving scan job results from scanner agent and saving to database
 router.post('/job-results', async (req, res) => {
-    /*
-    TODO: implement receiving job results from scanner agent and saving to database
-    */
-
     try {
-        //console.log(req.body.result.headers);
-        //console.dir(req.body.result, {depth: null});
-        
-        
         if (req.body.result.headers.length === 1) {
+
+            console.log('Editing scanner job');
             
-            const editedScannerJob = await editScannerJob(
+            await editScannerJob(
                 {
-                    id: req.body.id, 
-                    data: { 
+                    id: req.body.id,
+                    data: {
                         scannerName: req.body.result.headers[0].tool_name,
                         scannerVersion: req.body.result.headers[0].tool_version,
                         duration: req.body.result.headers[0].duration,
@@ -170,19 +174,15 @@ router.post('/job-results', async (req, res) => {
                     }
                 }
             )
-            console.log(editedScannerJob);
-
             
-            for (let i=0; i<10; i++) {
-                console.dir(req.body.result.files[i], {depth: null});
-            }
-
+            console.log('Adding LicenseFindings and CopyrightFindings for files');
+            
             for (const file of req.body.result.files) {
-                
-                if(file.type === 'file') {
-                    if(file.sha256) {
+
+                if (file.type === 'file') {
+                    if (file.sha256) {
                         let dbFile = await findFileWithHash(file.sha256);
-                        if(!dbFile) {
+                        if (!dbFile) {
                             dbFile = await addNewFile({
                                 data: {
                                     sha256: file.sha256,
@@ -226,21 +226,19 @@ router.post('/job-results', async (req, res) => {
                     }
                 }
             }
-            
-        
+
             res.status(200).json({
-                message: 'Received results for job with with id ' + req.body.id
+                message: 'Received and saved results for job with with id ' + req.body.id
             })
         } else {
-            console.log("Alert in job-results! More headers!!!");
+            console.log('Alert in job-results! More headers!!!');
             //TODO: figure out if there could be more header objects and why and what to do then
         }
-        
-    } catch (error) {
-        
-    }
 
-    
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error: ' });
+    }
 })
 
 export default router;
