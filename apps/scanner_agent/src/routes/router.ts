@@ -4,8 +4,7 @@
 
 import { zodiosRouter } from "@zodios/express";
 import { scannerAgentApi } from "validation-helpers";
-import Queue, { Job, JobOptions } from 'bull';
-import bodyParser from 'body-parser';
+import Queue, { Job } from 'bull';
 import fetch from "cross-fetch";
 import { loadEnv } from 'common-helpers';
 import milliseconds from "milliseconds";
@@ -43,9 +42,11 @@ type ScannerJob = {
 
 // Job return information
 interface JobInfo {
-    id: Queue.JobId;
+    id: string;
     state: string;
-    data: ScannerJob;
+    data: {
+        directory: string;
+    }
     finishedOn: number | undefined;
 }
 
@@ -92,7 +93,7 @@ router.post("/job", async (req, res) => {
         };
         
         // ...and it is used to add the job to the work queue
-        const job: Job = await workQueue.add({
+        await workQueue.add({
             directory: req.body.directory,
             opts: {
                 jobId: req.body.opts.jobId
@@ -144,10 +145,9 @@ router.get("/job/:id", async(req, res) => {
     }
 });
 
-/*
 // Node: Query statuses of all active/waiting jobs in the work queue
-router.get("/jobs", async(_req: Request, res: Response) => {
-    const jobs: Job<ScannerJob>[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
+router.get("/jobs", async(_req, res) => {
+    const jobs: Job[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
     const jobList: JobInfo[] = [];
 
     for (const job of jobs) {
@@ -155,7 +155,7 @@ router.get("/jobs", async(_req: Request, res: Response) => {
         const data: ScannerJob = job.data;
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
-            id: job.id,
+            id: String(job.id),
             state,
             data: data,
             finishedOn
@@ -163,7 +163,7 @@ router.get("/jobs", async(_req: Request, res: Response) => {
     }
     res.status(200).json(jobList);
 });
-*/
+
 // Listen to global job events
 
 workQueue.on("global:waiting", async (jobId: Queue.JobId) => {

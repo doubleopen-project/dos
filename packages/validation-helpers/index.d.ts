@@ -3138,6 +3138,47 @@ declare const scannerAgentApi: [{
         }>;
     }];
 }, {
+    method: "get";
+    path: "/jobs";
+    description: "List all jobs";
+    response: zod.ZodArray<zod.ZodObject<{
+        id: zod.ZodString;
+        state: zod.ZodString;
+        data: zod.ZodObject<{
+            directory: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            directory: string;
+        }, {
+            directory: string;
+        }>;
+        finishedOn: zod.ZodOptional<zod.ZodNumber>;
+    }, "strip", zod.ZodTypeAny, {
+        id: string;
+        state: string;
+        data: {
+            directory: string;
+        };
+        finishedOn?: number | undefined;
+    }, {
+        id: string;
+        state: string;
+        data: {
+            directory: string;
+        };
+        finishedOn?: number | undefined;
+    }>, "many">;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }];
+}, {
     method: "post";
     path: "/job";
     description: "Add scanner job";
