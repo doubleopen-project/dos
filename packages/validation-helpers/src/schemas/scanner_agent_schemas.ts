@@ -4,6 +4,12 @@
 
 import { z } from "zod";
 
+export const ScannerRootRequestSchema = z.object({});
+
+export const ScannerRootResponseSchema = z.object({
+    message: z.string()
+});
+
 export const ScannerJobRequestBodySchema = z.object({
     directory: z.string({
         required_error: "Directory is required"
@@ -18,8 +24,10 @@ export const ScannerJobRequestBodySchema = z.object({
 })
 
 export const ScannerJobResponseBodySchema = z.object({
-    jobId: z.string(),
-    directory: z.string()
+    id: z.string(),
+    data: z.object({
+        directory: z.string(),
+    })
 })
 
 export const ScannerJobResultSchema = z.object({
