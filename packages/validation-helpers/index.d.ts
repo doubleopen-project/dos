@@ -3274,18 +3274,21 @@ declare const scannerAgentApi: [{
                 options: zod.ZodObject<{
                     input: zod.ZodArray<zod.ZodString, "many">;
                     "--copyright": zod.ZodBoolean;
+                    "--info": zod.ZodBoolean;
                     "--json": zod.ZodString;
                     "--license": zod.ZodBoolean;
                     "--package": zod.ZodBoolean;
                 }, "strip", zod.ZodTypeAny, {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
                 }, {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -3342,10 +3345,12 @@ declare const scannerAgentApi: [{
                     files_count: number;
                 }>;
             }, "strip", zod.ZodTypeAny, {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -3356,7 +3361,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -3371,10 +3375,12 @@ declare const scannerAgentApi: [{
                     files_count: number;
                 };
             }, {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -3385,7 +3391,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -3444,19 +3449,19 @@ declare const scannerAgentApi: [{
                         extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                     }, "strip", zod.ZodTypeAny, {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }, {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }>, "many">, "many">;
                     extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
@@ -3495,6 +3500,8 @@ declare const scannerAgentApi: [{
                     purl: zod.ZodString;
                 }, "strip", zod.ZodTypeAny, {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3522,23 +3529,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3547,6 +3552,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }, {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3574,23 +3581,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3613,6 +3618,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3640,23 +3647,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3665,6 +3670,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3692,23 +3699,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3730,6 +3735,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3757,23 +3764,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3782,6 +3787,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -3809,23 +3816,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -3875,6 +3880,8 @@ declare const scannerAgentApi: [{
                 purl: zod.ZodString;
             }, "strip", zod.ZodTypeAny, {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -3892,12 +3899,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -3910,6 +3915,8 @@ declare const scannerAgentApi: [{
                 datasource_ids: string[];
             }, {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -3927,12 +3934,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -3947,6 +3952,23 @@ declare const scannerAgentApi: [{
             files: zod.ZodArray<zod.ZodObject<{
                 path: zod.ZodString;
                 type: zod.ZodString;
+                name: zod.ZodString;
+                base_name: zod.ZodString;
+                extension: zod.ZodString;
+                size: zod.ZodNumber;
+                date: zod.ZodNullable<zod.ZodString>;
+                sha1: zod.ZodNullable<zod.ZodString>;
+                md5: zod.ZodNullable<zod.ZodString>;
+                sha256: zod.ZodNullable<zod.ZodString>;
+                mime_type: zod.ZodNullable<zod.ZodString>;
+                file_type: zod.ZodNullable<zod.ZodString>;
+                programming_language: zod.ZodNullable<zod.ZodString>;
+                is_binary: zod.ZodBoolean;
+                is_text: zod.ZodBoolean;
+                is_archive: zod.ZodBoolean;
+                is_media: zod.ZodBoolean;
+                is_source: zod.ZodBoolean;
+                is_script: zod.ZodBoolean;
                 licenses: zod.ZodArray<zod.ZodObject<{
                     key: zod.ZodString;
                     score: zod.ZodNumber;
@@ -4015,10 +4037,10 @@ declare const scannerAgentApi: [{
                         rule_relevance: number;
                     }>;
                 }, "strip", zod.ZodTypeAny, {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -4050,10 +4072,10 @@ declare const scannerAgentApi: [{
                         rule_relevance: number;
                     };
                 }, {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -4190,6 +4212,8 @@ declare const scannerAgentApi: [{
                     purl: zod.ZodNullable<zod.ZodString>;
                 }, "strip", zod.ZodTypeAny, {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4217,12 +4241,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -4234,6 +4256,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }, {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4261,12 +4285,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -4278,15 +4300,36 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }>, "many">;
                 for_packages: zod.ZodArray<zod.ZodUnknown, "many">;
+                files_count: zod.ZodNumber;
+                dirs_count: zod.ZodNumber;
+                size_count: zod.ZodNumber;
                 scan_errors: zod.ZodArray<zod.ZodUnknown, "many">;
             }, "strip", zod.ZodTypeAny, {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -4337,6 +4380,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4364,12 +4409,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -4381,15 +4424,35 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }, {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -4440,6 +4503,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4467,12 +4532,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -4484,14 +4547,18 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }>, "many">;
         }, "strip", zod.ZodTypeAny, {
             headers: {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -4502,7 +4569,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -4527,6 +4593,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4554,23 +4622,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -4579,6 +4645,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4606,23 +4674,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -4637,6 +4703,8 @@ declare const scannerAgentApi: [{
             }[];
             packages: {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -4654,12 +4722,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -4674,11 +4740,29 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -4729,6 +4813,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4756,12 +4842,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -4773,14 +4857,18 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }[];
         }, {
             headers: {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -4791,7 +4879,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -4816,6 +4903,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4843,23 +4932,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -4868,6 +4955,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -4895,23 +4984,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -4926,6 +5013,8 @@ declare const scannerAgentApi: [{
             }[];
             packages: {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -4943,12 +5032,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -4963,11 +5050,29 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -5018,6 +5123,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5045,12 +5152,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -5062,6 +5167,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }[];
         }>>;
@@ -5074,10 +5181,12 @@ declare const scannerAgentApi: [{
         finishedOn?: number | undefined;
         result?: {
             headers: {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -5088,7 +5197,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -5113,6 +5221,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5140,23 +5250,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -5165,6 +5273,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5192,23 +5302,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -5223,6 +5331,8 @@ declare const scannerAgentApi: [{
             }[];
             packages: {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -5240,12 +5350,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -5260,11 +5368,29 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -5315,6 +5441,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5342,12 +5470,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -5359,6 +5485,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }[];
         } | undefined;
@@ -5371,10 +5499,12 @@ declare const scannerAgentApi: [{
         finishedOn?: number | undefined;
         result?: {
             headers: {
+                duration: number;
                 message: string | null;
                 options: {
                     input: string[];
                     "--copyright": boolean;
+                    "--info": boolean;
                     "--json": string;
                     "--license": boolean;
                     "--package": boolean;
@@ -5385,7 +5515,6 @@ declare const scannerAgentApi: [{
                 start_timestamp: string;
                 end_timestamp: string;
                 output_format_version: string;
-                duration: number;
                 errors: unknown[];
                 warnings: unknown[];
                 extra_data: {
@@ -5410,6 +5539,8 @@ declare const scannerAgentApi: [{
                 is_resolved: boolean;
                 resolved_package: ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5437,23 +5568,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -5462,6 +5591,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }) & ({} | {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5489,23 +5620,21 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string | null;
                     notice_text: string | null;
                     source_packages: unknown[];
                     file_references: {
                         path: string;
+                        sha256: string | null;
                         extra_data: {};
                         size: number;
                         sha1: string | null;
                         md5: string | null;
-                        sha256: string | null;
                         sha512: string | null;
                     }[][];
                     repository_homepage_url: string;
@@ -5520,6 +5649,8 @@ declare const scannerAgentApi: [{
             }[];
             packages: {
                 type: string;
+                sha256: string | null;
+                copyright: string | null;
                 extra_data: {};
                 purl: string;
                 namespace: string | null;
@@ -5537,12 +5668,10 @@ declare const scannerAgentApi: [{
                 size: number | null;
                 sha1: string | null;
                 md5: string | null;
-                sha256: string | null;
                 sha512: string | null;
                 bug_tracking_url: string | null;
                 code_view_url: string | null;
                 vcs_url: string | null;
-                copyright: string | null;
                 license_expression: string | null;
                 declared_license: string[];
                 notice_text: string | null;
@@ -5557,11 +5686,29 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
+                sha256: string | null;
+                date: string | null;
+                files_count: number;
+                name: string;
+                size: number;
+                sha1: string | null;
+                md5: string | null;
+                base_name: string;
+                extension: string;
+                mime_type: string | null;
+                file_type: string | null;
+                programming_language: string | null;
+                is_binary: boolean;
+                is_text: boolean;
+                is_archive: boolean;
+                is_media: boolean;
+                is_source: boolean;
+                is_script: boolean;
                 licenses: {
+                    score: number;
                     name: string;
                     homepage_url: string | null;
                     key: string;
-                    score: number;
                     short_name: string;
                     category: string;
                     is_exception: boolean;
@@ -5612,6 +5759,8 @@ declare const scannerAgentApi: [{
                 }[];
                 package_data: {
                     type: string;
+                    sha256: string | null;
+                    copyright: string | null;
                     extra_data: {};
                     dependencies: {
                         extra_data: {};
@@ -5639,12 +5788,10 @@ declare const scannerAgentApi: [{
                     size: number | null;
                     sha1: string | null;
                     md5: string | null;
-                    sha256: string | null;
                     sha512: string | null;
                     bug_tracking_url: string | null;
                     code_view_url: string | null;
                     vcs_url: string | null;
-                    copyright: string | null;
                     license_expression: string | null;
                     declared_license: string[] | null;
                     notice_text: string | null;
@@ -5656,6 +5803,8 @@ declare const scannerAgentApi: [{
                     datasource_id: string;
                 }[];
                 for_packages: unknown[];
+                dirs_count: number;
+                size_count: number;
                 scan_errors: unknown[];
             }[];
         } | undefined;

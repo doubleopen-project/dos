@@ -9,4 +9,5 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: ["./tsconfig.json", "./tsconfig.eslint.json"],
     },
+    exclude: ["dist/*", "index.d.ts"]
 };
