@@ -2,7 +2,25 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { z } from "zod"
+import { z } from "zod";
+
+export const ScannerJobRequestBodySchema = z.object({
+    directory: z.string({
+        required_error: "Directory is required"
+    })
+    .trim()
+    .min(1, "Directory cannot be empty"),
+    opts: z.object({
+        jobId: z.string({
+            required_error: "Job ID is required"
+        })
+    })
+})
+
+export const ScannerJobResponseBodySchema = z.object({
+    jobId: z.string(),
+    directory: z.string()
+})
 
 export const ScannerJobResultSchema = z.object({
   headers: z.array(
@@ -292,4 +310,8 @@ export const ScannerJobResultSchema = z.object({
       scan_errors: z.array(z.unknown())
     })
   )
+})
+
+export const ErrorSchema = z.object({
+  error: z.string()
 })

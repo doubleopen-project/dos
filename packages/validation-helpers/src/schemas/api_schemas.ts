@@ -4,7 +4,7 @@
 
 import { z } from 'zod';
 import { DBScannerJobSchema } from './db_schemas';
-import { ScannerJobResultSchema } from './scanner_job_result_schema';
+import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
 export const ApiPostScanResultsRequestBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
