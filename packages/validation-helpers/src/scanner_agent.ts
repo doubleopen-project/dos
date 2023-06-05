@@ -7,6 +7,19 @@ import * as schemas from "./schemas/scanner_agent_schemas";
 
 export const scannerAgentApi = makeApi([
     {
+        method: "get",
+        path: "/",
+        description: "Root endpoint",
+        response: schemas.ScannerRootResponseSchema,
+        errors: [
+            {
+                status: 500,
+                description: "Internal server error",
+                schema: schemas.ErrorSchema
+            }
+        ]
+    },
+    {
         method: "post",
         path: "/job",
         description: "Add scanner job",
