@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@types/throng": "^5.0.4",
-        "@zodios/express": "^10.6.1",
+        "@zodios/express": "^10.6.0",
         "@zodios/openapi": "^10.4.7",
         "body-parser": "^1.20.2",
         "bull": "^4.10.4",

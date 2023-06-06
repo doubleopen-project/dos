@@ -31,7 +31,7 @@
       "persistent": true
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "^db:generate"]
     },
     "worker": {
       "dependsOn": ["^build"]
