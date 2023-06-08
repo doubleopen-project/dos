@@ -8,11 +8,11 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node dist/src/server.js",
         "worker": "tsup src/worker.ts --format cjs --legacy-output --watch --onSuccess \"node dist/worker.js\"",
-        "test": "mocha dist/tests"
+        "test": "mocha dist/tests --exit"
     },
     "dependencies": {
         "@types/throng": "^5.0.4",
-        "@zodios/express": "^10.6.0",
+        "@zodios/express": "10.6.0",
         "@zodios/openapi": "^10.4.7",
         "body-parser": "^1.20.2",
         "bull": "^4.10.4",
