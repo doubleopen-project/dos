@@ -38,3 +38,5 @@ const PORT: number = process.env.PORT? parseInt(process.env.PORT) : 5001;
 app.listen(PORT, () =>
     console.log(`Scanner Agent server listening on port ${PORT}`),
 );
+
+export default app;

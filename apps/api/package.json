@@ -7,10 +7,10 @@
         "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node dist/src/server.js",
-        "test": "mocha dist/tests"
+        "test": "mocha dist/tests --exit"
     },
     "dependencies": {
-        "@zodios/express": "^10.6.0",
+        "@zodios/express": "10.6.0",
         "@zodios/openapi": "^10.4.7",
         "common-helpers": "*",
         "cross-fetch": "^3.1.5",

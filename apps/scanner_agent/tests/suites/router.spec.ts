@@ -4,7 +4,7 @@
 
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
-import router from "../../src/routes/router";
+import app from "../../src/server";
 
 chai.use(chaiHttp);
 
@@ -16,7 +16,7 @@ export default function suite(): void {
 
    it('GET / should return 200', done => {
       chai
-          .request(router)
+          .request(app)
           .get('/')
           .end((err, res) => {
               expect(res).to.have.status(200);

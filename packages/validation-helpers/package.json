@@ -7,7 +7,7 @@
         "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts"
     },
     "dependencies": {
-        "@zodios/express": "^10.6.1",
+        "@zodios/express": "10.6.0",
         "zod": "^3.21.4"
     }
 }
