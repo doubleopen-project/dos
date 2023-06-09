@@ -34,3 +34,6 @@ jobs:
       - name: Run tests
         run: npm run test
         continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SCANNER_URL: ${{ secrets.SCANNER_URL }}
