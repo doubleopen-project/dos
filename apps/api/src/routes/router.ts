@@ -229,12 +229,13 @@ router.post('/job-results', async (req, res) => {
             })
         } else {
             console.log('Alert in job-results! More headers!!!');
+            res.status(500).json({ message: 'Internal server error' });
             //TODO: figure out if there could be more header objects and why and what to do then
         }
 
     } catch (error) {
         console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error: ' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 })
 
