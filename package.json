@@ -17,6 +17,7 @@
         "prod-client": "npm run build:client",
         "prod-scanner_agent": "npm run build:scanner_agent",
         "prod-api": "npm run db:generate && npm run build:api",
+        "copy-types": "turbo run copy-types",
         "db:format": "turbo run db:format",
         "db:generate": "turbo run db:generate",
         "db:migrate:dev": "prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
