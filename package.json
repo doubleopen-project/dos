@@ -29,6 +29,7 @@
         "clean-build": "npm run clean-dist && turbo run build --no-cache --force",
         "clean-dist": "npm exec --workspaces -- npx rimraf dist",
         "clean-install": "npm run clean && npm install",
+        "clean-turbo": "npm exec --workspaces -- npx rimraf .turbo",
         "dev": "turbo run dev --no-cache --continue --no-daemon",
         "lint": "turbo run lint",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
