@@ -4,7 +4,6 @@
 
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../../src/server';
 
 chai.use(chaiHttp);
 
@@ -16,12 +15,14 @@ export default function suite() {
 
 	it('should return status code 201 if directory is provided', done => {
 		chai
-		.request(app)
+		.request('../../src/server')
 		.post('/api/job')
 		.send({ directory: 'test1' })
 		.end((err, res) => {
+			expect(err).to.be.null;
 			expect(res).to.have.status(201);
 			done();
 		})
 	})
+	
 }
