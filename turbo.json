@@ -32,7 +32,7 @@
       "persistent": true
     },
     "test": {
-      "dependsOn": ["^build", "^db:generate"]
+      "dependsOn": ["^db:generate"]
     },
     "worker": {
       "dependsOn": ["^build"]
