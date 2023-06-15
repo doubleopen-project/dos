@@ -16,6 +16,7 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "copy-types": {},
     "db:format": {},
     "db:generate": {
       "cache": false
