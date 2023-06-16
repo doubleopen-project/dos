@@ -36,7 +36,7 @@
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
         "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent",
-        "test": "turbo run test",
+        "test": "turbo run test --concurrency=1",
         "test:api": "turbo run test --filter=api",
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
     },
