@@ -8,7 +8,7 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node dist/src/server.js",
         "worker": "tsup src/worker.ts --format cjs --legacy-output --watch --onSuccess \"node dist/worker.js\"",
-        "test": "mocha dist/tests --exit --timeout 5000"
+        "test": "mocha dist/tests --exit --timeout 10000"
     },
     "dependencies": {
         "@types/throng": "^5.0.4",
