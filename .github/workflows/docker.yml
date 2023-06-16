@@ -28,4 +28,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: etsija/worker:latest
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
