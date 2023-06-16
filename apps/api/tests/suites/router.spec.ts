@@ -2,27 +2,17 @@
 //
 // SPDX-License-Identifier: MIT
 
-import chai, { assert, expect } from 'chai';
-import chaiHttp from 'chai-http';
-
-chai.use(chaiHttp);
+// Below causing error RangeError: Maximum call stack size exceeded 
+import { expect } from 'chai';
+import request from 'supertest';
+import app from '../../src/server';
 
 export default function suite() {
-	it('1+2 should equal 3', function () {
-		const result: number = 1 + 2;
-		assert.strictEqual(result, 3);
-	});
+	it('should return status code 201 if directory is provided', async () => {
+		const res = await request(app)
+			.post('/api/job')
+			.send({ directory: 'test1' });
 
-	it('should return status code 201 if directory is provided', done => {
-		chai
-		.request('../../src/server')
-		.post('/api/job')
-		.send({ directory: 'test1' })
-		.end((err, res) => {
-			expect(err).to.be.null;
-			expect(res).to.have.status(201);
-			done();
-		})
+		expect(res.statusCode).to.equal(201)
 	})
-	
 }
