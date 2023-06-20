@@ -28,7 +28,7 @@ jobs:
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
-      continue-on-error: true
+      continue-on-error: false
       with:
         context: .
         push: true
