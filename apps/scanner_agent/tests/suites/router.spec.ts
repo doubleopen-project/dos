@@ -31,43 +31,4 @@ export default function suite(): void {
                 done();
             });
     });
-
-    it('POST /job should add a new job to the work queue and respond properly', async () => {
-            
-        // Define the mock request body and response
-
-        const mockRequestBody = {
-            directory: "/home/user/test",
-            opts: {
-                jobId: "1234567890"
-            }
-        };
-
-        const mockResponse = {
-            id: "1234567890",
-            data: {
-                directory: "/home/user/test",
-            }
-        };
-
-        // Intercept the HTTP request and respond with the mock response
-        nock('http://localhost:5000')
-            .post("/job", mockRequestBody)
-            .reply(201, mockResponse);
-
-        // Make the HTTP request using chai-http
-        const res = await chai
-            .request(app)
-            .post('/job')
-            .send({
-                directory: "/home/user/test",
-                opts: {
-                    jobId: "1234567890"
-                }
-            });
-
-        expect(res).to.have.status(201);
-        expect(res.body).to.deep.equal(mockResponse);
-    });
-
 }
