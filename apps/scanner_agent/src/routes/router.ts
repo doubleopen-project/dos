@@ -212,7 +212,7 @@ const cleanQueue = async (): Promise<void> => {
 void cleanQueue();
 
 // Create a request to send the job state to DOS
-const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
+export const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
 
     const requestBody: RequestBodyState = {
         id: id,
@@ -230,7 +230,7 @@ const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
 }
 
 // Create a request to send the job results to DOS
-const createRequestResults = (id: Queue.JobId, result: string): RequestInit => {
+export const createRequestResults = (id: Queue.JobId, result: string): RequestInit => {
 
     let requestBody: RequestBodyResults = {
         id: id,

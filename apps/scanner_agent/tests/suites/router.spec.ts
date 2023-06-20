@@ -6,6 +6,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import nock from 'nock';
 import app from "../../src/server";
+import { createRequestState, createRequestResults } from "../../src/routes/router";
 
 chai.use(chaiHttp);
 
@@ -31,4 +32,39 @@ export default function suite(): void {
                 done();
             });
     });
+
+    it('createRequestState() should return a valid RequestInit object', () => {
+        // Define the input parameters
+        const id = '12345';
+        const state = 'completed';
+    
+        // Call the function to create the RequestInit object
+        const requestInit = createRequestState(id, state);
+    
+        // Assert that the RequestInit object has the correct properties and values
+        expect(requestInit.method).to.equal('PUT');
+        expect(requestInit.headers).to.deep.equal({
+          'Content-Type': 'application/json',
+          Charset: 'utf-8',
+        });
+        expect(requestInit.body).to.equal(JSON.stringify({ id, state }));
+      });
+
+      it('createRequestResults() should return a valid RequestInit object with a non-empty result', () => {
+        // Define the input parameters
+        const id = '12345';
+        const result = '{"result": "scanresult"}';
+    
+        // Call the function to create the RequestInit object
+        const requestInit = createRequestResults(id, result);
+    
+        // Assert that the RequestInit object has the correct properties and values
+        expect(requestInit.method).to.equal('POST');
+        expect(requestInit.headers).to.deep.equal({
+          'Content-Type': 'application/json',
+          Charset: 'utf-8',
+        });
+        expect(requestInit.body).to.equal(JSON.stringify({ id, result: 'scanresult' }));
+      });
+
 }
