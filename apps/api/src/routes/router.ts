@@ -197,17 +197,19 @@ router.post('/job-results', async (req, res) => {
                             })
                         }
 
-                        for (const license of file.licenses) {
-                            await addNewLicenseFinding({
-                                data: {
-                                    scanner: req.body.result.headers[0].tool_name,
-                                    licenseExpression: license.key,
-                                    startLine: license.start_line,
-                                    endLine: license.end_line,
-                                    score: license.score,
-                                    sha256: file.sha256
-                                }
-                            })
+                        for (const license of file.license_detections) {
+                            for (const match of license.matches) {
+                                await addNewLicenseFinding({
+                                    data: {
+                                        scanner: req.body.result.headers[0].tool_name,
+                                        licenseExpression: license.license_expression,
+                                        startLine: match.start_line,
+                                        endLine: match.end_line,
+                                        score: match.score,
+                                        sha256: file.sha256
+                                    }
+                                })
+                            }
                         }
 
                         for (const copyright of file.copyrights) {
