@@ -251,7 +251,7 @@ export const createRequestResults = (id: Queue.JobId, result: string): RequestIn
         }) as ParsedResult;
       
         const scanresult: string = parsedResult.result;
-        console.log(scanresult);
+        console.dir(scanresult, {depth: null});
         requestBody = {
             ...requestBody,
             result: scanresult
@@ -287,7 +287,8 @@ const postJobResults = async (id: Queue.JobId, result: string): Promise<string |
     try {
         const response: globalThis.Response = await fetch(postResultsUrl, request);
         const data: string | undefined = await response.json() as string | undefined;
-        console.log("Response from DOS:", data);
+        console.log("Response from DOS:");
+        console.dir(data, {depth: null});
         return data;
     } catch (error) {
         console.log("Error:", error);
