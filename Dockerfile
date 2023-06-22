@@ -11,7 +11,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa --yes
 RUN apt install -y python3-pip
-RUN pip3 install scancode-toolkit
+RUN pip3 install scancode-toolkit==32.0.4
 
 # DOS
 
