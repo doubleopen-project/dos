@@ -58,6 +58,31 @@ export const dosApi = makeApi([
   },
   {
     method: 'post',
+    path: '/package',
+    description: '',
+    parameters: [
+        {
+            name: 'body',
+            type: 'Body',
+            schema: schemas.ApiPostPackageRequestBodySchema
+        }
+    ],
+    response: schemas.ApiPostPackageResponseBodySchema,
+    errors: [
+      {
+        status: 500,
+        description: 'Internal server error',
+        schema: schemas.ErrorSchema
+      },
+      {
+        status: 400,
+        description: 'Bad request',
+        schema: schemas.ErrorSchema
+      }
+    ]
+  },
+  {
+    method: 'post',
     path: '/job',
     description: 'Add scanner job',
     parameters: [

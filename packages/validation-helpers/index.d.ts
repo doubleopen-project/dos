@@ -93,6 +93,49 @@ declare const dosApi: [{
     }];
 }, {
     method: "post";
+    path: "/package";
+    description: "";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            zipFileKey: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            zipFileKey: string;
+        }, {
+            zipFileKey: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        folderName: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        folderName: string;
+    }, {
+        folderName: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
     path: "/job";
     description: "Add scanner job";
     parameters: [{

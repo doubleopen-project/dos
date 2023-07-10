@@ -29,6 +29,16 @@ export const ApiPostUploadUrlResponseBodySchema = z.object({
     message: z.string().optional()
 })
 
+export const ApiPostPackageRequestBodySchema = z.object({
+    zipFileKey: z.string({
+        required_error: 'Zip file key is required'
+    })
+})
+
+export const ApiPostPackageResponseBodySchema = z.object({
+    folderName: z.string()
+})
+
 export const ApiPostJobRequestBodySchema = z.object({
     directory: z.
         string({
