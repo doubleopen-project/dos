@@ -8,11 +8,14 @@ import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
 export const ApiPostScanResultsRequestBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
+    purl: z.string({
+        required_error: 'Purl is required'
+    })
 })
 
 export const ApiPostScanResultsResponseBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
-    Message: z.string()
+    results: z.nullable(z.string())
 })
 
 export const ApiPostUploadUrlRequestBodySchema = z.object({
