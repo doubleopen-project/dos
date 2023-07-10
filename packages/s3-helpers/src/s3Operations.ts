@@ -26,6 +26,7 @@ import { s3Client } from './s3Client';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Readable } from 'stream';
 
 // List all buckets in the account
 export const listBuckets = async (): Promise<string | undefined> => {
@@ -71,21 +72,42 @@ const streamToString = (stream: any): Promise<unknown> => {
 }
 
 // Download a file from a bucket
-export const downloadFile = async (bucketName: string, fileName: string, filePath: string): Promise<boolean | undefined> => {
+export const downloadFile = async (bucketName: string, fileName: string, filePath: string): Promise<boolean> => {
     checkS3ClientEnvs();
 
     const downloadParams: GetObjectRequest = { Bucket: bucketName, Key: fileName };
-    
+
     try {
-        const data: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
-        const fileStream = data.Body;
-        const bodyContents = await streamToString(fileStream);
-        fs.writeFileSync(filePath, bodyContents as string);
-        return true;
-    } catch (err) { 
+        // Check if the file exists in the bucket
+        if (await objectExistsCheck(fileName)) {
+            const response: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
+
+            // Check that response.Body is a readable stream
+            if (response.Body instanceof Readable) {
+                const readableStream: Readable = response.Body as Readable;
+
+                const dirPath: string = path.dirname(filePath);
+
+                // Create the local directory if it does not exist
+                if (!fs.existsSync(dirPath)) {
+                    fs.mkdirSync(dirPath, { recursive: true });
+                }
+
+                readableStream.pipe(fs.createWriteStream(filePath));
+                return true;
+            } else {
+                console.log("Not Readable");
+                throw new Error("Error: file stream is not readable");
+            }
+        } else {
+            console.log("Error: no such file in object storage");
+            throw new Error("Error: no such file in object storage");
+        }
+
+    } catch (err) {
         console.log("Error trying to download a file from S3 bucket", err);
         return false;
-    }	
+    }
 }
 
 // Download an entire directory of files from a bucket to a local directory
@@ -187,14 +209,14 @@ export const objectExistsCheck = async (key: string): Promise<boolean | undefine
         // So this is the case that the object does not exist
         const typedError: expectedError = error as expectedError;
 
-        if(typedError && typedError.$metadata && typedError.$metadata.httpStatusCode) {
+        if (typedError && typedError.$metadata && typedError.$metadata.httpStatusCode) {
             if (typedError.$metadata.httpStatusCode === 404) {
                 return false;
             }
         }
 
         console.log(error);
-        
+
         return undefined;
     }
 }
