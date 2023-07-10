@@ -103,7 +103,8 @@ router.post('/package', async (req, res) => {
     - error handling
     */
     try {
-        const downloadPath = 'tmp/downloads/' + req.body.zipFileKey;
+        // Fetching zip file from object storage
+        const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
 
         if (!process.env.SPACES_BUCKET) {
             throw new Error("SPACES_BUCKET environment variable is missing");
@@ -111,6 +112,8 @@ router.post('/package', async (req, res) => {
 
         if(await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath)) {
             console.log('Zip file downloaded');
+            // TODO: Extracting zip file
+
             res.status(200).json({
                 folderName: 'folderName'
             })
@@ -120,7 +123,6 @@ router.post('/package', async (req, res) => {
                 message: 'Zip file download failed'
             })
         }
-
         
     } catch (error) {
         console.log('Error: ', error);
@@ -130,12 +132,6 @@ router.post('/package', async (req, res) => {
 
 // Endpoint for adding a new job and sending job to Scanner Agent to be added to work queue
 router.post('/job', async (req, res) => {
-    /*
-    TODO: implement sending job to scanner
-        - send Object Key to Scanner Agent
-        - response from Scanner Agent successful: save Job to database
-        - error handling
-    */
     try {
         console.log('Adding a new ScannerJob to the database');
         
@@ -185,6 +181,7 @@ router.post('/job', async (req, res) => {
     }
 })
 
+// Endpoint for receiving job state changes from scanner agent and updating job state in database
 router.put('/job-state', async (req, res) => {
     try {
         const editedScannerJob = await editScannerJob({
