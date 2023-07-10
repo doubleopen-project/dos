@@ -5,7 +5,7 @@
 import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
-import { getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
+import { downloadFile, getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
 import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
@@ -75,6 +75,58 @@ router.post('/upload-url', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 })
+/*
+Endpoint for adding a Package
+    - takes in:
+        - [PHASE 1 & 2] name of a zip file in object storage
+        - [PHASE 2] package identifier (purl?)    
+    - returns: 
+        - [PHASE 1] the name of the folder in S3 where the zip file was extracted
+        - [PHASE 2] the id of the created package
+*/
+router.post('/package', async (req, res) => {
+    /*  
+    TODO:
+    - fetch zip file from object storage
+    - extract zip file
+    - find out file hashes
+    - create new Package in database
+    - go through files in zip file:
+        - check if file with hash exists in database
+            - if exists: add FileTree that links File to Package
+            - if doesn't exist: 
+                - create new File in database
+                - add FileTree that links File to Package
+                - upload file to object storage with hash as key (with extension)
+    - send response:
+        - Package id
+    - error handling
+    */
+    try {
+        const downloadPath = 'tmp/downloads/' + req.body.zipFileKey;
+
+        if (!process.env.SPACES_BUCKET) {
+            throw new Error("SPACES_BUCKET environment variable is missing");
+        }
+
+        if(await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath)) {
+            console.log('Zip file downloaded');
+            res.status(200).json({
+                folderName: 'folderName'
+            })
+        } else {
+            console.log('Error: Zip file download failed');
+            res.status(500).json({
+                message: 'Zip file download failed'
+            })
+        }
+
+        
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 // Endpoint for adding a new job and sending job to Scanner Agent to be added to work queue
 router.post('/job', async (req, res) => {

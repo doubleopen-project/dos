@@ -19,7 +19,8 @@ import {
     _Object,
     GetObjectCommandOutput,
     HeadObjectCommand,
-    HeadObjectCommandOutput
+    HeadObjectCommandOutput,
+    GetObjectRequest
 } from '@aws-sdk/client-s3';
 import { s3Client } from './s3Client';
 import * as fs from 'fs';
@@ -59,6 +60,34 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
     }
 }
 
+// Function to turn a file's body into a string
+const streamToString = (stream: any): Promise<unknown> => {
+    const chunks: any[] = [];
+    return new Promise((resolve, reject) => {
+        stream.on("data", (chunk: any) => chunks.push(Buffer.from(chunk)));
+        stream.on("error", reject);
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    });
+}
+
+// Download a file from a bucket
+export const downloadFile = async (bucketName: string, fileName: string, filePath: string): Promise<boolean | undefined> => {
+    checkS3ClientEnvs();
+
+    const downloadParams: GetObjectRequest = { Bucket: bucketName, Key: fileName };
+    
+    try {
+        const data: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
+        const fileStream = data.Body;
+        const bodyContents = await streamToString(fileStream);
+        fs.writeFileSync(filePath, bodyContents as string);
+        return true;
+    } catch (err) { 
+        console.log("Error trying to download a file from S3 bucket", err);
+        return false;
+    }	
+}
+
 // Download an entire directory of files from a bucket to a local directory
 export const downloadDirectory = async (bucketName: string, dirS3: string, baseDir: string): Promise<string> => {
 
@@ -91,16 +120,6 @@ export const downloadDirectory = async (bucketName: string, dirS3: string, baseD
         // Create the local directory if it does not exist
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
-        }
-
-        // Function to turn the file's body into a string
-        const streamToString = (stream: any): Promise<unknown> => {
-            const chunks: any[] = [];
-            return new Promise((resolve, reject) => {
-                stream.on("data", (chunk: any) => chunks.push(Buffer.from(chunk)));
-                stream.on("error", reject);
-                stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-            });
         }
 
         // Download the file and write it to the local directory
