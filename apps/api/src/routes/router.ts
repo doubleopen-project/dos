@@ -26,7 +26,7 @@ router.post('/scan-results', (req, res) => {
     */
 
     res.status(200).json({
-        'Message': 'Scan results'
+        'results': null
     })
 })
 

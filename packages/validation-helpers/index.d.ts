@@ -12,14 +12,20 @@ declare const dosApi: [{
     parameters: [{
         name: "body";
         type: "Body";
-        schema: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
     }];
     response: zod.ZodObject<{
-        Message: zod.ZodString;
+        results: zod.ZodNullable<zod.ZodString>;
     }, "strip", zod.ZodTypeAny, {
-        Message: string;
+        results: string | null;
     }, {
-        Message: string;
+        results: string | null;
     }>;
     errors: [{
         status: 500;
