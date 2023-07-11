@@ -9,6 +9,8 @@ import { downloadFile, getPresignedPutUrl, objectExistsCheck } from 's3-helpers'
 import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
+import admZip from 'adm-zip';
+import fs from 'fs';
 
 loadEnv('../../.env');
 
@@ -103,20 +105,39 @@ router.post('/package', async (req, res) => {
     - error handling
     */
     try {
+        const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
         // Fetching zip file from object storage
         const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
+        const extractPath = '/tmp/extracted/' + fileNameNoExt;
 
         if (!process.env.SPACES_BUCKET) {
             throw new Error("SPACES_BUCKET environment variable is missing");
         }
 
-        if(await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath)) {
+        const downloaded = await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath);
+        if(downloaded) {
             console.log('Zip file downloaded');
-            // TODO: Extracting zip file
+            // Waiting for file to be available
+            setTimeout(() => {
+                // Check that file exists
+                const fileExists = fs.existsSync(downloadPath);
 
-            res.status(200).json({
-                folderName: 'folderName'
-            })
+                if (fileExists) {
+                    // Extracting zip file locally
+                    const zip = new admZip(downloadPath);
+                    zip.extractAllTo(extractPath, true);
+                    console.log('Zip file extracted');
+        
+                    res.status(200).json({
+                        folderName: 'folderName'
+                    })
+                } else {
+                    console.log('Error: File does not exist');
+                    res.status(500).json({
+                        message: 'File does not exist'
+                    })
+                }
+            }, 1000);
         } else {
             console.log('Error: Zip file download failed');
             res.status(500).json({
