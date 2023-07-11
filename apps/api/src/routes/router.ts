@@ -5,7 +5,7 @@
 import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
-import { downloadFile, getPresignedPutUrl, objectExistsCheck } from 's3-helpers';
+import { downloadFile, getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
 import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
@@ -137,9 +137,11 @@ router.post('/package', async (req, res) => {
                     console.log(filePaths);
                     console.log(filePaths.length);
                     
+                    // Uploading files to object storage
+                    saveFiles(filePaths, '/tmp/extracted/');
 
                     res.status(200).json({
-                        folderName: 'folderName'
+                        folderName: fileNameNoExt
                     })
                 } else {
                     console.log('Error: File does not exist');

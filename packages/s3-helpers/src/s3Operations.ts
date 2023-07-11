@@ -49,18 +49,6 @@ export const listObjects = async (bucketName: string): Promise<string | undefine
     }
 };
 
-// Upload a file to a bucket
-export const uploadFile = async (bucketName: string, fileName: string, fileContent: string): Promise<string | undefined> => {
-    const uploadParams: PutObjectCommandInput = { Bucket: bucketName, Key: fileName, Body: fileContent };
-    try {
-        const data: PutObjectCommandOutput = await s3Client.send(new PutObjectCommand(uploadParams));
-        //console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
-        return JSON.stringify(data);
-    } catch (err) {
-        console.log("Error trying to upload a file to S3 bucket", err);
-    }
-}
-
 // Function to turn a file's body into a string
 const streamToString = (stream: any): Promise<unknown> => {
     const chunks: any[] = [];
@@ -84,6 +72,7 @@ export const downloadFile = async (bucketName: string, fileName: string, filePat
 
             // Check that response.Body is a readable stream
             if (response.Body instanceof Readable) {
+                //TODO: find what needs to be awaited here
                 const readableStream: Readable = response.Body as Readable;
 
                 const dirPath: string = path.dirname(filePath);
@@ -269,4 +258,30 @@ const checkS3ClientEnvs = (): void => {
     if (!process.env.SPACES_SECRET) {
         throw new Error("SPACES_SECRET environment variable is missing");
     }
+}
+
+// Upload a file to a bucket
+export const uploadFile = async (bucketName: string, fileName: string, fileContent: string | Buffer): Promise<string | undefined> => {
+    const uploadParams: PutObjectCommandInput = { Bucket: bucketName, Key: fileName, Body: fileContent };
+    try {
+        const data: PutObjectCommandOutput = await s3Client.send(new PutObjectCommand(uploadParams));
+        console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
+        return JSON.stringify(data);
+    } catch (err) {
+        console.log("Error trying to upload a file to S3 bucket", err);
+    }
+}
+
+// Upload files to a bucket
+export const saveFiles = (filePaths: string[], baseDir: string): void => {
+    filePaths.forEach(async (filePath: string) => {
+        // Upload file to S3
+        const file: Buffer = fs.readFileSync(baseDir+filePath);
+
+        if (!process.env.SPACES_BUCKET) {
+            throw new Error("SPACES_BUCKET environment variable is missing");
+        }
+
+        await uploadFile(process.env.SPACES_BUCKET, filePath, file);
+    });
 }
