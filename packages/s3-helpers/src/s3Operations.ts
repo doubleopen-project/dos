@@ -63,24 +63,28 @@ const streamToString = (stream: any): Promise<unknown> => {
 // Download a file from a bucket
 export const downloadFile = async (bucketName: string, fileName: string, filePath: string): Promise<boolean> => {
     checkS3ClientEnvs();
-
+    
     const downloadParams: GetObjectRequest = { Bucket: bucketName, Key: fileName };
 
     try {
         // Check if the file exists in the bucket
+        
         if (await objectExistsCheck(fileName)) {
+            
             const response: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
-
+            
             // Check that response.Body is a readable stream
             if (response.Body instanceof Readable) {
                 const readableStream: Readable = response.Body as Readable;
-
+                
                 const dirPath: string = path.dirname(filePath);
-
+                console.log("dirPath: ", dirPath);
                 // Create the local directory if it does not exist
                 if (!(await fs.promises.stat(dirPath))) {
+                    console.log("here1");
                     await mkdir(dirPath, { recursive: true });
                 }
+                console.log("here2");
                 await writeFile(filePath, readableStream);
                 return true;
             } else {
