@@ -35,7 +35,7 @@ router.post('/scan-results', (req, res) => {
 
 // Endpoint for requesting presigned upload url from object storage and sending url in response
 router.post('/upload-url', async (req, res) => {
-    
+
     try {
         const objectExists = await objectExistsCheck(req.body.key);
 
@@ -116,9 +116,9 @@ router.post('/package', async (req, res) => {
         }
 
         const downloaded = await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath);
-        if(downloaded) {
+        if (downloaded) {
             console.log('Zip file downloaded');
-            
+
             // Check that file exists
             const fileExists = fs.existsSync(downloadPath);
 
@@ -127,20 +127,32 @@ router.post('/package', async (req, res) => {
                 const zip = new admZip(downloadPath);
                 zip.extractAllTo(extractPath, true);
                 console.log('Zip file extracted');
-                
+
                 // Saving files in extracted folder to object storage
 
                 // Listing files in extracted folder
                 const filePaths = await getFilePaths(extractPath);
                 console.log(filePaths);
                 console.log(filePaths.length);
-                
-                // Uploading files to object storage
-                saveFiles(filePaths, '/tmp/extracted/');
 
-                res.status(200).json({
-                    folderName: fileNameNoExt
-                })
+                // Uploading files to object storage
+                const uploaded = await saveFiles(filePaths, '/tmp/extracted/');
+
+                if (uploaded) {
+                    // Delete local files
+                    fs.rmSync(extractPath, { recursive: true });
+                    fs.rmSync(downloadPath);
+
+                    res.status(200).json({
+                        folderName: fileNameNoExt
+                    })
+                } else {
+                    console.log('Error: Files not uploaded');
+                    res.status(500).json({
+                        message: 'Files not uploaded'
+                    })
+                }
+
             } else {
                 console.log('Error: File does not exist');
                 res.status(500).json({
@@ -153,7 +165,7 @@ router.post('/package', async (req, res) => {
                 message: 'Zip file download failed'
             })
         }
-        
+
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -164,11 +176,11 @@ router.post('/package', async (req, res) => {
 router.post('/job', async (req, res) => {
     try {
         console.log('Adding a new ScannerJob to the database');
-        
+
         const newScannerJob = await addNewScannerJob({ state: 'created' });
 
         console.log('Sending a request to Scanner Agent to add new job to the work queue');
-        
+
         const postJobUrl = scannerUrl + 'job';
 
         const request = {
@@ -186,7 +198,7 @@ router.post('/job', async (req, res) => {
 
         if (response.status === 201) {
             console.log('Changing ScannerJob state to "addedToQueue"');
-            
+
             const editedScannerJob = await editScannerJob({
                 id: newScannerJob.id,
                 data: { state: 'addedToQueue' }
@@ -198,7 +210,7 @@ router.post('/job', async (req, res) => {
             })
         } else {
             console.log('Created ScannerJob, but adding to queue was unsuccesful');
-            
+
             res.status(202).json({
                 scannerJob: newScannerJob,
                 message: 'Adding job to queue was unsuccessful'
@@ -236,7 +248,7 @@ router.post('/job-results', async (req, res) => {
         if (req.body.result.headers.length === 1) {
 
             console.log('Editing scanner job');
-            
+
             await editScannerJob(
                 {
                     id: req.body.id,
@@ -250,9 +262,9 @@ router.post('/job-results', async (req, res) => {
                     }
                 }
             )
-            
+
             console.log('Adding LicenseFindings and CopyrightFindings for files');
-            
+
             for (const file of req.body.result.files) {
 
                 if (file.type === 'file') {
