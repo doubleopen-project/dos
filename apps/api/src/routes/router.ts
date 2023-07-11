@@ -11,6 +11,7 @@ import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
 import admZip from 'adm-zip';
 import fs from 'fs';
+import { getFilePaths } from '../helpers/file_helpers';
 
 loadEnv('../../.env');
 
@@ -117,8 +118,9 @@ router.post('/package', async (req, res) => {
         const downloaded = await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath);
         if(downloaded) {
             console.log('Zip file downloaded');
+            // TODO: Get rid of the timeout by finding await solution for file download
             // Waiting for file to be available
-            setTimeout(() => {
+            setTimeout(async() => {
                 // Check that file exists
                 const fileExists = fs.existsSync(downloadPath);
 
@@ -127,7 +129,15 @@ router.post('/package', async (req, res) => {
                     const zip = new admZip(downloadPath);
                     zip.extractAllTo(extractPath, true);
                     console.log('Zip file extracted');
-        
+                    
+                    // Saving files in extracted folder to object storage
+
+                    // Listing files in extracted folder
+                    const filePaths = await getFilePaths(extractPath);
+                    console.log(filePaths);
+                    console.log(filePaths.length);
+                    
+
                     res.status(200).json({
                         folderName: 'folderName'
                     })
