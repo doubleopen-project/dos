@@ -6,7 +6,7 @@ import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { downloadFile, getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
-import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash } from '../helpers/db_queries';
+import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash, findScannerJobById } from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
 import admZip from 'adm-zip';
@@ -221,6 +221,20 @@ router.post('/job', async (req, res) => {
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+// Endpoint for getting job state from database
+router.get('/job-state/:id', async (req, res) => {
+    try {
+        const scannerJob = await findScannerJobById(req.params.id);
+        if(!scannerJob) throw new Error('Scanner Job with requested id cannot be found in the database');
+        res.status(200).json({
+            state: scannerJob.state
+        })
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
     }
 })
 

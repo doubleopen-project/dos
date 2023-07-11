@@ -59,3 +59,11 @@ export const addNewCopyrightFinding = async (input: CreateCopyrightFindingInput)
         data: input.data
     });
 }
+
+export const findScannerJobById = async (id: string): Promise<ScannerJob | null> => {
+    return await prisma.scannerJob.findUnique({
+        where: {
+            id: id
+        },
+    })
+}

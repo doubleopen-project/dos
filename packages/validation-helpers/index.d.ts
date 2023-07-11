@@ -4164,6 +4164,43 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "get";
+    path: "/job-state/:id";
+    description: "Get state for scanner job with given id";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        state: string;
+    }, {
+        state: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
