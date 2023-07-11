@@ -27,6 +27,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from 'stream';
+import { mkdir, writeFile } from 'fs/promises';
 
 // List all buckets in the account
 export const listBuckets = async (): Promise<string | undefined> => {
@@ -72,17 +73,15 @@ export const downloadFile = async (bucketName: string, fileName: string, filePat
 
             // Check that response.Body is a readable stream
             if (response.Body instanceof Readable) {
-                //TODO: find what needs to be awaited here
                 const readableStream: Readable = response.Body as Readable;
 
                 const dirPath: string = path.dirname(filePath);
 
                 // Create the local directory if it does not exist
-                if (!fs.existsSync(dirPath)) {
-                    fs.mkdirSync(dirPath, { recursive: true });
+                if (!(await fs.promises.stat(dirPath))) {
+                    await mkdir(dirPath, { recursive: true });
                 }
-
-                readableStream.pipe(fs.createWriteStream(filePath));
+                await writeFile(filePath, readableStream);
                 return true;
             } else {
                 console.log("Not Readable");
