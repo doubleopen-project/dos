@@ -156,4 +156,29 @@ export const dosApi = makeApi([
       }
     ]
   },
+  {
+    method: 'get',
+    path: '/job-state/:id',
+    description: 'Get state for scanner job with given id',
+    parameters: [
+        {
+            name: 'id',
+            type: 'Path',
+            schema: schemas.ApiGetJobStateRequestSchema
+        }
+    ],
+    response: schemas.ApiGetJobStateResponseBodySchema,
+    errors: [
+      {
+        status: 500,
+        description: 'Internal server error',
+        schema: schemas.ErrorSchema
+      },
+      {
+        status: 400,
+        description: 'Bad request',
+        schema: schemas.ErrorSchema
+      }
+    ]
+  },
 ]);

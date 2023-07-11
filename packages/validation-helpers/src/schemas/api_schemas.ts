@@ -93,3 +93,11 @@ export const ApiPostJobResultsResponseBodySchema = z.object({
 export const ErrorSchema = z.object({
     message: z.string()
 })
+
+export const ApiGetJobStateRequestSchema = z.string({
+	required_error: "Scan job ID is required"
+})
+
+export const ApiGetJobStateResponseBodySchema = z.object({
+    state: z.string()
+})
