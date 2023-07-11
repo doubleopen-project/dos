@@ -11,7 +11,7 @@ declare const downloadDirectory: (bucketName: string, dirS3: string, baseDir: st
 declare const objectExistsCheck: (key: string) => Promise<boolean | undefined>;
 declare const getPresignedPutUrl: (key: string) => Promise<string | undefined>;
 declare const uploadFile: (bucketName: string, fileName: string, fileContent: string | Buffer) => Promise<string | undefined>;
-declare const saveFiles: (filePaths: string[], baseDir: string) => void;
+declare const saveFiles: (filePaths: string[], baseDir: string) => Promise<boolean>;
 
 declare const client: S3;
 
