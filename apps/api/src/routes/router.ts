@@ -132,17 +132,18 @@ router.post('/package', async (req, res) => {
 
                 // Listing files in extracted folder
                 const filePaths = await getFilePaths(extractPath);
-                console.log(filePaths);
-                console.log(filePaths.length);
 
                 // Uploading files to object storage
+                console.log('Uploading files to object storage...');
                 const uploaded = await saveFiles(filePaths, '/tmp/extracted/');
 
                 if (uploaded) {
+                    console.log('Files uploaded');
                     // Delete local files
                     fs.rmSync(extractPath, { recursive: true });
                     fs.rmSync(downloadPath);
-
+                    console.log('Local files deleted');
+                    
                     res.status(200).json({
                         folderName: fileNameNoExt
                     })

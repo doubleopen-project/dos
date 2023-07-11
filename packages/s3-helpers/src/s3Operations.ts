@@ -68,7 +68,6 @@ export const downloadFile = async (bucketName: string, fileName: string, filePat
 
     try {
         // Check if the file exists in the bucket
-        
         if (await objectExistsCheck(fileName)) {
             
             const response: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
@@ -78,13 +77,12 @@ export const downloadFile = async (bucketName: string, fileName: string, filePat
                 const readableStream: Readable = response.Body as Readable;
                 
                 const dirPath: string = path.dirname(filePath);
-                console.log("dirPath: ", dirPath);
+
                 // Create the local directory if it does not exist
-                if (!(await fs.promises.stat(dirPath))) {
-                    console.log("here1");
-                    await mkdir(dirPath, { recursive: true });
+                if (!fs.existsSync(dirPath)) {
+                    fs.mkdirSync(dirPath, { recursive: true });
                 }
-                console.log("here2");
+
                 await writeFile(filePath, readableStream);
                 return true;
             } else {
@@ -268,7 +266,7 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
     const uploadParams: PutObjectCommandInput = { Bucket: bucketName, Key: fileName, Body: fileContent };
     try {
         const data: PutObjectCommandOutput = await s3Client.send(new PutObjectCommand(uploadParams));
-        console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
+        //console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
         return JSON.stringify(data);
     } catch (err) {
         console.log("Error trying to upload a file to S3 bucket", err);
