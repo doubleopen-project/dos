@@ -118,38 +118,35 @@ router.post('/package', async (req, res) => {
         const downloaded = await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath);
         if(downloaded) {
             console.log('Zip file downloaded');
-            // TODO: Get rid of the timeout by finding await solution for file download
-            // Waiting for file to be available
-            setTimeout(async() => {
-                // Check that file exists
-                const fileExists = fs.existsSync(downloadPath);
+            
+            // Check that file exists
+            const fileExists = fs.existsSync(downloadPath);
 
-                if (fileExists) {
-                    // Extracting zip file locally
-                    const zip = new admZip(downloadPath);
-                    zip.extractAllTo(extractPath, true);
-                    console.log('Zip file extracted');
-                    
-                    // Saving files in extracted folder to object storage
+            if (fileExists) {
+                // Extracting zip file locally
+                const zip = new admZip(downloadPath);
+                zip.extractAllTo(extractPath, true);
+                console.log('Zip file extracted');
+                
+                // Saving files in extracted folder to object storage
 
-                    // Listing files in extracted folder
-                    const filePaths = await getFilePaths(extractPath);
-                    console.log(filePaths);
-                    console.log(filePaths.length);
-                    
-                    // Uploading files to object storage
-                    saveFiles(filePaths, '/tmp/extracted/');
+                // Listing files in extracted folder
+                const filePaths = await getFilePaths(extractPath);
+                console.log(filePaths);
+                console.log(filePaths.length);
+                
+                // Uploading files to object storage
+                saveFiles(filePaths, '/tmp/extracted/');
 
-                    res.status(200).json({
-                        folderName: fileNameNoExt
-                    })
-                } else {
-                    console.log('Error: File does not exist');
-                    res.status(500).json({
-                        message: 'File does not exist'
-                    })
-                }
-            }, 1000);
+                res.status(200).json({
+                    folderName: fileNameNoExt
+                })
+            } else {
+                console.log('Error: File does not exist');
+                res.status(500).json({
+                    message: 'File does not exist'
+                })
+            }
         } else {
             console.log('Error: Zip file download failed');
             res.status(500).json({
