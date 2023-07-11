@@ -272,15 +272,23 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
 }
 
 // Upload files to a bucket
-export const saveFiles = (filePaths: string[], baseDir: string): void => {
-    filePaths.forEach(async (filePath: string) => {
-        // Upload file to S3
-        const file: Buffer = fs.readFileSync(baseDir+filePath);
+export const saveFiles = async (filePaths: string[], baseDir: string): Promise<boolean> => {
+    try {
+        checkS3ClientEnvs();
+        for (const filePath of filePaths) {
+            // Upload file to S3
+            const file: Buffer = fs.readFileSync(baseDir + filePath);
 
-        if (!process.env.SPACES_BUCKET) {
-            throw new Error("SPACES_BUCKET environment variable is missing");
+            if (!process.env.SPACES_BUCKET) {
+                throw new Error("SPACES_BUCKET environment variable is missing");
+            }
+
+            await uploadFile(process.env.SPACES_BUCKET, filePath, file);
         }
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
 
-        await uploadFile(process.env.SPACES_BUCKET, filePath, file);
-    });
 }
