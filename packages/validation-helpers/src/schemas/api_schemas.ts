@@ -15,7 +15,29 @@ export const ApiPostScanResultsRequestBodySchema = z.object({
 
 export const ApiPostScanResultsResponseBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
-    results: z.nullable(z.string())
+    results: z.union([
+        z.string(), 
+        z.null(),
+        z.object({
+            licenses: z.array(z.object({
+                license: z.string(),
+                location: z.object({
+                    path: z.string(),
+                    start_line: z.number(),
+                    end_line: z.number(),
+                }),
+                score: z.number(),
+            })),
+            copyrights: z.array(z.object({
+                statement: z.string(),
+                location: z.object({
+                    path: z.string(),
+                    start_line: z.number(),
+                    end_line: z.number(),
+                }),
+            })),
+        })
+    ]),
 })
 
 export const ApiPostUploadUrlRequestBodySchema = z.object({
