@@ -24,33 +24,29 @@ datasource db {
 /// SHA256 hash value, and one File can be referenced by multiple FileTrees, which represent the
 /// file's location in the context of one package.
 model File {
-  id        Int      @id @default(autoincrement())
-  sha256    String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  scanned   Boolean?
-
-  scannerJobId String?
-  scannerJob   ScannerJob? @relation(fields: [scannerJobId], references: [id])
+  id         Int      @id @default(autoincrement())
+  sha256     String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  scanStatus String
 
   filetrees         FileTree[]
   licenseFindings   LicenseFinding[]
   copyrightFindings CopyrightFinding[]
-
-  @@index([scannerJobId])
 }
 
 /// A package consisting of its source code files.
 model Package {
   id         Int      @id @default(autoincrement())
-  name       String
-  version    String
-  sourceUrl  String
-  sourceHash String   @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  purl       String
+  name       String
+  version    String
+  scanStatus String
 
-  fileTrees FileTree[]
+  fileTrees   FileTree[]
+  scannerJobs ScannerJob[]
 }
 
 /// File in the context of a package.
@@ -81,6 +77,8 @@ model LicenseFinding {
   startLine         Int
   endLine           Int
   score             Float
+  scannerName       String
+  scannerVersion    String
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
@@ -105,12 +103,14 @@ model LicenseFindingCuration {
 
 /// A copyright finding in a file.
 model CopyrightFinding {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  startLine Int
-  endLine   Int
-  copyright String
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  startLine      Int
+  endLine        Int
+  copyright      String
+  scannerName    String
+  scannerVersion String
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
@@ -139,13 +139,14 @@ model ScannerJob {
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
   state                  String
-  ortVersion             String?
   scannerName            String?
   scannerVersion         String?
+  scannerConfig          String?
   duration               Float?
   scanStartTS            DateTime?
   scanEndTS              DateTime?
   spdxLicenseListVersion String?
 
-  files File[]
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
 }
