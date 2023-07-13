@@ -72,6 +72,15 @@ export const createPackage = async (input: dbZodSchemas.CreatePackageInput): Pro
     });
 }
 
+export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Promise<Package> => {
+    return await prisma.package.update({
+        where: {
+            id: input.id
+        },
+        data: input.data
+    })
+}
+
 export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): Promise<FileTree> => {
     return await prisma.fileTree.create({
         data: input.data

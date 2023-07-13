@@ -193,8 +193,8 @@ workQueue.on("global:failed", async (jobId: Queue.JobId) => {
 
 workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     console.log("Job", jobId, "has been completed");
-    await postJobState(jobId, "completed");
     await postJobResults(jobId, result);
+    await postJobState(jobId, "completed");
 })
 
 // Job cleanup from the queue

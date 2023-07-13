@@ -317,7 +317,7 @@ export const ScannerJobResultSchema = z.object({
 								type: z.string().optional(),
 								namespace: z.string().optional(),
 								name: z.string().optional(),
-								version: z.string().optional(),
+								version: z.nullable(z.string().optional()),
 								qualifiers: z.object({}).optional(),
 								subpath: z.nullable(z.string()).optional(),
 								primary_language: z.string().optional(),
@@ -381,7 +381,7 @@ export const ScannerJobResultSchema = z.object({
 									})
 								).optional(),
 								repository_homepage_url: z.string().optional(),
-								repository_download_url: z.string().optional(),
+								repository_download_url: z.nullable(z.string().optional()),
 								api_data_url: z.string().optional(),
 								datasource_id: z.string().optional(),
 								purl: z.string().optional()
