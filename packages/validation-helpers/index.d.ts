@@ -21,11 +21,183 @@ declare const dosApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        results: zod.ZodNullable<zod.ZodString>;
+        results: zod.ZodUnion<[zod.ZodString, zod.ZodNull, zod.ZodObject<{
+            licenses: zod.ZodArray<zod.ZodObject<{
+                license: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }>, "many">;
+            copyrights: zod.ZodArray<zod.ZodObject<{
+                statement: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+            }, "strip", zod.ZodTypeAny, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }>]>;
     }, "strip", zod.ZodTypeAny, {
-        results: string | null;
+        results: ((string | {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }) & (string | {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        } | undefined)) | null;
     }, {
-        results: string | null;
+        results: ((string | {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }) & (string | {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        } | undefined)) | null;
     }>;
     errors: [{
         status: 500;

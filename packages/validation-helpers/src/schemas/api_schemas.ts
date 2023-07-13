@@ -70,7 +70,7 @@ export const ApiPostJobRequestBodySchema = z.object({
             required_error: 'Directory is required'
         })
         .trim()
-        .min(1, 'Directory cannot be empty'),
+        .min(1, 'Directory cannot be empty')
 })
 
 export const ApiPostJobResponseBodySchema = z.object({
