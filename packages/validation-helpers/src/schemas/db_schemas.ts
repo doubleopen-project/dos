@@ -9,18 +9,23 @@ export const DBScannerJobSchema = z.object({
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     state: z.string(),
-    ortVersion: z.string().optional().nullable(),
-    scancodeVersion: z.string().optional().nullable(),
+    scannerName: z.string().optional().nullable(),
+    scannerVersion: z.string().optional().nullable(),
+    scannerConfig: z.string().optional().nullable(),
     duration: z.number().optional().nullable(),
     scanStartTS: z.coerce.date().optional().nullable(),
     scanEndTS: z.coerce.date().optional().nullable(),
-    spdxLicenseListVersion: z.string().optional().nullable()
+    spdxLicenseListVersion: z.string().optional().nullable(),
+    packageId: z.number(),
 })
 
 export type DBScannerJobType = z.infer<typeof CreateScannerJobSchema>
 
 const CreateScannerJobSchema = z.object({
-    state: z.string()
+    data: z.object({
+        state: z.string(),
+        packageId: z.number(),
+    })
 })
 
 export type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>
@@ -30,15 +35,13 @@ export const DBFileSchema = z.object({
     sha256: z.string(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
-    scanned: z.boolean().optional(),
-    scannerJobId: z.string().optional()
+    scanStatus: z.string(),
 })
 
 const CreateFileSchema = z.object({
     data: z.object({
         sha256: z.string(),
-        scanned: z.boolean().optional(),
-        scannerJobId: z.string().optional()
+        scanStatus: z.string(),
     })
 })
 
@@ -80,7 +83,9 @@ const CreateLicenseFindingSchema = z.object({
         startLine: z.number(),
         endLine: z.number(),
         score: z.number(),
-        sha256: z.string()
+        sha256: z.string(),
+        scannerName: z.string(),
+        scannerVersion: z.string()
     })
 })
 
@@ -91,8 +96,21 @@ const CreateCopyrightFindingSchema = z.object({
         startLine: z.number(),
         endLine: z.number(),
         copyright: z.string(),
-        sha256: z.string()
+        sha256: z.string(),
+        scannerName: z.string(),
+        scannerVersion: z.string()
     })
 })
 
 export type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>
+
+const CreatePackageSchema = z.object({
+    data: z.object({
+        purl: z.string(),
+        name: z.string(),
+        version: z.string(),
+        scanStatus: z.string(),
+    })
+})
+
+export type CreatePackageInput = z.infer<typeof CreatePackageSchema>

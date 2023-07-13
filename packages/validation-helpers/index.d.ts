@@ -323,11 +323,11 @@ declare const dosApi: [{
             directory: zod.ZodString;
             purl: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
-            directory: string;
             purl: string;
+            directory: string;
         }, {
-            directory: string;
             purl: string;
+            directory: string;
         }>;
     }];
     response: zod.ZodObject<{
@@ -336,19 +336,23 @@ declare const dosApi: [{
             createdAt: zod.ZodDate;
             updatedAt: zod.ZodDate;
             state: zod.ZodString;
-            ortVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scancodeVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerName: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerConfig: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
             duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
             scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
             scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
             spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            packageId: zod.ZodNumber;
         }, "strip", zod.ZodTypeAny, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -358,8 +362,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -373,8 +379,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -387,8 +395,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -440,19 +450,23 @@ declare const dosApi: [{
             createdAt: zod.ZodDate;
             updatedAt: zod.ZodDate;
             state: zod.ZodString;
-            ortVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scancodeVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerName: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            scannerConfig: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
             duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
             scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
             scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
             spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
+            packageId: zod.ZodNumber;
         }, "strip", zod.ZodTypeAny, {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -462,8 +476,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -477,8 +493,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -491,8 +509,10 @@ declare const dosApi: [{
             createdAt: Date;
             updatedAt: Date;
             state: string;
-            ortVersion?: string | null | undefined;
-            scancodeVersion?: string | null | undefined;
+            packageId: number;
+            scannerName?: string | null | undefined;
+            scannerVersion?: string | null | undefined;
+            scannerConfig?: string | null | undefined;
             duration?: number | null | undefined;
             scanStartTS?: Date | null | undefined;
             scanEndTS?: Date | null | undefined;
@@ -742,8 +762,8 @@ declare const dosApi: [{
                             resolved_package: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                             extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                         }, "strip", zod.ZodTypeAny, {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -751,8 +771,8 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }, {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -769,10 +789,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -780,10 +803,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -821,10 +841,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -832,10 +855,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -876,8 +896,8 @@ declare const dosApi: [{
                     datafile_path: zod.ZodString;
                     datasource_id: zod.ZodString;
                 }, "strip", zod.ZodTypeAny, {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -887,10 +907,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -898,10 +921,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -939,10 +959,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -950,10 +973,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -993,8 +1013,8 @@ declare const dosApi: [{
                     for_package_uid: string;
                     datafile_path: string;
                 }, {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -1004,10 +1024,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -1015,10 +1038,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -1056,10 +1076,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -1067,10 +1090,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -1227,11 +1247,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -1284,11 +1304,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -1597,8 +1617,8 @@ declare const dosApi: [{
                                     resolved_package: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                                     extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                                 }, "strip", zod.ZodTypeAny, {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1606,8 +1626,8 @@ declare const dosApi: [{
                                     is_resolved: boolean;
                                     resolved_package: {};
                                 }, {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1672,8 +1692,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1738,8 +1758,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1755,8 +1775,8 @@ declare const dosApi: [{
                             }>;
                             extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                         }, "strip", zod.ZodTypeAny, {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -1814,8 +1834,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1830,8 +1850,8 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }, {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -1889,8 +1909,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1914,10 +1934,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -1975,8 +1998,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -1991,10 +2014,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2045,10 +2065,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2106,8 +2129,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -2122,10 +2145,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2292,10 +2312,10 @@ declare const dosApi: [{
                 }, "strip", zod.ZodTypeAny, {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -2330,10 +2350,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2391,8 +2414,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -2407,10 +2430,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2484,10 +2504,10 @@ declare const dosApi: [{
                 }, {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -2522,10 +2542,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2583,8 +2606,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -2599,10 +2622,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2708,8 +2728,8 @@ declare const dosApi: [{
                     };
                 }[];
                 dependencies: {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -2719,10 +2739,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2730,10 +2753,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2771,10 +2791,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2782,10 +2805,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -2829,11 +2849,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -2891,10 +2911,10 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -2929,10 +2949,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -2990,8 +3013,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -3006,10 +3029,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3115,8 +3135,8 @@ declare const dosApi: [{
                     };
                 }[];
                 dependencies: {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -3126,10 +3146,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3137,10 +3160,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3178,10 +3198,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3189,10 +3212,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3236,11 +3256,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -3298,10 +3318,10 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -3336,10 +3356,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3397,8 +3420,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -3413,10 +3436,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3525,8 +3545,8 @@ declare const dosApi: [{
                     };
                 }[];
                 dependencies: {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -3536,10 +3556,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3547,10 +3570,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3588,10 +3608,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3599,10 +3622,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3646,11 +3666,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -3708,10 +3728,10 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -3746,10 +3766,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3807,8 +3830,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -3823,10 +3846,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3935,8 +3955,8 @@ declare const dosApi: [{
                     };
                 }[];
                 dependencies: {
-                    extra_data: {};
                     purl: string;
+                    extra_data: {};
                     extracted_requirement: string | null;
                     scope: string;
                     is_runtime: boolean;
@@ -3946,10 +3966,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -3957,10 +3980,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -3998,10 +4018,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string;
+                        name: string;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -4009,10 +4032,7 @@ declare const dosApi: [{
                             is_resolved: boolean;
                             resolved_package: {};
                         }[];
-                        purl: string;
                         namespace: string;
-                        name: string;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -4056,11 +4076,11 @@ declare const dosApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
-                    extra_data: {};
                     purl: string;
-                    namespace: string | null;
                     name: string;
                     version: string;
+                    extra_data: {};
+                    namespace: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -4118,10 +4138,10 @@ declare const dosApi: [{
                 files: {
                     path: string;
                     type: string;
-                    sha256: string | null;
                     date: string | null;
-                    files_count: number;
+                    sha256: string | null;
                     name: string;
+                    files_count: number;
                     size: number;
                     sha1: string | null;
                     md5: string | null;
@@ -4156,10 +4176,13 @@ declare const dosApi: [{
                         type: string;
                         sha256: string | null;
                         copyright: string | null;
+                        purl: string | null;
+                        name: string | null;
+                        version: string | null;
                         extra_data: {};
                         dependencies: {
-                            extra_data: {};
                             purl: string;
+                            extra_data: {};
                             extracted_requirement: string | null;
                             scope: string;
                             is_runtime: boolean;
@@ -4217,8 +4240,8 @@ declare const dosApi: [{
                                 file_references?: unknown[] | undefined;
                                 extra_data?: {} | undefined;
                                 dependencies?: {
-                                    extra_data: {};
                                     purl: string;
+                                    extra_data: {};
                                     extracted_requirement: string;
                                     scope: string;
                                     is_runtime: boolean;
@@ -4233,10 +4256,7 @@ declare const dosApi: [{
                                 purl?: string | undefined;
                             };
                         }[];
-                        purl: string | null;
                         namespace: string | null;
-                        name: string | null;
-                        version: string | null;
                         qualifiers: {};
                         subpath: string | null;
                         primary_language: string;
@@ -4383,19 +4403,23 @@ declare const DBScannerJobSchema: z.ZodObject<{
     createdAt: z.ZodDate;
     updatedAt: z.ZodDate;
     state: z.ZodString;
-    ortVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-    scancodeVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    scannerName: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    scannerVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    scannerConfig: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     duration: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
     scanStartTS: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
     scanEndTS: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
     spdxLicenseListVersion: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    packageId: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
     id: string;
     createdAt: Date;
     updatedAt: Date;
     state: string;
-    ortVersion?: string | null | undefined;
-    scancodeVersion?: string | null | undefined;
+    packageId: number;
+    scannerName?: string | null | undefined;
+    scannerVersion?: string | null | undefined;
+    scannerConfig?: string | null | undefined;
     duration?: number | null | undefined;
     scanStartTS?: Date | null | undefined;
     scanEndTS?: Date | null | undefined;
@@ -4405,8 +4429,10 @@ declare const DBScannerJobSchema: z.ZodObject<{
     createdAt: Date;
     updatedAt: Date;
     state: string;
-    ortVersion?: string | null | undefined;
-    scancodeVersion?: string | null | undefined;
+    packageId: number;
+    scannerName?: string | null | undefined;
+    scannerVersion?: string | null | undefined;
+    scannerConfig?: string | null | undefined;
     duration?: number | null | undefined;
     scanStartTS?: Date | null | undefined;
     scanEndTS?: Date | null | undefined;
@@ -4414,11 +4440,26 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }>;
 type DBScannerJobType = z.infer<typeof CreateScannerJobSchema>;
 declare const CreateScannerJobSchema: z.ZodObject<{
-    state: z.ZodString;
+    data: z.ZodObject<{
+        state: z.ZodString;
+        packageId: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        state: string;
+        packageId: number;
+    }, {
+        state: string;
+        packageId: number;
+    }>;
 }, "strip", z.ZodTypeAny, {
-    state: string;
+    data: {
+        state: string;
+        packageId: number;
+    };
 }, {
-    state: string;
+    data: {
+        state: string;
+        packageId: number;
+    };
 }>;
 type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>;
 declare const DBFileSchema: z.ZodObject<{
@@ -4426,48 +4467,40 @@ declare const DBFileSchema: z.ZodObject<{
     sha256: z.ZodString;
     createdAt: z.ZodDate;
     updatedAt: z.ZodDate;
-    scanned: z.ZodOptional<z.ZodBoolean>;
-    scannerJobId: z.ZodOptional<z.ZodString>;
+    scanStatus: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: number;
     createdAt: Date;
     updatedAt: Date;
     sha256: string;
-    scanned?: boolean | undefined;
-    scannerJobId?: string | undefined;
+    scanStatus: string;
 }, {
     id: number;
     createdAt: Date;
     updatedAt: Date;
     sha256: string;
-    scanned?: boolean | undefined;
-    scannerJobId?: string | undefined;
+    scanStatus: string;
 }>;
 declare const CreateFileSchema: z.ZodObject<{
     data: z.ZodObject<{
         sha256: z.ZodString;
-        scanned: z.ZodOptional<z.ZodBoolean>;
-        scannerJobId: z.ZodOptional<z.ZodString>;
+        scanStatus: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         sha256: string;
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus: string;
     }, {
         sha256: string;
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         sha256: string;
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus: string;
     };
 }, {
     data: {
         sha256: string;
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus: string;
     };
 }>;
 type CreateFileInput = z.infer<typeof CreateFileSchema>;
@@ -4556,7 +4589,11 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         endLine: z.ZodNumber;
         score: z.ZodNumber;
         sha256: z.ZodString;
+        scannerName: z.ZodString;
+        scannerVersion: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
@@ -4564,6 +4601,8 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         endLine: number;
         score: number;
     }, {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
@@ -4573,6 +4612,8 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
@@ -4582,6 +4623,8 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
     };
 }, {
     data: {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
@@ -4597,12 +4640,18 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
         endLine: z.ZodNumber;
         copyright: z.ZodString;
         sha256: z.ZodString;
+        scannerName: z.ZodString;
+        scannerVersion: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
         copyright: string;
     }, {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
@@ -4610,6 +4659,8 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
@@ -4617,6 +4668,8 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     };
 }, {
     data: {
+        scannerName: string;
+        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
@@ -4624,6 +4677,39 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     };
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
+declare const CreatePackageSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        purl: z.ZodString;
+        name: z.ZodString;
+        version: z.ZodString;
+        scanStatus: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        scanStatus: string;
+        purl: string;
+        name: string;
+        version: string;
+    }, {
+        scanStatus: string;
+        purl: string;
+        name: string;
+        version: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        scanStatus: string;
+        purl: string;
+        name: string;
+        version: string;
+    };
+}, {
+    data: {
+        scanStatus: string;
+        purl: string;
+        name: string;
+        version: string;
+    };
+}>;
+type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
 
 declare const scannerAgentApi: [{
     method: "get";
@@ -4990,8 +5076,8 @@ declare const scannerAgentApi: [{
                         resolved_package: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                         extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                     }, "strip", zod.ZodTypeAny, {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -4999,8 +5085,8 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }, {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5017,10 +5103,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5028,10 +5117,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5069,10 +5155,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5080,10 +5169,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5124,8 +5210,8 @@ declare const scannerAgentApi: [{
                 datafile_path: zod.ZodString;
                 datasource_id: zod.ZodString;
             }, "strip", zod.ZodTypeAny, {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -5135,10 +5221,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5146,10 +5235,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5187,10 +5273,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5198,10 +5287,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5241,8 +5327,8 @@ declare const scannerAgentApi: [{
                 for_package_uid: string;
                 datafile_path: string;
             }, {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -5252,10 +5338,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5263,10 +5352,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5304,10 +5390,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -5315,10 +5404,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -5475,11 +5561,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -5532,11 +5618,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -5845,8 +5931,8 @@ declare const scannerAgentApi: [{
                                 resolved_package: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                                 extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                             }, "strip", zod.ZodTypeAny, {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -5854,8 +5940,8 @@ declare const scannerAgentApi: [{
                                 is_resolved: boolean;
                                 resolved_package: {};
                             }, {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -5920,8 +6006,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -5986,8 +6072,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6003,8 +6089,8 @@ declare const scannerAgentApi: [{
                         }>;
                         extra_data: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
                     }, "strip", zod.ZodTypeAny, {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6062,8 +6148,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6078,8 +6164,8 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }, {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6137,8 +6223,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6162,10 +6248,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6223,8 +6312,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6239,10 +6328,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -6293,10 +6379,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6354,8 +6443,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6370,10 +6459,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -6540,10 +6626,10 @@ declare const scannerAgentApi: [{
             }, "strip", zod.ZodTypeAny, {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -6578,10 +6664,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6639,8 +6728,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6655,10 +6744,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -6732,10 +6818,10 @@ declare const scannerAgentApi: [{
             }, {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -6770,10 +6856,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6831,8 +6920,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -6847,10 +6936,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -6956,8 +7042,8 @@ declare const scannerAgentApi: [{
                 };
             }[];
             dependencies: {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -6967,10 +7053,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -6978,10 +7067,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7019,10 +7105,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7030,10 +7119,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7077,11 +7163,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -7139,10 +7225,10 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -7177,10 +7263,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7238,8 +7327,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -7254,10 +7343,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7363,8 +7449,8 @@ declare const scannerAgentApi: [{
                 };
             }[];
             dependencies: {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -7374,10 +7460,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7385,10 +7474,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7426,10 +7512,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7437,10 +7526,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7484,11 +7570,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -7546,10 +7632,10 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -7584,10 +7670,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7645,8 +7734,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -7661,10 +7750,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7778,8 +7864,8 @@ declare const scannerAgentApi: [{
                 };
             }[];
             dependencies: {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -7789,10 +7875,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7800,10 +7889,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7841,10 +7927,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -7852,10 +7941,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -7899,11 +7985,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -7961,10 +8047,10 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -7999,10 +8085,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -8060,8 +8149,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -8076,10 +8165,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -8193,8 +8279,8 @@ declare const scannerAgentApi: [{
                 };
             }[];
             dependencies: {
-                extra_data: {};
                 purl: string;
+                extra_data: {};
                 extracted_requirement: string | null;
                 scope: string;
                 is_runtime: boolean;
@@ -8204,10 +8290,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -8215,10 +8304,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -8256,10 +8342,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string;
+                    name: string;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -8267,10 +8356,7 @@ declare const scannerAgentApi: [{
                         is_resolved: boolean;
                         resolved_package: {};
                     }[];
-                    purl: string;
                     namespace: string;
-                    name: string;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -8314,11 +8400,11 @@ declare const scannerAgentApi: [{
                 type: string;
                 sha256: string | null;
                 copyright: string | null;
-                extra_data: {};
                 purl: string;
-                namespace: string | null;
                 name: string;
                 version: string;
+                extra_data: {};
+                namespace: string | null;
                 qualifiers: {};
                 subpath: string | null;
                 primary_language: string;
@@ -8376,10 +8462,10 @@ declare const scannerAgentApi: [{
             files: {
                 path: string;
                 type: string;
-                sha256: string | null;
                 date: string | null;
-                files_count: number;
+                sha256: string | null;
                 name: string;
+                files_count: number;
                 size: number;
                 sha1: string | null;
                 md5: string | null;
@@ -8414,10 +8500,13 @@ declare const scannerAgentApi: [{
                     type: string;
                     sha256: string | null;
                     copyright: string | null;
+                    purl: string | null;
+                    name: string | null;
+                    version: string | null;
                     extra_data: {};
                     dependencies: {
-                        extra_data: {};
                         purl: string;
+                        extra_data: {};
                         extracted_requirement: string | null;
                         scope: string;
                         is_runtime: boolean;
@@ -8475,8 +8564,8 @@ declare const scannerAgentApi: [{
                             file_references?: unknown[] | undefined;
                             extra_data?: {} | undefined;
                             dependencies?: {
-                                extra_data: {};
                                 purl: string;
+                                extra_data: {};
                                 extracted_requirement: string;
                                 scope: string;
                                 is_runtime: boolean;
@@ -8491,10 +8580,7 @@ declare const scannerAgentApi: [{
                             purl?: string | undefined;
                         };
                     }[];
-                    purl: string | null;
                     namespace: string | null;
-                    name: string | null;
-                    version: string | null;
                     qualifiers: {};
                     subpath: string | null;
                     primary_language: string;
@@ -8601,4 +8687,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi, scannerAgentApi };
