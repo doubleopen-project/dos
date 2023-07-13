@@ -16,7 +16,7 @@ export const ApiPostScanResultsRequestBodySchema = z.object({
 export const ApiPostScanResultsResponseBodySchema = z.object({
     //TODO: edit accordingly when implementing the scan-results endpoint
     results: z.union([
-        z.string(), 
+        z.string(),
         z.null(),
         z.object({
             licenses: z.array(z.object({
@@ -58,10 +58,18 @@ export const ApiPostPackageRequestBodySchema = z.object({
     zipFileKey: z.string({
         required_error: 'Zip file key is required'
     })
+        .trim()
+        .min(1, 'Zip file key cannot be empty'),
+    purl: z.string({
+        required_error: 'Purl is required'
+    })
+        .trim()
+        .min(1, 'Purl cannot be empty'),
 })
 
 export const ApiPostPackageResponseBodySchema = z.object({
-    folderName: z.string()
+    folderName: z.string(),
+    packageId: z.number()
 })
 
 export const ApiPostJobRequestBodySchema = z.object({
@@ -71,11 +79,9 @@ export const ApiPostJobRequestBodySchema = z.object({
         })
         .trim()
         .min(1, 'Directory cannot be empty'),
-    purl: z.string({
-        required_error: 'Purl is required'
-        })
-        .trim()
-        .min(1, 'Purl cannot be empty'),
+    packageId: z.number({
+        required_error: 'Package ID is required'
+    })
 })
 
 export const ApiPostJobResponseBodySchema = z.object({
@@ -122,7 +128,7 @@ export const ErrorSchema = z.object({
 })
 
 export const ApiGetJobStateRequestSchema = z.string({
-	required_error: "Scan job ID is required"
+    required_error: "Scan job ID is required"
 })
 
 export const ApiGetJobStateResponseBodySchema = z.object({
