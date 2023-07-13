@@ -47,7 +47,7 @@ const CreateFileSchema = z.object({
 
 export type CreateFileInput = z.infer<typeof CreateFileSchema>
 
-const EditScannerJobSchema = z.object({
+const UpdateScannerJobSchema = z.object({
     id: z.string({
         required_error: 'Id is required'
     }),
@@ -62,19 +62,18 @@ const EditScannerJobSchema = z.object({
     })
 })
 
-export type EditScannerJobInput = z.infer<typeof EditScannerJobSchema>
+export type UpdateScannerJobInput = z.infer<typeof UpdateScannerJobSchema>
 
-const EditFileSchema = z.object({
+const UpdateFileSchema = z.object({
     id: z.number({
         required_error: 'Id is required'
     }),
     data: z.object({
-        scanned: z.boolean().optional(),
-        scannerJobId: z.string().optional()
+        scanStatus: z.string().optional()
     })
 })
 
-export type EditFileInput = z.infer<typeof EditFileSchema>
+export type UpdateFileInput = z.infer<typeof UpdateFileSchema>
 
 const CreateLicenseFindingSchema = z.object({
     data: z.object({
@@ -114,3 +113,13 @@ const CreatePackageSchema = z.object({
 })
 
 export type CreatePackageInput = z.infer<typeof CreatePackageSchema>
+
+const CreateFileTreeSchema = z.object({
+    data: z.object({
+        path: z.string(),
+        packageId: z.number(),
+        sha256: z.string()
+    })
+})
+
+export type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>

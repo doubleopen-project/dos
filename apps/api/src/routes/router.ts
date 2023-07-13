@@ -218,7 +218,7 @@ router.post('/job', async (req, res) => {
         if (response.status === 201) {
             console.log('Changing ScannerJob state to "addedToQueue"');
 
-            const editedScannerJob = await dbQueries.editScannerJob({
+            const editedScannerJob = await dbQueries.updateScannerJob({
                 id: newScannerJob.id,
                 data: { state: 'addedToQueue' }
             })
@@ -259,7 +259,7 @@ router.get('/job-state/:id', async (req, res) => {
 // Endpoint for receiving job state changes from scanner agent and updating job state in database
 router.put('/job-state', async (req, res) => {
     try {
-        const editedScannerJob = await dbQueries.editScannerJob({
+        const editedScannerJob = await dbQueries.updateScannerJob({
             id: req.body.id,
             data: { state: req.body.state }
         })
@@ -282,7 +282,7 @@ router.post('/job-results', async (req, res) => {
 
             console.log('Editing scanner job');
 
-            await dbQueries.editScannerJob(
+            const scannerJob = await dbQueries.updateScannerJob(
                 {
                     id: req.body.id,
                     data: {
@@ -311,14 +311,21 @@ router.post('/job-results', async (req, res) => {
                                 }
                             });
                         } else {
-                            await dbQueries.editFile({
+                            await dbQueries.updateFile({
                                 id: dbFile.id,
                                 data: {
-                                    scanned: true,
-                                    scannerJobId: req.body.id
+                                    scanStatus: 'scanned',
                                 }
                             })
                         }
+
+                        await dbQueries.createFileTree({
+                            data: {
+                                path: file.path,
+                                packageId: scannerJob.packageId,
+                                sha256: file.sha256,
+                            }
+                        })
 
                         for (const license of file.license_detections) {
                             for (const match of license.matches) {

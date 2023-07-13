@@ -4,17 +4,17 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, LicenseFinding, Package, PrismaClient, ScannerJob } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, Package, PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
-import { CreateFileInput, EditFileInput, CreateScannerJobInput, EditScannerJobInput, CreateLicenseFindingInput, CreateCopyrightFindingInput, CreatePackageInput } from 'validation-helpers';
+import * as dbZodSchemas from 'validation-helpers';
 
-export const createScannerJob = async (input: CreateScannerJobInput): Promise<ScannerJob> => {
+export const createScannerJob = async (input: dbZodSchemas.CreateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
         data: input.data
     });
 }
 
-export const editScannerJob = async (input: EditScannerJobInput): Promise<ScannerJob> => {
+export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.update({
         where: {
             id: input.id
@@ -31,13 +31,13 @@ export const findFileWithHash = async (hash: string): Promise<File | null> => {
     })
 }
 
-export const createFile = async (input: CreateFileInput): Promise<File> => {
+export const createFile = async (input: dbZodSchemas.CreateFileInput): Promise<File> => {
     return await prisma.file.create({
         data: input.data
     });
 }
 
-export const editFile = async (input: EditFileInput): Promise<File> => {
+export const updateFile = async (input: dbZodSchemas.UpdateFileInput): Promise<File> => {
     return await prisma.file.update({
         where: {
             id: input.id
@@ -46,13 +46,13 @@ export const editFile = async (input: EditFileInput): Promise<File> => {
     })
 }
 
-export const createLicenseFinding = async (input: CreateLicenseFindingInput): Promise<LicenseFinding> => {
+export const createLicenseFinding = async (input: dbZodSchemas.CreateLicenseFindingInput): Promise<LicenseFinding> => {
     return await prisma.licenseFinding.create({
         data: input.data
     });
 }
 
-export const createCopyrightFinding = async (input: CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
+export const createCopyrightFinding = async (input: dbZodSchemas.CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
     return await prisma.copyrightFinding.create({
         data: input.data
     });
@@ -66,8 +66,14 @@ export const findScannerJobById = async (id: string): Promise<ScannerJob | null>
     })
 }
 
-export const createPackage = async (input: CreatePackageInput): Promise<Package> => {
+export const createPackage = async (input: dbZodSchemas.CreatePackageInput): Promise<Package> => {
     return await prisma.package.create({
+        data: input.data
+    });
+}
+
+export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): Promise<FileTree> => {
+    return await prisma.fileTree.create({
         data: input.data
     });
 }
