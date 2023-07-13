@@ -278,17 +278,23 @@ declare const dosApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             zipFileKey: zod.ZodString;
+            purl: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
+            purl: string;
             zipFileKey: string;
         }, {
+            purl: string;
             zipFileKey: string;
         }>;
     }];
     response: zod.ZodObject<{
         folderName: zod.ZodString;
+        packageId: zod.ZodNumber;
     }, "strip", zod.ZodTypeAny, {
+        packageId: number;
         folderName: string;
     }, {
+        packageId: number;
         folderName: string;
     }>;
     errors: [{
@@ -321,12 +327,12 @@ declare const dosApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             directory: zod.ZodString;
-            purl: zod.ZodString;
+            packageId: zod.ZodNumber;
         }, "strip", zod.ZodTypeAny, {
-            purl: string;
+            packageId: number;
             directory: string;
         }, {
-            purl: string;
+            packageId: number;
             directory: string;
         }>;
     }];

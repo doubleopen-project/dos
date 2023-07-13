@@ -6,7 +6,7 @@ import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { downloadFile, getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
-import { addNewCopyrightFinding, addNewFile, addNewLicenseFinding, addNewScannerJob, editFile, editScannerJob, findFileWithHash, findScannerJobById } from '../helpers/db_queries';
+import * as dbQueries from '../helpers/db_queries';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
 import admZip from 'adm-zip';
@@ -27,6 +27,7 @@ router.post('/scan-results', (req, res) => {
         - send results in response
         - error handling
     */
+
 
     res.status(200).json({
         'results': null
@@ -143,9 +144,21 @@ router.post('/package', async (req, res) => {
                     fs.rmSync(extractPath, { recursive: true });
                     fs.rmSync(downloadPath);
                     console.log('Local files deleted');
-                    
+
+                    // Create new Package in database
+                    // TODO: replace placeholders with actual data
+                    const newPackage = await dbQueries.createPackage({
+                        data: {
+                            purl: req.body.purl,
+                            name: 'placeHolder',
+                            version: 'placeholder',
+                            scanStatus: 'notStarted'
+                        }
+                    });
+
                     res.status(200).json({
-                        folderName: fileNameNoExt
+                        folderName: fileNameNoExt,
+                        packageId: newPackage.id
                     })
                 } else {
                     console.log('Error: Files not uploaded');
@@ -178,7 +191,12 @@ router.post('/job', async (req, res) => {
     try {
         console.log('Adding a new ScannerJob to the database');
 
-        const newScannerJob = await addNewScannerJob({ state: 'created' });
+        const newScannerJob = await dbQueries.createScannerJob({
+            data: {
+                state: 'created',
+                packageId: req.body.packageId
+            }
+        });
 
         console.log('Sending a request to Scanner Agent to add new job to the work queue');
 
@@ -200,7 +218,7 @@ router.post('/job', async (req, res) => {
         if (response.status === 201) {
             console.log('Changing ScannerJob state to "addedToQueue"');
 
-            const editedScannerJob = await editScannerJob({
+            const editedScannerJob = await dbQueries.editScannerJob({
                 id: newScannerJob.id,
                 data: { state: 'addedToQueue' }
             })
@@ -227,8 +245,8 @@ router.post('/job', async (req, res) => {
 // Endpoint for getting job state from database
 router.get('/job-state/:id', async (req, res) => {
     try {
-        const scannerJob = await findScannerJobById(req.params.id);
-        if(!scannerJob) throw new Error('Scanner Job with requested id cannot be found in the database');
+        const scannerJob = await dbQueries.findScannerJobById(req.params.id);
+        if (!scannerJob) throw new Error('Scanner Job with requested id cannot be found in the database');
         res.status(200).json({
             state: scannerJob.state
         })
@@ -241,7 +259,7 @@ router.get('/job-state/:id', async (req, res) => {
 // Endpoint for receiving job state changes from scanner agent and updating job state in database
 router.put('/job-state', async (req, res) => {
     try {
-        const editedScannerJob = await editScannerJob({
+        const editedScannerJob = await dbQueries.editScannerJob({
             id: req.body.id,
             data: { state: req.body.state }
         })
@@ -264,7 +282,7 @@ router.post('/job-results', async (req, res) => {
 
             console.log('Editing scanner job');
 
-            await editScannerJob(
+            await dbQueries.editScannerJob(
                 {
                     id: req.body.id,
                     data: {
@@ -284,17 +302,16 @@ router.post('/job-results', async (req, res) => {
 
                 if (file.type === 'file') {
                     if (file.sha256) {
-                        let dbFile = await findFileWithHash(file.sha256);
+                        let dbFile = await dbQueries.findFileWithHash(file.sha256);
                         if (!dbFile) {
-                            dbFile = await addNewFile({
+                            dbFile = await dbQueries.createFile({
                                 data: {
                                     sha256: file.sha256,
-                                    scanned: true,
-                                    scannerJobId: req.body.id
+                                    scanStatus: 'scanned',
                                 }
                             });
                         } else {
-                            await editFile({
+                            await dbQueries.editFile({
                                 id: dbFile.id,
                                 data: {
                                     scanned: true,
@@ -305,26 +322,30 @@ router.post('/job-results', async (req, res) => {
 
                         for (const license of file.license_detections) {
                             for (const match of license.matches) {
-                                await addNewLicenseFinding({
+                                await dbQueries.createLicenseFinding({
                                     data: {
                                         scanner: req.body.result.headers[0].tool_name,
                                         licenseExpression: license.license_expression,
                                         startLine: match.start_line,
                                         endLine: match.end_line,
                                         score: match.score,
-                                        sha256: file.sha256
+                                        sha256: file.sha256,
+                                        scannerName: req.body.result.headers[0].tool_name,
+                                        scannerVersion: req.body.result.headers[0].tool_version
                                     }
                                 })
                             }
                         }
 
                         for (const copyright of file.copyrights) {
-                            await addNewCopyrightFinding({
+                            await dbQueries.createCopyrightFinding({
                                 data: {
                                     startLine: copyright.start_line,
                                     endLine: copyright.end_line,
                                     copyright: copyright.copyright,
-                                    sha256: file.sha256
+                                    sha256: file.sha256,
+                                    scannerName: req.body.result.headers[0].tool_name,
+                                    scannerVersion: req.body.result.headers[0].tool_version
                                 }
                             })
                         }
