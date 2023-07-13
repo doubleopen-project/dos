@@ -4,15 +4,13 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, LicenseFinding, PrismaClient, ScannerJob } from 'database';
+import { CopyrightFinding, File, LicenseFinding, Package, PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
-import { CreateFileInput, EditFileInput, CreateScannerJobInput, EditScannerJobInput, CreateLicenseFindingInput, CreateCopyrightFindingInput } from 'validation-helpers';
+import { CreateFileInput, EditFileInput, CreateScannerJobInput, EditScannerJobInput, CreateLicenseFindingInput, CreateCopyrightFindingInput, CreatePackageInput } from 'validation-helpers';
 
-export const addNewScannerJob = async (input: CreateScannerJobInput): Promise<ScannerJob> => {
+export const createScannerJob = async (input: CreateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
-        data: {
-            state: input.state
-        }
+        data: input.data
     });
 }
 
@@ -33,7 +31,7 @@ export const findFileWithHash = async (hash: string): Promise<File | null> => {
     })
 }
 
-export const addNewFile = async (input: CreateFileInput): Promise<File> => {
+export const createFile = async (input: CreateFileInput): Promise<File> => {
     return await prisma.file.create({
         data: input.data
     });
@@ -48,13 +46,13 @@ export const editFile = async (input: EditFileInput): Promise<File> => {
     })
 }
 
-export const addNewLicenseFinding = async (input: CreateLicenseFindingInput): Promise<LicenseFinding> => {
+export const createLicenseFinding = async (input: CreateLicenseFindingInput): Promise<LicenseFinding> => {
     return await prisma.licenseFinding.create({
         data: input.data
     });
 }
 
-export const addNewCopyrightFinding = async (input: CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
+export const createCopyrightFinding = async (input: CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
     return await prisma.copyrightFinding.create({
         data: input.data
     });
@@ -66,4 +64,10 @@ export const findScannerJobById = async (id: string): Promise<ScannerJob | null>
             id: id
         },
     })
+}
+
+export const createPackage = async (input: CreatePackageInput): Promise<Package> => {
+    return await prisma.package.create({
+        data: input.data
+    });
 }
