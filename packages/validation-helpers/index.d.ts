@@ -4510,7 +4510,7 @@ declare const CreateFileSchema: z.ZodObject<{
     };
 }>;
 type CreateFileInput = z.infer<typeof CreateFileSchema>;
-declare const EditScannerJobSchema: z.ZodObject<{
+declare const UpdateScannerJobSchema: z.ZodObject<{
     id: z.ZodString;
     data: z.ZodObject<{
         state: z.ZodOptional<z.ZodString>;
@@ -4560,33 +4560,28 @@ declare const EditScannerJobSchema: z.ZodObject<{
         spdxLicenseListVersion?: string | undefined;
     };
 }>;
-type EditScannerJobInput = z.infer<typeof EditScannerJobSchema>;
-declare const EditFileSchema: z.ZodObject<{
+type UpdateScannerJobInput = z.infer<typeof UpdateScannerJobSchema>;
+declare const UpdateFileSchema: z.ZodObject<{
     id: z.ZodNumber;
     data: z.ZodObject<{
-        scanned: z.ZodOptional<z.ZodBoolean>;
-        scannerJobId: z.ZodOptional<z.ZodString>;
+        scanStatus: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus?: string | undefined;
     }, {
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     id: number;
     data: {
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus?: string | undefined;
     };
 }, {
     id: number;
     data: {
-        scanned?: boolean | undefined;
-        scannerJobId?: string | undefined;
+        scanStatus?: string | undefined;
     };
 }>;
-type EditFileInput = z.infer<typeof EditFileSchema>;
+type UpdateFileInput = z.infer<typeof UpdateFileSchema>;
 declare const CreateLicenseFindingSchema: z.ZodObject<{
     data: z.ZodObject<{
         scanner: z.ZodString;
@@ -4716,6 +4711,34 @@ declare const CreatePackageSchema: z.ZodObject<{
     };
 }>;
 type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
+declare const CreateFileTreeSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        path: z.ZodString;
+        packageId: z.ZodNumber;
+        sha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        packageId: number;
+        path: string;
+        sha256: string;
+    }, {
+        packageId: number;
+        path: string;
+        sha256: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        packageId: number;
+        path: string;
+        sha256: string;
+    };
+}, {
+    data: {
+        packageId: number;
+        path: string;
+        sha256: string;
+    };
+}>;
+type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
 
 declare const scannerAgentApi: [{
     method: "get";
@@ -8693,4 +8716,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, EditFileInput, EditScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, UpdateFileInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
