@@ -20,18 +20,69 @@ const router = zodiosRouter(dosApi);
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
 
 //Endpoint for fetching scan results from database
-router.post('/scan-results', (req, res) => {
+router.post('/scan-results', async (req, res) => {
     /*
     TODO: 
         - implement fetching scan results from database based on ORT analyzer results sent by user
         - send results in response
         - error handling
     */
+    const queriedPackage = await dbQueries.findPackageByPurl(req.body.purl);
+    console.log(queriedPackage);
 
+    if(queriedPackage) {
+        const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
+        
+        if(queriedScanResults) {
+            const licenses = [];
+            const copyrights = [];
 
-    res.status(200).json({
-        'results': null
-    })
+            for (const record of queriedScanResults) {
+                if(record.file.licenseFindings.length > 0) {
+                    for (const licenseFinding of record.file.licenseFindings) {
+                        licenses.push({
+                            license: licenseFinding.licenseExpression,
+                            location: {
+                                path: record.path,
+                                start_line: licenseFinding.startLine,
+                                end_line: licenseFinding.endLine
+                            },
+                            score: licenseFinding.score
+                        })
+                    }
+                }
+
+                if(record.file.copyrightFindings.length > 0) {
+                    for (const copyrightFinding of record.file.copyrightFindings) {
+                        copyrights.push({
+                            statement: copyrightFinding.copyright,
+                            location: {
+                                path: record.path,
+                                start_line: copyrightFinding.startLine,
+                                end_line: copyrightFinding.endLine
+                            }
+                        })
+                    }
+                }
+            }
+            
+            res.status(200).json({
+                'results': {
+                    licenses: licenses,
+                    copyrights: copyrights
+                }
+            })
+        } else {
+            res.status(200).json({
+                'results': null
+            })
+        }
+    } else {
+        res.status(200).json({
+            'results': null
+        })
+    }
+    
 })
 
 // Endpoint for requesting presigned upload url from object storage and sending url in response

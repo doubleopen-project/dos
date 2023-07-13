@@ -77,3 +77,27 @@ export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): P
         data: input.data
     });
 }
+
+export const findPackageByPurl = async (purl: string): Promise<Package | null> => {
+    return await prisma.package.findFirst({
+        where: {
+            purl: purl
+        },
+    })
+}
+
+export const getPackageScanResults = async (packageId: number) => {
+    return await prisma.fileTree.findMany({
+        where: {
+            packageId: packageId
+        },
+        include: {
+            file: {
+                include: {
+                    licenseFindings: true,
+                    copyrightFindings: true,
+                }
+            }
+        }
+    })
+}
