@@ -70,7 +70,12 @@ export const ApiPostJobRequestBodySchema = z.object({
             required_error: 'Directory is required'
         })
         .trim()
-        .min(1, 'Directory cannot be empty')
+        .min(1, 'Directory cannot be empty'),
+    purl: z.string({
+        required_error: 'Purl is required'
+        })
+        .trim()
+        .min(1, 'Purl cannot be empty'),
 })
 
 export const ApiPostJobResponseBodySchema = z.object({

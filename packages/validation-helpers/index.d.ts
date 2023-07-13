@@ -321,10 +321,13 @@ declare const dosApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             directory: zod.ZodString;
+            purl: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
             directory: string;
+            purl: string;
         }, {
             directory: string;
+            purl: string;
         }>;
     }];
     response: zod.ZodObject<{
