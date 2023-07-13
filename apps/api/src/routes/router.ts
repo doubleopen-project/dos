@@ -30,59 +30,66 @@ router.post('/scan-results', async (req, res) => {
     const queriedPackage = await dbQueries.findPackageByPurl(req.body.purl);
     console.log(queriedPackage);
 
-    if(queriedPackage) {
-        const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
-        
-        if(queriedScanResults) {
-            const licenses = [];
-            const copyrights = [];
-
-            for (const record of queriedScanResults) {
-                if(record.file.licenseFindings.length > 0) {
-                    for (const licenseFinding of record.file.licenseFindings) {
-                        licenses.push({
-                            license: licenseFinding.licenseExpression,
-                            location: {
-                                path: record.path,
-                                start_line: licenseFinding.startLine,
-                                end_line: licenseFinding.endLine
-                            },
-                            score: licenseFinding.score
-                        })
-                    }
-                }
-
-                if(record.file.copyrightFindings.length > 0) {
-                    for (const copyrightFinding of record.file.copyrightFindings) {
-                        copyrights.push({
-                            statement: copyrightFinding.copyright,
-                            location: {
-                                path: record.path,
-                                start_line: copyrightFinding.startLine,
-                                end_line: copyrightFinding.endLine
-                            }
-                        })
-                    }
-                }
-            }
-            
+    if (queriedPackage) {
+        if (queriedPackage.scanStatus === 'pending') {
             res.status(200).json({
-                'results': {
-                    licenses: licenses,
-                    copyrights: copyrights
-                }
+                'results': 'pending'
             })
         } else {
-            res.status(200).json({
-                'results': null
-            })
+            const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
+
+            if (queriedScanResults) {
+                const licenses = [];
+                const copyrights = [];
+
+                for (const record of queriedScanResults) {
+                    if (record.file.licenseFindings.length > 0) {
+                        for (const licenseFinding of record.file.licenseFindings) {
+                            licenses.push({
+                                license: licenseFinding.licenseExpression,
+                                location: {
+                                    path: record.path,
+                                    start_line: licenseFinding.startLine,
+                                    end_line: licenseFinding.endLine
+                                },
+                                score: licenseFinding.score
+                            })
+                        }
+                    }
+
+                    if (record.file.copyrightFindings.length > 0) {
+                        for (const copyrightFinding of record.file.copyrightFindings) {
+                            copyrights.push({
+                                statement: copyrightFinding.copyright,
+                                location: {
+                                    path: record.path,
+                                    start_line: copyrightFinding.startLine,
+                                    end_line: copyrightFinding.endLine
+                                }
+                            })
+                        }
+                    }
+                }
+
+                res.status(200).json({
+                    'results': {
+                        licenses: licenses,
+                        copyrights: copyrights
+                    }
+                })
+            } else {
+                res.status(200).json({
+                    'results': null
+                })
+            }
         }
+
     } else {
         res.status(200).json({
             'results': null
         })
     }
-    
+
 })
 
 // Endpoint for requesting presigned upload url from object storage and sending url in response
@@ -269,13 +276,18 @@ router.post('/job', async (req, res) => {
         if (response.status === 201) {
             console.log('Changing ScannerJob state to "addedToQueue"');
 
-            const editedScannerJob = await dbQueries.updateScannerJob({
+            const updatedScannerJob = await dbQueries.updateScannerJob({
                 id: newScannerJob.id,
-                data: { state: 'addedToQueue' }
+                data: { state: 'queued' }
+            })
+
+            await dbQueries.updatePackage({
+                id: req.body.packageId,
+                data: { scanStatus: 'pending' }
             })
 
             res.status(201).json({
-                scannerJob: editedScannerJob,
+                scannerJob: updatedScannerJob,
                 message: 'Job added to queue'
             })
         } else {
@@ -310,13 +322,22 @@ router.get('/job-state/:id', async (req, res) => {
 // Endpoint for receiving job state changes from scanner agent and updating job state in database
 router.put('/job-state', async (req, res) => {
     try {
-        const editedScannerJob = await dbQueries.updateScannerJob({
+        const updatedScannerJob = await dbQueries.updateScannerJob({
             id: req.body.id,
             data: { state: req.body.state }
         })
 
+        if (req.body.state === 'completed') {
+            console.log('Changing package scanStatus to "scanned"');
+
+            await dbQueries.updatePackage({
+                id: updatedScannerJob.packageId,
+                data: { scanStatus: 'scanned' }
+            })
+        }
+
         res.status(200).json({
-            editedScannerJob: editedScannerJob,
+            editedScannerJob: updatedScannerJob,
             message: 'Received job with id ' + req.body.id + '. Changed state to ' + req.body.state
         })
 

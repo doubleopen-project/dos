@@ -114,6 +114,17 @@ const CreatePackageSchema = z.object({
 
 export type CreatePackageInput = z.infer<typeof CreatePackageSchema>
 
+const UpdatePackageSchema = z.object({
+    id: z.number({
+        required_error: 'Id is required'
+    }),
+    data: z.object({
+        scanStatus: z.string().optional()
+    })
+})
+
+export type UpdatePackageInput = z.infer<typeof UpdatePackageSchema>
+
 const CreateFileTreeSchema = z.object({
     data: z.object({
         path: z.string(),

@@ -1510,7 +1510,7 @@ declare const dosApi: [{
                                 type: zod.ZodOptional<zod.ZodString>;
                                 namespace: zod.ZodOptional<zod.ZodString>;
                                 name: zod.ZodOptional<zod.ZodString>;
-                                version: zod.ZodOptional<zod.ZodString>;
+                                version: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
                                 qualifiers: zod.ZodOptional<zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>>;
                                 subpath: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                                 primary_language: zod.ZodOptional<zod.ZodString>;
@@ -1642,7 +1642,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }>, "many">>;
                                 repository_homepage_url: zod.ZodOptional<zod.ZodString>;
-                                repository_download_url: zod.ZodOptional<zod.ZodString>;
+                                repository_download_url: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
                                 api_data_url: zod.ZodOptional<zod.ZodString>;
                                 datasource_id: zod.ZodOptional<zod.ZodString>;
                                 purl: zod.ZodOptional<zod.ZodString>;
@@ -1650,7 +1650,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -1708,7 +1708,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -1716,7 +1716,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -1774,7 +1774,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -1792,7 +1792,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -1850,7 +1850,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -1867,7 +1867,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -1925,7 +1925,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -1956,7 +1956,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -2014,7 +2014,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -2087,7 +2087,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -2145,7 +2145,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -2372,7 +2372,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -2430,7 +2430,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -2564,7 +2564,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -2622,7 +2622,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -2971,7 +2971,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -3029,7 +3029,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -3378,7 +3378,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -3436,7 +3436,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -3788,7 +3788,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -3846,7 +3846,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -4198,7 +4198,7 @@ declare const dosApi: [{
                                 type?: string | undefined;
                                 namespace?: string | undefined;
                                 name?: string | undefined;
-                                version?: string | undefined;
+                                version?: string | null | undefined;
                                 qualifiers?: {} | undefined;
                                 subpath?: string | null | undefined;
                                 primary_language?: string | undefined;
@@ -4256,7 +4256,7 @@ declare const dosApi: [{
                                     resolved_package: {};
                                 }[] | undefined;
                                 repository_homepage_url?: string | undefined;
-                                repository_download_url?: string | undefined;
+                                repository_download_url?: string | null | undefined;
                                 api_data_url?: string | undefined;
                                 datasource_id?: string | undefined;
                                 purl?: string | undefined;
@@ -4711,6 +4711,27 @@ declare const CreatePackageSchema: z.ZodObject<{
     };
 }>;
 type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
+declare const UpdatePackageSchema: z.ZodObject<{
+    id: z.ZodNumber;
+    data: z.ZodObject<{
+        scanStatus: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        scanStatus?: string | undefined;
+    }, {
+        scanStatus?: string | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    id: number;
+    data: {
+        scanStatus?: string | undefined;
+    };
+}, {
+    id: number;
+    data: {
+        scanStatus?: string | undefined;
+    };
+}>;
+type UpdatePackageInput = z.infer<typeof UpdatePackageSchema>;
 declare const CreateFileTreeSchema: z.ZodObject<{
     data: z.ZodObject<{
         path: z.ZodString;
@@ -5847,7 +5868,7 @@ declare const scannerAgentApi: [{
                             type: zod.ZodOptional<zod.ZodString>;
                             namespace: zod.ZodOptional<zod.ZodString>;
                             name: zod.ZodOptional<zod.ZodString>;
-                            version: zod.ZodOptional<zod.ZodString>;
+                            version: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
                             qualifiers: zod.ZodOptional<zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>>;
                             subpath: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                             primary_language: zod.ZodOptional<zod.ZodString>;
@@ -5979,7 +6000,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }>, "many">>;
                             repository_homepage_url: zod.ZodOptional<zod.ZodString>;
-                            repository_download_url: zod.ZodOptional<zod.ZodString>;
+                            repository_download_url: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
                             api_data_url: zod.ZodOptional<zod.ZodString>;
                             datasource_id: zod.ZodOptional<zod.ZodString>;
                             purl: zod.ZodOptional<zod.ZodString>;
@@ -5987,7 +6008,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6045,7 +6066,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6053,7 +6074,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6111,7 +6132,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6129,7 +6150,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6187,7 +6208,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6204,7 +6225,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6262,7 +6283,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6293,7 +6314,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6351,7 +6372,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6424,7 +6445,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6482,7 +6503,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6709,7 +6730,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6767,7 +6788,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -6901,7 +6922,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -6959,7 +6980,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -7308,7 +7329,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -7366,7 +7387,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -7715,7 +7736,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -7773,7 +7794,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -8130,7 +8151,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -8188,7 +8209,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -8545,7 +8566,7 @@ declare const scannerAgentApi: [{
                             type?: string | undefined;
                             namespace?: string | undefined;
                             name?: string | undefined;
-                            version?: string | undefined;
+                            version?: string | null | undefined;
                             qualifiers?: {} | undefined;
                             subpath?: string | null | undefined;
                             primary_language?: string | undefined;
@@ -8603,7 +8624,7 @@ declare const scannerAgentApi: [{
                                 resolved_package: {};
                             }[] | undefined;
                             repository_homepage_url?: string | undefined;
-                            repository_download_url?: string | undefined;
+                            repository_download_url?: string | null | undefined;
                             api_data_url?: string | undefined;
                             datasource_id?: string | undefined;
                             purl?: string | undefined;
@@ -8716,4 +8737,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, UpdateFileInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
