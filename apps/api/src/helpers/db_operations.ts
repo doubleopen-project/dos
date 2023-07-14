@@ -124,3 +124,10 @@ export const deletePackageDataByPurl = async (purl: string): Promise<string> => 
     }
 
 }
+
+export const getJobState = async (jobId: string): Promise<string | null> => {
+    const scannerJob = await dbQueries.findScannerJobById(jobId);
+    if (!scannerJob) return null;
+
+    return scannerJob.state;
+}
