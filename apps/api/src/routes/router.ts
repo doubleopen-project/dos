@@ -7,6 +7,7 @@ import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
 import { downloadFile, getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
+import * as dbOperations from '../helpers/db_operations';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
 import admZip from 'adm-zip';
@@ -22,84 +23,8 @@ const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : '
 //Endpoint for fetching scan results from database
 router.post('/scan-results', async (req, res) => {
     try {
-        const queriedPackage = await dbQueries.findPackageByPurl(req.body.purl);
-
-        if (queriedPackage) {
-
-            if (queriedPackage.scanStatus === 'pending') {
-                const scannerJob = await dbQueries.findMostRecentScannerJobByPackageId(queriedPackage.id);
-
-                if (scannerJob) {
-                    res.status(200).json({
-                        'state': {
-                            'status': 'pending',
-                            'id': scannerJob.id
-                        },
-                        'results': null
-                    })
-                } else {
-                    throw new Error('Error: unable to fetch scanner job id from database');
-                }
-            } else {
-                const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
-
-                if (queriedScanResults) {
-                    const licenses = [];
-                    const copyrights = [];
-
-                    for (const record of queriedScanResults) {
-                        if (record.file.licenseFindings.length > 0) {
-                            for (const licenseFinding of record.file.licenseFindings) {
-                                licenses.push({
-                                    license: licenseFinding.licenseExpression,
-                                    location: {
-                                        path: record.path,
-                                        start_line: licenseFinding.startLine,
-                                        end_line: licenseFinding.endLine
-                                    },
-                                    score: licenseFinding.score
-                                })
-                            }
-                        }
-
-                        if (record.file.copyrightFindings.length > 0) {
-                            for (const copyrightFinding of record.file.copyrightFindings) {
-                                copyrights.push({
-                                    statement: copyrightFinding.copyright,
-                                    location: {
-                                        path: record.path,
-                                        start_line: copyrightFinding.startLine,
-                                        end_line: copyrightFinding.endLine
-                                    }
-                                })
-                            }
-                        }
-                    }
-
-                    res.status(200).json({
-                        'state': {
-                            'status': 'ready',
-                            'id': null
-                        },
-                        'results': {
-                            licenses: licenses,
-                            copyrights: copyrights
-                        }
-                    })
-                } else {
-                    throw new Error('Error: unable to fetch scan results from database');
-                }
-            }
-
-        } else {
-            res.status(200).json({
-                'state': {
-                    'status': 'no-results',
-                    'id': null
-                },
-                'results': null
-            })
-        }
+        const response = await dbOperations.getPackageResults(req.body.purl);
+        res.status(200).json(response);
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -107,10 +32,11 @@ router.post('/scan-results', async (req, res) => {
 
 })
 
+// Endpoint for deleting scan results for a specified package purl
 router.delete('/scan-results', async (req, res) => {
     try {
-        await dbQueries.deletePackageDataByPurl(req.body.purl);
-        res.status(200).json({ message: 'Package data deleted' });
+        const message = await dbOperations.deletePackageDataByPurl(req.body.purl);
+        res.status(200).json({ message: message });
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -174,10 +100,7 @@ Endpoint for adding a Package
 router.post('/package', async (req, res) => {
     /*  
     TODO:
-    - fetch zip file from object storage
-    - extract zip file
     - find out file hashes
-    - create new Package in database
     - go through files in zip file:
         - check if file with hash exists in database
             - if exists: add FileTree that links File to Package
