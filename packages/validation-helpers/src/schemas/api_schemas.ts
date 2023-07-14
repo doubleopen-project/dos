@@ -41,6 +41,16 @@ export const ApiPostScanResultsResponseBodySchema = z.object({
     ]),
 })
 
+export const ApiDeleteScanResultsRequestBodySchema = z.object({
+    purl: z.string({
+        required_error: 'Purl is required'
+    })
+})
+
+export const ApiDeleteScanResultsResponseBodySchema = z.object({
+    message: z.string()
+})
+
 export const ApiPostUploadUrlRequestBodySchema = z.object({
     key: z.string({
         required_error: 'Key is required'

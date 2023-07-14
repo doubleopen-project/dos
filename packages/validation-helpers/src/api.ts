@@ -32,6 +32,31 @@ export const dosApi = makeApi([
     ]
   },
   {
+    method: 'delete',
+    path: '/scan-results',
+    description: 'Delete scan results for specific purl',
+    parameters: [
+        {
+            name: 'body',
+            type: 'Body',
+            schema: schemas.ApiDeleteScanResultsRequestBodySchema
+        }
+    ],
+    response: schemas.ApiDeleteScanResultsResponseBodySchema,
+    errors: [
+      {
+        status: 500,
+        description: 'Internal server error',
+        schema: schemas.ErrorSchema
+      },
+      {
+        status: 400,
+        description: 'Bad request',
+        schema: schemas.ErrorSchema
+      }
+    ]
+  },
+  {
     method: 'post',
     path: '/upload-url',
     description: 'Get presigned upload URL for S3 object storage',
