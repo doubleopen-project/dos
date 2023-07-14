@@ -256,14 +256,18 @@ router.post('/job', async (req, res) => {
 // Endpoint for getting job state from database
 router.get('/job-state/:id', async (req, res) => {
     try {
-        const scannerJob = await dbQueries.findScannerJobById(req.params.id);
-        if (!scannerJob) throw new Error('Scanner Job with requested id cannot be found in the database');
-        res.status(200).json({
-            state: scannerJob.state
-        })
+        const jobState = await dbOperations.getJobState(req.params.id);
+
+        if(!jobState) {
+            res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
+        } else {
+            res.status(200).json({
+                state: jobState
+            })
+        }
     } catch (error) {
-        console.log('Error: ', error);
-        res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
+        console.log('Problem with database query: ' + error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 })
 
