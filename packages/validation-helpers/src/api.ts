@@ -9,15 +9,15 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/scan-results',
-    description: 'Get scan results',
+    description: 'Get scan results for specified purl',
     parameters: [
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiPostScanResultsRequestBodySchema
+            schema: schemas.PostScanResultsReq
         }
     ],
-    response: schemas.ApiPostScanResultsResponseBodySchema,
+    response: schemas.PostScanResultsRes,
     errors: [
       {
         status: 500,
@@ -34,15 +34,15 @@ export const dosApi = makeApi([
   {
     method: 'delete',
     path: '/scan-results',
-    description: 'Delete scan results for specific purl',
+    description: 'Delete scan results for specified purl',
     parameters: [
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiDeleteScanResultsRequestBodySchema
+            schema: schemas.DeleteScanResultsReq
         }
     ],
-    response: schemas.ApiDeleteScanResultsResponseBodySchema,
+    response: schemas.DeleteScanResultsRes,
     errors: [
       {
         status: 500,
@@ -59,15 +59,15 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/upload-url',
-    description: 'Get presigned upload URL for S3 object storage',
+    description: 'Get presigned upload URL for S3 object storage with specified object key',
     parameters: [
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiPostUploadUrlRequestBodySchema
+            schema: schemas.PostUploadUrlReq
         }
     ],
-    response: schemas.ApiPostUploadUrlResponseBodySchema,
+    response: schemas.PostUploadUrlRes,
     errors: [
       {
         status: 500,
@@ -84,15 +84,15 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/package',
-    description: '',
+    description: 'Add package for processing, with specified purl and S3 URL',
     parameters: [
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiPostPackageRequestBodySchema
+            schema: schemas.PostPackageReq
         }
     ],
-    response: schemas.ApiPostPackageResponseBodySchema,
+    response: schemas.PostPackageRes,
     errors: [
       {
         status: 500,
@@ -109,65 +109,15 @@ export const dosApi = makeApi([
   {
     method: 'post',
     path: '/job',
-    description: 'Add scanner job',
+    description: 'Add scanner job for package',
     parameters: [
         {
             name: 'body',
             type: 'Body',
-            schema: schemas.ApiPostJobRequestBodySchema
+            schema: schemas.PostJobReq
         }
     ],
-    response: schemas.ApiPostJobResponseBodySchema,
-    errors: [
-      {
-        status: 500,
-        description: 'Internal server error',
-        schema: schemas.ErrorSchema
-      },
-      {
-        status: 400,
-        description: 'Bad request',
-        schema: schemas.ErrorSchema
-      }
-    ]
-  },
-  {
-    method: 'put',
-    path: '/job-state',
-    description: 'Edit scanner job state',
-    parameters: [
-        {
-            name: 'body',
-            type: 'Body',
-            schema: schemas.ApiPutJobStateRequestBodySchema
-        }
-    ],
-    response: schemas.ApiPutJobStateResponseBodySchema,
-    errors: [
-      {
-        status: 500,
-        description: 'Internal server error',
-        schema: schemas.ErrorSchema
-      },
-      {
-        status: 400,
-        description: 'Bad request',
-        schema: schemas.ErrorSchema
-      }
-    ]
-  },
-  {
-    method: 'post',
-    path: '/job-results',
-    description: 'Save scanner job results',
-    parameters: [
-        {
-            name: 'body',
-            type: 'Body',
-            schema: schemas.ApiPostJobResultsRequestBodySchema
-        }
-    ],
-    response: schemas.ApiPostJobResultsResponseBodySchema,
+    response: schemas.PostJobRes,
     errors: [
       {
         status: 500,
@@ -189,10 +139,10 @@ export const dosApi = makeApi([
         {
             name: 'id',
             type: 'Path',
-            schema: schemas.ApiGetJobStateRequestSchema
+            schema: schemas.GetJobStateReq
         }
     ],
-    response: schemas.ApiGetJobStateResponseBodySchema,
+    response: schemas.GetJobStateRes,
     errors: [
       {
         status: 500,
@@ -206,4 +156,54 @@ export const dosApi = makeApi([
       }
     ]
   },
+  {
+    method: 'put',
+    path: '/job-state',
+    description: 'Edit scanner job state',
+    parameters: [
+        {
+            name: 'body',
+            type: 'Body',
+            schema: schemas.PutJobStateReq
+        }
+    ],
+    response: schemas.PutJobStateRes,
+    errors: [
+      {
+        status: 500,
+        description: 'Internal server error',
+        schema: schemas.ErrorSchema
+      },
+      {
+        status: 400,
+        description: 'Bad request',
+        schema: schemas.ErrorSchema
+      }
+    ]
+  },
+  {
+    method: 'post',
+    path: '/job-results',
+    description: 'Save scanner job results',
+    parameters: [
+        {
+            name: 'body',
+            type: 'Body',
+            schema: schemas.PostJobResultsReq
+        }
+    ],
+    response: schemas.PostJobResultsRes,
+    errors: [
+      {
+        status: 500,
+        description: 'Internal server error',
+        schema: schemas.ErrorSchema
+      },
+      {
+        status: 400,
+        description: 'Bad request',
+        schema: schemas.ErrorSchema
+      }
+    ]
+  }
 ]);

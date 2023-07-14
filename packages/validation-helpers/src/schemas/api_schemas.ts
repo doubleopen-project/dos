@@ -6,13 +6,15 @@ import { z } from 'zod';
 import { DBScannerJobSchema } from './db_schemas';
 import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
-export const ApiPostScanResultsRequestBodySchema = z.object({
+//---------------- POST scan-results ----------------
+
+export const PostScanResultsReq = z.object({
     purl: z.string({
         required_error: 'Purl is required'
     })
 })
 
-export const ApiPostScanResultsResponseBodySchema = z.object({
+export const PostScanResultsRes = z.object({
     state: z.object({
         status: z.string(),
         id: z.nullable(z.string()),
@@ -41,17 +43,21 @@ export const ApiPostScanResultsResponseBodySchema = z.object({
     ]),
 })
 
-export const ApiDeleteScanResultsRequestBodySchema = z.object({
+//---------------- DELETE scan-results ----------------
+
+export const DeleteScanResultsReq = z.object({
     purl: z.string({
         required_error: 'Purl is required'
     })
 })
 
-export const ApiDeleteScanResultsResponseBodySchema = z.object({
+export const DeleteScanResultsRes = z.object({
     message: z.string()
 })
 
-export const ApiPostUploadUrlRequestBodySchema = z.object({
+//---------------- POST upload-url ----------------
+
+export const PostUploadUrlReq = z.object({
     key: z.string({
         required_error: 'Key is required'
     })
@@ -59,13 +65,15 @@ export const ApiPostUploadUrlRequestBodySchema = z.object({
         .min(1, 'Key cannot be empty'),
 })
 
-export const ApiPostUploadUrlResponseBodySchema = z.object({
+export const PostUploadUrlRes = z.object({
     success: z.boolean(),
     presignedUrl: z.string().optional(),
     message: z.string().optional()
 })
 
-export const ApiPostPackageRequestBodySchema = z.object({
+//---------------- POST package ----------------
+
+export const PostPackageReq = z.object({
     zipFileKey: z.string({
         required_error: 'Zip file key is required'
     })
@@ -78,12 +86,14 @@ export const ApiPostPackageRequestBodySchema = z.object({
         .min(1, 'Purl cannot be empty'),
 })
 
-export const ApiPostPackageResponseBodySchema = z.object({
+export const PostPackageRes = z.object({
     folderName: z.string(),
     packageId: z.number()
 })
 
-export const ApiPostJobRequestBodySchema = z.object({
+//---------------- POST job ----------------
+
+export const PostJobReq = z.object({
     directory: z.
         string({
             required_error: 'Directory is required'
@@ -95,12 +105,24 @@ export const ApiPostJobRequestBodySchema = z.object({
     })
 })
 
-export const ApiPostJobResponseBodySchema = z.object({
+export const PostJobRes = z.object({
     scannerJob: DBScannerJobSchema,
     message: z.string()
 })
 
-export const ApiPutJobStateRequestBodySchema = z.object({
+//---------------- GET job-state ----------------
+
+export const GetJobStateReq = z.string({
+    required_error: "Scan job ID is required"
+})
+
+export const GetJobStateRes = z.object({
+    state: z.string()
+})
+
+//---------------- PUT job-state ----------------
+
+export const PutJobStateReq = z.object({
     id: z.
         string({
             required_error: 'Id is required'
@@ -115,12 +137,14 @@ export const ApiPutJobStateRequestBodySchema = z.object({
         .min(1, 'State cannot be empty')
 })
 
-export const ApiPutJobStateResponseBodySchema = z.object({
+export const PutJobStateRes = z.object({
     editedScannerJob: DBScannerJobSchema,
     message: z.string()
 })
 
-export const ApiPostJobResultsRequestBodySchema = z.object({
+//---------------- POST job-results ----------------
+
+export const PostJobResultsReq = z.object({
     id: z.
         string({
             required_error: 'Id is required'
@@ -130,18 +154,12 @@ export const ApiPostJobResultsRequestBodySchema = z.object({
     result: ScannerJobResultSchema
 })
 
-export const ApiPostJobResultsResponseBodySchema = z.object({
+export const PostJobResultsRes = z.object({
     message: z.string()
 })
+
+//---------------- Error schema ----------------
 
 export const ErrorSchema = z.object({
     message: z.string()
-})
-
-export const ApiGetJobStateRequestSchema = z.string({
-    required_error: "Scan job ID is required"
-})
-
-export const ApiGetJobStateResponseBodySchema = z.object({
-    state: z.string()
 })

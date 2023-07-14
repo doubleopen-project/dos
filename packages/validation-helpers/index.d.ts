@@ -8,7 +8,7 @@ import { z } from 'zod';
 declare const dosApi: [{
     method: "post";
     path: "/scan-results";
-    description: "Get scan results";
+    description: "Get scan results for specified purl";
     parameters: [{
         name: "body";
         type: "Body";
@@ -205,7 +205,7 @@ declare const dosApi: [{
 }, {
     method: "delete";
     path: "/scan-results";
-    description: "Delete scan results for specific purl";
+    description: "Delete scan results for specified purl";
     parameters: [{
         name: "body";
         type: "Body";
@@ -248,7 +248,7 @@ declare const dosApi: [{
 }, {
     method: "post";
     path: "/upload-url";
-    description: "Get presigned upload URL for S3 object storage";
+    description: "Get presigned upload URL for S3 object storage with specified object key";
     parameters: [{
         name: "body";
         type: "Body";
@@ -297,7 +297,7 @@ declare const dosApi: [{
 }, {
     method: "post";
     path: "/package";
-    description: "";
+    description: "Add package for processing, with specified purl and S3 URL";
     parameters: [{
         name: "body";
         type: "Body";
@@ -346,7 +346,7 @@ declare const dosApi: [{
 }, {
     method: "post";
     path: "/job";
-    description: "Add scanner job";
+    description: "Add scanner job for package";
     parameters: [{
         name: "body";
         type: "Body";
@@ -435,6 +435,43 @@ declare const dosApi: [{
             scanEndTS?: Date | null | undefined;
             spdxLicenseListVersion?: string | null | undefined;
         };
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/job-state/:id";
+    description: "Get state for scanner job with given id";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        state: string;
+    }, {
+        state: string;
     }>;
     errors: [{
         status: 500;
@@ -4390,43 +4427,6 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
-}, {
-    method: "get";
-    path: "/job-state/:id";
-    description: "Get state for scanner job with given id";
-    parameters: [{
-        name: "id";
-        type: "Path";
-        schema: zod.ZodString;
-    }];
-    response: zod.ZodObject<{
-        state: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        state: string;
-    }, {
-        state: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: string;
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: string;
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
@@ -4493,48 +4493,6 @@ declare const CreateScannerJobSchema: z.ZodObject<{
     };
 }>;
 type CreateScannerJobInput = z.infer<typeof CreateScannerJobSchema>;
-declare const DBFileSchema: z.ZodObject<{
-    id: z.ZodNumber;
-    sha256: z.ZodString;
-    createdAt: z.ZodDate;
-    updatedAt: z.ZodDate;
-    scanStatus: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    sha256: string;
-    scanStatus: string;
-}, {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    sha256: string;
-    scanStatus: string;
-}>;
-declare const CreateFileSchema: z.ZodObject<{
-    data: z.ZodObject<{
-        sha256: z.ZodString;
-        scanStatus: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        sha256: string;
-        scanStatus: string;
-    }, {
-        sha256: string;
-        scanStatus: string;
-    }>;
-}, "strip", z.ZodTypeAny, {
-    data: {
-        sha256: string;
-        scanStatus: string;
-    };
-}, {
-    data: {
-        sha256: string;
-        scanStatus: string;
-    };
-}>;
-type CreateFileInput = z.infer<typeof CreateFileSchema>;
 declare const UpdateScannerJobSchema: z.ZodObject<{
     id: z.ZodString;
     data: z.ZodObject<{
@@ -4586,6 +4544,56 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
     };
 }>;
 type UpdateScannerJobInput = z.infer<typeof UpdateScannerJobSchema>;
+declare const ScannerJobOnlyIdSchema: z.ZodObject<{
+    id: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+}, {
+    id: string;
+}>;
+type ScannerJobOnlyIdOutput = z.infer<typeof ScannerJobOnlyIdSchema>;
+declare const DBFileSchema: z.ZodObject<{
+    id: z.ZodNumber;
+    sha256: z.ZodString;
+    createdAt: z.ZodDate;
+    updatedAt: z.ZodDate;
+    scanStatus: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    sha256: string;
+    scanStatus: string;
+}, {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    sha256: string;
+    scanStatus: string;
+}>;
+declare const CreateFileSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        sha256: z.ZodString;
+        scanStatus: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        sha256: string;
+        scanStatus: string;
+    }, {
+        sha256: string;
+        scanStatus: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        sha256: string;
+        scanStatus: string;
+    };
+}, {
+    data: {
+        sha256: string;
+        scanStatus: string;
+    };
+}>;
+type CreateFileInput = z.infer<typeof CreateFileSchema>;
 declare const UpdateFileSchema: z.ZodObject<{
     id: z.ZodNumber;
     data: z.ZodObject<{
@@ -4775,14 +4783,6 @@ declare const CreateFileTreeSchema: z.ZodObject<{
     };
 }>;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
-declare const ScannerJobOnlyIdSchema: z.ZodObject<{
-    id: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    id: string;
-}, {
-    id: string;
-}>;
-type ScannerJobOnlyIdOutput = z.infer<typeof ScannerJobOnlyIdSchema>;
 
 declare const scannerAgentApi: [{
     method: "get";
