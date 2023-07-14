@@ -126,3 +126,65 @@ export const findMostRecentScannerJobByPackageId = async (packageId: number): Pr
     })
 }
 
+// Delete data for packages with purl
+export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
+    // Find all packages with purl
+    const packages: Package[] = await prisma.package.findMany({
+        where: {
+            purl: purl
+        }
+    })
+
+    // Find all scannerJobs for packages
+    const scannerJobs: ScannerJob[] = await prisma.scannerJob.findMany({
+        where: {
+            packageId: {
+                in: packages.map(p => p.id)
+            }
+        }
+    })
+
+    // Delete all license findings for scannerJobs
+    await prisma.licenseFinding.deleteMany({
+        where: {
+            scannerJobId: {
+                in: scannerJobs.map(s => s.id)
+            }
+        }
+    })
+
+    // Delete all copyright findings for scannerJobs
+    await prisma.copyrightFinding.deleteMany({
+        where: {
+            scannerJobId: {
+                in: scannerJobs.map(s => s.id)
+            }
+        }
+    })
+
+    // Delete all FileTrees for packages
+    await prisma.fileTree.deleteMany({
+        where: {
+            packageId: {
+                in: packages.map(p => p.id)
+            }
+        }
+    })
+
+    // Delete all scannerJobs for packages
+    await prisma.scannerJob.deleteMany({
+        where: {
+            packageId: {
+                in: packages.map(p => p.id)
+            }
+        }
+    })
+
+    // Delete all packages with purl
+    await prisma.package.deleteMany({
+        where: {
+            purl: purl
+        }
+    })
+}
+

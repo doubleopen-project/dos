@@ -107,6 +107,16 @@ router.post('/scan-results', async (req, res) => {
 
 })
 
+router.delete('/scan-results', async (req, res) => {
+    try {
+        await dbQueries.deletePackageDataByPurl(req.body.purl);
+        res.status(200).json({ message: 'Package data deleted' });
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
 // Endpoint for requesting presigned upload url from object storage and sending url in response
 router.post('/upload-url', async (req, res) => {
 
@@ -424,8 +434,7 @@ router.post('/job-results', async (req, res) => {
                                         endLine: match.end_line,
                                         score: match.score,
                                         sha256: file.sha256,
-                                        scannerName: req.body.result.headers[0].tool_name,
-                                        scannerVersion: req.body.result.headers[0].tool_version
+                                        scannerJobId: scannerJob.id
                                     }
                                 })
                             }
@@ -438,8 +447,7 @@ router.post('/job-results', async (req, res) => {
                                     endLine: copyright.end_line,
                                     copyright: copyright.copyright,
                                     sha256: file.sha256,
-                                    scannerName: req.body.result.headers[0].tool_name,
-                                    scannerVersion: req.body.result.headers[0].tool_version
+                                    scannerJobId: scannerJob.id
                                 }
                             })
                         }

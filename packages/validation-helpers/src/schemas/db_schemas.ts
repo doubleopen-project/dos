@@ -83,8 +83,7 @@ const CreateLicenseFindingSchema = z.object({
         endLine: z.number(),
         score: z.number(),
         sha256: z.string(),
-        scannerName: z.string(),
-        scannerVersion: z.string()
+        scannerJobId: z.string()
     })
 })
 
@@ -96,8 +95,7 @@ const CreateCopyrightFindingSchema = z.object({
         endLine: z.number(),
         copyright: z.string(),
         sha256: z.string(),
-        scannerName: z.string(),
-        scannerVersion: z.string()
+        scannerJobId: z.string()
     })
 })
 
@@ -134,14 +132,6 @@ const CreateFileTreeSchema = z.object({
 })
 
 export type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>
-
-/*
-const ScannerJobOnlyIdSchema = z.union([
-    z.object({
-        id: z.string(),
-    }),
-    z.unknown()
-])*/
 
 const ScannerJobOnlyIdSchema = z.object({
     id: z.string(),

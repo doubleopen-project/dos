@@ -77,11 +77,12 @@ model LicenseFinding {
   startLine         Int
   endLine           Int
   score             Float
-  scannerName       String
-  scannerVersion    String
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
+
+  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
+  scannerJobId String
 
   licenseFindingCurations LicenseFindingCuration[]
 
@@ -103,17 +104,18 @@ model LicenseFindingCuration {
 
 /// A copyright finding in a file.
 model CopyrightFinding {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  startLine      Int
-  endLine        Int
-  copyright      String
-  scannerName    String
-  scannerVersion String
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  startLine Int
+  endLine   Int
+  copyright String
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
+
+  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
+  scannerJobId String
 
   copyrightFindingCurations CopyrightFindingCuration[]
 
@@ -147,6 +149,8 @@ model ScannerJob {
   scanEndTS              DateTime?
   spdxLicenseListVersion String?
 
-  packageId Int
-  package   Package @relation(fields: [packageId], references: [id])
+  packageId        Int
+  package          Package            @relation(fields: [packageId], references: [id])
+  LicenseFinding   LicenseFinding[]
+  CopyrightFinding CopyrightFinding[]
 }

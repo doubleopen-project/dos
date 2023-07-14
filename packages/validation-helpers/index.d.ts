@@ -203,6 +203,49 @@ declare const dosApi: [{
         }>;
     }];
 }, {
+    method: "delete";
+    path: "/scan-results";
+    description: "Delete scan results for specific purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: string;
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
     method: "post";
     path: "/upload-url";
     description: "Get presigned upload URL for S3 object storage";
@@ -4572,48 +4615,43 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         endLine: z.ZodNumber;
         score: z.ZodNumber;
         sha256: z.ZodString;
-        scannerName: z.ZodString;
-        scannerVersion: z.ZodString;
+        scannerJobId: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
         score: number;
+        scannerJobId: string;
     }, {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
         score: number;
+        scannerJobId: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
         score: number;
+        scannerJobId: string;
     };
 }, {
     data: {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
         score: number;
+        scannerJobId: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -4623,39 +4661,34 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
         endLine: z.ZodNumber;
         copyright: z.ZodString;
         sha256: z.ZodString;
-        scannerName: z.ZodString;
-        scannerVersion: z.ZodString;
+        scannerJobId: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
+        scannerJobId: string;
         copyright: string;
     }, {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
+        scannerJobId: string;
         copyright: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
+        scannerJobId: string;
         copyright: string;
     };
 }, {
     data: {
-        scannerName: string;
-        scannerVersion: string;
         sha256: string;
         startLine: number;
         endLine: number;
+        scannerJobId: string;
         copyright: string;
     };
 }>;
