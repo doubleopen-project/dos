@@ -21,7 +21,17 @@ declare const dosApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        results: zod.ZodUnion<[zod.ZodString, zod.ZodNull, zod.ZodObject<{
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            id: zod.ZodNullable<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            id: string | null;
+            status: string;
+        }, {
+            id: string | null;
+            status: string;
+        }>;
+        results: zod.ZodUnion<[zod.ZodNull, zod.ZodObject<{
             licenses: zod.ZodArray<zod.ZodObject<{
                 license: zod.ZodString;
                 location: zod.ZodObject<{
@@ -123,7 +133,11 @@ declare const dosApi: [{
             }[];
         }>]>;
     }, "strip", zod.ZodTypeAny, {
-        results: ((string | {
+        state: {
+            id: string | null;
+            status: string;
+        };
+        results: {
             copyrights: {
                 location: {
                     path: string;
@@ -141,27 +155,13 @@ declare const dosApi: [{
                     end_line: number;
                 };
             }[];
-        }) & (string | {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-        } | undefined)) | null;
+        } | null;
     }, {
-        results: ((string | {
+        state: {
+            id: string | null;
+            status: string;
+        };
+        results: {
             copyrights: {
                 location: {
                     path: string;
@@ -179,25 +179,7 @@ declare const dosApi: [{
                     end_line: number;
                 };
             }[];
-        }) & (string | {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-        } | undefined)) | null;
+        } | null;
     }>;
     errors: [{
         status: 500;
@@ -4760,6 +4742,14 @@ declare const CreateFileTreeSchema: z.ZodObject<{
     };
 }>;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
+declare const ScannerJobOnlyIdSchema: z.ZodObject<{
+    id: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+}, {
+    id: string;
+}>;
+type ScannerJobOnlyIdOutput = z.infer<typeof ScannerJobOnlyIdSchema>;
 
 declare const scannerAgentApi: [{
     method: "get";
@@ -8737,4 +8727,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };

@@ -7,16 +7,17 @@ import { DBScannerJobSchema } from './db_schemas';
 import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
 export const ApiPostScanResultsRequestBodySchema = z.object({
-    //TODO: edit accordingly when implementing the scan-results endpoint
     purl: z.string({
         required_error: 'Purl is required'
     })
 })
 
 export const ApiPostScanResultsResponseBodySchema = z.object({
-    //TODO: edit accordingly when implementing the scan-results endpoint
+    state: z.object({
+        status: z.string(),
+        id: z.nullable(z.string()),
+    }),
     results: z.union([
-        z.string(),
         z.null(),
         z.object({
             licenses: z.array(z.object({

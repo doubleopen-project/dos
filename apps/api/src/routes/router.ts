@@ -21,73 +21,88 @@ const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : '
 
 //Endpoint for fetching scan results from database
 router.post('/scan-results', async (req, res) => {
-    /*
-    TODO: 
-        - implement fetching scan results from database based on ORT analyzer results sent by user
-        - send results in response
-        - error handling
-    */
-    const queriedPackage = await dbQueries.findPackageByPurl(req.body.purl);
-    console.log(queriedPackage);
+    try {
+        const queriedPackage = await dbQueries.findPackageByPurl(req.body.purl);
 
-    if (queriedPackage) {
-        if (queriedPackage.scanStatus === 'pending') {
-            res.status(200).json({
-                'results': 'pending'
-            })
-        } else {
-            const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
+        if (queriedPackage) {
 
-            if (queriedScanResults) {
-                const licenses = [];
-                const copyrights = [];
+            if (queriedPackage.scanStatus === 'pending') {
+                const scannerJob = await dbQueries.findMostRecentScannerJobByPackageId(queriedPackage.id);
 
-                for (const record of queriedScanResults) {
-                    if (record.file.licenseFindings.length > 0) {
-                        for (const licenseFinding of record.file.licenseFindings) {
-                            licenses.push({
-                                license: licenseFinding.licenseExpression,
-                                location: {
-                                    path: record.path,
-                                    start_line: licenseFinding.startLine,
-                                    end_line: licenseFinding.endLine
-                                },
-                                score: licenseFinding.score
-                            })
-                        }
-                    }
-
-                    if (record.file.copyrightFindings.length > 0) {
-                        for (const copyrightFinding of record.file.copyrightFindings) {
-                            copyrights.push({
-                                statement: copyrightFinding.copyright,
-                                location: {
-                                    path: record.path,
-                                    start_line: copyrightFinding.startLine,
-                                    end_line: copyrightFinding.endLine
-                                }
-                            })
-                        }
-                    }
+                if (scannerJob) {
+                    res.status(200).json({
+                        'state': {
+                            'status': 'pending',
+                            'id': scannerJob.id
+                        },
+                        'results': null
+                    })
+                } else {
+                    throw new Error('Error: unable to fetch scanner job id from database');
                 }
-
-                res.status(200).json({
-                    'results': {
-                        licenses: licenses,
-                        copyrights: copyrights
-                    }
-                })
             } else {
-                res.status(200).json({
-                    'results': null
-                })
-            }
-        }
+                const queriedScanResults = await dbQueries.getPackageScanResults(queriedPackage.id);
 
-    } else {
-        res.status(200).json({
-            'results': null
-        })
+                if (queriedScanResults) {
+                    const licenses = [];
+                    const copyrights = [];
+
+                    for (const record of queriedScanResults) {
+                        if (record.file.licenseFindings.length > 0) {
+                            for (const licenseFinding of record.file.licenseFindings) {
+                                licenses.push({
+                                    license: licenseFinding.licenseExpression,
+                                    location: {
+                                        path: record.path,
+                                        start_line: licenseFinding.startLine,
+                                        end_line: licenseFinding.endLine
+                                    },
+                                    score: licenseFinding.score
+                                })
+                            }
+                        }
+
+                        if (record.file.copyrightFindings.length > 0) {
+                            for (const copyrightFinding of record.file.copyrightFindings) {
+                                copyrights.push({
+                                    statement: copyrightFinding.copyright,
+                                    location: {
+                                        path: record.path,
+                                        start_line: copyrightFinding.startLine,
+                                        end_line: copyrightFinding.endLine
+                                    }
+                                })
+                            }
+                        }
+                    }
+
+                    res.status(200).json({
+                        'state': {
+                            'status': 'ready',
+                            'id': null
+                        },
+                        'results': {
+                            licenses: licenses,
+                            copyrights: copyrights
+                        }
+                    })
+                } else {
+                    throw new Error('Error: unable to fetch scan results from database');
+                }
+            }
+
+        } else {
+            res.status(200).json({
+                'state': {
+                    'status': 'no-results',
+                    'id': null
+                },
+                'results': null
+            })
+        }
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 
 })
