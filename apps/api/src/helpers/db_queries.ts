@@ -8,27 +8,20 @@ import { CopyrightFinding, File, FileTree, LicenseFinding, Package, PrismaClient
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
+// ------------------------- Database queries -------------------------
+
+// ------------------------------ Create ------------------------------
+
 export const createScannerJob = async (input: dbZodSchemas.CreateScannerJobInput): Promise<ScannerJob> => {
     return await prisma.scannerJob.create({
         data: input.data
     });
 }
 
-export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput): Promise<ScannerJob> => {
-    return await prisma.scannerJob.update({
-        where: {
-            id: input.id
-        },
+export const createPackage = async (input: dbZodSchemas.CreatePackageInput): Promise<Package> => {
+    return await prisma.package.create({
         data: input.data
-    })
-}
-
-export const findFileWithHash = async (hash: string): Promise<File | null> => {
-    return await prisma.file.findUnique({
-        where: {
-            sha256: hash
-        },
-    })
+    });
 }
 
 export const createFile = async (input: dbZodSchemas.CreateFileInput): Promise<File> => {
@@ -37,13 +30,10 @@ export const createFile = async (input: dbZodSchemas.CreateFileInput): Promise<F
     });
 }
 
-export const updateFile = async (input: dbZodSchemas.UpdateFileInput): Promise<File> => {
-    return await prisma.file.update({
-        where: {
-            id: input.id
-        },
+export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): Promise<FileTree> => {
+    return await prisma.fileTree.create({
         data: input.data
-    })
+    });
 }
 
 export const createLicenseFinding = async (input: dbZodSchemas.CreateLicenseFindingInput): Promise<LicenseFinding> => {
@@ -58,18 +48,24 @@ export const createCopyrightFinding = async (input: dbZodSchemas.CreateCopyright
     });
 }
 
-export const findScannerJobById = async (id: string): Promise<ScannerJob | null> => {
-    return await prisma.scannerJob.findUnique({
+// ------------------------------ Update ------------------------------
+
+export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput): Promise<ScannerJob> => {
+    return await prisma.scannerJob.update({
         where: {
-            id: id
+            id: input.id
         },
+        data: input.data
     })
 }
 
-export const createPackage = async (input: dbZodSchemas.CreatePackageInput): Promise<Package> => {
-    return await prisma.package.create({
+export const updateFile = async (input: dbZodSchemas.UpdateFileInput): Promise<File> => {
+    return await prisma.file.update({
+        where: {
+            id: input.id
+        },
         data: input.data
-    });
+    })
 }
 
 export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Promise<Package> => {
@@ -81,14 +77,44 @@ export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Pro
     })
 }
 
-export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): Promise<FileTree> => {
-    return await prisma.fileTree.create({
-        data: input.data
-    });
+// ------------------------------- Find -------------------------------
+
+export const findFileWithHash = async (hash: string): Promise<File | null> => {
+    return await prisma.file.findUnique({
+        where: {
+            sha256: hash
+        },
+    })
+}
+
+export const findScannerJobById = async (id: string): Promise<ScannerJob | null> => {
+    return await prisma.scannerJob.findUnique({
+        where: {
+            id: id
+        },
+    })
+}
+
+export const findScannerJobsByPackageIds = async (packages: Package[]): Promise<ScannerJob[] | null> => {
+    return await prisma.scannerJob.findMany({
+        where: {
+            packageId: {
+                in: packages.map(p => p.id)
+            }
+        },
+    })  
 }
 
 export const findPackageByPurl = async (purl: string): Promise<Package | null> => {
     return await prisma.package.findFirst({
+        where: {
+            purl: purl
+        },
+    })
+}
+
+export const findPackagesByPurl = async (purl: string): Promise<Package[] | null> => {
+    return await prisma.package.findMany({
         where: {
             purl: purl
         },
@@ -126,25 +152,10 @@ export const findMostRecentScannerJobByPackageId = async (packageId: number): Pr
     })
 }
 
-// Delete data for packages with purl
-export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
-    // Find all packages with purl
-    const packages: Package[] = await prisma.package.findMany({
-        where: {
-            purl: purl
-        }
-    })
+// ------------------------------ Delete ------------------------------
 
-    // Find all scannerJobs for packages
-    const scannerJobs: ScannerJob[] = await prisma.scannerJob.findMany({
-        where: {
-            packageId: {
-                in: packages.map(p => p.id)
-            }
-        }
-    })
-
-    // Delete all license findings for scannerJobs
+// Delete all license findings related to scanner jobs
+export const deleteLicenseFindingsByScannerJobIds = async (scannerJobs: ScannerJob[]): Promise<void> => {
     await prisma.licenseFinding.deleteMany({
         where: {
             scannerJobId: {
@@ -152,8 +163,10 @@ export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
             }
         }
     })
+}
 
-    // Delete all copyright findings for scannerJobs
+// Delete all copyright findings related to scanner jobs
+export const deleteCopyrightFindingsByScannerJobIds = async (scannerJobs: ScannerJob[]): Promise<void> => {
     await prisma.copyrightFinding.deleteMany({
         where: {
             scannerJobId: {
@@ -161,8 +174,10 @@ export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
             }
         }
     })
+}
 
-    // Delete all FileTrees for packages
+// Delete all FileTrees related to packages
+export const deleteFileTreesByPackageIds = async (packages: Package[]): Promise<void> => {
     await prisma.fileTree.deleteMany({
         where: {
             packageId: {
@@ -170,8 +185,10 @@ export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
             }
         }
     })
+}
 
-    // Delete all scannerJobs for packages
+// Delete all scanner jobs related to packages
+export const deleteScannerJobsByPackageIds = async (packages: Package[]): Promise<void> => {
     await prisma.scannerJob.deleteMany({
         where: {
             packageId: {
@@ -179,12 +196,13 @@ export const deletePackageDataByPurl = async (purl: string): Promise<void> => {
             }
         }
     })
+}
 
-    // Delete all packages with purl
+// Delete all packages with purl
+export const deletePackagesByPurl = async (purl: string): Promise<void> => {
     await prisma.package.deleteMany({
         where: {
             purl: purl
         }
     })
 }
-
