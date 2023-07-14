@@ -134,3 +134,17 @@ const CreateFileTreeSchema = z.object({
 })
 
 export type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>
+
+/*
+const ScannerJobOnlyIdSchema = z.union([
+    z.object({
+        id: z.string(),
+    }),
+    z.unknown()
+])*/
+
+const ScannerJobOnlyIdSchema = z.object({
+    id: z.string(),
+})
+
+export type ScannerJobOnlyIdOutput = z.infer<typeof ScannerJobOnlyIdSchema>

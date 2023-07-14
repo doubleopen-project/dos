@@ -110,3 +110,19 @@ export const getPackageScanResults = async (packageId: number) => {
         }
     })
 }
+
+// Find the id of the most recent scanner job with package id
+export const findMostRecentScannerJobByPackageId = async (packageId: number): Promise<dbZodSchemas.ScannerJobOnlyIdOutput | null> => {
+    return await prisma.scannerJob.findFirst({
+        where: {
+            packageId: packageId
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        select: {
+            id: true
+        }
+    })
+}
+
