@@ -43,44 +43,40 @@ router.delete('/scan-results', async (req, res) => {
 
 // Endpoint for requesting presigned upload url from object storage and sending url in response
 router.post('/upload-url', async (req, res) => {
-
     try {
         const objectExists = await objectExistsCheck(req.body.key);
 
-        console.log('objectExists: ', objectExists);
-
         if (objectExists === undefined) {
             console.log('Error: objectExists undefined');
-
-            res.status(200).json({
+            return res.status(200).json({
                 success: false,
                 presignedUrl: undefined,
                 message: 'Unable to determine if object with the requested key already exists. Please try again later.'
             })
-        } else if (!objectExists) {
-            const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
-
-            if (presignedUrl) {
-                res.status(200).json({
-                    success: true,
-                    presignedUrl: presignedUrl
-                })
-            } else {
-                console.log('Error: Presigned URL is undefined');
-                res.status(200).json({
-                    success: false,
-                    presignedUrl: undefined
-                })
-            }
-        } else {
+        }
+        if (objectExists) {
             console.log('Error: Object with key ' + req.body.key + ' already exists.');
-            res.status(200).json({
+            return res.status(200).json({
                 success: false,
                 presignedUrl: undefined,
                 message: 'An object with the requested key already exists'
             })
         }
 
+        const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
+
+        if (presignedUrl) {
+            res.status(200).json({
+                success: true,
+                presignedUrl: presignedUrl
+            })
+        } else {
+            console.log('Error: Presigned URL is undefined');
+            res.status(200).json({
+                success: false,
+                presignedUrl: undefined
+            })
+        }
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
