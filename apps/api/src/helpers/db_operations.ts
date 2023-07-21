@@ -6,6 +6,8 @@ import * as dbQueries from '../helpers/db_queries';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
 import { Package, ScannerJob } from 'database';
+import { ScannerJobResultSchema } from 'validation-helpers';
+import { formatDateString } from './date_helpers';
 
 // ------------------------- Database operations -------------------------
 
@@ -130,4 +132,83 @@ export const getJobState = async (jobId: string): Promise<string | null> => {
     if (!scannerJob) return null;
 
     return scannerJob.state;
+}
+
+export const saveJobResults = async (jobId: string, result: ScannerJobResultSchema): Promise<void> => {
+    console.log('Editing ScannerJob');
+    const scannerJob = await dbQueries.updateScannerJob(
+        {
+            id: jobId,
+            data: {
+                scannerName: result.headers[0].tool_name,
+                scannerVersion: result.headers[0].tool_version,
+                duration: result.headers[0].duration,
+                scanStartTS: new Date(formatDateString(result.headers[0].start_timestamp)),
+                scanEndTS: new Date(formatDateString(result.headers[0].end_timestamp)),
+                spdxLicenseListVersion: result.headers[0].extra_data.spdx_license_list_version
+            }
+        }
+    )
+
+    console.log('Adding LicenseFindings and CopyrightFindings for files');
+    for (const file of result.files) {
+
+        if (file.type === 'file') {
+            if (file.sha256) {
+                let dbFile = await dbQueries.findFileWithHash(file.sha256);
+                if (!dbFile) {
+                    dbFile = await dbQueries.createFile({
+                        data: {
+                            sha256: file.sha256,
+                            scanStatus: 'scanned',
+                        }
+                    });
+                } else {
+                    await dbQueries.updateFile({
+                        id: dbFile.id,
+                        data: {
+                            scanStatus: 'scanned',
+                        }
+                    })
+                }
+
+                await dbQueries.createFileTree({
+                    data: {
+                        path: file.path,
+                        packageId: scannerJob.packageId,
+                        sha256: file.sha256,
+                    }
+                })
+
+                for (const license of file.license_detections) {
+                    for (const match of license.matches) {
+                        await dbQueries.createLicenseFinding({
+                            data: {
+                                scanner: result.headers[0].tool_name,
+                                licenseExpression: license.license_expression,
+                                startLine: match.start_line,
+                                endLine: match.end_line,
+                                score: match.score,
+                                sha256: file.sha256,
+                                scannerJobId: scannerJob.id
+                            }
+                        })
+                    }
+                }
+
+                for (const copyright of file.copyrights) {
+                    await dbQueries.createCopyrightFinding({
+                        data: {
+                            startLine: copyright.start_line,
+                            endLine: copyright.end_line,
+                            copyright: copyright.copyright,
+                            sha256: file.sha256,
+                            scannerJobId: scannerJob.id
+                        }
+                    })
+                }
+            }
+        }
+    }
+
 }

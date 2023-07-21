@@ -9,7 +9,6 @@ import { getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import { loadEnv } from 'common-helpers';
-import { formatDateString } from '../helpers/date_helpers';
 import { deleteLocalFiles, downloadZipFile, getFilePaths, unzipFile } from '../helpers/file_helpers';
 
 loadEnv('../../.env');
@@ -288,85 +287,7 @@ router.put('/job-state', async (req, res) => {
 router.post('/job-results', async (req, res) => {
     try {
         if (req.body.result.headers.length === 1) {
-
-            console.log('Editing scanner job');
-
-            const scannerJob = await dbQueries.updateScannerJob(
-                {
-                    id: req.body.id,
-                    data: {
-                        scannerName: req.body.result.headers[0].tool_name,
-                        scannerVersion: req.body.result.headers[0].tool_version,
-                        duration: req.body.result.headers[0].duration,
-                        scanStartTS: new Date(formatDateString(req.body.result.headers[0].start_timestamp)),
-                        scanEndTS: new Date(formatDateString(req.body.result.headers[0].end_timestamp)),
-                        spdxLicenseListVersion: req.body.result.headers[0].extra_data.spdx_license_list_version
-                    }
-                }
-            )
-
-            console.log('Adding LicenseFindings and CopyrightFindings for files');
-
-            for (const file of req.body.result.files) {
-
-                if (file.type === 'file') {
-                    if (file.sha256) {
-                        let dbFile = await dbQueries.findFileWithHash(file.sha256);
-                        if (!dbFile) {
-                            dbFile = await dbQueries.createFile({
-                                data: {
-                                    sha256: file.sha256,
-                                    scanStatus: 'scanned',
-                                }
-                            });
-                        } else {
-                            await dbQueries.updateFile({
-                                id: dbFile.id,
-                                data: {
-                                    scanStatus: 'scanned',
-                                }
-                            })
-                        }
-
-                        await dbQueries.createFileTree({
-                            data: {
-                                path: file.path,
-                                packageId: scannerJob.packageId,
-                                sha256: file.sha256,
-                            }
-                        })
-
-                        for (const license of file.license_detections) {
-                            for (const match of license.matches) {
-                                await dbQueries.createLicenseFinding({
-                                    data: {
-                                        scanner: req.body.result.headers[0].tool_name,
-                                        licenseExpression: license.license_expression,
-                                        startLine: match.start_line,
-                                        endLine: match.end_line,
-                                        score: match.score,
-                                        sha256: file.sha256,
-                                        scannerJobId: scannerJob.id
-                                    }
-                                })
-                            }
-                        }
-
-                        for (const copyright of file.copyrights) {
-                            await dbQueries.createCopyrightFinding({
-                                data: {
-                                    startLine: copyright.start_line,
-                                    endLine: copyright.end_line,
-                                    copyright: copyright.copyright,
-                                    sha256: file.sha256,
-                                    scannerJobId: scannerJob.id
-                                }
-                            })
-                        }
-                    }
-                }
-            }
-
+            await dbOperations.saveJobResults(req.body.id, req.body.result)
             res.status(200).json({
                 message: 'Received and saved results for job with with id ' + req.body.id
             })
