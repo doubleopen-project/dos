@@ -5,14 +5,12 @@
 import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
-import { downloadFile, getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
+import { getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import { loadEnv } from 'common-helpers';
 import { formatDateString } from '../helpers/date_helpers';
-import admZip from 'adm-zip';
-import fs from 'fs';
-import { getFilePaths } from '../helpers/file_helpers';
+import { deleteLocalFiles, downloadZipFile, getFilePaths, unzipFile } from '../helpers/file_helpers';
 
 loadEnv('../../.env');
 
@@ -113,78 +111,69 @@ router.post('/package', async (req, res) => {
     - error handling
     */
     try {
-        const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
-        // Fetching zip file from object storage
+        // Downloading zip file from object storage
         const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
-        const extractPath = '/tmp/extracted/' + fileNameNoExt;
+        const downloaded = await downloadZipFile(req.body.zipFileKey, downloadPath);
 
-        if (!process.env.SPACES_BUCKET) {
-            throw new Error("SPACES_BUCKET environment variable is missing");
-        }
-
-        const downloaded = await downloadFile(process.env.SPACES_BUCKET, req.body.zipFileKey, downloadPath);
-        if (downloaded) {
-            console.log('Zip file downloaded');
-
-            // Check that file exists
-            const fileExists = fs.existsSync(downloadPath);
-
-            if (fileExists) {
-                // Extracting zip file locally
-                const zip = new admZip(downloadPath);
-                zip.extractAllTo(extractPath, true);
-                console.log('Zip file extracted');
-
-                // Saving files in extracted folder to object storage
-
-                // Listing files in extracted folder
-                const filePaths = await getFilePaths(extractPath);
-
-                // Uploading files to object storage
-                console.log('Uploading files to object storage...');
-                const uploaded = await saveFiles(filePaths, '/tmp/extracted/');
-
-                if (uploaded) {
-                    console.log('Files uploaded');
-                    // Delete local files
-                    fs.rmSync(extractPath, { recursive: true });
-                    fs.rmSync(downloadPath);
-                    console.log('Local files deleted');
-
-                    // Create new Package in database
-                    // TODO: replace placeholders with actual data
-                    const newPackage = await dbQueries.createPackage({
-                        data: {
-                            purl: req.body.purl,
-                            name: 'placeHolder',
-                            version: 'placeholder',
-                            scanStatus: 'notStarted'
-                        }
-                    });
-
-                    res.status(200).json({
-                        folderName: fileNameNoExt,
-                        packageId: newPackage.id
-                    })
-                } else {
-                    console.log('Error: Files not uploaded');
-                    res.status(500).json({
-                        message: 'Files not uploaded'
-                    })
-                }
-
-            } else {
-                console.log('Error: File does not exist');
-                res.status(500).json({
-                    message: 'File does not exist'
-                })
-            }
-        } else {
+        if (!downloaded) {
             console.log('Error: Zip file download failed');
-            res.status(500).json({
+            return res.status(500).json({
                 message: 'Zip file download failed'
             })
         }
+
+        console.log('Zip file downloaded');
+
+        // Unzipping the file locally
+        const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
+        const extractPath = '/tmp/extracted/' + fileNameNoExt;
+
+        const fileUnzipped = await unzipFile(downloadPath, extractPath);
+
+        if (!fileUnzipped) {
+            console.log('Error: Unable to unzip file, fileExists returns false. This could mean that there is an issue with access to the file.');
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
+
+        console.log('Zip file unzipped');
+
+        // Saving files in extracted folder to object storage
+
+        // Listing files in extracted folder
+        const filePaths = await getFilePaths(extractPath);
+
+        // Uploading files to object storage
+        console.log('Uploading files to object storage...');
+        const uploaded = await saveFiles(filePaths, '/tmp/extracted/');
+
+        if (!uploaded) {
+            console.log('Error: Unable to upload files to the object storage');
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
+        console.log('Files uploaded');
+        // Deleting local files
+        deleteLocalFiles(downloadPath, extractPath);
+        console.log('Local files deleted');
+
+        // Creating new Package in database
+        // TODO: replace placeholders with actual data
+        const newPackage = await dbQueries.createPackage({
+            data: {
+                purl: req.body.purl,
+                name: 'placeHolder',
+                version: 'placeholder',
+                scanStatus: 'notStarted'
+            }
+        });
+
+        res.status(200).json({
+            folderName: fileNameNoExt,
+            packageId: newPackage.id
+        })
 
     } catch (error) {
         console.log('Error: ', error);
@@ -258,7 +247,7 @@ router.get('/job-state/:id', async (req, res) => {
     try {
         const jobState = await dbOperations.getJobState(req.params.id);
 
-        if(!jobState) {
+        if (!jobState) {
             res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
         } else {
             res.status(200).json({
