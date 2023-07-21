@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from '@zodios/express';
-import { dosApi } from 'validation-helpers';
 import fetch from 'cross-fetch';
-import { getPresignedPutUrl, objectExistsCheck, saveFiles } from 's3-helpers';
+import { dosApi } from 'validation-helpers';
+import { loadEnv } from 'common-helpers';
+import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
-import { loadEnv } from 'common-helpers';
-import { deleteLocalFiles, downloadZipFile, getFilePaths, unzipFile } from '../helpers/file_helpers';
+import * as fileHelpers from '../helpers/file_helpers';
 
 loadEnv('../../.env');
 
@@ -17,8 +17,10 @@ const router = zodiosRouter(dosApi);
 
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
 
-//Endpoint for fetching scan results from database
+// Get scan results for package with purl
 router.post('/scan-results', async (req, res) => {
+    // TODO: add checking package hash
+    // Reason: purl might not mean that the package has all the same files, because this can vary based on where the package has been uploaded from
     try {
         const response = await dbOperations.getPackageResults(req.body.purl);
         res.status(200).json(response);
@@ -26,11 +28,11 @@ router.post('/scan-results', async (req, res) => {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-
 })
 
-// Endpoint for deleting scan results for a specified package purl
+// Delete scan results for a specified package purl
 router.delete('/scan-results', async (req, res) => {
+    // TODO: this endpoint should only be used by specific users
     try {
         const message = await dbOperations.deletePackageDataByPurl(req.body.purl);
         res.status(200).json({ message: message });
@@ -40,10 +42,10 @@ router.delete('/scan-results', async (req, res) => {
     }
 })
 
-// Endpoint for requesting presigned upload url from object storage and sending url in response
+// Request presigned upload url for a file
 router.post('/upload-url', async (req, res) => {
     try {
-        const objectExists = await objectExistsCheck(req.body.key);
+        const objectExists = await s3Helpers.objectExistsCheck(req.body.key);
 
         if (objectExists === undefined) {
             console.log('Error: objectExists undefined');
@@ -62,7 +64,7 @@ router.post('/upload-url', async (req, res) => {
             })
         }
 
-        const presignedUrl: string | undefined = await getPresignedPutUrl(req.body.key);
+        const presignedUrl: string | undefined = await s3Helpers.getPresignedPutUrl(req.body.key);
 
         if (presignedUrl) {
             res.status(200).json({
@@ -82,7 +84,7 @@ router.post('/upload-url', async (req, res) => {
     }
 })
 /*
-Endpoint for adding a Package
+Add a Package (includes downloading and extracting zip file, and uploading separate files to object storage)
     - takes in:
         - [PHASE 1 & 2] name of a zip file in object storage
         - [PHASE 2] package identifier (purl?)    
@@ -108,12 +110,12 @@ router.post('/package', async (req, res) => {
     try {
         // Downloading zip file from object storage
         const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
-        const downloaded = await downloadZipFile(req.body.zipFileKey, downloadPath);
+        const downloaded = await fileHelpers.downloadZipFile(req.body.zipFileKey, downloadPath);
 
         if (!downloaded) {
             console.log('Error: Zip file download failed');
             return res.status(500).json({
-                message: 'Zip file download failed'
+                message: 'Internal server error'
             })
         }
 
@@ -123,7 +125,7 @@ router.post('/package', async (req, res) => {
         const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
         const extractPath = '/tmp/extracted/' + fileNameNoExt;
 
-        const fileUnzipped = await unzipFile(downloadPath, extractPath);
+        const fileUnzipped = await fileHelpers.unzipFile(downloadPath, extractPath);
 
         if (!fileUnzipped) {
             console.log('Error: Unable to unzip file, fileExists returns false. This could mean that there is an issue with access to the file.');
@@ -137,11 +139,11 @@ router.post('/package', async (req, res) => {
         // Saving files in extracted folder to object storage
 
         // Listing files in extracted folder
-        const filePaths = await getFilePaths(extractPath);
+        const filePaths = await fileHelpers.getFilePaths(extractPath);
 
         // Uploading files to object storage
         console.log('Uploading files to object storage...');
-        const uploaded = await saveFiles(filePaths, '/tmp/extracted/');
+        const uploaded = await s3Helpers.saveFiles(filePaths, '/tmp/extracted/');
 
         if (!uploaded) {
             console.log('Error: Unable to upload files to the object storage');
@@ -151,7 +153,7 @@ router.post('/package', async (req, res) => {
         }
         console.log('Files uploaded');
         // Deleting local files
-        deleteLocalFiles(downloadPath, extractPath);
+        fileHelpers.deleteLocalFiles(downloadPath, extractPath);
         console.log('Local files deleted');
 
         // Creating new Package in database
@@ -176,7 +178,7 @@ router.post('/package', async (req, res) => {
     }
 });
 
-// Endpoint for adding a new job and sending job to Scanner Agent to be added to work queue
+// Add new ScannerJob
 router.post('/job', async (req, res) => {
     try {
         console.log('Adding a new ScannerJob to the database');
@@ -206,13 +208,14 @@ router.post('/job', async (req, res) => {
         const response = await fetch(postJobUrl, request);
 
         if (response.status === 201) {
-            console.log('Changing ScannerJob state to "addedToQueue"');
+            console.log('Updating ScannerJob state to "queued"');
 
             const updatedScannerJob = await dbQueries.updateScannerJob({
                 id: newScannerJob.id,
                 data: { state: 'queued' }
             })
 
+            console.log('Updating Package scanStatus to "pending"')
             await dbQueries.updatePackage({
                 id: req.body.packageId,
                 data: { scanStatus: 'pending' }
@@ -237,7 +240,7 @@ router.post('/job', async (req, res) => {
     }
 })
 
-// Endpoint for getting job state from database
+// Get ScannerJob state
 router.get('/job-state/:id', async (req, res) => {
     try {
         const jobState = await dbOperations.getJobState(req.params.id);
@@ -255,7 +258,7 @@ router.get('/job-state/:id', async (req, res) => {
     }
 })
 
-// Endpoint for receiving job state changes from scanner agent and updating job state in database
+// Update ScannerJob state
 router.put('/job-state', async (req, res) => {
     try {
         const updatedScannerJob = await dbQueries.updateScannerJob({
@@ -283,7 +286,7 @@ router.put('/job-state', async (req, res) => {
     }
 })
 
-// Receiving scan job results from scanner agent and saving to database
+// Save job results to database
 router.post('/job-results', async (req, res) => {
     try {
         if (req.body.result.headers.length === 1) {
