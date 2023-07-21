@@ -181,6 +181,16 @@ router.post('/package', async (req, res) => {
 // Add new ScannerJob
 router.post('/job', async (req, res) => {
     try {
+        // Checking if there already is a ScannerJob for the package
+        const existingJob = await dbQueries.findScannerJobByPackageId(req.body.packageId);
+
+        if (existingJob) {
+            console.log('ScannerJob for the package already exists');
+            return res.status(200).json({
+                scannerJob: existingJob,
+                message: 'Job already on queue'
+            })
+        }
         console.log('Adding a new ScannerJob to the database');
 
         const newScannerJob = await dbQueries.createScannerJob({
