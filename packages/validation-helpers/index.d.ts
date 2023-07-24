@@ -3144,7 +3144,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3154,7 +3154,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3187,7 +3207,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3197,7 +3217,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3236,7 +3276,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3246,7 +3286,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3285,7 +3345,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3295,7 +3355,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3399,7 +3479,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3409,7 +3489,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3436,7 +3536,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3446,7 +3546,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3550,7 +3670,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3560,7 +3680,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -7369,7 +7509,7 @@ declare const dosApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -7379,7 +7519,27 @@ declare const dosApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
