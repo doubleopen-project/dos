@@ -6,9 +6,11 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import nock from 'nock';
 import app from "../../src/server";
+import { loadEnv } from 'common-helpers';
 import { createRequestState, createRequestResults } from "../../src/routes/router";
 
 chai.use(chaiHttp);
+loadEnv("../../.env");
 
 export default function suite(): void {
 
@@ -46,6 +48,7 @@ export default function suite(): void {
         expect(requestInit.headers).to.deep.equal({
           'Content-Type': 'application/json',
           Charset: 'utf-8',
+          "Authorization": "Bearer " + process.env.SERVER_TOKEN
         });
         expect(requestInit.body).to.equal(JSON.stringify({ id, state }));
       });
@@ -63,8 +66,8 @@ export default function suite(): void {
         expect(requestInit.headers).to.deep.equal({
           'Content-Type': 'application/json',
           Charset: 'utf-8',
+          "Authorization": "Bearer " + process.env.SERVER_TOKEN
         });
         expect(requestInit.body).to.equal(JSON.stringify({ id, result: 'scanresult' }));
       });
-
 }
