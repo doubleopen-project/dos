@@ -207,7 +207,10 @@ router.post('/job', authenticateORTToken, async (req, res) => {
 
         const request = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + process.env.SA_TOKEN
+            },
             body: JSON.stringify({
                 directory: req.body.directory,
                 opts: {
