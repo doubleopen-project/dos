@@ -8,6 +8,7 @@ import Queue, { Job } from 'bull';
 import fetch from "cross-fetch";
 import { loadEnv } from 'common-helpers';
 import milliseconds from "milliseconds";
+import { authenticateAPIToken } from "../helpers/auth_helpers";
 
 //////////////////////////
 // Environment variables
@@ -82,7 +83,7 @@ router.get("/", (_req, res) => {
 });
 
 // Node: POST a new scanner job
-router.post("/job", async (req, res) => {
+router.post("/job", authenticateAPIToken, async (req, res) => {
 
     // Job details are in the request body
 
@@ -115,7 +116,7 @@ router.post("/job", async (req, res) => {
 });
 
 // Node: Query job details for job [id]
-router.get("/job/:id", async(req, res) => {
+router.get("/job/:id", authenticateAPIToken, async(req, res) => {
     const id = req.params.id;
     const job: Job | null = await workQueue.getJob(id);
 
@@ -146,7 +147,7 @@ router.get("/job/:id", async(req, res) => {
 });
 
 // Node: Query statuses of all active/waiting jobs in the work queue
-router.get("/jobs", async(_req, res) => {
+router.get("/jobs", authenticateAPIToken, async(_req, res) => {
     const jobs: Job[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
     const jobList: JobInfo[] = [];
 
@@ -223,7 +224,8 @@ export const createRequestState = (id: Queue.JobId, state: string): RequestInit 
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Charset": "utf-8"
+            "Charset": "utf-8",
+            "Authorization": "Bearer " + process.env.SERVER_TOKEN
         },
         body: JSON.stringify(requestBody)
     }
@@ -262,7 +264,8 @@ export const createRequestResults = (id: Queue.JobId, result: string): RequestIn
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Charset": "utf-8"
+            "Charset": "utf-8",
+            "Authorization": "Bearer " + process.env.SERVER_TOKEN,
         },
         body: JSON.stringify(requestBody)
     }
