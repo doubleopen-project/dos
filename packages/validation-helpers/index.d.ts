@@ -7918,7 +7918,47 @@ declare const scannerAgentApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 404;
+        description: "No such job in the work queue";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -7959,7 +7999,47 @@ declare const scannerAgentApi: [{
     }>, "many">;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 404;
+        description: "No such job in the work queue";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -8018,7 +8098,7 @@ declare const scannerAgentApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -8028,7 +8108,37 @@ declare const scannerAgentApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 404;
+        description: "No such job in the work queue";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -11850,7 +11960,7 @@ declare const scannerAgentApi: [{
     }>;
     errors: [{
         status: 500;
-        description: string;
+        description: "Internal server error";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -11860,7 +11970,27 @@ declare const scannerAgentApi: [{
         }>;
     }, {
         status: 400;
-        description: string;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -11870,7 +12000,7 @@ declare const scannerAgentApi: [{
         }>;
     }, {
         status: 404;
-        description: string;
+        description: "No such job in the work queue";
         schema: zod.ZodObject<{
             error: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
