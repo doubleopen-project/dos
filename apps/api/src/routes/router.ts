@@ -124,7 +124,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         // Unzipping the file locally
         const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
-        const extractPath = '/tmp/extracted/' + fileNameNoExt;
+        const basePath = '/tmp/extracted/';
+        const extractPath = basePath + fileNameNoExt + '/';
 
         const fileUnzipped = await fileHelpers.unzipFile(downloadPath, extractPath);
 
@@ -142,6 +143,10 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         // Listing files in extracted folder
         const filePaths = await fileHelpers.getFilePaths(extractPath);
 
+        const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
+
+        console.log(fileHashesAndPaths);
+        
         // Uploading files to object storage
         console.log('Uploading files to object storage...');
         const uploaded = await s3Helpers.saveFiles(filePaths, '/tmp/extracted/');
@@ -154,8 +159,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         }
         console.log('Files uploaded');
         // Deleting local files
-        fileHelpers.deleteLocalFiles(downloadPath, extractPath);
-        console.log('Local files deleted');
+        //fileHelpers.deleteLocalFiles(downloadPath, extractPath);
+        //console.log('Local files deleted');
 
         // Creating new Package in database
         // TODO: replace placeholders with actual data

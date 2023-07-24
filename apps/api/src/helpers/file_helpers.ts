@@ -6,6 +6,7 @@ import admZip from 'adm-zip';
 import fs from 'fs';
 import path from 'path';
 import { downloadFile } from 's3-helpers';
+import crypto from 'crypto';
 
 // Fetching zip file from object storage
 export const downloadZipFile = async (zipFileKey: string, downloadPath: string): Promise<boolean> => {
@@ -56,6 +57,50 @@ export const getFilePaths = async (baseDir: string): Promise<string[]> => {
             if (stat.isFile()) {
                 const filePath = fromPath.split('/tmp/extracted/').pop();
                 filePaths.push(filePath as string);
+            } else if (stat.isDirectory()) {
+                directories.push(fromPath);
+            }
+        }
+    }
+
+    return filePaths;
+}
+
+// Iterate through all files in a directory and return an array of file hashes and paths 
+export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string }>> => {
+    // Get the file paths as an array
+    const filePaths: Array<{ hash: string, path: string }> = [];
+    const directories: string[] = [baseDir];
+
+    while (directories.length > 0) {
+        const currentDir = directories.pop() as string;
+
+        const files = await fs.promises.readdir(currentDir);
+
+        for (const file of files) {
+            // Get the full paths
+            const fromPath = path.join(currentDir, file);
+
+            // Stat the file to see if we have a file or dir
+            const stat = await fs.promises.stat(fromPath);
+
+            if (stat.isFile()) {
+                console.log(fromPath);
+
+                // Get sha256 hash of the file
+                const fileBuffer = fs.readFileSync(fromPath);
+                const hashSum = crypto.createHash('sha256');
+
+                hashSum.update(fileBuffer);
+
+                const filePath = fromPath.split(baseDir).pop();
+
+                console.log(filePath);
+
+                filePaths.push({
+                    hash: hashSum.digest('hex'),
+                    path: filePath as string
+                });
             } else if (stat.isDirectory()) {
                 directories.push(fromPath);
             }
