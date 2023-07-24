@@ -10,6 +10,7 @@ import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import * as fileHelpers from '../helpers/file_helpers';
+//import jwt from 'jsonwebtoken';
 
 loadEnv('../../.env');
 
@@ -17,8 +18,47 @@ const router = zodiosRouter(dosApi);
 
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
 
+const authenticateORTToken = (req: any, res: any, next: any) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.status(401).json({ message: 'Unauthorized' })
+
+    if (token === process.env.ORT_TOKEN) {
+        next();
+    } else {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
+
+const authenticateSAToken = (req: any, res: any, next: any) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.status(401).json({ message: 'Unauthorized' })
+
+    console.log('Token: ' + token);
+    console.log('SA_TOKEN: ' + process.env.SA_TOKEN);
+    /*
+    jwt.verify(token, process.env.SA_TOKEN as string, (err: any, user: any) => {
+        console.log(err)
+
+        if (err) return res.sendStatus(403)
+
+        req.user = user
+
+        next()
+    })*/
+
+    if (token === process.env.SA_TOKEN) {
+        next();
+    } else {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
+
 // Get scan results for package with purl
-router.post('/scan-results', async (req, res) => {
+router.post('/scan-results', authenticateORTToken, async (req, res) => {
     // TODO: add checking package hash
     // Reason: purl might not mean that the package has all the same files, because this can vary based on where the package has been uploaded from
     try {
@@ -31,7 +71,7 @@ router.post('/scan-results', async (req, res) => {
 })
 
 // Delete scan results for a specified package purl
-router.delete('/scan-results', async (req, res) => {
+router.delete('/scan-results', authenticateORTToken, async (req, res) => {
     // TODO: this endpoint should only be used by specific users
     try {
         const message = await dbOperations.deletePackageDataByPurl(req.body.purl);
@@ -43,7 +83,7 @@ router.delete('/scan-results', async (req, res) => {
 })
 
 // Request presigned upload url for a file
-router.post('/upload-url', async (req, res) => {
+router.post('/upload-url', authenticateORTToken, async (req, res) => {
     try {
         const objectExists = await s3Helpers.objectExistsCheck(req.body.key);
 
@@ -92,7 +132,7 @@ Add a Package (includes downloading and extracting zip file, and uploading separ
         - [PHASE 1] the name of the folder in S3 where the zip file was extracted
         - [PHASE 2] the id of the created package
 */
-router.post('/package', async (req, res) => {
+router.post('/package', authenticateORTToken, async (req, res) => {
     /*  
     TODO:
     - find out file hashes
@@ -179,7 +219,7 @@ router.post('/package', async (req, res) => {
 });
 
 // Add new ScannerJob
-router.post('/job', async (req, res) => {
+router.post('/job', authenticateORTToken, async (req, res) => {
     try {
         // Checking if there already is a ScannerJob for the package
         const existingJob = await dbQueries.findScannerJobByPackageId(req.body.packageId);
@@ -251,7 +291,7 @@ router.post('/job', async (req, res) => {
 })
 
 // Get ScannerJob state
-router.get('/job-state/:id', async (req, res) => {
+router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
     try {
         const jobState = await dbOperations.getJobState(req.params.id);
 
@@ -269,7 +309,7 @@ router.get('/job-state/:id', async (req, res) => {
 })
 
 // Update ScannerJob state
-router.put('/job-state', async (req, res) => {
+router.put('/job-state', authenticateSAToken, async (req, res) => {
     try {
         const updatedScannerJob = await dbQueries.updateScannerJob({
             id: req.body.id,
@@ -297,7 +337,7 @@ router.put('/job-state', async (req, res) => {
 })
 
 // Save job results to database
-router.post('/job-results', async (req, res) => {
+router.post('/job-results', authenticateSAToken, async (req, res) => {
     try {
         if (req.body.result.headers.length === 1) {
             await dbOperations.saveJobResults(req.body.id, req.body.result)
