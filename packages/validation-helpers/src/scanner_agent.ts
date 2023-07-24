@@ -2,8 +2,36 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { makeApi } from "@zodios/core";
+import { makeApi, makeErrors } from "@zodios/core";
 import * as schemas from "./schemas/scanner_agent_schemas";
+
+const errors = makeErrors([
+    {
+        status: 500,
+        description: "Internal server error",
+        schema: schemas.ErrorSchema
+    },
+    {
+        status: 400,
+        description: "Bad request",
+        schema: schemas.ErrorSchema
+    },
+    {
+        status: 401,
+        description: "No token provided",
+        schema: schemas.ErrorSchema
+    },
+    {
+        status: 403,
+        description: "Token is invalid",
+        schema: schemas.ErrorSchema
+    },
+    {
+        status: 404,
+        description: "No such job in the work queue",
+        schema: schemas.ErrorSchema
+    }
+]);
 
 export const scannerAgentApi = makeApi([
     {
@@ -11,26 +39,14 @@ export const scannerAgentApi = makeApi([
         path: "/",
         description: "Root endpoint",
         response: schemas.ScannerRootResponseSchema,
-        errors: [
-            {
-                status: 500,
-                description: "Internal server error",
-                schema: schemas.ErrorSchema
-            }
-        ]
+        errors
     },
     {
         method: "get",
         path: "/jobs",
         description: "List all jobs",
         response: schemas.ScannerJoblistResponseBodySchema,
-        errors: [
-            {
-                status: 500,
-                description: "Internal server error",
-                schema: schemas.ErrorSchema
-            }
-        ]
+        errors
     },
     {
         method: "post",
@@ -44,18 +60,7 @@ export const scannerAgentApi = makeApi([
             }
         ],
         response: schemas.ScannerJobResponseBodySchema,
-        errors: [
-            {
-                status: 500,
-                description: "Internal server error",
-                schema: schemas.ErrorSchema
-            },
-            {
-                status: 400,
-                description: "Bad request",
-                schema: schemas.ErrorSchema
-            }
-        ]
+        errors
     },
     {
         method: "get",
@@ -69,22 +74,6 @@ export const scannerAgentApi = makeApi([
             }
         ],
         response: schemas.ScannerJobInfoResponseBodySchema,
-        errors: [
-            {
-                status: 500,
-                description: "Internal server error",
-                schema: schemas.ErrorSchema
-            },
-            {
-                status: 400,
-                description: "Bad request",
-                schema: schemas.ErrorSchema
-            },
-            {
-                status: 404,
-                description: "No such job in the work queue",
-                schema: schemas.ErrorSchema
-            }
-        ]
+        errors
     },
 ]);
