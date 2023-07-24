@@ -10,52 +10,13 @@ import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import * as fileHelpers from '../helpers/file_helpers';
-//import jwt from 'jsonwebtoken';
+import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
 
 loadEnv('../../.env');
 
 const router = zodiosRouter(dosApi);
 
 const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
-
-const authenticateORTToken = (req: any, res: any, next: any) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.status(401).json({ message: 'Unauthorized' })
-
-    if (token === process.env.ORT_TOKEN) {
-        next();
-    } else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
-}
-
-const authenticateSAToken = (req: any, res: any, next: any) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.status(401).json({ message: 'Unauthorized' })
-
-    console.log('Token: ' + token);
-    console.log('SA_TOKEN: ' + process.env.SA_TOKEN);
-    /*
-    jwt.verify(token, process.env.SA_TOKEN as string, (err: any, user: any) => {
-        console.log(err)
-
-        if (err) return res.sendStatus(403)
-
-        req.user = user
-
-        next()
-    })*/
-
-    if (token === process.env.SA_TOKEN) {
-        next();
-    } else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
-}
 
 // Get scan results for package with purl
 router.post('/scan-results', authenticateORTToken, async (req, res) => {
