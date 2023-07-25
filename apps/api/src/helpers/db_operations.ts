@@ -113,6 +113,9 @@ export const deletePackageDataByPurl = async (purl: string): Promise<string> => 
         // Delete all FileTrees for packages
         await dbQueries.deleteFileTreesByPackageIds(packages);
 
+        // Delete all Files that are not used by any FileTree
+        await dbQueries.deleteFilesNotUsedByFileTrees();
+
         // Delete all scannerJobs for packages
         await dbQueries.deleteScannerJobsByPackageIds(packages);
 
@@ -215,6 +218,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
 export const saveFilesAndFileTrees = async (packageId: number, files: { hash: string, path: string }[]): Promise<void> => {
     for (const file of files) {
+        // Check if File already exists
         const existingFile = await dbQueries.findFileByHash(file.hash);
 
         if (!existingFile) {
@@ -248,7 +252,7 @@ export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: st
 
     for (const fileTree of fileTrees) {
         const file = await dbQueries.findFileByHash(fileTree.sha256);
-
+        
         if (file && file.scanStatus === 'notStarted') {
             filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
         }

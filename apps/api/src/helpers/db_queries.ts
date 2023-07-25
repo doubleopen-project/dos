@@ -118,7 +118,7 @@ export const findScannerJobsByPackageIds = async (packages: Package[]): Promise<
                 in: packages.map(p => p.id)
             }
         },
-    })  
+    })
 }
 
 export const findPackageByPurl = async (purl: string): Promise<Package | null> => {
@@ -219,6 +219,27 @@ export const deletePackagesByPurl = async (purl: string): Promise<void> => {
     await prisma.package.deleteMany({
         where: {
             purl: purl
+        }
+    })
+}
+
+// Delete all files that are not used by any FileTree
+export const deleteFilesNotUsedByFileTrees = async (): Promise<void> => {
+    const sha256s = await prisma.fileTree.findMany({
+        select: {
+            sha256: true
+        }
+    })
+
+    console.log(sha256s);
+
+    await prisma.file.deleteMany({
+        where: {
+            NOT: {
+                sha256: {
+                    in: sha256s.map(s => s.sha256)
+                }
+            }
         }
     })
 }
