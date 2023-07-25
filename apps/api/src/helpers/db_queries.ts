@@ -87,6 +87,14 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
     })
 }
 
+export const findFileTreesByPackageId = async (packageId: number): Promise<FileTree[] | null> => {
+    return await prisma.fileTree.findMany({
+        where: {
+            packageId: packageId
+        },
+    })
+}
+
 export const findScannerJobById = async (id: string): Promise<ScannerJob | null> => {
     return await prisma.scannerJob.findUnique({
         where: {

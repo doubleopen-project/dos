@@ -228,8 +228,13 @@ router.post('/job', authenticateORTToken, async (req, res) => {
             }
         });
 
+        // Getting list of files to be scanned
+        const filesToBeScanned = await dbOperations.getFilesToBeScanned(req.body.packageId);
+
         console.log('Sending a request to Scanner Agent to add new job to the work queue');
 
+        console.log('filesToBeScanned: ', filesToBeScanned);
+        
         const postJobUrl = scannerUrl + 'job';
 
         const request = {
@@ -239,14 +244,15 @@ router.post('/job', authenticateORTToken, async (req, res) => {
                 'Authorization': 'Bearer ' + process.env.SA_TOKEN
             },
             body: JSON.stringify({
-                directory: req.body.directory,
-                opts: {
-                    jobId: newScannerJob.id
-                }
+                jobId: newScannerJob.id,
+                files: filesToBeScanned
             })
         }
 
         const response = await fetch(postJobUrl, request);
+
+        console.log('Scanner Agent response: ', response);
+        
 
         if (response.status === 201) {
             console.log('Updating ScannerJob state to "queued"');
