@@ -162,6 +162,13 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         // Uploading files to object storage individually with the file hash as the key
         const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath);
+
+        if (!uploadedWithHash) {
+            console.log('Error: Uploading files to object storage failed');
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
         
         // Deleting local files
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
@@ -177,6 +184,16 @@ router.post('/package', authenticateORTToken, async (req, res) => {
                 scanStatus: 'notStarted'
             }
         });
+
+        if (!newPackage) {
+            console.log('Error: Creating new package failed');
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
+
+        // Adding Files and FileTrees to database
+        dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
 
         res.status(200).json({
             folderName: fileNameNoExt,
