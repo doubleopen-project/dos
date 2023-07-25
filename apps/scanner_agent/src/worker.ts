@@ -25,6 +25,9 @@ const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis:
 // How many workers for ScanCode
 const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CONCURRENCY) : 1;
 
+// Spaces bucket
+const SPACES_BUCKET: string = process.env.SPACES_BUCKET? process.env.SPACES_BUCKET : "doubleopen2";
+
 // The maximum number of jobs each worker should process at once. This will need
 // to be tuned for your application. If each job is mostly waiting on network 
 // responses it can be much higher. If each job is CPU-intensive, it might need
@@ -69,7 +72,7 @@ const start = (): void => {
         // Try to download the files from S3 and check if it was successful
         for (const file of job.data.files) {
             console.log("-> download file: ", file.path);
-            const downloadSuccess: boolean = await downloadFile("doubleopen2", file.hash, path.join(localJobDir, file.path));
+            const downloadSuccess: boolean = await downloadFile(SPACES_BUCKET, file.hash, path.join(localJobDir, file.path));
             if (downloadSuccess) {
                 console.log("-> successfully downloaded file", file, "from S3");
             } else {
