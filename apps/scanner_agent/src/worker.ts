@@ -5,7 +5,7 @@
 import Queue, { Job } from "bull";
 import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
-import { downloadDirectory } from "s3-helpers";
+import { downloadFile } from "s3-helpers";
 import { loadEnv } from 'common-helpers';
 import { rimraf } from "rimraf";
 import * as path from 'path';
@@ -35,9 +35,16 @@ const maxJobsPerWorker = 10;
 // Interfaces and types
 //////////////////////////
 
+// Information about the file to be scanned
+type ScannedFile = {
+    hash: string;
+    path: string;
+}
+
 // Scan job with its parameters
 type ScannerJob = {
-    directory: string;
+    jobId: string;
+    files: ScannedFile[];
 }
 
 //////////////////////////
@@ -56,23 +63,22 @@ const start = (): void => {
         console.log("*** New scanner job arrived: ", job.id, " with data: ", job.data);
 
         const jobIdDir = String(job.id);
-        const jobDir = String(job.data.directory);
         const localJobDir = path.join(baseDir, jobIdDir);
-        const localScanDir = path.join(localJobDir, jobDir);
-        console.log("-> create new local directory for scanjob: ", localScanDir);
+        console.log("-> create new local directory for scanjob: ", localJobDir);
 
-        // Try to download the directory from S3 and check if it was successful
-        // Also create a unique local directory for the job
-        const downloadSuccess: string = await downloadDirectory("doubleopen2", jobDir, localJobDir);
-        if (downloadSuccess !== "success") {
-            console.log("Failed to download directory from S3");
-            throw new Error("Failed to download directory from S3");
-        } else {
-            console.log("-> successfully downloaded directory", jobDir, "from S3");
+        // Try to download the files from S3 and check if it was successful
+        for (const file of job.data.files) {
+            console.log("-> download file: ", file.path);
+            const downloadSuccess: boolean = await downloadFile("doubleopen2", file.hash, path.join(localJobDir, file.path));
+            if (downloadSuccess) {
+                console.log("-> successfully downloaded file", file, "from S3");
+            } else {
+                console.log("Failed to download file", file, "from S3");
+                throw new Error("Failed to download file from S3");
+            }
         }
         
         // Spawn a child process to run ScanCode inside this container
-
         const options: string[] = [
             "-clp",
             //"-v",
@@ -80,7 +86,7 @@ const start = (): void => {
             "-q",
             "--json",
             "-",
-            localScanDir
+            localJobDir
         ];
 
         const childProcess: ChildProcessWithoutNullStreams = spawn("scancode", options);
@@ -111,7 +117,7 @@ const start = (): void => {
         async function handleProcessExit(): Promise<void> {
             try {
                 try {
-                    await removeDirectory(path.join(baseDir, jobIdDir));
+                    await removeDirectory(localJobDir);
                     console.log(`[${pid}] process local directory removed: ${localJobDir}`);
                 } catch (error) {
                     console.log(`[${pid}] process error removing the local directory: ${error}`);
