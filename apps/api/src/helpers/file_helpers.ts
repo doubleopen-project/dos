@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { downloadFile } from 's3-helpers';
 import crypto from 'crypto';
+import mime from 'mime-types';
 
 // Fetching zip file from object storage
 export const downloadZipFile = async (zipFileKey: string, downloadPath: string): Promise<boolean> => {
@@ -45,6 +46,13 @@ export const getFilePaths = async (baseDir: string): Promise<string[]> => {
     while (directories.length > 0) {
         const currentDir = directories.pop() as string;
 
+        const curDirNoBase = currentDir.split(baseDir).pop();
+        
+        if (curDirNoBase === '.git') {
+            console.log('Skipping .git directory');
+            continue;
+        }
+
         const files = await fs.promises.readdir(currentDir);
 
         for (const file of files) {
@@ -67,13 +75,20 @@ export const getFilePaths = async (baseDir: string): Promise<string[]> => {
 }
 
 // Iterate through all files in a directory and return an array of file hashes and paths 
-export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string }>> => {
+export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string, contentType: string | false }>> => {
     // Get the file paths as an array
-    const filePaths: Array<{ hash: string, path: string }> = [];
+    const fileHashesAndPaths: Array<{ hash: string, path: string, contentType: string | false }> = [];
     const directories: string[] = [baseDir];
 
     while (directories.length > 0) {
         const currentDir = directories.pop() as string;
+
+        const curDirNoBase = currentDir.split(baseDir).pop();
+        
+        if (curDirNoBase === '.git') {
+            console.log('Skipping .git directory');
+            continue;
+        }
 
         const files = await fs.promises.readdir(currentDir);
 
@@ -85,8 +100,6 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
             const stat = await fs.promises.stat(fromPath);
 
             if (stat.isFile()) {
-                console.log(fromPath);
-
                 // Get sha256 hash of the file
                 const fileBuffer = fs.readFileSync(fromPath);
                 const hashSum = crypto.createHash('sha256');
@@ -95,11 +108,10 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
 
                 const filePath = fromPath.split(baseDir).pop();
 
-                console.log(filePath);
-
-                filePaths.push({
+                fileHashesAndPaths.push({
                     hash: hashSum.digest('hex'),
-                    path: filePath as string
+                    path: filePath as string,
+                    contentType: mime.lookup(fromPath)
                 });
             } else if (stat.isDirectory()) {
                 directories.push(fromPath);
@@ -107,5 +119,5 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
         }
     }
 
-    return filePaths;
+    return fileHashesAndPaths;
 }
