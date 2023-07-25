@@ -142,10 +142,6 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         // Listing files in extracted folder
         const filePaths = await fileHelpers.getFilePaths(extractPath);
-
-        const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
-
-        console.log(fileHashesAndPaths);
         
         // Uploading files to object storage
         console.log('Uploading files to object storage...');
@@ -158,9 +154,15 @@ router.post('/package', authenticateORTToken, async (req, res) => {
             })
         }
         console.log('Files uploaded');
+
+        // Listing file paths and the corresponding file hashes and content types
+        const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
+
+        console.log(fileHashesAndPaths);
+
         // Deleting local files
-        //fileHelpers.deleteLocalFiles(downloadPath, extractPath);
-        //console.log('Local files deleted');
+        fileHelpers.deleteLocalFiles(downloadPath, extractPath);
+        console.log('Local files deleted');
 
         // Creating new Package in database
         // TODO: replace placeholders with actual data
