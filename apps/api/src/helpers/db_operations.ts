@@ -155,7 +155,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
         if (file.type === 'file') {
             if (file.sha256) {
-                let dbFile = await dbQueries.findFileWithHash(file.sha256);
+                let dbFile = await dbQueries.findFileByHash(file.sha256);
                 if (!dbFile) {
                     dbFile = await dbQueries.createFile({
                         data: {
@@ -211,4 +211,29 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         }
     }
 
+}
+
+export const saveFilesAndFileTrees = async (packageId: number, files: { hash: string, path: string }[]): Promise<void> => {
+    for (const file of files) {
+        const existingFile = await dbQueries.findFileByHash(file.hash);
+
+        if (!existingFile) {
+            // Create new File
+            await dbQueries.createFile({
+                data: {
+                    sha256: file.hash,
+                    scanStatus: 'notStarted',
+                }
+            });
+        }
+
+        // Create new FileTree
+        await dbQueries.createFileTree({
+            data: {
+                path: file.path,
+                sha256: file.hash,
+                packageId: packageId,
+            }
+        });
+    }
 }

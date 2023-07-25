@@ -79,7 +79,7 @@ export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Pro
 
 // ------------------------------- Find -------------------------------
 
-export const findFileWithHash = async (hash: string): Promise<File | null> => {
+export const findFileByHash = async (hash: string): Promise<File | null> => {
     return await prisma.file.findUnique({
         where: {
             sha256: hash
