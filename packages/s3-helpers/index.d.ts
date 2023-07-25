@@ -12,7 +12,11 @@ declare const objectExistsCheck: (key: string) => Promise<boolean | undefined>;
 declare const getPresignedPutUrl: (key: string) => Promise<string | undefined>;
 declare const uploadFile: (bucketName: string, fileName: string, fileContent: string | Buffer) => Promise<string | undefined>;
 declare const saveFiles: (filePaths: string[], baseDir: string) => Promise<boolean>;
+declare const saveFilesWithHashKey: (fileHashesAndPaths: Array<{
+    hash: string;
+    path: string;
+}>, baseDir: string) => Promise<boolean>;
 
 declare const client: S3;
 
-export { client, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFiles, uploadFile };
+export { client, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFiles, saveFilesWithHashKey, uploadFile };

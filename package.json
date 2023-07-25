@@ -13,6 +13,7 @@
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
         "build:worker": "turbo run build --filter=scanner-agent --no-daemon",
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
+        "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
         "heroku-postbuild": "if [ $CLIENT_ENV ]; then npm run prod-client; elif [ $SERVER_ENV ]; then npm run prod-api; elif [ $SCANNER_ENV ]; then npm run prod-scanner_agent; else echo no environment detected, please set CLIENT_ENV, SERVER_ENV, or SCANNER_ENV; fi",
         "prod-client": "npm run build:client",
         "prod-scanner_agent": "npm run build:scanner_agent",
