@@ -237,3 +237,22 @@ export const saveFilesAndFileTrees = async (packageId: number, files: { hash: st
         });
     }
 }
+
+export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: string, path: string }[]> => {
+    const filesToBeScanned: { hash: string, path: string }[] = [];
+    const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
+
+    if (!fileTrees) {
+        throw new Error('Error: unable to fetch file trees from database');
+    }
+
+    for (const fileTree of fileTrees) {
+        const file = await dbQueries.findFileByHash(fileTree.sha256);
+
+        if (file && file.scanStatus === 'notStarted') {
+            filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
+        }
+    }
+
+    return filesToBeScanned;
+}
