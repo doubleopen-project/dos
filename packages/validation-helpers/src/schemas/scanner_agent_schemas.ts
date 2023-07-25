@@ -11,23 +11,23 @@ export const ScannerRootResponseSchema = z.object({
 });
 
 export const ScannerJobRequestBodySchema = z.object({
-	directory: z.string({
-		required_error: "Directory is required"
-	})
-		.trim()
-		.min(1, "Directory cannot be empty"),
-	opts: z.object({
-		jobId: z.string({
-			required_error: "Job ID is required"
-		})
-	})
+	jobId: z.string({
+        required_error: "Job ID is required"
+    }),
+    files: z.array(
+        z.object({
+            hash: z.string({
+                required_error: "File hash is required"
+            }),
+            path: z.string({
+                required_error: "File path is required"
+            })
+        })
+    )
 })
 
 export const ScannerJobResponseBodySchema = z.object({
-	id: z.string(),
-	data: z.object({
-		directory: z.string(),
-	})
+	id: z.string()
 })
 
 export const ScannerJoblistRequestSchema = z.object({});
@@ -36,9 +36,6 @@ export const ScannerJoblistResponseBodySchema = z.array(
 	z.object({
 		id: z.string(),
 		state: z.string(),
-		data: z.object({
-			directory: z.string(),
-		}),
 		finishedOn: z.number().optional()
 	})
 );
