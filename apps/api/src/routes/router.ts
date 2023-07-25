@@ -160,6 +160,9 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         console.log(fileHashesAndPaths);
 
+        // Uploading files to object storage individually with the file hash as the key
+        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath);
+        
         // Deleting local files
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
         console.log('Local files deleted');

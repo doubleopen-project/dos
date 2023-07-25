@@ -294,3 +294,25 @@ export const saveFiles = async (filePaths: string[], baseDir: string): Promise<b
     }
 
 }
+
+// Upload files to a bucket with their hash as the key 
+export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: string, path: string }>, baseDir: string): Promise<boolean> => {
+    try {
+        checkS3ClientEnvs();
+        for (const file of fileHashesAndPaths) {
+            // Upload file to S3
+            const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
+
+            if (!process.env.SPACES_BUCKET) {
+                throw new Error("SPACES_BUCKET environment variable is missing");
+            }
+
+            await uploadFile(process.env.SPACES_BUCKET, file.hash, fileBuffer);
+        }
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+
+}
