@@ -140,25 +140,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         // Saving files in extracted folder to object storage
 
-        // Listing files in extracted folder
-        const filePaths = await fileHelpers.getFilePaths(extractPath);
-        
-        // Uploading files to object storage
-        console.log('Uploading files to object storage...');
-        const uploaded = await s3Helpers.saveFiles(filePaths, '/tmp/extracted/');
-
-        if (!uploaded) {
-            console.log('Error: Unable to upload files to the object storage');
-            return res.status(500).json({
-                message: 'Internal server error'
-            })
-        }
-        console.log('Files uploaded');
-
         // Listing file paths and the corresponding file hashes and content types
         const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
-
-        console.log(fileHashesAndPaths);
 
         // Uploading files to object storage individually with the file hash as the key
         const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath);
@@ -169,6 +152,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
                 message: 'Internal server error'
             })
         }
+
+        console.log('Files uploaded to object storage');
         
         // Deleting local files
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
@@ -194,6 +179,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
 
         // Adding Files and FileTrees to database
         dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
+
+        console.log('Package structure saved to database');
 
         res.status(200).json({
             folderName: fileNameNoExt,
@@ -250,9 +237,6 @@ router.post('/job', authenticateORTToken, async (req, res) => {
         }
 
         const response = await fetch(postJobUrl, request);
-
-        console.log('Scanner Agent response: ', response);
-        
 
         if (response.status === 201) {
             console.log('Updating ScannerJob state to "queued"');
