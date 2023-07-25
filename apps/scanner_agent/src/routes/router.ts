@@ -89,11 +89,16 @@ router.post("/job", authenticateAPIToken, async (req, res) => {
     // Job details are in the request body
 
     try {
+        // Unique job ID is given by DOS
+        const jobOpts = {
+            jobId: req.body.jobId
+        };
+
         // Add the job to the work queue
         await workQueue.add({
             jobId: req.body.jobId,
             files: req.body.files
-        });
+        }, jobOpts);
         
         res.status(201).json({
             id: req.body.jobId
