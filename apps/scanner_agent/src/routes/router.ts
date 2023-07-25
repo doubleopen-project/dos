@@ -33,21 +33,22 @@ const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL);
 // Interfaces and types
 //////////////////////////
 
+// Information about the file to be scanned
+type ScannedFile = {
+    hash: string;
+    path: string;
+}
+
 // Scan job with its parameters
 type ScannerJob = {
-    directory: string;
-    opts: {
-        jobId: string;
-    }
+    jobId: string;
+    files: ScannedFile[];
 }
 
 // Job return information
 interface JobInfo {
     id: string;
     state: string;
-    data: {
-        directory: string;
-    }
     finishedOn: number | undefined;
 }
 
@@ -88,24 +89,14 @@ router.post("/job", authenticateAPIToken, async (req, res) => {
     // Job details are in the request body
 
     try {
-        // Unique job ID is given by DOS
-        const jobOpts = {
-            jobId: req.body.opts.jobId,
-        };
-        
-        // ...and it is used to add the job to the work queue
+        // Add the job to the work queue
         await workQueue.add({
-            directory: req.body.directory,
-            opts: {
-                jobId: req.body.opts.jobId
-            }
-        }, jobOpts);
+            jobId: req.body.jobId,
+            files: req.body.files
+        });
         
         res.status(201).json({
-            id: jobOpts.jobId,
-            data: {
-                directory: req.body.directory,
-            }
+            id: req.body.jobId
         });
     } catch (error) {
         console.log("Error:", error);
@@ -153,12 +144,10 @@ router.get("/jobs", authenticateAPIToken, async(_req, res) => {
 
     for (const job of jobs) {
         const state: string = await job.getState();
-        const data: ScannerJob = job.data;
         const finishedOn: number | undefined = job.finishedOn;
         jobList.push({
             id: String(job.id),
             state,
-            data: data,
             finishedOn
         });
     }
