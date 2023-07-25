@@ -7,7 +7,6 @@ import fs from 'fs';
 import path from 'path';
 import { downloadFile } from 's3-helpers';
 import crypto from 'crypto';
-import mime from 'mime-types';
 
 // Fetching zip file from object storage
 export const downloadZipFile = async (zipFileKey: string, downloadPath: string): Promise<boolean> => {
@@ -75,9 +74,9 @@ export const getFilePaths = async (baseDir: string): Promise<string[]> => {
 }
 
 // Iterate through all files in a directory and return an array of file hashes and paths 
-export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string, contentType: string | false }>> => {
+export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string }>> => {
     // Get the file paths as an array
-    const fileHashesAndPaths: Array<{ hash: string, path: string, contentType: string | false }> = [];
+    const fileHashesAndPaths: Array<{ hash: string, path: string }> = [];
     const directories: string[] = [baseDir];
 
     while (directories.length > 0) {
@@ -110,8 +109,7 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
 
                 fileHashesAndPaths.push({
                     hash: hashSum.digest('hex'),
-                    path: filePath as string,
-                    contentType: mime.lookup(fromPath)
+                    path: filePath as string
                 });
             } else if (stat.isDirectory()) {
                 directories.push(fromPath);
