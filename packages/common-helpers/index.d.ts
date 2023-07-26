@@ -4,4 +4,6 @@
 
 declare const loadEnv: (envPath: string) => void;
 
-export { loadEnv };
+declare const getCurrentDateTime: () => string;
+
+export { getCurrentDateTime, loadEnv };
