@@ -63,7 +63,7 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
-        console.log("*** New scanner job arrived: ", job.id);
+        console.log("*** ",  getCurrentDateTime(), " New scanner job arrived: ", job.id);
 
         const jobIdDir = String(job.id);
         const localJobDir = path.join(baseDir, jobIdDir);
