@@ -188,7 +188,7 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         }
 
         // Adding Files and FileTrees to database
-        dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
+        await dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
 
         console.log('Package structure saved to database');
 
