@@ -225,14 +225,12 @@ export const deletePackagesByPurl = async (purl: string): Promise<void> => {
 
 // Delete all files that are not used by any FileTree
 export const deleteFilesNotUsedByFileTrees = async (): Promise<void> => {
-    const sha256s: FileTree[] = await prisma.fileTree.findMany({
+    const sha256s: { sha256: string; }[] = await prisma.fileTree.findMany({
         select: {
             sha256: true
         }
     })
-
-    console.log(sha256s);
-
+    
     await prisma.file.deleteMany({
         where: {
             NOT: {
