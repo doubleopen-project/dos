@@ -162,8 +162,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
                 if (!dbFile) {
                     throw new Error('Error: unable to find file from database');
-                } 
-                
+                }
+
                 await dbQueries.updateFile({
                     id: dbFile.id,
                     data: {
@@ -172,7 +172,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                 })
 
                 console.log('License findings count: ' + file.license_detections.length);
-                
+
                 for (const license of file.license_detections) {
                     for (const match of license.matches) {
                         await dbQueries.createLicenseFinding({
@@ -242,11 +242,21 @@ export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: st
         throw new Error('Error: unable to fetch file trees from database');
     }
 
+    console.log('getFilesToBeScanned File trees count: ' + fileTrees.length);
+
     for (const fileTree of fileTrees) {
+        console.log('getFilesToBeScanned File tree sha256: ' + fileTree.sha256);
+
         const file = await dbQueries.findFileByHash(fileTree.sha256);
-        
-        if (file && file.scanStatus === 'notStarted') {
-            filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
+
+        if (!file) {
+            console.log('File not found from database');
+        } else {
+            console.log('File scan status: ' + file.scanStatus);
+
+            if (file.scanStatus === 'notStarted') {
+                filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
+            }
         }
     }
 
