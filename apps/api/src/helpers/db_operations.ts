@@ -158,31 +158,21 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
         if (file.type === 'file') {
             if (file.sha256) {
-                let dbFile = await dbQueries.findFileByHash(file.sha256);
-                if (!dbFile) {
-                    dbFile = await dbQueries.createFile({
-                        data: {
-                            sha256: file.sha256,
-                            scanStatus: 'scanned',
-                        }
-                    });
-                } else {
-                    await dbQueries.updateFile({
-                        id: dbFile.id,
-                        data: {
-                            scanStatus: 'scanned',
-                        }
-                    })
-                }
+                const dbFile = await dbQueries.findFileByHash(file.sha256);
 
-                await dbQueries.createFileTree({
+                if (!dbFile) {
+                    throw new Error('Error: unable to find file from database');
+                } 
+                
+                await dbQueries.updateFile({
+                    id: dbFile.id,
                     data: {
-                        path: file.path,
-                        packageId: scannerJob.packageId,
-                        sha256: file.sha256,
+                        scanStatus: 'scanned',
                     }
                 })
 
+                console.log('License findings count: ' + file.license_detections.length);
+                
                 for (const license of file.license_detections) {
                     for (const match of license.matches) {
                         await dbQueries.createLicenseFinding({
@@ -198,6 +188,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                         })
                     }
                 }
+
+                console.log('Copyright findings count: ' + file.copyrights.length);
 
                 for (const copyright of file.copyrights) {
                     await dbQueries.createCopyrightFinding({
