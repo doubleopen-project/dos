@@ -63,7 +63,6 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
-        console.log("");
         console.log("*** ",  getCurrentDateTime(), " New scanner job arrived: ", job.id);
         //console.log("-> job data: ", job.data);
 
