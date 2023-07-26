@@ -171,8 +171,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     }
                 })
 
-                console.log('License findings count: ' + file.license_detections.length);
-
                 for (const license of file.license_detections) {
                     for (const match of license.matches) {
                         await dbQueries.createLicenseFinding({
@@ -188,8 +186,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                         })
                     }
                 }
-
-                console.log('Copyright findings count: ' + file.copyrights.length);
 
                 for (const copyright of file.copyrights) {
                     await dbQueries.createCopyrightFinding({
@@ -245,15 +241,12 @@ export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: st
     console.log('getFilesToBeScanned File trees count: ' + fileTrees.length);
 
     for (const fileTree of fileTrees) {
-        console.log('getFilesToBeScanned File tree sha256: ' + fileTree.sha256);
 
         const file = await dbQueries.findFileByHash(fileTree.sha256);
 
         if (!file) {
             console.log('File not found from database');
         } else {
-            console.log('File scan status: ' + file.scanStatus);
-
             if (file.scanStatus === 'notStarted') {
                 filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
             }
