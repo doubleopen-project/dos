@@ -37,11 +37,10 @@ export default function suite(): void {
 
     it('createRequestState() should return a valid RequestInit object', () => {
         // Define the input parameters
-        const id = '12345';
         const state = 'completed';
     
         // Call the function to create the RequestInit object
-        const requestInit = createRequestState(id, state);
+        const requestInit = createRequestState(state);
     
         // Assert that the RequestInit object has the correct properties and values
         expect(requestInit.method).to.equal('PUT');
@@ -50,7 +49,7 @@ export default function suite(): void {
           Charset: 'utf-8',
           "Authorization": "Bearer " + process.env.SERVER_TOKEN
         });
-        expect(requestInit.body).to.equal(JSON.stringify({ id, state }));
+        expect(requestInit.body).to.equal(JSON.stringify({ state }));
       });
 
       it('createRequestResults() should return a valid RequestInit object with a non-empty result', () => {
