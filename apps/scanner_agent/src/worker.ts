@@ -63,7 +63,7 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
-        console.log("*** New scanner job arrived: ", job.id, " with data: ", job.data);
+        console.log("*** New scanner job arrived: ", job.id);
 
         const jobIdDir = String(job.id);
         const localJobDir = path.join(baseDir, jobIdDir);
@@ -71,13 +71,10 @@ const start = (): void => {
 
         // Try to download the files from S3 and check if it was successful
         for (const file of job.data.files) {
-            console.log("-> download file: ", file.path);
             const downloadSuccess: boolean = await downloadFile(SPACES_BUCKET, file.hash, path.join(localJobDir, file.path));
-            if (downloadSuccess) {
-                console.log("-> successfully downloaded file", file, "from S3");
-            } else {
+            if (downloadSuccess === false) {
                 console.log("Failed to download file", file, "from S3");
-                throw new Error("Failed to download file from S3");
+                throw new Error("Failed to download file from S3");   
             }
         }
         
