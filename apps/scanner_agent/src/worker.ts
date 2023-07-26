@@ -6,7 +6,7 @@ import Queue, { Job } from "bull";
 import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { downloadFile } from "s3-helpers";
-import { loadEnv } from 'common-helpers';
+import { loadEnv, getCurrentDateTime } from 'common-helpers';
 import { rimraf } from "rimraf";
 import * as path from 'path';
 
@@ -56,7 +56,7 @@ type ScannerJob = {
 
 const start = (): void => {
     
-    console.log(Date() + ": Worker is alive");
+    console.log(getCurrentDateTime() + ": Worker is alive");
 
     // Connect to the named work queue
     const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
