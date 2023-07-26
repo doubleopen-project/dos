@@ -46,7 +46,11 @@ router.delete('/scan-results', authenticateORTToken, async (req, res) => {
 // Request presigned upload url for a file
 router.post('/upload-url', authenticateORTToken, async (req, res) => {
     try {
-        const objectExists = await s3Helpers.objectExistsCheck(req.body.key);
+        if (!process.env.SPACES_BUCKET) {
+            throw new Error('Error: SPACES_BUCKET environment variable is not defined');
+        }
+
+        const objectExists = await s3Helpers.objectExistsCheck(req.body.key, process.env.SPACES_BUCKET);
 
         if (objectExists === undefined) {
             console.log('Error: objectExists undefined');
@@ -65,7 +69,7 @@ router.post('/upload-url', authenticateORTToken, async (req, res) => {
             })
         }
 
-        const presignedUrl: string | undefined = await s3Helpers.getPresignedPutUrl(req.body.key);
+        const presignedUrl: string | undefined = await s3Helpers.getPresignedPutUrl(req.body.key, process.env.SPACES_BUCKET);
 
         if (presignedUrl) {
             res.status(200).json({
@@ -144,7 +148,11 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
         // Uploading files to object storage individually with the file hash as the key
-        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath);
+        if (!process.env.SPACES_BUCKET) {
+            throw new Error('Error: SPACES_BUCKET environment variable is not defined');
+        }
+        
+        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath, process.env.SPACES_BUCKET);
 
         if (!uploadedWithHash) {
             console.log('Error: Uploading files to object storage failed');
