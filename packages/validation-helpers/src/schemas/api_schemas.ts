@@ -87,26 +87,19 @@ export const PostPackageReq = z.object({
 })
 
 export const PostPackageRes = z.object({
-    folderName: z.string(),
     packageId: z.number()
 })
 
 //---------------- POST job ----------------
 
 export const PostJobReq = z.object({
-    directory: z.
-        string({
-            required_error: 'Directory is required'
-        })
-        .trim()
-        .min(1, 'Directory cannot be empty'),
     packageId: z.number({
         required_error: 'Package ID is required'
     })
 })
 
 export const PostJobRes = z.object({
-    scannerJob: DBScannerJobSchema,
+    scannerJobId: z.string(),
     message: z.string()
 })
 
@@ -123,12 +116,6 @@ export const GetJobStateRes = z.object({
 //---------------- PUT job-state ----------------
 
 export const PutJobStateReq = z.object({
-    id: z.
-        string({
-            required_error: 'Id is required'
-        })
-        .trim()
-        .min(1, 'Id cannot be empty'),
     state: z.
         string({
             required_error: 'State is required'
@@ -137,8 +124,11 @@ export const PutJobStateReq = z.object({
         .min(1, 'State cannot be empty')
 })
 
+export const PutJobStateReqPathParams = z.string({
+    required_error: "Scan job ID is required"
+})
+
 export const PutJobStateRes = z.object({
-    editedScannerJob: DBScannerJobSchema,
     message: z.string()
 })
 
