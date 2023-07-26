@@ -115,9 +115,14 @@ export const dosApi = makeApi([
 	},
 	{
 		method: 'put',
-		path: '/job-state',
+		path: '/job-state/:id',
 		description: 'Edit scanner job state',
 		parameters: [
+			{
+				name: 'id',
+				type: 'Path',
+				schema: schemas.PutJobStateReqPathParams
+			},
 			{
 				name: 'body',
 				type: 'Body',

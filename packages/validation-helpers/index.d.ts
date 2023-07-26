@@ -3334,14 +3334,11 @@ declare const dosApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        folderName: zod.ZodString;
         packageId: zod.ZodNumber;
     }, "strip", zod.ZodTypeAny, {
         packageId: number;
-        folderName: string;
     }, {
         packageId: number;
-        folderName: string;
     }>;
     errors: [{
         status: 500;
@@ -3392,90 +3389,22 @@ declare const dosApi: [{
         name: "body";
         type: "Body";
         schema: zod.ZodObject<{
-            directory: zod.ZodString;
             packageId: zod.ZodNumber;
         }, "strip", zod.ZodTypeAny, {
-            directory: string;
             packageId: number;
         }, {
-            directory: string;
             packageId: number;
         }>;
     }];
     response: zod.ZodObject<{
-        scannerJob: zod.ZodObject<{
-            id: zod.ZodString;
-            createdAt: zod.ZodDate;
-            updatedAt: zod.ZodDate;
-            state: zod.ZodString;
-            scannerName: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scannerVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scannerConfig: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
-            scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
-            scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
-            spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            packageId: zod.ZodNumber;
-        }, "strip", zod.ZodTypeAny, {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        }, {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        }>;
+        scannerJobId: zod.ZodString;
         message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
         message: string;
-        scannerJob: {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        };
+        scannerJobId: string;
     }, {
         message: string;
-        scannerJob: {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        };
+        scannerJobId: string;
     }>;
     errors: [{
         status: 500;
@@ -3577,96 +3506,29 @@ declare const dosApi: [{
     }];
 }, {
     method: "put";
-    path: "/job-state";
+    path: "/job-state/:id";
     description: "Edit scanner job state";
     parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
         name: "body";
         type: "Body";
         schema: zod.ZodObject<{
-            id: zod.ZodString;
             state: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
-            id: string;
             state: string;
         }, {
-            id: string;
             state: string;
         }>;
     }];
     response: zod.ZodObject<{
-        editedScannerJob: zod.ZodObject<{
-            id: zod.ZodString;
-            createdAt: zod.ZodDate;
-            updatedAt: zod.ZodDate;
-            state: zod.ZodString;
-            scannerName: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scannerVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            scannerConfig: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            duration: zod.ZodNullable<zod.ZodOptional<zod.ZodNumber>>;
-            scanStartTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
-            scanEndTS: zod.ZodNullable<zod.ZodOptional<zod.ZodDate>>;
-            spdxLicenseListVersion: zod.ZodNullable<zod.ZodOptional<zod.ZodString>>;
-            packageId: zod.ZodNumber;
-        }, "strip", zod.ZodTypeAny, {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        }, {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        }>;
         message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
         message: string;
-        editedScannerJob: {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        };
     }, {
         message: string;
-        editedScannerJob: {
-            id: string;
-            state: string;
-            createdAt: Date;
-            updatedAt: Date;
-            packageId: number;
-            scannerName?: string | null | undefined;
-            scannerVersion?: string | null | undefined;
-            scannerConfig?: string | null | undefined;
-            duration?: number | null | undefined;
-            scanStartTS?: Date | null | undefined;
-            scanEndTS?: Date | null | undefined;
-            spdxLicenseListVersion?: string | null | undefined;
-        };
     }>;
     errors: [{
         status: 500;

@@ -57,7 +57,7 @@ router.post('/upload-url', authenticateORTToken, async (req, res) => {
             return res.status(200).json({
                 success: false,
                 presignedUrl: undefined,
-                message: 'Unable to determine if object with the requested key already exists. Please try again later.'
+                message: 'Unable to determine if object with the requested key already exists'
             })
         }
         if (objectExists) {
@@ -74,13 +74,15 @@ router.post('/upload-url', authenticateORTToken, async (req, res) => {
         if (presignedUrl) {
             res.status(200).json({
                 success: true,
-                presignedUrl: presignedUrl
+                presignedUrl: presignedUrl,
+                message: 'Presigned URL received'
             })
         } else {
             console.log('Error: Presigned URL is undefined');
             res.status(200).json({
                 success: false,
-                presignedUrl: undefined
+                presignedUrl: undefined,
+                message: 'Unable to get a presigned URL for the requested key'
             })
         }
     } catch (error) {
@@ -147,7 +149,7 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         // Listing file paths and the corresponding file hashes and content types
         const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
-        console.log(fileHashesAndPaths);
+        console.log('fileHashesAndPaths count: ', fileHashesAndPaths.length);
 
         // Uploading files to object storage individually with the file hash as the key
         if (!process.env.SPACES_BUCKET) {
@@ -193,7 +195,6 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         console.log('Package structure saved to database');
 
         res.status(200).json({
-            folderName: fileNameNoExt,
             packageId: newPackage.id
         })
 
@@ -208,11 +209,11 @@ router.post('/job', authenticateORTToken, async (req, res) => {
     try {
         // Checking if there already is a ScannerJob for the package
         const existingJob = await dbQueries.findScannerJobByPackageId(req.body.packageId);
-
+        // TODO: check that the job hasn't failed
         if (existingJob) {
             console.log('ScannerJob for the package already exists');
             return res.status(200).json({
-                scannerJob: existingJob,
+                scannerJobId: existingJob.id,
                 message: 'Job already on queue'
             })
         }
@@ -230,7 +231,7 @@ router.post('/job', authenticateORTToken, async (req, res) => {
 
         console.log('Sending a request to Scanner Agent to add new job to the work queue');
 
-        console.log('filesToBeScanned: ', filesToBeScanned);
+        console.log('filesToBeScanned count: ', filesToBeScanned.length);
         
         const postJobUrl = scannerUrl + 'job';
 
@@ -263,14 +264,14 @@ router.post('/job', authenticateORTToken, async (req, res) => {
             })
 
             res.status(201).json({
-                scannerJob: updatedScannerJob,
+                scannerJobId: updatedScannerJob.id,
                 message: 'Job added to queue'
             })
         } else {
             console.log('Created ScannerJob, but adding to queue was unsuccesful');
 
             res.status(202).json({
-                scannerJob: newScannerJob,
+                scannerJobId: newScannerJob.id,
                 message: 'Adding job to queue was unsuccessful'
             })
         }
@@ -300,10 +301,10 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 })
 
 // Update ScannerJob state
-router.put('/job-state', authenticateSAToken, async (req, res) => {
-    try {
+router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
+    try {        
         const updatedScannerJob = await dbQueries.updateScannerJob({
-            id: req.body.id,
+            id: req.params.id as string,
             data: { state: req.body.state }
         })
 
@@ -317,13 +318,12 @@ router.put('/job-state', authenticateSAToken, async (req, res) => {
         }
 
         res.status(200).json({
-            editedScannerJob: updatedScannerJob,
-            message: 'Received job with id ' + req.body.id + '. Changed state to ' + req.body.state
+            message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
         })
 
     } catch (error) {
         console.log('Error: ', error);
-        res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 })
 

@@ -23,7 +23,7 @@ const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
 
 // URL address and node of DOS to send job status updates to
 const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";
-const postStateUrl: string = dosUrl + "job-state";
+const postStateUrl: string = dosUrl + "job-state/";
 const postResultsUrl: string = dosUrl + "job-results";
 
 // Create/connect to a named work queue
@@ -54,7 +54,6 @@ interface JobInfo {
 
 // Send the job state to DOS
 interface RequestBodyState {
-    id: Queue.JobId;
     state: string;
 }
 
@@ -207,10 +206,9 @@ const cleanQueue = async (): Promise<void> => {
 void cleanQueue();
 
 // Create a request to send the job state to DOS
-export const createRequestState = (id: Queue.JobId, state: string): RequestInit => {
+export const createRequestState = (state: string): RequestInit => {
 
     const requestBody: RequestBodyState = {
-        id: id,
         state: state
       };
 
@@ -267,9 +265,9 @@ export const createRequestResults = (id: Queue.JobId, result: string): RequestIn
 
 // Send the job state to DOS
 const postJobState = async (id: Queue.JobId, state: string): Promise<string | undefined> => {
-    const request: RequestInit = createRequestState(id, state);
+    const request: RequestInit = createRequestState(state);
     try {
-        const response: globalThis.Response = await fetch(postStateUrl, request);
+        const response: globalThis.Response = await fetch(postStateUrl+id, request);
         const data: string | undefined = await response.json() as string | undefined;
         console.log("Response from DOS:", data);
         return data;
