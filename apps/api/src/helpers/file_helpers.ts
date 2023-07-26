@@ -81,8 +81,10 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
 
     while (directories.length > 0) {
         const currentDir = directories.pop() as string;
+        console.log('Current dir: ' + currentDir);
 
         const curDirNoBase = currentDir.split(baseDir).pop();
+        console.log('Current dir no base: ' + curDirNoBase);
         
         if (curDirNoBase === '.git') {
             console.log('Skipping .git directory');
@@ -94,7 +96,8 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
         for (const file of files) {
             // Get the full paths
             const fromPath = path.join(currentDir, file);
-
+            console.log('fromPath: ' + fromPath);
+            
             // Stat the file to see if we have a file or dir
             const stat = await fs.promises.stat(fromPath);
 
@@ -106,12 +109,15 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
                 hashSum.update(fileBuffer);
 
                 const filePath = fromPath.split(baseDir).pop();
+                console.log('filePath: ' + filePath);
 
                 fileHashesAndPaths.push({
                     hash: hashSum.digest('hex'),
                     path: filePath as string
                 });
             } else if (stat.isDirectory()) {
+                console.log('Pushing directory to directories array: ', fromPath);
+                
                 directories.push(fromPath);
             }
         }

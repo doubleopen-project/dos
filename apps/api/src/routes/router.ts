@@ -147,6 +147,8 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         // Listing file paths and the corresponding file hashes and content types
         const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
+        console.log(fileHashesAndPaths);
+
         // Uploading files to object storage individually with the file hash as the key
         if (!process.env.SPACES_BUCKET) {
             throw new Error('Error: SPACES_BUCKET environment variable is not defined');
