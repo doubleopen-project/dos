@@ -63,19 +63,19 @@ const streamToString = (stream: any): Promise<unknown> => {
 // Download a file from a bucket
 export const downloadFile = async (bucketName: string, fileName: string, filePath: string): Promise<boolean> => {
     checkS3ClientEnvs();
-    
+
     const downloadParams: GetObjectRequest = { Bucket: bucketName, Key: fileName };
 
     try {
         // Check if the file exists in the bucket
-        if (await objectExistsCheck(fileName)) {
-            
+        if (await objectExistsCheck(fileName, bucketName)) {
+
             const response: GetObjectCommandOutput = await s3Client.send(new GetObjectCommand(downloadParams));
-            
+
             // Check that response.Body is a readable stream
             if (response.Body instanceof Readable) {
                 const readableStream: Readable = response.Body as Readable;
-                
+
                 const dirPath: string = path.dirname(filePath);
 
                 // Create the local directory if it does not exist
@@ -169,19 +169,14 @@ const isDirectoryEmpty = async (bucketName: string, directoryName: string): Prom
 }
 
 // Check if object exists in bucket
-export const objectExistsCheck = async (key: string): Promise<boolean | undefined> => {
+export const objectExistsCheck = async (key: string, bucketName: string): Promise<boolean | undefined> => {
 
     checkS3ClientEnvs();
 
-    if (!process.env.SPACES_BUCKET) {
-        throw new Error("SPACES_BUCKET environment variable is missing");
-    }
-
     try {
-        const bucket: string = process.env.SPACES_BUCKET;
 
         const headObjCommand: HeadObjectCommand = new HeadObjectCommand({
-            Bucket: bucket,
+            Bucket: bucketName,
             Key: key,
         });
 
@@ -224,18 +219,13 @@ interface expectedError {
 }
 
 // Get presigned put url
-export const getPresignedPutUrl = async (key: string): Promise<string | undefined> => {
+export const getPresignedPutUrl = async (key: string, bucketName: string): Promise<string | undefined> => {
     checkS3ClientEnvs();
 
-    if (!process.env.SPACES_BUCKET) {
-        throw new Error("SPACES_BUCKET environment variable is missing");
-    }
-
     try {
-        const bucket: string = process.env.SPACES_BUCKET;
 
         const command: PutObjectCommand = new PutObjectCommand({
-            Bucket: bucket,
+            Bucket: bucketName,
             Key: key,
         });
 
@@ -274,18 +264,14 @@ export const uploadFile = async (bucketName: string, fileName: string, fileConte
 }
 
 // Upload files to a bucket
-export const saveFiles = async (filePaths: string[], baseDir: string): Promise<boolean> => {
+export const saveFiles = async (filePaths: string[], baseDir: string, bucketName: string): Promise<boolean> => {
     try {
         checkS3ClientEnvs();
         for (const filePath of filePaths) {
             // Upload file to S3
             const file: Buffer = fs.readFileSync(baseDir + filePath);
 
-            if (!process.env.SPACES_BUCKET) {
-                throw new Error("SPACES_BUCKET environment variable is missing");
-            }
-
-            await uploadFile(process.env.SPACES_BUCKET, filePath, file);
+            await uploadFile(bucketName, filePath, file);
         }
         return true;
     } catch (error) {
@@ -296,18 +282,18 @@ export const saveFiles = async (filePaths: string[], baseDir: string): Promise<b
 }
 
 // Upload files to a bucket with their hash as the key 
-export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: string, path: string }>, baseDir: string): Promise<boolean> => {
+export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: string, path: string }>, baseDir: string, bucketName: string): Promise<boolean> => {
     try {
         checkS3ClientEnvs();
         for (const file of fileHashesAndPaths) {
-            // Upload file to S3
-            const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
+            // Check if file already exists in bucket
+            const objectExists: boolean | undefined = await objectExistsCheck(file.hash, bucketName);
 
-            if (!process.env.SPACES_BUCKET) {
-                throw new Error("SPACES_BUCKET environment variable is missing");
+            if (!objectExists) {
+                // Upload file to S3
+                const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
+                await uploadFile(bucketName, file.hash, fileBuffer);
             }
-
-            await uploadFile(process.env.SPACES_BUCKET, file.hash, fileBuffer);
         }
         return true;
     } catch (error) {
