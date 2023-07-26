@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 export const getCurrentDateTime = (): string => {
     const date = new Date();
     
