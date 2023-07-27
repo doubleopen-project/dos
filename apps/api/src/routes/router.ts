@@ -171,6 +171,9 @@ router.post('/package', authenticateORTToken, async (req, res) => {
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
         console.log('Local files deleted');
 
+        // Deleting zip file from object storage
+        await s3Helpers.deleteFile(process.env.SPACES_BUCKET, req.body.zipFileKey);
+
         // Creating new Package in database
         // TODO: replace placeholders with actual data
         const newPackage = await dbQueries.createPackage({
