@@ -189,9 +189,18 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     console.log("Job", jobId, "has been completed");
     await postJobResults(jobId, result);
     await postJobState(jobId, "completed");
+
+    // Remove the job from the queue once completed
+    try {
+        const job = await workQueue.getJob(jobId);
+        await job?.remove();
+        console.log("Job", jobId, "has been removed from the queue");
+    } catch (error) {
+        console.log(error);
+    }
 })
 
-// Job cleanup from the queue
+// All old jobs cleanup from the queue
 const cleanQueue = async (): Promise<void> => {
     const cleanupInterval: number = milliseconds.days(5);
     try {
