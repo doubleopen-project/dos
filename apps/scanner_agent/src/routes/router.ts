@@ -254,7 +254,6 @@ export const createRequestResults = (id: Queue.JobId, result: string): RequestIn
         }) as ParsedResult;
       
         const scanresult: string = parsedResult.result;
-        console.dir(scanresult, {depth: null});
         requestBody = {
             ...requestBody,
             result: scanresult
