@@ -16,7 +16,8 @@ declare const saveFilesWithHashKey: (fileHashesAndPaths: Array<{
     hash: string;
     path: string;
 }>, baseDir: string, bucketName: string) => Promise<boolean>;
+declare const deleteFile: (bucketName: string, fileName: string) => Promise<boolean>;
 
 declare const client: S3;
 
-export { client, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFiles, saveFilesWithHashKey, uploadFile };
+export { client, deleteFile, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFiles, saveFilesWithHashKey, uploadFile };

@@ -20,7 +20,9 @@ import {
     GetObjectCommandOutput,
     HeadObjectCommand,
     HeadObjectCommandOutput,
-    GetObjectRequest
+    GetObjectRequest,
+    DeleteObjectCommandInput,
+    DeleteObjectCommand
 } from '@aws-sdk/client-s3';
 import { s3Client } from './s3Client';
 import * as fs from 'fs';
@@ -301,4 +303,17 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
         return false;
     }
 
+}
+
+// Delete a file from a bucket
+export const deleteFile = async (bucketName: string, fileName: string): Promise<boolean> => {
+    try {
+        checkS3ClientEnvs();
+        const deleteParams: DeleteObjectCommandInput = { Bucket: bucketName, Key: fileName };
+        await s3Client.send(new DeleteObjectCommand(deleteParams));
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
 }
