@@ -115,91 +115,101 @@ router.post('/package', authenticateORTToken, async (req, res) => {
     - error handling
     */
     try {
-        // Downloading zip file from object storage
-        const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
-        const downloaded = await fileHelpers.downloadZipFile(req.body.zipFileKey, downloadPath);
+        const existingPackage = await dbQueries.findPackageByPurl(req.body.purl);
 
-        if (!downloaded) {
-            console.log('Error: Zip file download failed');
-            return res.status(500).json({
-                message: 'Internal server error'
+        if (existingPackage) {
+            res.status(200).json({
+                packageId: existingPackage.id
             })
-        }
+        } else {
 
-        console.log('Zip file downloaded');
 
-        // Unzipping the file locally
-        const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
-        const basePath = '/tmp/extracted/';
-        const extractPath = basePath + fileNameNoExt + '/';
+            // Downloading zip file from object storage
+            const downloadPath = '/tmp/downloads/' + req.body.zipFileKey;
+            const downloaded = await fileHelpers.downloadZipFile(req.body.zipFileKey, downloadPath);
 
-        const fileUnzipped = await fileHelpers.unzipFile(downloadPath, extractPath);
-
-        if (!fileUnzipped) {
-            console.log('Error: Unable to unzip file, fileExists returns false. This could mean that there is an issue with access to the file.');
-            return res.status(500).json({
-                message: 'Internal server error'
-            })
-        }
-
-        console.log('Zip file unzipped');
-
-        // Saving files in extracted folder to object storage
-
-        // Listing file paths and the corresponding file hashes and content types
-        const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
-
-        console.log('fileHashesAndPaths count: ', fileHashesAndPaths.length);
-
-        // Uploading files to object storage individually with the file hash as the key
-        if (!process.env.SPACES_BUCKET) {
-            throw new Error('Error: SPACES_BUCKET environment variable is not defined');
-        }
-        
-        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath, process.env.SPACES_BUCKET);
-
-        if (!uploadedWithHash) {
-            console.log('Error: Uploading files to object storage failed');
-            return res.status(500).json({
-                message: 'Internal server error'
-            })
-        }
-
-        console.log('Files uploaded to object storage');
-        
-        // Deleting local files
-        fileHelpers.deleteLocalFiles(downloadPath, extractPath);
-        console.log('Local files deleted');
-
-        // Deleting zip file from object storage
-        await s3Helpers.deleteFile(process.env.SPACES_BUCKET, req.body.zipFileKey);
-
-        // Creating new Package in database
-        // TODO: replace placeholders with actual data
-        const newPackage = await dbQueries.createPackage({
-            data: {
-                purl: req.body.purl,
-                name: 'placeHolder',
-                version: 'placeholder',
-                scanStatus: 'notStarted'
+            if (!downloaded) {
+                console.log('Error: Zip file download failed');
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
             }
-        });
 
-        if (!newPackage) {
-            console.log('Error: Creating new package failed');
-            return res.status(500).json({
-                message: 'Internal server error'
+            console.log('Zip file downloaded');
+
+            // Unzipping the file locally
+            const fileNameNoExt = (req.body.zipFileKey).split('.')[0];
+            const basePath = '/tmp/extracted/';
+            const extractPath = basePath + fileNameNoExt + '/';
+
+            const fileUnzipped = await fileHelpers.unzipFile(downloadPath, extractPath);
+
+            if (!fileUnzipped) {
+                console.log('Error: Unable to unzip file, fileExists returns false. This could mean that there is an issue with access to the file.');
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
+            }
+
+            console.log('Zip file unzipped');
+
+            // Saving files in extracted folder to object storage
+
+            // Listing file paths and the corresponding file hashes and content types
+            const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
+
+            console.log('fileHashesAndPaths count: ', fileHashesAndPaths.length);
+
+            // Uploading files to object storage individually with the file hash as the key
+            if (!process.env.SPACES_BUCKET) {
+                throw new Error('Error: SPACES_BUCKET environment variable is not defined');
+            }
+
+            const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath, process.env.SPACES_BUCKET);
+
+            if (!uploadedWithHash) {
+                console.log('Error: Uploading files to object storage failed');
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
+            }
+
+            console.log('Files uploaded to object storage');
+
+            // Deleting local files
+            fileHelpers.deleteLocalFiles(downloadPath, extractPath);
+            console.log('Local files deleted');
+
+            // Deleting zip file from object storage
+            await s3Helpers.deleteFile(process.env.SPACES_BUCKET, req.body.zipFileKey);
+
+            // Creating new Package in database
+            // TODO: replace placeholders with actual data
+            const newPackage = await dbQueries.createPackage({
+                data: {
+                    purl: req.body.purl,
+                    name: 'placeHolder',
+                    version: 'placeholder',
+                    scanStatus: 'notStarted'
+                }
+            });
+
+            if (!newPackage) {
+                console.log('Error: Creating new package failed');
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
+            }
+
+            // Adding Files and FileTrees to database
+            await dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
+
+            console.log('Package structure saved to database');
+
+            res.status(200).json({
+                packageId: newPackage.id
             })
         }
-
-        // Adding Files and FileTrees to database
-        await dbOperations.saveFilesAndFileTrees(newPackage.id, fileHashesAndPaths);
-
-        console.log('Package structure saved to database');
-
-        res.status(200).json({
-            packageId: newPackage.id
-        })
 
     } catch (error) {
         console.log('Error: ', error);
@@ -212,8 +222,9 @@ router.post('/job', authenticateORTToken, async (req, res) => {
     try {
         // Checking if there already is a ScannerJob for the package
         const existingJob = await dbQueries.findScannerJobByPackageId(req.body.packageId);
-        // TODO: check that the job hasn't failed
-        if (existingJob) {
+        
+        if (existingJob && (existingJob.state === 'queued' || existingJob.state === 'active')) {
+            
             console.log('ScannerJob for the package already exists');
             return res.status(200).json({
                 scannerJobId: existingJob.id,
@@ -232,15 +243,19 @@ router.post('/job', authenticateORTToken, async (req, res) => {
         // Getting list of files to be scanned
         const filesToBeScanned = await dbOperations.getFilesToBeScanned(req.body.packageId);
 
+        if (filesToBeScanned.length === 0) {
+            throw new Error('Error: No files to be scanned');
+        }
+
         console.log('Sending a request to Scanner Agent to add new job to the work queue');
 
         console.log('filesToBeScanned count: ', filesToBeScanned.length);
-        
+
         const postJobUrl = scannerUrl + 'job';
 
         const request = {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + process.env.SA_TOKEN
             },
@@ -305,7 +320,7 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 
 // Update ScannerJob state
 router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
-    try {        
+    try {
         const updatedScannerJob = await dbQueries.updateScannerJob({
             id: req.params.id as string,
             data: { state: req.body.state }
