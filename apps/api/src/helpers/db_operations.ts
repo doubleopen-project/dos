@@ -110,12 +110,16 @@ export const deletePackageDataByPurl = async (purl: string): Promise<string> => 
             await dbQueries.deleteCopyrightFindingsByScannerJobIds(scannerJobs);
         }
 
+        // Find all file hashes for packages
+        const fileHashes = await dbQueries.findFileHashesByPackageIds(packages);
+
         // Delete all FileTrees for packages
         await dbQueries.deleteFileTreesByPackageIds(packages);
 
-        // Delete all Files that are not used by any FileTree
-        await dbQueries.deleteFilesNotUsedByFileTrees();
-
+        if (fileHashes && fileHashes.length > 0) {
+            // Delete all Files that are not used by any FileTree
+            await dbQueries.deleteFilesNotUsedByFileTrees(fileHashes);
+        }
         // Delete all scannerJobs for packages
         await dbQueries.deleteScannerJobsByPackageIds(packages);
 
@@ -154,6 +158,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
     )
 
     console.log('Adding LicenseFindings and CopyrightFindings for files');
+    console.log('Number of files: ' + result.files.length);
+
     for (const file of result.files) {
 
         if (file.type === 'file') {
