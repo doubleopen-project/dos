@@ -5,7 +5,7 @@
 import * as dbQueries from '../helpers/db_queries';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { Package, ScannerJob } from 'database';
+import { ScannerJob } from 'database';
 import { ScannerJobResultSchema } from 'validation-helpers';
 import { formatDateString } from './date_helpers';
 
@@ -30,11 +30,10 @@ export const getPackageResults = async (purl: string) => {
             } else {
                 throw new Error('Error: unable to fetch scanner job id from database');
             }
-        } else {
+        } else if (queriedPackage.scanStatus === 'scanned') {
             results = await getScanResults(queriedPackage.id);
             status = 'ready';
         }
-
     }
 
     return {
@@ -94,35 +93,40 @@ export const getScanResults = async (packageId: number) => {
 
 // Delete data for packages with purl
 export const deletePackageDataByPurl = async (purl: string): Promise<string> => {
-    // Find all packages with purl
-    const packages: Package[] | null = await dbQueries.findPackagesByPurl(purl);
+    // Find all package ids with purl
+    const packageIds: number[] | null = await dbQueries.findPackageIdsByPurl(purl);
 
-    if (packages && packages.length > 0) {
+    if (packageIds && packageIds.length > 0) {
 
         // Find all scannerJobs for packages
-        const scannerJobs: ScannerJob[] | null = await dbQueries.findScannerJobsByPackageIds(packages);
+        const scannerJobs: ScannerJob[] | null = await dbQueries.findScannerJobsByPackageIds(packageIds);
 
-        if (scannerJobs && scannerJobs.length > 0) {
-            // Delete all license findings for scannerJobs
-            await dbQueries.deleteLicenseFindingsByScannerJobIds(scannerJobs);
+        // Find all file ids related to packages
+        const fileHashes = await dbQueries.findFileHashesByPackageIds(packageIds);
 
-            // Delete all copyright findings for scannerJobs
-            await dbQueries.deleteCopyrightFindingsByScannerJobIds(scannerJobs);
+        if (fileHashes && fileHashes.length > 0) {
+            console.log('fileHashes count: ' + fileHashes.length);
+            // Delete all licenseFindings related to files
+            const deletedLicenseFindings = await dbQueries.deleteLicenseFindingsByFileHashes(fileHashes);
+            console.log('deletedLicenseFindings count: ' + deletedLicenseFindings.count);
+
+            // Delete all copyrightFindings related to files
+            const deletedCopyrightFindings = await dbQueries.deleteCopyrightFindingsByFileHashes(fileHashes);
+            console.log('deletedCopyrightFindings count: ' + deletedCopyrightFindings.count);
+
+            // Update file scanStatuses to 'notScanned'
+            await dbQueries.updateManyFilesStatuses(fileHashes, 'notStarted');
         }
 
-        // Delete all FileTrees for packages
-        await dbQueries.deleteFileTreesByPackageIds(packages);
+        if (scannerJobs && scannerJobs.length > 0) {
+            // Update all scannerJobs states for packages
+            await dbQueries.updateScannerJobsStatesByPackageIds(packageIds, 'resultsDeleted');
+        }
 
-        // Delete all Files that are not used by any FileTree
-        await dbQueries.deleteFilesNotUsedByFileTrees();
+        // Update all packages with purl
+        await dbQueries.updatePackagesScanStatusesByPurl(purl, 'notStarted');
 
-        // Delete all scannerJobs for packages
-        await dbQueries.deleteScannerJobsByPackageIds(packages);
-
-        // Delete all packages with purl
-        await dbQueries.deletePackagesByPurl(purl);
-
-        return 'Data deleted for packages with purl ' + purl;
+        return 'Results deleted for packages with purl ' + purl;
 
     } else {
         return 'No packages found with purl ' + purl;
@@ -154,6 +158,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
     )
 
     console.log('Adding LicenseFindings and CopyrightFindings for files');
+
     for (const file of result.files) {
 
         if (file.type === 'file') {
