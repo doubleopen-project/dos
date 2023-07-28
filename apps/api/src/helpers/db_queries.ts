@@ -87,23 +87,6 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
     })
 }
 
-export const findFileHashesByPackageIds = async (packages: Package[]): Promise<string[] | null> => {
-    return await prisma.fileTree.findMany({
-        where: {
-            packageId: {
-                in: packages.map(p => p.id)
-            }
-        },
-        select: {
-            sha256: true
-        }
-    }).then((files: {sha256: string}[]) => {
-        return files.map((file: {sha256: string}) => {
-            return file.sha256
-        })
-    })
-}
-
 export const findFileTreesByPackageId = async (packageId: number): Promise<FileTree[] | null> => {
     return await prisma.fileTree.findMany({
         where: {
@@ -241,7 +224,7 @@ export const deletePackagesByPurl = async (purl: string): Promise<void> => {
 }
 
 // Delete all files that are not used by any FileTree
-export const deleteFilesNotUsedByFileTrees = async (fileHashes: string[]): Promise<void> => {
+export const deleteFilesNotUsedByFileTrees = async (): Promise<void> => {
     const sha256s: { sha256: string; }[] = await prisma.fileTree.findMany({
         select: {
             sha256: true
@@ -250,9 +233,6 @@ export const deleteFilesNotUsedByFileTrees = async (fileHashes: string[]): Promi
     
     await prisma.file.deleteMany({
         where: {
-            sha256: {
-                in: fileHashes
-            },
             NOT: {
                 sha256: {
                     in: sha256s.map(s => s.sha256)
