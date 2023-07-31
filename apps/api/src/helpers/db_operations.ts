@@ -163,18 +163,34 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
         if (file.type === 'file') {
             if (file.sha256) {
-                const dbFile = await dbQueries.findFileByHash(file.sha256);
+                let dbFile = await dbQueries.findFileByHash(file.sha256);
 
                 if (!dbFile) {
-                    throw new Error('Error: unable to find file from database');
-                }
+                    // Create file
+                    dbFile = await dbQueries.createFile({
+                        data: {
+                            sha256: file.sha256,
+                            scanStatus: 'scanned'
+                        }
+                    })
 
-                await dbQueries.updateFile({
-                    id: dbFile.id,
-                    data: {
-                        scanStatus: 'scanned',
-                    }
-                })
+                    // Create FileTree
+                    await dbQueries.createFileTree({
+                        data: {
+                            path: file.path,
+                            sha256: file.sha256,
+                            packageId: scannerJob.packageId
+                        }
+                    })
+
+                } else {
+                    await dbQueries.updateFile({
+                        id: dbFile.id,
+                        data: {
+                            scanStatus: 'scanned',
+                        }
+                    })
+                }
 
                 for (const license of file.license_detections) {
                     for (const match of license.matches) {
@@ -209,30 +225,37 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
 }
 
-export const saveFilesAndFileTrees = async (packageId: number, files: { hash: string, path: string }[]): Promise<void> => {
+export const findFilesToBeScanned = async (packageId: number, files: { hash: string, path: string }[]): Promise<{ hash: string, path: string }[]> => {
+    const filesToBeScanned: { hash: string, path: string }[] = [];
+
     for (const file of files) {
         // Check if File already exists
         const existingFile = await dbQueries.findFileByHash(file.hash);
 
-        if (!existingFile) {
-            // Create new File
-            await dbQueries.createFile({
-                data: {
-                    sha256: file.hash,
-                    scanStatus: 'notStarted',
-                }
-            });
-        }
+        if (existingFile) {
+            const existingFileTree = await dbQueries.findFileTreeByHashAndPackageId(file.hash, packageId);
 
-        // Create new FileTree
-        await dbQueries.createFileTree({
-            data: {
-                path: file.path,
-                sha256: file.hash,
-                packageId: packageId,
+            if (!existingFileTree) {
+                // Create new FileTree
+                await dbQueries.createFileTree({
+                    data: {
+                        path: file.path,
+                        sha256: file.hash,
+                        packageId: packageId,
+                    }
+                });
             }
-        });
+
+            if (existingFile.scanStatus === 'notStarted' || existingFile.scanStatus === 'failed') {
+                filesToBeScanned.push(file);
+            }
+
+        } else {
+            filesToBeScanned.push(file);
+        }
     }
+
+    return filesToBeScanned;
 }
 
 export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: string, path: string }[]> => {
