@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from 'zod';
-import { DBScannerJobSchema } from './db_schemas';
 import { ScannerJobResultSchema } from './scanner_agent_schemas';
 
 //---------------- POST scan-results ----------------
@@ -71,9 +70,9 @@ export const PostUploadUrlRes = z.object({
     message: z.string().optional()
 })
 
-//---------------- POST package ----------------
+//---------------- POST job ----------------
 
-export const PostPackageReq = z.object({
+export const PostJobReq = z.object({
     zipFileKey: z.string({
         required_error: 'Zip file key is required'
     })
@@ -86,21 +85,8 @@ export const PostPackageReq = z.object({
         .min(1, 'Purl cannot be empty'),
 })
 
-export const PostPackageRes = z.object({
-    packageId: z.number()
-})
-
-//---------------- POST job ----------------
-
-export const PostJobReq = z.object({
-    packageId: z.number({
-        required_error: 'Package ID is required'
-    })
-})
-
 export const PostJobRes = z.object({
-    scannerJobId: z.string(),
-    message: z.string()
+    scannerJobId: z.string()
 })
 
 //---------------- GET job-state ----------------
@@ -110,7 +96,32 @@ export const GetJobStateReq = z.string({
 })
 
 export const GetJobStateRes = z.object({
-    state: z.string()
+    state: z.object({
+        status: z.string(),
+        message: z.string(),
+    }),
+    results: z.union([
+        z.null(),
+        z.object({
+            licenses: z.array(z.object({
+                license: z.string(),
+                location: z.object({
+                    path: z.string(),
+                    start_line: z.number(),
+                    end_line: z.number(),
+                }),
+                score: z.number(),
+            })),
+            copyrights: z.array(z.object({
+                statement: z.string(),
+                location: z.object({
+                    path: z.string(),
+                    start_line: z.number(),
+                    end_line: z.number(),
+                }),
+            })),
+        })
+    ]),
 })
 
 //---------------- PUT job-state ----------------
