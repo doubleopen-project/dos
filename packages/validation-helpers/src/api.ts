@@ -73,20 +73,6 @@ export const dosApi = makeApi([
 	},
 	{
 		method: 'post',
-		path: '/package',
-		description: 'Add package for processing, with specified purl and S3 URL',
-		parameters: [
-			{
-				name: 'body',
-				type: 'Body',
-				schema: schemas.PostPackageReq
-			}
-		],
-		response: schemas.PostPackageRes,
-		errors
-	},
-	{
-		method: 'post',
 		path: '/job',
 		description: 'Add scanner job for package',
 		parameters: [

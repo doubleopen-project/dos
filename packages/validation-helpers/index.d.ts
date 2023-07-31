@@ -3317,8 +3317,8 @@ declare const dosApi: [{
     }];
 }, {
     method: "post";
-    path: "/package";
-    description: "Add package for processing, with specified purl and S3 URL";
+    path: "/job";
+    description: "Add scanner job for package";
     parameters: [{
         name: "body";
         type: "Body";
@@ -3334,76 +3334,10 @@ declare const dosApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        packageId: zod.ZodNumber;
-    }, "strip", zod.ZodTypeAny, {
-        packageId: number;
-    }, {
-        packageId: number;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/job";
-    description: "Add scanner job for package";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            packageId: zod.ZodNumber;
-        }, "strip", zod.ZodTypeAny, {
-            packageId: number;
-        }, {
-            packageId: number;
-        }>;
-    }];
-    response: zod.ZodObject<{
         scannerJobId: zod.ZodString;
-        message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        message: string;
         scannerJobId: string;
     }, {
-        message: string;
         scannerJobId: string;
     }>;
     errors: [{
@@ -3457,11 +3391,165 @@ declare const dosApi: [{
         schema: zod.ZodString;
     }];
     response: zod.ZodObject<{
-        state: zod.ZodString;
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+            status: string;
+        }, {
+            message: string;
+            status: string;
+        }>;
+        results: zod.ZodUnion<[zod.ZodNull, zod.ZodObject<{
+            licenses: zod.ZodArray<zod.ZodObject<{
+                license: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }>, "many">;
+            copyrights: zod.ZodArray<zod.ZodObject<{
+                statement: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+            }, "strip", zod.ZodTypeAny, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        }>]>;
     }, "strip", zod.ZodTypeAny, {
-        state: string;
+        state: {
+            message: string;
+            status: string;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        } | null;
     }, {
-        state: string;
+        state: {
+            message: string;
+            status: string;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+        } | null;
     }>;
     errors: [{
         status: 500;
@@ -7610,39 +7698,39 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         sha256: string;
         score: number;
+        scannerJobId: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     }, {
         sha256: string;
         score: number;
+        scannerJobId: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         sha256: string;
         score: number;
+        scannerJobId: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     };
 }, {
     data: {
         sha256: string;
         score: number;
+        scannerJobId: string;
         scanner: string;
         licenseExpression: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -7656,31 +7744,31 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         sha256: string;
         copyright: string;
+        scannerJobId: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     }, {
         sha256: string;
         copyright: string;
+        scannerJobId: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         sha256: string;
         copyright: string;
+        scannerJobId: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     };
 }, {
     data: {
         sha256: string;
         copyright: string;
+        scannerJobId: string;
         startLine: number;
         endLine: number;
-        scannerJobId: string;
     };
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
