@@ -59,7 +59,7 @@ export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput
     })
 }
 
-export const updateScannerJobsStatesByPackageIds = async (packageIds: number[], state: string): Promise<{count: number}> => {
+export const updateScannerJobsStatesByPackageIds = async (packageIds: number[], state: string): Promise<{ count: number }> => {
     return await prisma.scannerJob.updateMany({
         where: {
             packageId: {
@@ -81,7 +81,7 @@ export const updateFile = async (input: dbZodSchemas.UpdateFileInput): Promise<F
     })
 }
 
-export const updateManyFilesStatuses = async (fileHashes: string[], scanStatus: string): Promise<{count: number}> => {
+export const updateManyFilesStatuses = async (fileHashes: string[], scanStatus: string): Promise<{ count: number }> => {
     return await prisma.file.updateMany({
         where: {
             sha256: {
@@ -103,7 +103,7 @@ export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Pro
     })
 }
 
-export const updatePackagesScanStatusesByPurl = async (purl: string, scanStatus: string): Promise<{count: number}> => {
+export const updatePackagesScanStatusesByPurl = async (purl: string, scanStatus: string): Promise<{ count: number }> => {
     return await prisma.package.updateMany({
         where: {
             purl: purl
@@ -134,10 +134,19 @@ export const findFileHashesByPackageIds = async (packageIds: number[]): Promise<
         select: {
             sha256: true
         }
-    }).then((fileTrees: {sha256: string}[]) => {
-        return fileTrees.map((elem: {sha256: string}) => {
+    }).then((fileTrees: { sha256: string }[]) => {
+        return fileTrees.map((elem: { sha256: string }) => {
             return elem.sha256
         })
+    })
+}
+
+export const findFileTreeByHashAndPackageId = async (hash: string, packageId: number): Promise<FileTree | null> => {
+    return await prisma.fileTree.findFirst({
+        where: {
+            sha256: hash,
+            packageId: packageId
+        },
     })
 }
 
@@ -199,8 +208,8 @@ export const findPackageIdsByPurl = async (purl: string): Promise<number[] | nul
         select: {
             id: true
         }
-    }).then((packages: {id: number}[]) => {
-        return packages.map((elem: {id: number}) => {
+    }).then((packages: { id: number }[]) => {
+        return packages.map((elem: { id: number }) => {
             return elem.id
         })
     })
@@ -251,7 +260,7 @@ export const deleteLicenseFindingsByScannerJobIds = async (scannerJobs: ScannerJ
 }
 
 // Delete all license findings related to files
-export const deleteLicenseFindingsByFileHashes = async (fileHashes: string[]): Promise<{count: number}> => {
+export const deleteLicenseFindingsByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
     return await prisma.licenseFinding.deleteMany({
         where: {
             sha256: {
@@ -273,7 +282,7 @@ export const deleteCopyrightFindingsByScannerJobIds = async (scannerJobs: Scanne
 }
 
 // Delete all copyright findings related to files
-export const deleteCopyrightFindingsByFileHashes = async (fileHashes: string[]): Promise<{count: number}> => {
+export const deleteCopyrightFindingsByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
     return await prisma.copyrightFinding.deleteMany({
         where: {
             sha256: {
@@ -321,7 +330,7 @@ export const deleteFilesNotUsedByFileTrees = async (fileHashes: string[]): Promi
             sha256: true
         }
     })
-    
+
     await prisma.file.deleteMany({
         where: {
             sha256: {

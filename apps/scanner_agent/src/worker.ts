@@ -85,6 +85,7 @@ const start = (): void => {
             //"-v",
             "-i",
             "-q",
+            "--strip-root",
             "--json",
             "-",
             localJobDir
