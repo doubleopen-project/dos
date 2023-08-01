@@ -92,12 +92,14 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
     return fileHashesAndPaths;
 }
 
-export const processPackageAndSendToScanner = async (zipFileKey: string, scannerJobId: string, packageId: number) => {
+export const processPackageAndSendToScanner = async (zipFileKey: string, scannerJobId: string, packageId: number, purl: string) => {
     try {
         if (!process.env.SPACES_BUCKET) {
             throw new Error('Error: SPACES_BUCKET environment variable is not defined');
         }
-
+        console.log('Processing files for purl: ', purl);
+        // Update ScannerJob status to 'processing'
+        await dbQueries.updateScannerJob({id: scannerJobId, data: {state: 'preparing'}});
         // Downloading zip file from object storage
         const downloadPath = '/tmp/downloads/' + zipFileKey;
         const downloaded = await downloadZipFile(zipFileKey, downloadPath);
