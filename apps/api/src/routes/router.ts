@@ -138,7 +138,7 @@ router.post('/job', authenticateORTToken, async (req, res) => {
             });
 
             fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, jobPackage.id);
-            
+
             return res.status(200).json({
                 scannerJobId: newScannerJob.id
             })
@@ -202,24 +202,18 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 // Update ScannerJob state
 router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
     try {
-        const updatedScannerJob = await dbQueries.updateScannerJob({
-            id: req.params.id as string,
-            data: { state: req.body.state }
-        })
-
         if (req.body.state === 'completed') {
-            console.log('Changing package scanStatus to "scanned"');
+            return res.status(400).json({ message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead' });
+        } else {
+            await dbQueries.updateScannerJob({
+                id: req.params.id as string,
+                data: { state: req.body.state }
+            })
 
-            await dbQueries.updatePackage({
-                id: updatedScannerJob.packageId,
-                data: { scanStatus: 'scanned' }
+            res.status(200).json({
+                message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
             })
         }
-
-        res.status(200).json({
-            message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
-        })
-
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -230,9 +224,9 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
 router.post('/job-results', authenticateSAToken, async (req, res) => {
     try {
         if (req.body.result.headers.length === 1) {
-            await dbOperations.saveJobResults(req.body.id, req.body.result)
+            dbOperations.saveJobResults(req.body.id, req.body.result)
             res.status(200).json({
-                message: 'Received and saved results for job with with id ' + req.body.id
+                message: 'Received and saving results for job with with id ' + req.body.id
             })
         } else {
             console.log('Alert in job-results! More headers!!!');
