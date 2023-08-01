@@ -187,8 +187,11 @@ workQueue.on("global:failed", async (jobId: Queue.JobId) => {
 
 workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     console.log("Job", jobId, "has been completed");
-    await postJobResults(jobId, result);
-    await postJobState(jobId, "completed");
+    const response = await postJobResults(jobId, result);
+    if (response === "error") {
+        console.log("Job", jobId, "results could not be sent to DOS");
+        await postJobState(jobId, "failed");
+    }
 
     // Remove the job from the queue once completed
     try {
@@ -289,7 +292,10 @@ const postJobResults = async (id: Queue.JobId, result: string): Promise<string |
     const request: RequestInit = createRequestResults(id, result);
     try {
         const response: globalThis.Response = await fetch(postResultsUrl, request);
-        const data: string | undefined = await response.json() as string | undefined;
+        let data: string | undefined = "error";
+        if (response.ok) {
+            data = await response.json() as string | undefined;
+        }
         console.log("Response from DOS:");
         console.dir(data, {depth: null});
         return data;
