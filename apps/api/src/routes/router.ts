@@ -158,20 +158,32 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
             res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
         } else {
             let message = '';
-            if (scannerJob.state === 'completed') {
-                message = 'Scan job completed';
-            }
-            if (scannerJob.state === 'failed') {
-                message = 'Scan job failed';
-            }
-            if (scannerJob.state === 'queued' || scannerJob.state === 'waiting') {
-                message = 'Scan job waiting on queue';
-            }
-            if (scannerJob.state === 'active') {
-                message = 'Files are being scanned';
-            }
-            if (scannerJob.state === 'preparing') {
-                message = 'Files are preparing for scanning';
+
+            switch (scannerJob.state) {
+                case 'resultsDeleted':
+                    message = 'Scan results deleted';
+                    break;
+                case 'created':
+                    message = 'Scan job created';
+                    break;
+                case 'completed':
+                    message = 'Scan job completed';
+                    break;
+                case 'failed':
+                    message = 'Scan job failed';
+                    break;
+                case 'queued':
+                case 'waiting':
+                    message = 'Scan job waiting on queue';
+                    break;
+                case 'active':
+                    message = 'Files are being scanned';
+                    break;
+                case 'preparing':
+                    message = 'Files are being prepared for scanning';
+                    break;
+                default:
+                    message = 'Scan job state: ' + scannerJob.state;
             }
 
             res.status(200).json({
