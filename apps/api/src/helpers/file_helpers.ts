@@ -50,7 +50,6 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
         const currentDir = directories.pop() as string;
 
         const curDirNoBase = currentDir.split(baseDir).pop();
-        console.log('Current directory: ', curDirNoBase);
         
         if (curDirNoBase === '.git') {
             console.log('Skipping .git directory');
