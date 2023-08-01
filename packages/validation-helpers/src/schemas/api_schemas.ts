@@ -99,29 +99,7 @@ export const GetJobStateRes = z.object({
     state: z.object({
         status: z.string(),
         message: z.string(),
-    }),
-    results: z.union([
-        z.null(),
-        z.object({
-            licenses: z.array(z.object({
-                license: z.string(),
-                location: z.object({
-                    path: z.string(),
-                    start_line: z.number(),
-                    end_line: z.number(),
-                }),
-                score: z.number(),
-            })),
-            copyrights: z.array(z.object({
-                statement: z.string(),
-                location: z.object({
-                    path: z.string(),
-                    start_line: z.number(),
-                    end_line: z.number(),
-                }),
-            })),
-        })
-    ]),
+    })
 })
 
 //---------------- PUT job-state ----------------

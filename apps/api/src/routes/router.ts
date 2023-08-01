@@ -157,10 +157,8 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
         if (!scannerJob) {
             res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
         } else {
-            let results = null;
             let message = '';
             if (scannerJob.state === 'completed') {
-                results = await dbOperations.getScanResults(scannerJob.packageId);
                 message = 'Scan job completed';
             }
             if (scannerJob.state === 'failed') {
@@ -176,13 +174,11 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
                 message = 'Files are preparing for scanning';
             }
 
-
             res.status(200).json({
                 state: {
                     status: scannerJob.state,
                     message: message
-                },
-                results: results
+                }
             })
         }
     } catch (error) {
