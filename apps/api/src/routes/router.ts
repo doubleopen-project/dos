@@ -137,7 +137,7 @@ router.post('/job', authenticateORTToken, async (req, res) => {
                 }
             });
 
-            fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, jobPackage.id);
+            fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, jobPackage.id, req.body.purl);
 
             return res.status(200).json({
                 scannerJobId: newScannerJob.id
