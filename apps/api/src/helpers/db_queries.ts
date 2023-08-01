@@ -94,6 +94,21 @@ export const updateManyFilesStatuses = async (fileHashes: string[], scanStatus: 
     })
 }
 
+export const updateFileStatusesByPackageId = async (packageId: number, scanStatus: string): Promise<{ count: number }> => {
+    return await prisma.file.updateMany({
+        where: {
+            filetrees: {
+                every: {
+                    packageId: packageId
+                }
+            }
+        },
+        data: {
+            scanStatus: scanStatus,
+        }
+    })
+}
+
 export const updatePackage = async (input: dbZodSchemas.UpdatePackageInput): Promise<Package> => {
     return await prisma.package.update({
         where: {
