@@ -203,12 +203,21 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
     try {
         if (req.body.state === 'completed') {
-            return res.status(400).json({ message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead' });
+            return res.status(400).json({ 
+                message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead' 
+            });
         } else {
-            await dbQueries.updateScannerJob({
+            const updatedScannerJob = await dbQueries.updateScannerJob({
                 id: req.params.id as string,
                 data: { state: req.body.state }
             })
+
+            if (updatedScannerJob && req.body.state === 'failed') {
+                await dbQueries.updatePackage({
+                    id: updatedScannerJob.packageId,
+                    data: { scanStatus: 'failed' }
+                })
+            }
 
             res.status(200).json({
                 message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
