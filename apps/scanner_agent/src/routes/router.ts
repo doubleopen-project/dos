@@ -205,7 +205,7 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
 
 // All old jobs cleanup from the queue
 const cleanQueue = async (): Promise<void> => {
-    const cleanupInterval: number = milliseconds.minutes(1);
+    const cleanupInterval: number = milliseconds.days(5);
     try {
         await workQueue.clean(cleanupInterval, "completed");
         await workQueue.clean(cleanupInterval, "failed");
@@ -296,9 +296,8 @@ const postJobResults = async (id: Queue.JobId, result: string): Promise<string |
         if (response.ok) {
             data = await response.json() as string | undefined;
         }
-        //console.log("Response from DOS:");
-        //console.dir(data, {depth: null});
-        console.log("Response from DOS:", data);
+        console.log("Response from DOS:");
+        console.dir(data, {depth: null});
         return data;
     } catch (error) {
         console.log("Error:", error);
