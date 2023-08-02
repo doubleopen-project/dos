@@ -7,7 +7,7 @@
         "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts"
     },
     "dependencies": {
-        "dotenv": "16.3.1",
-        "fs": "0.0.1-security"
+        "dotenv": "^16.0.3",
+        "fs": "^0.0.1-security"
     }
 }

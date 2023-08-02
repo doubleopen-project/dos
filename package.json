@@ -42,14 +42,18 @@
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
     },
     "devDependencies": {
-        "rimraf": "5.0.1",
-        "turbo": "1.10.12"
+        "rimraf": "^5.0.1",
+        "turbo": "^1.8.8"
     },
     "engines": {
         "node": "18.15.0",
         "npm": "9.5.0"
     },
     "packageManager": "npm@9.5.0",
+    "dependencies": {
+        "cross-fetch": "^3.1.5",
+        "dotenv": "^16.0.3"
+    },
     "overrides": {
         "formidable": "1.2.6",
         "typescript": "5.0.2"
