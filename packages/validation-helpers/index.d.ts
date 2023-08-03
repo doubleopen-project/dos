@@ -1499,6 +1499,7 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
         state: z.ZodOptional<z.ZodString>;
         scannerName: z.ZodOptional<z.ZodString>;
         scannerVersion: z.ZodOptional<z.ZodString>;
+        scannerConfig: z.ZodOptional<z.ZodString>;
         duration: z.ZodOptional<z.ZodNumber>;
         scanStartTS: z.ZodOptional<z.ZodDate>;
         scanEndTS: z.ZodOptional<z.ZodDate>;
@@ -1507,6 +1508,7 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
         state?: string | undefined;
         scannerName?: string | undefined;
         scannerVersion?: string | undefined;
+        scannerConfig?: string | undefined;
         duration?: number | undefined;
         scanStartTS?: Date | undefined;
         scanEndTS?: Date | undefined;
@@ -1515,6 +1517,7 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
         state?: string | undefined;
         scannerName?: string | undefined;
         scannerVersion?: string | undefined;
+        scannerConfig?: string | undefined;
         duration?: number | undefined;
         scanStartTS?: Date | undefined;
         scanEndTS?: Date | undefined;
@@ -1525,6 +1528,7 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
         state?: string | undefined;
         scannerName?: string | undefined;
         scannerVersion?: string | undefined;
+        scannerConfig?: string | undefined;
         duration?: number | undefined;
         scanStartTS?: Date | undefined;
         scanEndTS?: Date | undefined;
@@ -1536,6 +1540,7 @@ declare const UpdateScannerJobSchema: z.ZodObject<{
         state?: string | undefined;
         scannerName?: string | undefined;
         scannerVersion?: string | undefined;
+        scannerConfig?: string | undefined;
         duration?: number | undefined;
         scanStartTS?: Date | undefined;
         scanEndTS?: Date | undefined;
@@ -1618,68 +1623,89 @@ type UpdateFileInput = z.infer<typeof UpdateFileSchema>;
 declare const CreateLicenseFindingSchema: z.ZodObject<{
     data: z.ZodObject<{
         scanner: z.ZodString;
-        licenseExpression: z.ZodString;
-        startLine: z.ZodNumber;
-        endLine: z.ZodNumber;
-        score: z.ZodNumber;
+        scannerConfig: z.ZodString;
+        licenseExpressionSPDX: z.ZodString;
         sha256: z.ZodString;
-        scannerJobId: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         sha256: string;
-        score: number;
-        scannerJobId: string;
+        scannerConfig: string;
         scanner: string;
-        licenseExpression: string;
-        startLine: number;
-        endLine: number;
+        licenseExpressionSPDX: string;
     }, {
         sha256: string;
-        score: number;
-        scannerJobId: string;
+        scannerConfig: string;
         scanner: string;
-        licenseExpression: string;
-        startLine: number;
-        endLine: number;
+        licenseExpressionSPDX: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         sha256: string;
-        score: number;
-        scannerJobId: string;
+        scannerConfig: string;
         scanner: string;
-        licenseExpression: string;
-        startLine: number;
-        endLine: number;
+        licenseExpressionSPDX: string;
     };
 }, {
     data: {
         sha256: string;
-        score: number;
-        scannerJobId: string;
+        scannerConfig: string;
         scanner: string;
-        licenseExpression: string;
-        startLine: number;
-        endLine: number;
+        licenseExpressionSPDX: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
+declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        startLine: z.ZodNumber;
+        endLine: z.ZodNumber;
+        score: z.ZodNumber;
+        licenseFindingId: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        score: number;
+        startLine: number;
+        endLine: number;
+        licenseFindingId: number;
+    }, {
+        score: number;
+        startLine: number;
+        endLine: number;
+        licenseFindingId: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        score: number;
+        startLine: number;
+        endLine: number;
+        licenseFindingId: number;
+    };
+}, {
+    data: {
+        score: number;
+        startLine: number;
+        endLine: number;
+        licenseFindingId: number;
+    };
+}>;
+type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFindingMatchSchema>;
 declare const CreateCopyrightFindingSchema: z.ZodObject<{
     data: z.ZodObject<{
         startLine: z.ZodNumber;
         endLine: z.ZodNumber;
         copyright: z.ZodString;
+        scanner: z.ZodString;
+        scannerConfig: z.ZodString;
         sha256: z.ZodString;
-        scannerJobId: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         sha256: string;
         copyright: string;
-        scannerJobId: string;
+        scannerConfig: string;
+        scanner: string;
         startLine: number;
         endLine: number;
     }, {
         sha256: string;
         copyright: string;
-        scannerJobId: string;
+        scannerConfig: string;
+        scanner: string;
         startLine: number;
         endLine: number;
     }>;
@@ -1687,7 +1713,8 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     data: {
         sha256: string;
         copyright: string;
-        scannerJobId: string;
+        scannerConfig: string;
+        scanner: string;
         startLine: number;
         endLine: number;
     };
@@ -1695,7 +1722,8 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
     data: {
         sha256: string;
         copyright: string;
-        scannerJobId: string;
+        scannerConfig: string;
+        scanner: string;
         startLine: number;
         endLine: number;
     };
@@ -2550,4 +2578,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
