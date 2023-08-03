@@ -34,6 +34,9 @@ const SPACES_BUCKET: string = process.env.SPACES_BUCKET? process.env.SPACES_BUCK
 // to be much lower.
 const maxJobsPerWorker = 10;
 
+// The maximum number of OS processes to use for ScanCode
+const nScanCode = 5;
+
 //////////////////////////
 // Interfaces and types
 //////////////////////////
@@ -66,6 +69,7 @@ const start = (): void => {
         console.log("***");
         console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
         console.log("***                     Files to scan: ", job.data.files.length);
+        console.log("***                     Processes used:", nScanCode);
         console.log("***");
     
         const jobIdDir = String(job.id);
@@ -85,11 +89,11 @@ const start = (): void => {
         const options: string[] = [
             "-clp",
             "-i",
-            "-n 5",
-            //"-q",
+            "-q",
             "--strip-root",
             "--json",
             "-",
+            "-n " + nScanCode,
             localJobDir
         ];
 
