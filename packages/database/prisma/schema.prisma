@@ -69,24 +69,38 @@ model FileTree {
 
 /// A license finding in a file.
 model LicenseFinding {
-  id                Int      @id @default(autoincrement())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  scanner           String
-  licenseExpression String
-  startLine         Int
-  endLine           Int
-  score             Float
+  id                    Int      @id @default(autoincrement())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  licenseExpressionSPDX String
+  scanner               String
+  scannerConfig         String
+  startLine             Int
+  endLine               Int
+  score                 Float
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
 
-  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
-  scannerJobId String
-
+  licenseFindingMatches   LicenseFindingMatch[]
   licenseFindingCurations LicenseFindingCuration[]
 
   @@index([sha256])
+}
+
+/// A license finding match
+model LicenseFindingMatch {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  startLine Int
+  endLine   Int
+  score     Float
+
+  licenseFindingId Int
+  licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id])
+
+  @@index([licenseFindingId])
 }
 
 /// A curation of a license finding.
@@ -104,18 +118,17 @@ model LicenseFindingCuration {
 
 /// A copyright finding in a file.
 model CopyrightFinding {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  startLine Int
-  endLine   Int
-  copyright String
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  startLine     Int
+  endLine       Int
+  copyright     String
+  scanner       String
+  scannerConfig String
 
   file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
-
-  scannerJob   ScannerJob @relation(fields: [scannerJobId], references: [id])
-  scannerJobId String
 
   copyrightFindingCurations CopyrightFindingCuration[]
 
@@ -149,8 +162,6 @@ model ScannerJob {
   scanEndTS              DateTime?
   spdxLicenseListVersion String?
 
-  packageId        Int
-  package          Package            @relation(fields: [packageId], references: [id])
-  LicenseFinding   LicenseFinding[]
-  CopyrightFinding CopyrightFinding[]
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
 }
