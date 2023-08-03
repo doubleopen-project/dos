@@ -42,6 +42,7 @@ const UpdateScannerJobSchema = z.object({
         state: z.string().optional(),
         scannerName: z.string().optional(),
         scannerVersion: z.string().optional(),
+        scannerConfig: z.string().optional(),
         duration: z.number().optional(),
         scanStartTS: z.date().optional(),
         scanEndTS: z.date().optional(),
@@ -92,16 +93,27 @@ export type UpdateFileInput = z.infer<typeof UpdateFileSchema>
 const CreateLicenseFindingSchema = z.object({
     data: z.object({
         scanner: z.string(),
-        licenseExpression: z.string(),
-        startLine: z.number(),
-        endLine: z.number(),
-        score: z.number(),
-        sha256: z.string(),
-        scannerJobId: z.string()
+        scannerConfig: z.string(),
+        licenseExpressionSPDX: z.string(),
+        sha256: z.string()
     })
 })
 
 export type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>
+
+// -------------------------- LicenseFindingMatch --------------------------
+
+const CreateLicenseFindingMatchSchema = z.object({
+    data: z.object({
+        startLine: z.number(),
+        endLine: z.number(),
+        score: z.number(),
+        licenseFindingId: z.number()
+    })
+})
+
+export type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFindingMatchSchema>
+
 
 // ------------------------- CopyrightFinding -------------------------
 
@@ -110,8 +122,9 @@ const CreateCopyrightFindingSchema = z.object({
         startLine: z.number(),
         endLine: z.number(),
         copyright: z.string(),
-        sha256: z.string(),
-        scannerJobId: z.string()
+        scanner: z.string(),
+        scannerConfig: z.string(),
+        sha256: z.string()
     })
 })
 
