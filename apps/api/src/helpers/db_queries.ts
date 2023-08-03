@@ -273,34 +273,12 @@ export const findMostRecentScannerJobByPackageId = async (packageId: number): Pr
 
 // ------------------------------ Delete ------------------------------
 
-// Delete all license findings related to scanner jobs
-export const deleteLicenseFindingsByScannerJobIds = async (scannerJobs: ScannerJob[]): Promise<void> => {
-    await prisma.licenseFinding.deleteMany({
-        where: {
-            scannerJobId: {
-                in: scannerJobs.map(s => s.id)
-            }
-        }
-    })
-}
-
 // Delete all license findings related to files
 export const deleteLicenseFindingsByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
     return await prisma.licenseFinding.deleteMany({
         where: {
             sha256: {
                 in: fileHashes
-            }
-        }
-    })
-}
-
-// Delete all copyright findings related to scanner jobs
-export const deleteCopyrightFindingsByScannerJobIds = async (scannerJobs: ScannerJob[]): Promise<void> => {
-    await prisma.copyrightFinding.deleteMany({
-        where: {
-            scannerJobId: {
-                in: scannerJobs.map(s => s.id)
             }
         }
     })
