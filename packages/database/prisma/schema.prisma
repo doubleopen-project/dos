@@ -75,12 +75,9 @@ model LicenseFinding {
   licenseExpressionSPDX String
   scanner               String
   scannerConfig         String
-  startLine             Int
-  endLine               Int
-  score                 Float
 
-  file   File   @relation(fields: [sha256], references: [sha256])
   sha256 String
+  file   File   @relation(fields: [sha256], references: [sha256])
 
   licenseFindingMatches   LicenseFindingMatch[]
   licenseFindingCurations LicenseFindingCuration[]
