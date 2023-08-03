@@ -63,9 +63,11 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
-        console.log("*** ",  getCurrentDateTime(), " New scanner job arrived: ", job.id);
-        //console.log("-> job data: ", job.data);
-
+        console.log("***");
+        console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
+        console.log("***                     Files to scan: ", job.data.files.length);
+        console.log("***");
+    
         const jobIdDir = String(job.id);
         const localJobDir = path.join(baseDir, jobIdDir);
         console.log("-> create new local directory for scanjob: ", localJobDir);
@@ -82,9 +84,9 @@ const start = (): void => {
         // Spawn a child process to run ScanCode inside this container
         const options: string[] = [
             "-clp",
-            //"-v",
             "-i",
-            "-q",
+            "-n 5",
+            //"-q",
             "--strip-root",
             "--json",
             "-",
