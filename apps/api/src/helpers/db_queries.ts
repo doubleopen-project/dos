@@ -244,7 +244,11 @@ export const getPackageScanResults = async (packageId: number) => {
         include: {
             file: {
                 include: {
-                    licenseFindings: true,
+                    licenseFindings: {
+                        include: {
+                            licenseFindingMatches: true
+                        }
+                    },
                     copyrightFindings: true,
                 }
             }

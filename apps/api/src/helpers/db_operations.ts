@@ -55,15 +55,32 @@ export const getScanResults = async (packageId: number) => {
 
         for (const record of queriedScanResults) {
             if (record.file.licenseFindings.length > 0) {
+                let startLine = 0;
+                let endLine = 0;
+                let scoreSum = 0;
+                let scoreCounter = 0;
                 for (const licenseFinding of record.file.licenseFindings) {
+                    for (const match of licenseFinding.licenseFindingMatches) {
+                        if (match.startLine < startLine || startLine === 0) {
+                            startLine = match.startLine;
+                        }
+                        if (match.endLine > endLine) {
+                            endLine = match.endLine;
+                        }
+                        scoreSum += match.score;
+                        scoreCounter++;
+                    }
+
+                    const score = scoreSum / scoreCounter;
+
                     licenses.push({
-                        license: licenseFinding.licenseExpression,
+                        license: licenseFinding.licenseExpressionSPDX,
                         location: {
                             path: record.path,
-                            start_line: licenseFinding.startLine,
-                            end_line: licenseFinding.endLine
+                            start_line: startLine,
+                            end_line: endLine
                         },
-                        score: licenseFinding.score
+                        score: score
                     })
                 }
             }
