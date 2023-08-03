@@ -37,6 +37,9 @@ const SCANCODE_PROCESSES: number = process.env.SCANCODE_PROCESSES? parseInt(proc
 // to be much lower.
 const maxJobsPerWorker = 10;
 
+// The maximum number of OS processes to use for ScanCode
+const nScanCode = 5;
+
 //////////////////////////
 // Interfaces and types
 //////////////////////////
@@ -67,9 +70,15 @@ const start = (): void => {
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
         console.log("***");
+<<<<<<< HEAD
         console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
         console.log("***                       Files to scan:", job.data.files.length);
         console.log("***                      Processes used:", SCANCODE_PROCESSES);
+=======
+        console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
+        console.log("***                     Files to scan: ", job.data.files.length);
+        console.log("***                     Processes used:", nScanCode);
+>>>>>>> f4ad0de (Clean up Scanner Worker logs)
         console.log("***");
     
         const jobIdDir = String(job.id);
@@ -93,7 +102,11 @@ const start = (): void => {
             "--strip-root",
             "--json",
             "-",
+<<<<<<< HEAD
             "-n " + SCANCODE_PROCESSES,
+=======
+            "-n " + nScanCode,
+>>>>>>> f4ad0de (Clean up Scanner Worker logs)
             localJobDir
         ];
 
