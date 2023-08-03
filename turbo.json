@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".env"],
-  "globalEnv": ["PORT", "REDIS_URL", "WEB_CONCURRENCY", "SCANNER_URL", "DOS_URL", "SPACES_ENDPOINT", "SPACES_KEY", "SPACES_SECRET", "SPACES_BUCKET", "DATABASE_URL", "ORT_TOKEN", "SA_TOKEN", "SERVER_TOKEN"],
+  "globalEnv": ["PORT", "REDIS_URL", "WEB_CONCURRENCY", "SCANNER_URL", "DOS_URL", "SPACES_ENDPOINT", "SPACES_KEY", "SPACES_SECRET", "SPACES_BUCKET", "DATABASE_URL", "ORT_TOKEN", "SA_TOKEN", "SERVER_TOKEN", "SCANCODE_PROCESSES"],
   "pipeline": {
     "api:build": {
       "dependsOn": ["s3-helpers:build", "common-helpers:build", "validation-helpers:build"]
