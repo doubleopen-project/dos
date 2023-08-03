@@ -141,8 +141,43 @@ export const getJobState = async (jobId: string): Promise<string | null> => {
     return scannerJob.state;
 }
 
+const getScannerConfigString = (options: {[key: string]: string | boolean | number;}) => {
+    let configString = '';
+    if (options['--copyright']) {
+        configString += '--copyright ';
+    }
+    if (options['--license']) {
+        configString += '--license ';
+    }
+    if (options['--package']) {
+        configString += '--package ';
+    }
+    if (options['--info']) {
+        configString += '--info ';
+    }
+    if (options['--strip-root']) {
+        configString += '--strip-root ';
+    }
+    if (options['--timeout']) {
+        configString += '--timeout ' + options['--timeout'] + ' ';
+    }
+    if (options['--processes']) {
+        configString += '--processes ' + options['--processes'] + ' ';
+    }
+    if (options['--json']) {
+        configString += '--json ';
+    }
+    if (options['--json-pp']) {
+        configString += '--json-pp ';
+    }
+
+    return configString;
+}
+
 export const saveJobResults = async (jobId: string, result: ScannerJobResultSchema): Promise<void> => {
     try {
+        const scannerConfig = getScannerConfigString(result.headers[0].options);
+        const scanner = result.headers[0].tool_name + '@' + result.headers[0].tool_version;
         console.log('Editing ScannerJob');
         const scannerJob = await dbQueries.updateScannerJob(
             {
@@ -150,6 +185,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                 data: {
                     scannerName: result.headers[0].tool_name,
                     scannerVersion: result.headers[0].tool_version,
+                    scannerConfig: scannerConfig,
                     duration: result.headers[0].duration,
                     scanStartTS: new Date(formatDateString(result.headers[0].start_timestamp)),
                     scanEndTS: new Date(formatDateString(result.headers[0].end_timestamp)),
@@ -191,18 +227,23 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             }
                         })
                     }
-
+                    const finding = await dbQueries.createLicenseFinding({
+                        data: {
+                            scanner: scanner,
+                            scannerConfig: scannerConfig,
+                            licenseExpressionSPDX: file.detected_license_expression_spdx,
+                            sha256: file.sha256
+                        }
+                    })
                     for (const license of file.license_detections) {
+                        
                         for (const match of license.matches) {
-                            await dbQueries.createLicenseFinding({
+                            await dbQueries.createLicenseFindingMatch({
                                 data: {
-                                    scanner: result.headers[0].tool_name,
-                                    licenseExpression: license.license_expression,
                                     startLine: match.start_line,
                                     endLine: match.end_line,
                                     score: match.score,
-                                    sha256: file.sha256,
-                                    scannerJobId: scannerJob.id
+                                    licenseFindingId: finding.id
                                 }
                             })
                         }
@@ -214,8 +255,9 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                 startLine: copyright.start_line,
                                 endLine: copyright.end_line,
                                 copyright: copyright.copyright,
-                                sha256: file.sha256,
-                                scannerJobId: scannerJob.id
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                sha256: file.sha256
                             }
                         })
                     }
