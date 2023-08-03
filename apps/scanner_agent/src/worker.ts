@@ -28,14 +28,14 @@ const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CO
 // Spaces bucket
 const SPACES_BUCKET: string = process.env.SPACES_BUCKET? process.env.SPACES_BUCKET : "doubleopen2";
 
+// The maximum number of OS processes to use for ScanCode
+const SCANCODE_PROCESSES: number = process.env.SCANCODE_PROCESSES? parseInt(process.env.SCANCODE_PROCESSES) : 1;
+
 // The maximum number of jobs each worker should process at once. This will need
 // to be tuned for your application. If each job is mostly waiting on network 
 // responses it can be much higher. If each job is CPU-intensive, it might need
 // to be much lower.
 const maxJobsPerWorker = 10;
-
-// The maximum number of OS processes to use for ScanCode
-const nScanCode = 5;
 
 //////////////////////////
 // Interfaces and types
@@ -69,7 +69,7 @@ const start = (): void => {
         console.log("***");
         console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
         console.log("***                     Files to scan: ", job.data.files.length);
-        console.log("***                     Processes used:", nScanCode);
+        console.log("***                     Processes used:", SCANCODE_PROCESSES);
         console.log("***");
     
         const jobIdDir = String(job.id);
@@ -93,7 +93,7 @@ const start = (): void => {
             "--strip-root",
             "--json",
             "-",
-            "-n " + nScanCode,
+            "-n " + SCANCODE_PROCESSES,
             localJobDir
         ];
 
