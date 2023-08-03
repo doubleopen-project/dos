@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, FileTree, LicenseFinding, Package, PrismaClient, ScannerJob } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
@@ -38,6 +38,12 @@ export const createFileTree = async (input: dbZodSchemas.CreateFileTreeInput): P
 
 export const createLicenseFinding = async (input: dbZodSchemas.CreateLicenseFindingInput): Promise<LicenseFinding> => {
     return await prisma.licenseFinding.create({
+        data: input.data
+    });
+}
+
+export const createLicenseFindingMatch = async (input: dbZodSchemas.CreateLicenseFindingMatchInput): Promise<LicenseFindingMatch> => {
+    return await prisma.licenseFindingMatch.create({
         data: input.data
     });
 }
