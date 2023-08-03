@@ -16,9 +16,19 @@ RUN pip3 install scancode-toolkit==32.0.4
 # DOS
 
 WORKDIR /app/dos
+
+COPY package.json ./package.json
+COPY apps/scanner_agent/package.json ./apps/scanner_agent/package.json
+COPY packages/common-helpers/package.json ./packages/common-helpers/package.json
+COPY packages/validation-helpers/package.json ./packages/validation-helpers/package.json
+COPY packages/s3-helpers/package.json ./packages/s3-helpers/package.json
+
+COPY package-lock.json ./package-lock.json
+
+RUN npm ci
+
 COPY . .
 
-RUN npm install
 RUN npm run build:worker
 
 CMD cd apps/scanner_agent && npm run worker
