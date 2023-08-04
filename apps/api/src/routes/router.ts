@@ -10,6 +10,7 @@ import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import * as fileHelpers from '../helpers/file_helpers';
 import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
+import { stateMap } from '../helpers/state_helpers';
 
 loadEnv('../../.env');
 
@@ -157,39 +158,10 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
         if (!scannerJob) {
             res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
         } else {
-            let message = '';
-
-            switch (scannerJob.state) {
-                case 'resultsDeleted':
-                    message = 'Scan results deleted';
-                    break;
-                case 'created':
-                    message = 'Scan job created';
-                    break;
-                case 'completed':
-                    message = 'Scan job completed';
-                    break;
-                case 'failed':
-                    message = 'Scan job failed';
-                    break;
-                case 'queued':
-                case 'waiting':
-                    message = 'Scan job waiting on queue';
-                    break;
-                case 'active':
-                    message = 'Files are being scanned';
-                    break;
-                case 'preparing':
-                    message = 'Files are being prepared for scanning';
-                    break;
-                default:
-                    message = 'Scan job state: ' + scannerJob.state;
-            }
-
             res.status(200).json({
                 state: {
                     status: scannerJob.state,
-                    message: message
+                    message: stateMap.get(scannerJob.state) || scannerJob.state
                 }
             })
         }
@@ -203,8 +175,8 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
     try {
         if (req.body.state === 'completed') {
-            return res.status(400).json({ 
-                message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead' 
+            return res.status(400).json({
+                message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead'
             });
         } else {
             const updatedScannerJob = await dbQueries.updateScannerJob({
@@ -218,7 +190,8 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
                     data: { scanStatus: 'failed' }
                 })
             }
-
+            console.log('Changed state to "' + req.body.state + '" for job: ' + req.params.id);
+            
             res.status(200).json({
                 message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
             })

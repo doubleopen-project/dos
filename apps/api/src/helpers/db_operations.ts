@@ -200,6 +200,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
             {
                 id: jobId,
                 data: {
+                    state: 'savingResults',
                     scannerName: result.headers[0].tool_name,
                     scannerVersion: result.headers[0].tool_version,
                     scannerConfig: scannerConfig,

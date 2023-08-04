@@ -99,7 +99,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
         }
         console.log('Processing files for purl: ', purl);
         // Update ScannerJob status to 'processing'
-        await dbQueries.updateScannerJob({id: scannerJobId, data: {state: 'preparing'}});
+        await dbQueries.updateScannerJob({id: scannerJobId, data: {state: 'processing'}});
         // Downloading zip file from object storage
         const downloadPath = '/tmp/downloads/' + zipFileKey;
         const downloaded = await downloadZipFile(zipFileKey, downloadPath);
