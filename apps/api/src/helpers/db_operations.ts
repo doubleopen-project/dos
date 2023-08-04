@@ -158,7 +158,7 @@ export const getJobState = async (jobId: string): Promise<string | null> => {
     return scannerJob.state;
 }
 
-const getScannerConfigString = (options: {[key: string]: string | boolean | number;}) => {
+const getScannerConfigString = (options: { [key: string]: string | boolean | number; }) => {
     let configString = '';
     if (options['--copyright']) {
         configString += '--copyright ';
@@ -244,43 +244,51 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             }
                         })
                     }
-                    const finding = await dbQueries.createLicenseFinding({
-                        data: {
-                            scanner: scanner,
-                            scannerConfig: scannerConfig,
-                            licenseExpressionSPDX: file.detected_license_expression_spdx,
-                            sha256: file.sha256
-                        }
-                    })
-                    for (const license of file.license_detections) {
-                        
-                        for (const match of license.matches) {
-                            await dbQueries.createLicenseFindingMatch({
-                                data: {
-                                    startLine: match.start_line,
-                                    endLine: match.end_line,
-                                    score: match.score,
-                                    licenseFindingId: finding.id
-                                }
-                            })
-                        }
-                    }
 
-                    for (const copyright of file.copyrights) {
-                        await dbQueries.createCopyrightFinding({
+                    if (file.detected_license_expression_spdx) {
+                        const finding = await dbQueries.createLicenseFinding({
                             data: {
-                                startLine: copyright.start_line,
-                                endLine: copyright.end_line,
-                                copyright: copyright.copyright,
                                 scanner: scanner,
                                 scannerConfig: scannerConfig,
+                                licenseExpressionSPDX: file.detected_license_expression_spdx,
                                 sha256: file.sha256
                             }
                         })
+                        for (const license of file.license_detections) {
+
+                            for (const match of license.matches) {
+                                await dbQueries.createLicenseFindingMatch({
+                                    data: {
+                                        startLine: match.start_line,
+                                        endLine: match.end_line,
+                                        score: match.score,
+                                        licenseFindingId: finding.id
+                                    }
+                                })
+                            }
+                        }
+                    } else if (!file.detected_license_expression_spdx && file.license_detections.length > 0) {
+                        console.log('File ' + file.sha256 + ' ' + file.path + ' has license_detections but no detected_license_expression_spdx');
                     }
                 }
+
+            }
+
+            for (const copyright of file.copyrights) {
+                await dbQueries.createCopyrightFinding({
+                    data: {
+                        startLine: copyright.start_line,
+                        endLine: copyright.end_line,
+                        copyright: copyright.copyright,
+                        scanner: scanner,
+                        scannerConfig: scannerConfig,
+                        sha256: file.sha256
+                    }
+                })
             }
         }
+
+
         console.log('Changing Package scanStatus to "scanned"');
         await dbQueries.updatePackage({
             id: scannerJob.packageId,
