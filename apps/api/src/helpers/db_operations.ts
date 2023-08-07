@@ -232,7 +232,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                         await dbQueries.createFileTree({
                             data: {
                                 path: file.path,
-                                sha256: file.sha256,
+                                fileSha256: file.sha256,
                                 packageId: scannerJob.packageId
                             }
                         })
@@ -252,7 +252,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                 scanner: scanner,
                                 scannerConfig: scannerConfig,
                                 licenseExpressionSPDX: file.detected_license_expression_spdx,
-                                sha256: file.sha256
+                                fileSha256: file.sha256
                             }
                         })
                         for (const license of file.license_detections) {
@@ -271,22 +271,37 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     } else if (!file.detected_license_expression_spdx && file.license_detections.length > 0) {
                         console.log('File ' + file.sha256 + ' ' + file.path + ' has license_detections but no detected_license_expression_spdx');
                     }
+
+                    for (const copyright of file.copyrights) {
+                        await dbQueries.createCopyrightFinding({
+                            data: {
+                                startLine: copyright.start_line,
+                                endLine: copyright.end_line,
+                                copyright: copyright.copyright,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256
+                            }
+                        })
+                    }
+
+                    for (const scanError of file.scan_errors) {
+                        await dbQueries.createScanIssue({
+                            data: {
+                                severity: 'ERROR',
+                                message: scanError,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256
+                            }
+                        })
+                    }
+
                 }
 
             }
 
-            for (const copyright of file.copyrights) {
-                await dbQueries.createCopyrightFinding({
-                    data: {
-                        startLine: copyright.start_line,
-                        endLine: copyright.end_line,
-                        copyright: copyright.copyright,
-                        scanner: scanner,
-                        scannerConfig: scannerConfig,
-                        sha256: file.sha256
-                    }
-                })
-            }
+            
         }
 
 
@@ -321,7 +336,7 @@ export const findFilesToBeScanned = async (packageId: number, files: { hash: str
                 await dbQueries.createFileTree({
                     data: {
                         path: file.path,
-                        sha256: file.hash,
+                        fileSha256: file.hash,
                         packageId: packageId,
                     }
                 });
@@ -351,7 +366,7 @@ export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: st
 
     for (const fileTree of fileTrees) {
 
-        const file = await dbQueries.findFileByHash(fileTree.sha256);
+        const file = await dbQueries.findFileByHash(fileTree.fileSha256);
 
         if (!file) {
             console.log('File not found from database');

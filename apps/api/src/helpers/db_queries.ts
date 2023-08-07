@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
@@ -50,6 +50,12 @@ export const createLicenseFindingMatch = async (input: dbZodSchemas.CreateLicens
 
 export const createCopyrightFinding = async (input: dbZodSchemas.CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
     return await prisma.copyrightFinding.create({
+        data: input.data
+    });
+}
+
+export const createScanIssue = async (input: dbZodSchemas.CreateScanIssueInput): Promise<ScanIssue> => {
+    return await prisma.scanIssue.create({
         data: input.data
     });
 }
@@ -153,11 +159,11 @@ export const findFileHashesByPackageIds = async (packageIds: number[]): Promise<
             }
         },
         select: {
-            sha256: true
+            fileSha256: true
         }
-    }).then((fileTrees: { sha256: string }[]) => {
-        return fileTrees.map((elem: { sha256: string }) => {
-            return elem.sha256
+    }).then((fileTrees: { fileSha256: string }[]) => {
+        return fileTrees.map((elem: { fileSha256: string }) => {
+            return elem.fileSha256
         })
     })
 }
@@ -165,7 +171,7 @@ export const findFileHashesByPackageIds = async (packageIds: number[]): Promise<
 export const findFileTreeByHashAndPackageId = async (hash: string, packageId: number): Promise<FileTree | null> => {
     return await prisma.fileTree.findFirst({
         where: {
-            sha256: hash,
+            fileSha256: hash,
             packageId: packageId
         },
     })
@@ -277,7 +283,7 @@ export const findMostRecentScannerJobByPackageId = async (packageId: number): Pr
 export const deleteLicenseFindingsByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
     return await prisma.licenseFinding.deleteMany({
         where: {
-            sha256: {
+            fileSha256: {
                 in: fileHashes
             }
         }
@@ -288,7 +294,7 @@ export const deleteLicenseFindingsByFileHashes = async (fileHashes: string[]): P
 export const deleteCopyrightFindingsByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
     return await prisma.copyrightFinding.deleteMany({
         where: {
-            sha256: {
+            fileSha256: {
                 in: fileHashes
             }
         }
@@ -328,9 +334,9 @@ export const deletePackagesByPurl = async (purl: string): Promise<void> => {
 
 // Delete all files that are not used by any FileTree
 export const deleteFilesNotUsedByFileTrees = async (fileHashes: string[]): Promise<void> => {
-    const sha256s: { sha256: string; }[] = await prisma.fileTree.findMany({
+    const sha256s: { fileSha256: string; }[] = await prisma.fileTree.findMany({
         select: {
-            sha256: true
+            fileSha256: true
         }
     })
 
@@ -341,7 +347,7 @@ export const deleteFilesNotUsedByFileTrees = async (fileHashes: string[]): Promi
             },
             NOT: {
                 sha256: {
-                    in: sha256s.map(s => s.sha256)
+                    in: sha256s.map(s => s.fileSha256)
                 }
             }
         }
