@@ -52,7 +52,7 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
         const curDirNoBase = currentDir.split(baseDir).pop();
         
         if (curDirNoBase === '.git') {
-            console.log('Skipping .git directory');
+            // Skipping .git directory
             continue;
         }
 
@@ -60,7 +60,7 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
 
         for (const file of files) {
             if (file === '.gitignore') {
-                console.log('Skipping .gitignore file');
+                // Skipping .gitignore file
                 continue;
             }
 
@@ -184,7 +184,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             }
         } else {
             // Update package scanStatus and ScannerJob to completed
-            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'completed' } });
+            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'scanned' } });
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'completed' } });
         }
 
