@@ -280,7 +280,7 @@ const postJobState = async (id: Queue.JobId, state: string): Promise<string | un
     try {
         const response: globalThis.Response = await fetch(postStateUrl+id, request);
         const data: string | undefined = await response.json() as string | undefined;
-        console.log("Response from DOS:", data);
+        //console.log("Response from DOS:", data);
         return data;
     } catch (error) {
         console.log("Error:", error);
@@ -296,9 +296,7 @@ const postJobResults = async (id: Queue.JobId, result: string): Promise<string |
         if (response.ok) {
             data = await response.json() as string | undefined;
         }
-        //console.log("Response from DOS:");
-        //console.dir(data, {depth: null});
-        console.log("Response from DOS:", data);
+        //console.log("Response from DOS:", data);
         return data;
     } catch (error) {
         console.log("Error:", error);
