@@ -95,7 +95,7 @@ const CreateLicenseFindingSchema = z.object({
         scanner: z.string(),
         scannerConfig: z.string(),
         licenseExpressionSPDX: z.string(),
-        sha256: z.string()
+        fileSha256: z.string()
     })
 })
 
@@ -124,11 +124,24 @@ const CreateCopyrightFindingSchema = z.object({
         copyright: z.string(),
         scanner: z.string(),
         scannerConfig: z.string(),
-        sha256: z.string()
+        fileSha256: z.string()
     })
 })
 
 export type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>
+
+// ---------------------------- ScanIssue ----------------------------
+const CreateScanIssueSchema = z.object({
+    data: z.object({
+        severity: z.string(),
+        message: z.string(),
+        scanner: z.string(),
+        scannerConfig: z.string(),
+        fileSha256: z.string()
+    })
+})
+
+export type CreateScanIssueInput = z.infer<typeof CreateScanIssueSchema>
 
 // ----------------------------- Package -----------------------------
 
@@ -160,7 +173,7 @@ const CreateFileTreeSchema = z.object({
     data: z.object({
         path: z.string(),
         packageId: z.number(),
-        sha256: z.string()
+        fileSha256: z.string()
     })
 })
 

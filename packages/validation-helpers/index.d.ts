@@ -202,6 +202,7 @@ declare const ScannerJobResultSchema: z.ZodObject<{
             end_line: number;
             copyright: string;
         }>, "many">;
+        scan_errors: z.ZodArray<z.ZodString, "many">;
     }, "strip", z.ZodTypeAny, {
         path: string;
         type: string;
@@ -222,6 +223,7 @@ declare const ScannerJobResultSchema: z.ZodObject<{
             end_line: number;
             copyright: string;
         }[];
+        scan_errors: string[];
     }, {
         path: string;
         type: string;
@@ -242,6 +244,7 @@ declare const ScannerJobResultSchema: z.ZodObject<{
             end_line: number;
             copyright: string;
         }[];
+        scan_errors: string[];
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     files: {
@@ -264,6 +267,7 @@ declare const ScannerJobResultSchema: z.ZodObject<{
             end_line: number;
             copyright: string;
         }[];
+        scan_errors: string[];
     }[];
     headers: {
         message: string | null;
@@ -318,6 +322,7 @@ declare const ScannerJobResultSchema: z.ZodObject<{
             end_line: number;
             copyright: string;
         }[];
+        scan_errors: string[];
     }[];
     headers: {
         message: string | null;
@@ -1113,6 +1118,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }>, "many">;
+                    scan_errors: zod.ZodArray<zod.ZodString, "many">;
                 }, "strip", zod.ZodTypeAny, {
                     path: string;
                     type: string;
@@ -1133,6 +1139,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }, {
                     path: string;
                     type: string;
@@ -1153,6 +1160,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }>, "many">;
             }, "strip", zod.ZodTypeAny, {
                 files: {
@@ -1175,6 +1183,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }[];
                 headers: {
                     message: string | null;
@@ -1229,6 +1238,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }[];
                 headers: {
                     message: string | null;
@@ -1286,6 +1296,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }[];
                 headers: {
                     message: string | null;
@@ -1343,6 +1354,7 @@ declare const dosApi: [{
                         end_line: number;
                         copyright: string;
                     }[];
+                    scan_errors: string[];
                 }[];
                 headers: {
                     message: string | null;
@@ -1625,31 +1637,31 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         scanner: z.ZodString;
         scannerConfig: z.ZodString;
         licenseExpressionSPDX: z.ZodString;
-        sha256: z.ZodString;
+        fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        sha256: string;
         scannerConfig: string;
         scanner: string;
         licenseExpressionSPDX: string;
+        fileSha256: string;
     }, {
-        sha256: string;
         scannerConfig: string;
         scanner: string;
         licenseExpressionSPDX: string;
+        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        sha256: string;
         scannerConfig: string;
         scanner: string;
         licenseExpressionSPDX: string;
+        fileSha256: string;
     };
 }, {
     data: {
-        sha256: string;
         scannerConfig: string;
         scanner: string;
         licenseExpressionSPDX: string;
+        fileSha256: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -1693,42 +1705,80 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
         copyright: z.ZodString;
         scanner: z.ZodString;
         scannerConfig: z.ZodString;
-        sha256: z.ZodString;
+        fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        sha256: string;
         copyright: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
         startLine: number;
         endLine: number;
     }, {
-        sha256: string;
         copyright: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
         startLine: number;
         endLine: number;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        sha256: string;
         copyright: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
         startLine: number;
         endLine: number;
     };
 }, {
     data: {
-        sha256: string;
         copyright: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
         startLine: number;
         endLine: number;
     };
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
+declare const CreateScanIssueSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        severity: z.ZodString;
+        message: z.ZodString;
+        scanner: z.ZodString;
+        scannerConfig: z.ZodString;
+        fileSha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        scannerConfig: string;
+        scanner: string;
+        fileSha256: string;
+        severity: string;
+    }, {
+        message: string;
+        scannerConfig: string;
+        scanner: string;
+        fileSha256: string;
+        severity: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        message: string;
+        scannerConfig: string;
+        scanner: string;
+        fileSha256: string;
+        severity: string;
+    };
+}, {
+    data: {
+        message: string;
+        scannerConfig: string;
+        scanner: string;
+        fileSha256: string;
+        severity: string;
+    };
+}>;
+type CreateScanIssueInput = z.infer<typeof CreateScanIssueSchema>;
 declare const CreatePackageSchema: z.ZodObject<{
     data: z.ZodObject<{
         purl: z.ZodString;
@@ -1787,27 +1837,27 @@ declare const CreateFileTreeSchema: z.ZodObject<{
     data: z.ZodObject<{
         path: z.ZodString;
         packageId: z.ZodNumber;
-        sha256: z.ZodString;
+        fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         path: string;
-        sha256: string;
         packageId: number;
+        fileSha256: string;
     }, {
         path: string;
-        sha256: string;
         packageId: number;
+        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         path: string;
-        sha256: string;
         packageId: number;
+        fileSha256: string;
     };
 }, {
     data: {
         path: string;
-        sha256: string;
         packageId: number;
+        fileSha256: string;
     };
 }>;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
@@ -2250,6 +2300,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }>, "many">;
+                scan_errors: zod.ZodArray<zod.ZodString, "many">;
             }, "strip", zod.ZodTypeAny, {
                 path: string;
                 type: string;
@@ -2270,6 +2321,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }, {
                 path: string;
                 type: string;
@@ -2290,6 +2342,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }>, "many">;
         }, "strip", zod.ZodTypeAny, {
             files: {
@@ -2312,6 +2365,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }[];
             headers: {
                 message: string | null;
@@ -2366,6 +2420,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }[];
             headers: {
                 message: string | null;
@@ -2428,6 +2483,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }[];
             headers: {
                 message: string | null;
@@ -2490,6 +2546,7 @@ declare const scannerAgentApi: [{
                     end_line: number;
                     copyright: string;
                 }[];
+                scan_errors: string[];
             }[];
             headers: {
                 message: string | null;
@@ -2578,4 +2635,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };

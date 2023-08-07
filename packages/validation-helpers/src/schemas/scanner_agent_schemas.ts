@@ -102,7 +102,7 @@ export const ScannerJobResultSchema = z.object({
 					end_line: z.number()
 				})
 			),
-			//scan_errors: z.array(z.unknown())
+			scan_errors: z.array(z.string())
 		})
 	)
 })
