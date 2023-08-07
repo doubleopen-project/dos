@@ -33,6 +33,7 @@ model File {
   filetrees         FileTree[]
   licenseFindings   LicenseFinding[]
   copyrightFindings CopyrightFinding[]
+  ScanIssue         ScanIssue[]
 }
 
 /// A package consisting of its source code files.
@@ -60,11 +61,11 @@ model FileTree {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])
 
-  sha256 String
-  file   File   @relation(fields: [sha256], references: [sha256])
+  fileSha256 String
+  file       File   @relation(fields: [fileSha256], references: [sha256])
 
   @@index([packageId])
-  @@index([sha256])
+  @@index([fileSha256])
 }
 
 /// A license finding in a file.
@@ -76,13 +77,13 @@ model LicenseFinding {
   scanner               String
   scannerConfig         String
 
-  sha256 String
-  file   File   @relation(fields: [sha256], references: [sha256])
+  fileSha256 String
+  file       File   @relation(fields: [fileSha256], references: [sha256])
 
   licenseFindingMatches   LicenseFindingMatch[]
   licenseFindingCurations LicenseFindingCuration[]
 
-  @@index([sha256])
+  @@index([fileSha256])
 }
 
 /// A license finding match
@@ -124,12 +125,12 @@ model CopyrightFinding {
   scanner       String
   scannerConfig String
 
-  file   File   @relation(fields: [sha256], references: [sha256])
-  sha256 String
+  fileSha256 String
+  file       File   @relation(fields: [fileSha256], references: [sha256])
 
   copyrightFindingCurations CopyrightFindingCuration[]
 
-  @@index([sha256])
+  @@index([fileSha256])
 }
 
 /// A curation of a copyright finding.
@@ -143,6 +144,22 @@ model CopyrightFindingCuration {
   copyrightFinding   CopyrightFinding @relation(fields: [copyrightFindingId], references: [id])
 
   @@index([copyrightFindingId])
+}
+
+/// A scan issue for file
+model ScanIssue {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  severity      String
+  message       String
+  scanner       String
+  scannerConfig String
+
+  fileSha256 String
+  file       File   @relation(fields: [fileSha256], references: [sha256])
+
+  @@index([fileSha256])
 }
 
 /// A scanner job.
