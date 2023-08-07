@@ -67,9 +67,9 @@ const start = (): void => {
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
         console.log("***");
-        console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
-        console.log("***                     Files to scan: ", job.data.files.length);
-        console.log("***                     Processes used:", SCANCODE_PROCESSES);
+        console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
+        console.log("***                       Files to scan:", job.data.files.length);
+        console.log("***                      Processes used:", SCANCODE_PROCESSES);
         console.log("***");
     
         const jobIdDir = String(job.id);
@@ -115,10 +115,15 @@ const start = (): void => {
 
         const processPromise = new Promise<{ result: string }>((resolve, reject) => {
             childProcess.on("exit", (code) => {
-              console.log(`[${pid}] process exited with code: ${code}`);
-              handleProcessExit()
-                .then(() => resolve({result}))
-                .catch((error) => reject(error));
+                console.log(`[${pid}] process exited with code: ${code}`);
+                if (code !== 0) {
+                    console.log(`[${pid}] ScanCode returned with issue(s)`);
+                    //job.moveToFailed({message: error});    
+                }
+
+                handleProcessExit()
+                    .then(() => resolve({result}))
+                    .catch((error) => reject(error));
             });
           });
       
