@@ -95,7 +95,7 @@ model LicenseFindingMatch {
   score     Float
 
   licenseFindingId Int
-  licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id])
+  licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id], onDelete: Cascade)
 
   @@index([licenseFindingId])
 }
@@ -161,4 +161,6 @@ model ScannerJob {
 
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])
+
+  @@index([packageId])
 }
