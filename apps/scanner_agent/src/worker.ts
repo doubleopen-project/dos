@@ -123,13 +123,18 @@ const start = (): void => {
                 console.log(`[${pid}] process exited with code: ${code}`);
                 if (code !== 0) {
                     console.log(`[${pid}] ScanCode returned with issue(s)`);
-                    //job.moveToFailed({message: error});    
                 }
 
                 handleProcessExit()
                     .then(() => {
-                        console.log(`result JSON length: ${result.length}`);
-                        job.moveToCompleted();
+                        console.log(`[${pid}] result JSON length: ${result.length}`);
+                        getJobState(job.id)
+                            .then(state => {
+                                console.log(`[${pid}] job state: ${state}`);
+                            })
+                            .catch(error => {
+                                console.error(`[${pid}] failed to get job state: ${error.message}`);
+                            });
                         resolve({result});
                     })
                     .catch((error) => {
@@ -137,8 +142,16 @@ const start = (): void => {
                         reject(error);
                     });
             });
-          });
+        });
       
+        async function getJobState(jobId: Queue.JobId): Promise<Queue.JobStatus | "stuck"> {
+            const job = await workQueue.getJob(jobId);
+            if (!job) {
+                throw new Error(`Job with ID ${jobId} not found.`);
+            }
+            return job.getState();
+        }
+
         async function handleProcessExit(): Promise<void> {
             try {
                 try {
