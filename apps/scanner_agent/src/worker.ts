@@ -70,20 +70,14 @@ const start = (): void => {
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
         console.log("***");
-<<<<<<< HEAD
         console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
         console.log("***                       Files to scan:", job.data.files.length);
         console.log("***                      Processes used:", SCANCODE_PROCESSES);
-=======
-        console.log("***",  getCurrentDateTime(), "New scanner job arrived:", job.id);
-        console.log("***                     Files to scan: ", job.data.files.length);
-        console.log("***                     Processes used:", nScanCode);
->>>>>>> f4ad0de (Clean up Scanner Worker logs)
         console.log("***");
     
         const jobIdDir = String(job.id);
         const localJobDir = path.join(baseDir, jobIdDir);
-        console.log("-> create new local directory for scanjob: ", localJobDir);
+        console.log("-> creating local directory: ", localJobDir);
 
         // Try to download the files from S3 and check if it was successful
         for (const file of job.data.files) {
@@ -94,6 +88,8 @@ const start = (): void => {
             }
         }
         
+        console.log("-> ready to run ScanCode");
+
         // Spawn a child process to run ScanCode inside this container
         const options: string[] = [
             "-clp",
@@ -102,11 +98,7 @@ const start = (): void => {
             "--strip-root",
             "--json",
             "-",
-<<<<<<< HEAD
             "-n " + SCANCODE_PROCESSES,
-=======
-            "-n " + nScanCode,
->>>>>>> f4ad0de (Clean up Scanner Worker logs)
             localJobDir
         ];
 
@@ -135,8 +127,15 @@ const start = (): void => {
                 }
 
                 handleProcessExit()
-                    .then(() => resolve({result}))
-                    .catch((error) => reject(error));
+                    .then(() => {
+                        console.log(`result JSON length: ${result.length}`);
+                        job.moveToCompleted();
+                        resolve({result});
+                    })
+                    .catch((error) => {
+                        console.log(`error: ${error}`);
+                        reject(error);
+                    });
             });
           });
       
