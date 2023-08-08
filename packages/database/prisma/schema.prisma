@@ -33,7 +33,7 @@ model File {
   filetrees         FileTree[]
   licenseFindings   LicenseFinding[]
   copyrightFindings CopyrightFinding[]
-  ScanIssue         ScanIssue[]
+  scanIssues        ScanIssue[]
 }
 
 /// A package consisting of its source code files.

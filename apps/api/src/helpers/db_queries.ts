@@ -256,6 +256,7 @@ export const getPackageScanResults = async (packageId: number) => {
                         }
                     },
                     copyrightFindings: true,
+                    scanIssues: true
                 }
             }
         }

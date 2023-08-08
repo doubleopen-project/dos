@@ -52,14 +52,15 @@ export const getScanResults = async (packageId: number) => {
     if (queriedScanResults) {
         const licenses = [];
         const copyrights = [];
+        const issues = [];
 
-        for (const record of queriedScanResults) {
-            if (record.file.licenseFindings.length > 0) {
+        for (const filetree of queriedScanResults) {
+            if (filetree.file.licenseFindings.length > 0) {
                 let startLine = 0;
                 let endLine = 0;
                 let scoreSum = 0;
                 let scoreCounter = 0;
-                for (const licenseFinding of record.file.licenseFindings) {
+                for (const licenseFinding of filetree.file.licenseFindings) {
                     for (const match of licenseFinding.licenseFindingMatches) {
                         if (match.startLine < startLine || startLine === 0) {
                             startLine = match.startLine;
@@ -76,7 +77,7 @@ export const getScanResults = async (packageId: number) => {
                     licenses.push({
                         license: licenseFinding.licenseExpressionSPDX,
                         location: {
-                            path: record.path,
+                            path: filetree.path,
                             start_line: startLine,
                             end_line: endLine
                         },
@@ -85,23 +86,61 @@ export const getScanResults = async (packageId: number) => {
                 }
             }
 
-            if (record.file.copyrightFindings.length > 0) {
-                for (const copyrightFinding of record.file.copyrightFindings) {
+            if (filetree.file.copyrightFindings.length > 0) {
+                for (const copyrightFinding of filetree.file.copyrightFindings) {
                     copyrights.push({
                         statement: copyrightFinding.copyright,
                         location: {
-                            path: record.path,
+                            path: filetree.path,
                             start_line: copyrightFinding.startLine,
                             end_line: copyrightFinding.endLine
                         }
                     })
                 }
             }
+
+            if (filetree.file.scanIssues.length > 0) {
+                const timeoutErrorRegex = "(ERROR: for scanner: (?<scanner>\\w+):\n)?" +
+                "ERROR: Processing interrupted: timeout after (?<timeout>\\d+) seconds.";
+
+
+                for (const issue of filetree.file.scanIssues) {
+                    let message = issue.message;
+                    const timeoutErrorMatch = issue.message.match(timeoutErrorRegex);
+                    
+                    if (timeoutErrorMatch) {
+                        let timeout = 120;
+
+                        if (issue.scannerConfig.includes('timeout')) {
+                            const scannerConfigList = issue.scannerConfig.split(' ');
+                            // index of timeout flag
+                            const timeoutIndex = scannerConfigList.indexOf('--timeout');
+                            // timeout value
+                            timeout = parseInt(scannerConfigList[timeoutIndex + 1]);
+                        }
+
+                        message = "ERROR: Timeout after " + timeout 
+                                + " seconds while scanning file '" + filetree.path + "'";
+                    } else {
+                        message += ' Path to file: ' + filetree.path + '.';
+                    }
+                    
+                    issues.push({
+                        timestamp: issue.createdAt,
+                        source: 'DOS',
+                        message: message,
+                        severity: issue.severity
+                    })
+                }
+            }
         }
 
+        console.log(issues);
+        
         return {
             licenses: licenses,
-            copyrights: copyrights
+            copyrights: copyrights,
+            issues: issues
         }
     } else {
         throw new Error('Error: unable to fetch scan results from database');

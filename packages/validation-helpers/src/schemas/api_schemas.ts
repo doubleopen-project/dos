@@ -38,6 +38,12 @@ export const PostScanResultsRes = z.object({
                     end_line: z.number(),
                 }),
             })),
+            issues: z.array(z.object({
+                timestamp: z.date(),
+                source: z.string(),
+                message: z.string(),
+                severity: z.string(),
+            })),
         })
     ]),
 })

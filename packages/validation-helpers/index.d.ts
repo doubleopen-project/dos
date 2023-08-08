@@ -448,6 +448,22 @@ declare const dosApi: [{
                 };
                 statement: string;
             }>, "many">;
+            issues: zod.ZodArray<zod.ZodObject<{
+                timestamp: zod.ZodDate;
+                source: zod.ZodString;
+                message: zod.ZodString;
+                severity: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
+            }, {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
+            }>, "many">;
         }, "strip", zod.ZodTypeAny, {
             copyrights: {
                 location: {
@@ -466,6 +482,12 @@ declare const dosApi: [{
                     end_line: number;
                 };
             }[];
+            issues: {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
+            }[];
         }, {
             copyrights: {
                 location: {
@@ -483,6 +505,12 @@ declare const dosApi: [{
                     start_line: number;
                     end_line: number;
                 };
+            }[];
+            issues: {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
             }[];
         }>]>;
     }, "strip", zod.ZodTypeAny, {
@@ -508,6 +536,12 @@ declare const dosApi: [{
                     end_line: number;
                 };
             }[];
+            issues: {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
+            }[];
         } | null;
     }, {
         state: {
@@ -531,6 +565,12 @@ declare const dosApi: [{
                     start_line: number;
                     end_line: number;
                 };
+            }[];
+            issues: {
+                message: string;
+                timestamp: Date;
+                source: string;
+                severity: string;
             }[];
         } | null;
     }>;
@@ -1750,32 +1790,32 @@ declare const CreateScanIssueSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         message: string;
+        severity: string;
         scannerConfig: string;
         scanner: string;
         fileSha256: string;
-        severity: string;
     }, {
         message: string;
+        severity: string;
         scannerConfig: string;
         scanner: string;
         fileSha256: string;
-        severity: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         message: string;
+        severity: string;
         scannerConfig: string;
         scanner: string;
         fileSha256: string;
-        severity: string;
     };
 }, {
     data: {
         message: string;
+        severity: string;
         scannerConfig: string;
         scanner: string;
         fileSha256: string;
-        severity: string;
     };
 }>;
 type CreateScanIssueInput = z.infer<typeof CreateScanIssueSchema>;
