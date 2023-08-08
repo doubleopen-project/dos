@@ -302,6 +302,17 @@ export const deleteCopyrightFindingsByFileHashes = async (fileHashes: string[]):
     })
 }
 
+// Delete all scan issues related to files
+export const deleteScanIssuesByFileHashes = async (fileHashes: string[]): Promise<{ count: number }> => {
+    return await prisma.scanIssue.deleteMany({
+        where: {
+            fileSha256: {
+                in: fileHashes
+            }
+        }
+    })
+}
+
 // Delete all FileTrees related to packages
 export const deleteFileTreesByPackageIds = async (packageIds: number[]): Promise<void> => {
     await prisma.fileTree.deleteMany({

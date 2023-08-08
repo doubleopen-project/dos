@@ -134,9 +134,6 @@ export const getScanResults = async (packageId: number) => {
                 }
             }
         }
-
-        console.log(issues);
-        
         return {
             licenses: licenses,
             copyrights: copyrights,
@@ -169,6 +166,10 @@ export const deletePackageDataByPurl = async (purl: string): Promise<string> => 
             // Delete all copyrightFindings related to files
             const deletedCopyrightFindings = await dbQueries.deleteCopyrightFindingsByFileHashes(fileHashes);
             console.log('deletedCopyrightFindings count: ' + deletedCopyrightFindings.count);
+
+            // Delete all scanIssues related to files
+            const deletedScanIssues = await dbQueries.deleteScanIssuesByFileHashes(fileHashes);
+            console.log('deletedScanIssues count: ' + deletedScanIssues.count);
 
             // Update file scanStatuses to 'notScanned'
             await dbQueries.updateManyFilesStatuses(fileHashes, 'notStarted');
