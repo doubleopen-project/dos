@@ -37,9 +37,6 @@ const SCANCODE_PROCESSES: number = process.env.SCANCODE_PROCESSES? parseInt(proc
 // to be much lower.
 const maxJobsPerWorker = 10;
 
-// The maximum number of OS processes to use for ScanCode
-const nScanCode = 5;
-
 //////////////////////////
 // Interfaces and types
 //////////////////////////
