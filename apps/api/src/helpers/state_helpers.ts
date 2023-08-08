@@ -8,6 +8,8 @@ export const stateMap = new Map([
     ['queued', 'Scan job added to queue'],
     ['waiting', 'Scan job waiting on queue'],
     ['active', 'Scanning files'],
+    ['resumed', 'Resumed'],
+    ['stalled', 'Scan job stalled'],
     ['savingResults', 'Saving scan results'],
     ['completed', 'Scan job completed'],
     ['failed', 'Scan job failed'],
