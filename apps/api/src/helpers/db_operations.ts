@@ -101,13 +101,13 @@ export const getScanResults = async (packageId: number) => {
 
             if (filetree.file.scanIssues.length > 0) {
                 const timeoutErrorRegex = "(ERROR: for scanner: (?<scanner>\\w+):\n)?" +
-                "ERROR: Processing interrupted: timeout after (?<timeout>\\d+) seconds.";
+                    "ERROR: Processing interrupted: timeout after (?<timeout>\\d+) seconds.";
 
 
                 for (const issue of filetree.file.scanIssues) {
                     let message = issue.message;
                     const timeoutErrorMatch = issue.message.match(timeoutErrorRegex);
-                    
+
                     if (timeoutErrorMatch) {
                         let timeout = 120;
 
@@ -119,12 +119,12 @@ export const getScanResults = async (packageId: number) => {
                             timeout = parseInt(scannerConfigList[timeoutIndex + 1]);
                         }
 
-                        message = "ERROR: Timeout after " + timeout 
-                                + " seconds while scanning file '" + filetree.path + "'";
+                        message = "ERROR: Timeout after " + timeout
+                            + " seconds while scanning file '" + filetree.path + "'";
                     } else {
                         message += ' Path to file: ' + filetree.path + '.';
                     }
-                    
+
                     issues.push({
                         timestamp: issue.createdAt,
                         source: 'DOS',
@@ -253,10 +253,18 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         )
         console.log('Adding LicenseFindings and CopyrightFindings for files');
 
-        for (const file of result.files) {
+        // Handle files list in batches of 1000
+        const files = result.files;
+        const batchSize = 1000;
+        const batchCount = Math.ceil(files.length / batchSize);
 
-            if (file.type === 'file') {
-                if (file.sha256) {
+        for (let i = 0; i < batchCount; i++) {
+            const batch = files.slice(i * batchSize, (i + 1) * batchSize);
+
+            for (const file of batch) {
+
+                if (file.type === 'file' && file.sha256) {
+
                     let dbFile = await dbQueries.findFileByHash(file.sha256);
 
                     if (!dbFile) {
@@ -336,12 +344,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             }
                         })
                     }
-
                 }
-
             }
-
-            
         }
 
 
