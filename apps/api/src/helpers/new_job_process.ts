@@ -47,17 +47,22 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
         // Saving files in extracted folder to object storage
 
-        // Listing file paths and the corresponding file hashes and content types
-        const fileHashesAndPaths = await fileHelpers.getFileHashesMappedToPaths(extractPath);
+        // Listing file paths and the corresponding file hashes
+        let fileHashesAndPaths: { hash: string, path: string }[] | null = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
         console.log('fileHashesAndPaths count: ', fileHashesAndPaths.length);
 
+        // Save FileTrees to existing Files and get list of files to be scanned
+
+        let filesToBeScanned: { hash: string, path: string }[] | null = await dbOperations.findFilesToBeScanned(packageId, fileHashesAndPaths)
+        console.log('filesToBeScanned count: ', filesToBeScanned.length);
+
         // Uploading files to object storage individually with the file hash as the key
 
-        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(fileHashesAndPaths, extractPath, process.env.SPACES_BUCKET, scannerJobId, jobStateMap);
+        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(filesToBeScanned, extractPath, process.env.SPACES_BUCKET, scannerJobId, jobStateMap);
 
         jobStateMap.delete(scannerJobId);
-        
+
         if (!uploadedWithHash) {
             dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
@@ -72,11 +77,6 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
         // Deleting zip file from object storage
         await s3Helpers.deleteFile(process.env.SPACES_BUCKET, zipFileKey);
-
-        // Save FileTrees to existing Files and get list of files to be scanned
-
-        const filesToBeScanned: { hash: string, path: string }[] = await dbOperations.findFilesToBeScanned(packageId, fileHashesAndPaths)
-        console.log('filesToBeScanned count: ', filesToBeScanned.length);
 
         if (filesToBeScanned.length > 0) {
             console.log('Sending a request to Scanner Agent to add new job to the work queue');
@@ -115,6 +115,8 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'scanned' } });
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'completed' } });
         }
+        fileHashesAndPaths = null;
+        filesToBeScanned = null;
 
     } catch (error) {
         console.log(error);

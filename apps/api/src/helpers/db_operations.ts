@@ -347,7 +347,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                 }
             }
         }
-
+        result = null;
 
         console.log('Changing Package scanStatus to "scanned"');
         await dbQueries.updatePackage({
