@@ -15,7 +15,7 @@ declare const saveFiles: (filePaths: string[], baseDir: string, bucketName: stri
 declare const saveFilesWithHashKey: (fileHashesAndPaths: Array<{
     hash: string;
     path: string;
-}>, baseDir: string, bucketName: string) => Promise<boolean>;
+}>, baseDir: string, bucketName: string, jobId: string, jobStateMap: Map<string, string>) => Promise<boolean>;
 declare const deleteFile: (bucketName: string, fileName: string) => Promise<boolean>;
 
 declare const client: S3;

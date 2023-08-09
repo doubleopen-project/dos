@@ -284,10 +284,12 @@ export const saveFiles = async (filePaths: string[], baseDir: string, bucketName
 }
 
 // Upload files to a bucket with their hash as the key 
-export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: string, path: string }>, baseDir: string, bucketName: string): Promise<boolean> => {
+export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: string, path: string }>, baseDir: string, bucketName: string, jobId: string, jobStateMap: Map<string, string>): Promise<boolean> => {
     try {
         checkS3ClientEnvs();
+        let i = 1;
         for (const file of fileHashesAndPaths) {
+            jobStateMap.set(jobId, `Uploading files (${i}/${fileHashesAndPaths.length})`);
             // Check if file already exists in bucket
             const objectExists: boolean | undefined = await objectExistsCheck(file.hash, bucketName);
 
@@ -296,6 +298,7 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
                 const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
                 await uploadFile(bucketName, file.hash, fileBuffer);
             }
+            i++;
         }
         return true;
     } catch (error) {
