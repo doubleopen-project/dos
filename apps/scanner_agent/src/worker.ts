@@ -21,6 +21,7 @@ const baseDir = "/tmp/scanjobs";
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL? process.env.REDIS_URL : "redis://localhost:6379";
+const REDIS_PW: string = process.env.REDIS_PW || "";
 
 // How many workers for ScanCode
 const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CONCURRENCY) : 1;
@@ -62,7 +63,7 @@ const start = (): void => {
     console.log(getCurrentDateTime() + ": Worker is alive");
 
     // Connect to the named work queue
-    const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL);
+    const workQueue: Queue.Queue = new Queue("scanner", REDIS_URL, { redis: { password: REDIS_PW } });
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
