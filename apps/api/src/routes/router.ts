@@ -8,13 +8,15 @@ import { loadEnv } from 'common-helpers';
 import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
-import * as fileHelpers from '../helpers/file_helpers';
+import { processPackageAndSendToScanner } from '../helpers/new_job_process';
 import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
 import { stateMap } from '../helpers/state_helpers';
 
 loadEnv('../../.env');
 
 const router = zodiosRouter(dosApi);
+
+const jobStateMap: Map<string, string> = new Map();
 
 // Get scan results for package with purl
 router.post('/scan-results', authenticateORTToken, async (req, res) => {
@@ -139,7 +141,7 @@ router.post('/job', authenticateORTToken, async (req, res) => {
                 }
             });
 
-            fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, packageId, req.body.purl);
+            processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, packageId, req.body.purl, jobStateMap);
 
             return res.status(200).json({
                 scannerJobId: newScannerJob.id
@@ -159,10 +161,15 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
         if (!scannerJob) {
             res.status(400).json({ message: 'Bad Request: Scanner Job with requested id cannot be found in the database' });
         } else {
+            let message = stateMap.get(scannerJob.state) || scannerJob.state;
+
+            if(scannerJob.state === 'processing') {
+                message = jobStateMap.get(scannerJob.id) || stateMap.get(scannerJob.state) || scannerJob.state;
+            }
             res.status(200).json({
                 state: {
                     status: scannerJob.state,
-                    message: stateMap.get(scannerJob.state) || scannerJob.state
+                    message: message
                 }
             })
         }
