@@ -97,10 +97,10 @@ router.post('/job', authenticateORTToken, async (req, res) => {
         }
 
         // Checking if the package exists
-        let jobPackage = await dbQueries.findPackageByPurl(req.body.purl);
+        let packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
 
-        if (!jobPackage) {
-            jobPackage = await dbQueries.createPackage({
+        if (!packageId) {
+            const jobPackage = await dbQueries.createPackage({
                 data: {
                     purl: req.body.purl,
                     name: 'placeHolder',
@@ -108,10 +108,11 @@ router.post('/job', authenticateORTToken, async (req, res) => {
                     scanStatus: 'pending'
                 }
             });
+            packageId = jobPackage.id;
         }
 
         // Checking if there already is a ScannerJob for the package
-        const existingJob = await dbQueries.findScannerJobByPackageId(jobPackage.id);
+        const existingJob = await dbQueries.findScannerJobIdStateByPackageId(packageId);
 
         if (existingJob && existingJob.state !== 'resultsDeleted' && existingJob.state !== 'failed') {
             // Deleting zip file from object storage
@@ -122,8 +123,8 @@ router.post('/job', authenticateORTToken, async (req, res) => {
             })
         } else {
 
-            jobPackage = await dbQueries.updatePackage({
-                id: jobPackage.id,
+            await dbQueries.updatePackage({
+                id: packageId,
                 data: {
                     scanStatus: 'pending'
                 }
@@ -134,11 +135,11 @@ router.post('/job', authenticateORTToken, async (req, res) => {
             const newScannerJob = await dbQueries.createScannerJob({
                 data: {
                     state: 'created',
-                    packageId: jobPackage.id
+                    packageId: packageId
                 }
             });
 
-            fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, jobPackage.id, req.body.purl);
+            fileHelpers.processPackageAndSendToScanner(req.body.zipFileKey, newScannerJob.id, packageId, req.body.purl);
 
             return res.status(200).json({
                 scannerJobId: newScannerJob.id

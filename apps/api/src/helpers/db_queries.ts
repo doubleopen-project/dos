@@ -201,6 +201,18 @@ export const findScannerJobByPackageId = async (packageId: number): Promise<Scan
     })
 }
 
+export const findScannerJobIdStateByPackageId = async (packageId: number): Promise<{id: string, state: string} | null> => {
+    return await prisma.scannerJob.findFirst({
+        where: {
+            packageId: packageId
+        },
+        select: {
+            id: true,
+            state: true
+        }
+    })
+}
+
 export const findScannerJobsByPackageIds = async (packageIds: number[]): Promise<ScannerJob[] | null> => {
     return await prisma.scannerJob.findMany({
         where: {
@@ -216,6 +228,19 @@ export const findPackageByPurl = async (purl: string): Promise<Package | null> =
         where: {
             purl: purl
         },
+    })
+}
+
+export const findPackageIdByPurl = async (purl: string): Promise<number | null> => {
+    return await prisma.package.findFirst({
+        where: {
+            purl: purl
+        },
+        select: {
+            id: true
+        }
+    }).then((foundPackage: { id: number } | null) => {
+        return foundPackage? foundPackage.id : null
     })
 }
 
