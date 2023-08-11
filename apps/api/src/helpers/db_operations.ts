@@ -196,13 +196,6 @@ export const deletePackageDataByPurl = async (purl: string): Promise<string> => 
 
 }
 
-export const getJobState = async (jobId: string): Promise<string | null> => {
-    const scannerJob = await dbQueries.findScannerJobById(jobId);
-    if (!scannerJob) return null;
-
-    return scannerJob.state;
-}
-
 const getScannerConfigString = (options: { [key: string]: string | boolean | number; }) => {
     let configString = '';
     if (options['--copyright']) {
@@ -263,9 +256,14 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         const batchSize = 1000;
         const batchCount = Math.ceil(files.length / batchSize);
 
+        const licenseFindingMatches = [];
+        const copyrightFindings = [];
+        const scanIssues = [];
+
+        console.time('Saving results to database took');
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
-
+            
             for (const file of batch) {
 
                 if (file.type === 'file' && file.sha256) {
@@ -311,13 +309,11 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                         for (const license of file.license_detections) {
 
                             for (const match of license.matches) {
-                                await dbQueries.createLicenseFindingMatch({
-                                    data: {
+                                licenseFindingMatches.push({
                                         startLine: match.start_line,
                                         endLine: match.end_line,
                                         score: match.score,
                                         licenseFindingId: finding.id
-                                    }
                                 })
                             }
                         }
@@ -326,32 +322,38 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     }
 
                     for (const copyright of file.copyrights) {
-                        await dbQueries.createCopyrightFinding({
-                            data: {
+                        copyrightFindings.push({
                                 startLine: copyright.start_line,
                                 endLine: copyright.end_line,
                                 copyright: copyright.copyright,
                                 scanner: scanner,
                                 scannerConfig: scannerConfig,
                                 fileSha256: file.sha256
-                            }
                         })
                     }
 
                     for (const scanError of file.scan_errors) {
-                        await dbQueries.createScanIssue({
-                            data: {
+                        scanIssues.push({
                                 severity: 'ERROR',
                                 message: scanError,
                                 scanner: scanner,
                                 scannerConfig: scannerConfig,
                                 fileSha256: file.sha256
-                            }
                         })
                     }
                 }
             }
         }
+        if (licenseFindingMatches.length > 0) {
+            await dbQueries.createManyLicenseFindingMatches(licenseFindingMatches);
+        }
+        if (copyrightFindings.length > 0) {
+            await dbQueries.createManyCopyrightFindings(copyrightFindings);
+        }
+        if (scanIssues.length > 0) {
+            await dbQueries.createManyScanIssues(scanIssues);
+        }
+        console.timeEnd('Saving results to database took');
         result = null;
 
         console.log('Changing Package scanStatus to "scanned"');
@@ -397,32 +399,6 @@ export const findFilesToBeScanned = async (packageId: number, files: { hash: str
 
         } else {
             filesToBeScanned.push(file);
-        }
-    }
-
-    return filesToBeScanned;
-}
-
-export const getFilesToBeScanned = async (packageId: number): Promise<{ hash: string, path: string }[]> => {
-    const filesToBeScanned: { hash: string, path: string }[] = [];
-    const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
-
-    if (!fileTrees) {
-        throw new Error('Error: unable to fetch file trees from database');
-    }
-
-    console.log('getFilesToBeScanned File trees count: ' + fileTrees.length);
-
-    for (const fileTree of fileTrees) {
-
-        const file = await dbQueries.findFileByHash(fileTree.fileSha256);
-
-        if (!file) {
-            console.log('File not found from database');
-        } else {
-            if (file.scanStatus === 'notStarted') {
-                filesToBeScanned.push({ hash: file.sha256, path: fileTree.path });
-            }
         }
     }
 

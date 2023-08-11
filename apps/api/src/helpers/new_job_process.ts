@@ -4,7 +4,7 @@
 
 import fetch from 'cross-fetch';
 import * as dbQueries from './db_queries';
-import * as dbOperations from './db_operations';
+import { findFilesToBeScanned } from './db_operations';
 import * as s3Helpers from 's3-helpers';
 import * as fileHelpers from './file_helpers';
 
@@ -54,7 +54,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
         // Save FileTrees to existing Files and get list of files to be scanned
 
-        let filesToBeScanned: { hash: string, path: string }[] | null = await dbOperations.findFilesToBeScanned(packageId, fileHashesAndPaths)
+        let filesToBeScanned: { hash: string, path: string }[] | null = await findFilesToBeScanned(packageId, fileHashesAndPaths)
         console.log('filesToBeScanned count: ', filesToBeScanned.length);
 
         // Uploading files to object storage individually with the file hash as the key
