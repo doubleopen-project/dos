@@ -35,6 +35,14 @@ export const unzipFile = async (downloadPath: string, extractPath: string): Prom
 export const deleteLocalFiles = async (downloadPath: string, extractPath: string): Promise<void> => {
     fs.rmSync(extractPath, { recursive: true });
     fs.rmSync(downloadPath);
+
+    if (fs.existsSync(downloadPath)) {
+        throw new Error('Error: downloadPath still exists');
+    }
+
+    if (fs.existsSync(extractPath)) {
+        throw new Error('Error: extractPath still exists');
+    }
 }
 
 // Iterate through all files in a directory and return an array of file hashes and paths 
