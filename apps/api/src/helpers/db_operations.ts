@@ -23,17 +23,22 @@ export const getPackageResults = async (purl: string) => {
 
         if (queriedPackage.scanStatus === 'pending') {
             const scannerJob = await dbQueries.findMostRecentScannerJobByPackageId(queriedPackage.id);
-
+            
             if (scannerJob) {
+                console.log('Package with purl ' + purl + ' has a pending scanner job with id ' + scannerJob.id);
                 status = 'pending';
                 id = scannerJob.id;
             } else {
                 throw new Error('Error: unable to fetch scanner job id from database');
             }
         } else if (queriedPackage.scanStatus === 'scanned') {
+            console.log('Found results for package with purl ' + purl);
+            
             results = await getScanResults(queriedPackage.id);
             status = 'ready';
         }
+    } else {
+        console.log('No package found with purl ' + purl);
     }
 
     return {
