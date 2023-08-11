@@ -288,18 +288,14 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
     try {
         checkS3ClientEnvs();
         let i = 1;
+        console.time('Uploading files took')
         for (const file of fileHashesAndPaths) {
             jobStateMap.set(jobId, `Uploading files (${i}/${fileHashesAndPaths.length})`);
-            // Check if file already exists in bucket
-            const objectExists: boolean | undefined = await objectExistsCheck(file.hash, bucketName);
-
-            if (!objectExists) {
-                // Upload file to S3
-                const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
-                await uploadFile(bucketName, file.hash, fileBuffer);
-            }
+            const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
+            await uploadFile(bucketName, file.hash, fileBuffer);
             i++;
         }
+        console.timeEnd('Uploading files took')
         return true;
     } catch (error) {
         console.log(error);
