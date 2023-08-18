@@ -189,11 +189,6 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
                 message: 'Bad Request: Cannot change state to completed. Use /job-results endpoint instead'
             });
         } else {
-            if (req.body.state === 'active') {
-                // Stall a little bit
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-            
             const updatedScannerJob = await dbQueries.updateScannerJob({
                 id: req.params.id as string,
                 data: { state: req.body.state }
