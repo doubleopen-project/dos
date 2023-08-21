@@ -288,7 +288,7 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
     try {
         checkS3ClientEnvs();
         let i = 1;
-        console.time(jobId + ': uploading files took')
+        console.time(jobId + ': Uploading files took')
 
         const CONCURRENCY_LIMIT = 10;
         const uploadPromises = [];
@@ -315,7 +315,7 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
             await Promise.all(uploadPromises);
         }
         
-        console.timeEnd(jobId + ': uploading files took')
+        console.timeEnd(jobId + ': Uploading files took')
         return true;
     } catch (error) {
         console.log(error);
