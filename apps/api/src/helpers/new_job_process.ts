@@ -50,12 +50,12 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
         // Listing file paths and the corresponding file hashes
         let fileHashesAndPaths: { hash: string, path: string }[] | null = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
-        console.log('fileHashesAndPaths count: ', fileHashesAndPaths.length);
+        console.log(scannerJobId + ': fileHashesAndPaths count: ', fileHashesAndPaths.length);
 
         // Save FileTrees to existing Files and get list of files to be scanned
 
         let filesToBeScanned: { hash: string, path: string }[] | null = await findFilesToBeScanned(packageId, fileHashesAndPaths)
-        console.log('filesToBeScanned count: ', filesToBeScanned.length);
+        console.log(scannerJobId + ': filesToBeScanned count: ', filesToBeScanned.length);
 
         // Uploading files to object storage individually with the file hash as the key
 
@@ -98,7 +98,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             const response = await fetch(postJobUrl, request);
 
             if (response.status === 201) {
-                console.log('Updating ScannerJob state to "queued"');
+                console.log('Updating ScannerJob state for job '+ scannerJobId + ' to "queued"');
 
                 await dbQueries.updateScannerJob({
                     id: scannerJobId,
