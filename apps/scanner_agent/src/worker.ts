@@ -26,6 +26,9 @@ const REDIS_PW: string = process.env.REDIS_PW || "";
 // How many workers for ScanCode
 const WORKERS: number = process.env.WEB_CONCURRENCY? parseInt(process.env.WEB_CONCURRENCY) : 1;
 
+// Concurrency limit for downloading files from S3
+const DL_CONCURRENCY: number = process.env.DL_CONCURRENCY? parseInt(process.env.DL_CONCURRENCY) : 1;
+
 // Spaces bucket
 const SPACES_BUCKET: string = process.env.SPACES_BUCKET? process.env.SPACES_BUCKET : "doubleopen2";
 
@@ -78,12 +81,22 @@ const start = (): void => {
         console.log("-> creating local directory: ", localJobDir);
 
         // Try to download the files from S3 and check if it was successful
+        // Use concurrency limit to avoid overloading the S3 service
+        const concurrentDownloads = [];
         for (const file of job.data.files) {
-            const downloadSuccess: boolean = await downloadFile(SPACES_BUCKET, file.hash, path.join(localJobDir, file.path));
-            if (downloadSuccess === false) {
-                console.log("Failed to download file", file, "from S3");
-                throw new Error("Failed to download file from S3");   
+            const downloadPromise = downloadFile(SPACES_BUCKET, file.hash, path.join(localJobDir, file.path))
+                .catch(() => {
+                    console.log("Failed to download file", file, "from S3");
+                    throw new Error("Failed to download file from S3");
+                });
+            concurrentDownloads.push(downloadPromise);
+            if (concurrentDownloads.length >= DL_CONCURRENCY) {
+                await Promise.all(concurrentDownloads);
+                concurrentDownloads.length = 0;
             }
+        }
+        if (concurrentDownloads.length > 0) {
+            await Promise.all(concurrentDownloads);
         }
         
         console.log("-> ready to run ScanCode");
