@@ -200,7 +200,7 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
                     data: { scanStatus: 'failed' }
                 })
             }
-            console.log('Changed state to "' + req.body.state + '" for job: ' + req.params.id);
+            console.log(req.params.id + ': Changed state to "' + req.body.state + '"');
             
             res.status(200).json({
                 message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state

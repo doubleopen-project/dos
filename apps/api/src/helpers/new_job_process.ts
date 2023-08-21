@@ -15,7 +15,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
             throw new Error('Error: SPACES_BUCKET environment variable is not defined');
         }
-        console.log('Processing files for purl: ', purl);
+        console.log(scannerJobId + ': Processing files for purl ' + purl);
         // Update ScannerJob status to 'processing'
         await dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'processing' } });
         // Downloading zip file from object storage
@@ -28,7 +28,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             throw new Error('Zip file download failed');
         }
 
-        console.log('Zip file downloaded');
+        //console.log(scannerJobId + ': Zip file downloaded');
 
         // Unzipping the file locally
         const fileNameNoExt = (zipFileKey).split('.')[0];
@@ -43,19 +43,19 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             throw new Error('Zip file unzipping failed');
         }
 
-        console.log('Zip file unzipped');
+        //console.log(scannerJobId + ': Zip file unzipped');
 
         // Saving files in extracted folder to object storage
 
         // Listing file paths and the corresponding file hashes
         let fileHashesAndPaths: { hash: string, path: string }[] | null = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
-        console.log(scannerJobId + ': fileHashesAndPaths count: ', fileHashesAndPaths.length);
+        console.log(scannerJobId + ': Found files: ' + fileHashesAndPaths.length);
 
         // Save FileTrees to existing Files and get list of files to be scanned
 
         let filesToBeScanned: { hash: string, path: string }[] | null = await findFilesToBeScanned(packageId, fileHashesAndPaths)
-        console.log(scannerJobId + ': filesToBeScanned count: ', filesToBeScanned.length);
+        console.log(scannerJobId + ': Uploading and sending to be scanned: ', filesToBeScanned.length);
 
         // Uploading files to object storage individually with the file hash as the key
 
@@ -69,17 +69,17 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             throw new Error('Error: Uploading files to object storage failed');
         }
 
-        console.log('Files uploaded to object storage');
+        //console.log('Files uploaded to object storage');
 
         // Deleting local files
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
-        console.log('Local files deleted');
+        //console.log('Local files deleted');
 
         // Deleting zip file from object storage
         await s3Helpers.deleteFile(process.env.SPACES_BUCKET, zipFileKey);
 
         if (filesToBeScanned.length > 0) {
-            console.log('Sending a request to Scanner Agent to add new job to the work queue');
+            console.log(scannerJobId + ': Sending a request to Scanner Agent to add new job to the work queue');
             const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
             const postJobUrl = scannerUrl + 'job';
 
@@ -98,7 +98,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             const response = await fetch(postJobUrl, request);
 
             if (response.status === 201) {
-                console.log('Updating ScannerJob state for job '+ scannerJobId + ' to "queued"');
+                console.log(scannerJobId + ': Updating ScannerJob state to "queued"');
 
                 await dbQueries.updateScannerJob({
                     id: scannerJobId,
@@ -120,5 +120,14 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
     } catch (error) {
         console.log(error);
+        try {
+            console.log('Attempting to change ScannerJob state and Package scanStatus to "failed"');
+            
+            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
+            dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
+        } catch (error) {
+            console.log('Error: Unable to connect to database');
+            console.log(error);
+        }
     }
 }
