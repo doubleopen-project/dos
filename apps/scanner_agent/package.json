@@ -27,6 +27,7 @@
     },
     "devDependencies": {
         "@types/chai": "4.3.5",
+        "@types/compression": "1.7.2",
         "@types/express": "4.17.17",
         "@types/milliseconds": "0.0.30",
         "@types/mocha": "10.0.1",
