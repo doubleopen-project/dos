@@ -20,7 +20,7 @@ const opts = {
 }
 const app = zodiosApp(dosApi, opts);
 
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '500mb' }));
 app.use(compression({
     level: -1, // Default compression level
     threshold: COMPRESSION_LIMIT, // Size limit for compression

@@ -75,11 +75,13 @@ const start = (): void => {
         console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
         console.log("***                       Files to scan:", job.data.files.length);
         console.log("***                      Processes used:", SCANCODE_PROCESSES);
+        console.log("***                 Max files in memory:", SCANCODE_FILES_IN_MEMORY);
         console.log("***");
     
         const jobIdDir = String(job.id);
         const localJobDir = path.join(baseDir, jobIdDir);
-        console.log("-> creating local directory: ", localJobDir);
+        console.log(job.id + ": DL from S3 & create local dir");
+        console.time(job.id + ": Downloading files took")
 
         // Try to download the files from S3 and check if it was successful
         // Use concurrency limit to avoid overloading the S3 service
@@ -99,16 +101,16 @@ const start = (): void => {
         if (concurrentDownloads.length > 0) {
             await Promise.all(concurrentDownloads);
         }
+        console.timeEnd(job.id + ": Downloading files took");
         
-        console.log("-> ready to run ScanCode");
-
         // Spawn a child process to run ScanCode inside this container
         const options: string[] = [
             "-clp",
             "-i",
             "-q",
             "--strip-root",
-            "--max-in-memory " + SCANCODE_FILES_IN_MEMORY,
+            "--max-in-memory",
+            SCANCODE_FILES_IN_MEMORY.toString(),
             "--json",
             "-",
             "-n " + SCANCODE_PROCESSES,
