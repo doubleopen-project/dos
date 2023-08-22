@@ -4,15 +4,12 @@
 
 import { zodiosRouter } from '@zodios/express';
 import { dosApi } from 'validation-helpers';
-import { loadEnv } from 'common-helpers';
 import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import { processPackageAndSendToScanner } from '../helpers/new_job_process';
 import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
 import { stateMap } from '../helpers/state_helpers';
-
-loadEnv('../../.env');
 
 const router = zodiosRouter(dosApi);
 
