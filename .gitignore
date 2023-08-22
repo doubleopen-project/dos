@@ -144,3 +144,6 @@ dump.rdb
 
 # Generated zod db schemas
 generated-zod-schemas/
+
+# Clever Cloud CLI config
+.clever.json
