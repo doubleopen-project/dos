@@ -186,6 +186,16 @@ export const findFileTreeByHashAndPackageId = async (hash: string, packageId: nu
     })
 }
 
+export const findFileTreeByHashAndPackageIdAndPath = async (hash: string, packageId: number, path: string): Promise<FileTree | null> => {
+    return await prisma.fileTree.findFirst({
+        where: {
+            fileSha256: hash,
+            packageId: packageId,
+            path: path
+        },
+    })
+}
+
 export const findScannerJobStateById = async (id: string): Promise<{ id: string, state: string } | null> => {
     return await prisma.scannerJob.findUnique({
         where: {
