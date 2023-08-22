@@ -8,6 +8,7 @@ import express from 'express';
 import { dosApi } from 'validation-helpers';
 import { serve, setup } from 'swagger-ui-express';
 import { openApiBuilder } from '@zodios/openapi';
+import compression from 'compression';
 
 const opts = {
 	enableJsonBodyParser: false
@@ -15,7 +16,10 @@ const opts = {
 const app = zodiosApp(dosApi, opts);
 
 app.use(express.json({ limit: '50mb' }));
-
+app.use(compression({
+    level: -1, // Default compression level
+    threshold: 0, // 100 kB
+}));
 app.use('/api', router);
 
 const document = openApiBuilder({
