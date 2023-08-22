@@ -312,7 +312,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                     packageId: scannerJob.packageId
                                 }
                             })
-
                         } else {
                             await dbQueries.updateFile({
                                 id: dbFile.id,
@@ -405,6 +404,21 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         })
     } catch (error) {
         console.log(error);
+        try {
+            console.log(jobId + ': Changing ScannerJob state to "failed"');
+            const editedScannerJob = await dbQueries.updateScannerJob({
+                id: jobId,
+                data: { state: 'failed' }
+            })
+            console.log(jobId + ': Changing Package scanStatus to "failed"');
+            await dbQueries.updatePackage({
+                id: editedScannerJob.packageId,
+                data: { scanStatus: 'failed' }
+            })
+            
+        } catch (error) {
+            console.log(jobId + ': Unable to update ScannerJob and Package statuses to "failed"');
+        }
     }
 }
 
