@@ -30,6 +30,7 @@
       "persistent": true
     },
     "test": {
+      "cache": false,
       "dependsOn": ["^db:generate"]
     },
     "worker": {

@@ -6,7 +6,9 @@
         "outDir": "./dist",
         "rootDir": "./",
         "types": [
-            "@types/node"
+            "@types/node",
+            "@types/chai",
+            "@types/mocha"
         ]
     },
     "exclude": [

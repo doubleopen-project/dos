@@ -1,10 +1,11 @@
 {
     "name": "common-helpers",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/src/index.js",
+    "module": "./dist/src/index.mjs",
+    "types": "./index.d.ts",
     "scripts": {
-        "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts"
+        "build": "tsup && (head -n 4 src/index.ts && cat dist/src/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "test": "mocha dist/tests"
     },
     "dependencies": {
         "dotenv": "16.3.1",
@@ -12,6 +13,10 @@
         "pako": "2.1.0"
     },
     "devDependencies": {
-        "@types/pako": "2.0.0"
+        "@types/pako": "2.0.0",
+        "@types/chai": "4.3.5",
+        "@types/mocha": "10.0.1",
+        "chai": "4.3.7",
+        "mocha": "10.2.0"
     }
 }
