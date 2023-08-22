@@ -290,8 +290,6 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
                 let retryCount = 0;
                 let uploadSuccess = false;
                 while (!uploadSuccess && retryCount < retries) {
-                    console.log('retryCount: ' + retryCount);
-                    
                     try {
                         // Upload file to S3
                         const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
