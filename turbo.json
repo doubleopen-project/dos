@@ -13,7 +13,7 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "lint": {},
+    "clever-logs": {},
     "copy-types": {},
     "db:format": {},
     "db:generate": {
@@ -29,6 +29,7 @@
       "cache": false,
       "persistent": true
     },
+    "lint": {},
     "test": {
       "cache": false,
       "dependsOn": ["^db:generate"]
