@@ -253,34 +253,25 @@ const checkS3ClientEnvs = (): void => {
     }
 }
 
+// The testCounter is used to test the retry functionality
+//let testCounter = 0;
+
 // Upload a file to a bucket
 export const uploadFile = async (bucketName: string, fileName: string, fileContent: string | Buffer): Promise<string | undefined> => {
     const uploadParams: PutObjectCommandInput = { Bucket: bucketName, Key: fileName, Body: fileContent };
     try {
+        //if (testCounter > 16) {
+        //    throw new Error("Test error");
+        //}
         const data: PutObjectCommandOutput = await s3Client.send(new PutObjectCommand(uploadParams));
+        //testCounter++;
         //console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
         return JSON.stringify(data);
     } catch (err) {
         console.log("Error trying to upload a file to S3 bucket", err);
+        //testCounter++;
+        throw new Error("Error trying to upload a file to S3 bucket");
     }
-}
-
-// Upload files to a bucket
-export const saveFiles = async (filePaths: string[], baseDir: string, bucketName: string): Promise<boolean> => {
-    try {
-        checkS3ClientEnvs();
-        for (const filePath of filePaths) {
-            // Upload file to S3
-            const file: Buffer = fs.readFileSync(baseDir + filePath);
-
-            await uploadFile(bucketName, filePath, file);
-        }
-        return true;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
-
 }
 
 // Upload files to a bucket with their hash as the key 
@@ -290,18 +281,35 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
         let i = 1;
         console.time(jobId + ': Uploading files took')
 
-        const CONCURRENCY_LIMIT = 10;
+        const UL_CONCURRENCY = parseInt(process.env.UL_CONCURRENCY as string) || 10;
         const uploadPromises = [];
 
         for (const file of fileHashesAndPaths) {
             const uploadTask = (async () => {
-                const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
-                await uploadFile(bucketName, file.hash, fileBuffer);
+                const retries = 3;
+                let retryCount = 0;
+                let uploadSuccess = false;
+                while (!uploadSuccess && retryCount < retries) {
+                    console.log('retryCount: ' + retryCount);
+                    
+                    try {
+                        // Upload file to S3
+                        const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
+                        await uploadFile(bucketName, file.hash, fileBuffer);
+                        uploadSuccess = true;
+                    } catch (error) {
+                        console.log(error);
+                        retryCount++;
+                    }
+                }
+                if (!uploadSuccess) {
+                    throw('Failed to upload file ' + file.path + ' to bucket ' + bucketName);
+                } 
             })();
 
             uploadPromises.push(uploadTask);
 
-            if (uploadPromises.length >= CONCURRENCY_LIMIT) {
+            if (uploadPromises.length >= UL_CONCURRENCY) {
                 await Promise.all(uploadPromises);
                 uploadPromises.length = 0;
             }
