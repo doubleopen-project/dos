@@ -11,7 +11,6 @@ declare const downloadDirectory: (bucketName: string, dirS3: string, baseDir: st
 declare const objectExistsCheck: (key: string, bucketName: string) => Promise<boolean | undefined>;
 declare const getPresignedPutUrl: (key: string, bucketName: string) => Promise<string | undefined>;
 declare const uploadFile: (bucketName: string, fileName: string, fileContent: string | Buffer) => Promise<string | undefined>;
-declare const saveFiles: (filePaths: string[], baseDir: string, bucketName: string) => Promise<boolean>;
 declare const saveFilesWithHashKey: (fileHashesAndPaths: Array<{
     hash: string;
     path: string;
@@ -20,4 +19,4 @@ declare const deleteFile: (bucketName: string, fileName: string) => Promise<bool
 
 declare const client: S3;
 
-export { client, deleteFile, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFiles, saveFilesWithHashKey, uploadFile };
+export { client, deleteFile, downloadDirectory, downloadFile, getPresignedPutUrl, listBuckets, listObjects, objectExistsCheck, saveFilesWithHashKey, uploadFile };

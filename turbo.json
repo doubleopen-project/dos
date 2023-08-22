@@ -1,82 +1,83 @@
 {
-    "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": [
-        ".env"
-    ],
-    "globalEnv": [
-        "PORT",
-        "REDIS_URL",
-        "WEB_CONCURRENCY",
-        "SCANNER_URL",
-        "DOS_URL",
-        "SPACES_ENDPOINT",
-        "SPACES_KEY",
-        "SPACES_SECRET",
-        "SPACES_BUCKET",
-        "DATABASE_URL",
-        "ORT_TOKEN",
-        "SA_TOKEN",
-        "SERVER_TOKEN",
-        "SCANCODE_PROCESSES",
-        "REDIS_PW",
-        "DL_CONCURRENCY",
-        "SIZE_LIMIT_FOR_COMPRESSION",
-        "SCANCODE_FILES_IN_MEMORY"
-    ],
-    "pipeline": {
-        "api:build": {
-            "dependsOn": [
-                "s3-helpers:build",
-                "common-helpers:build",
-                "validation-helpers:build"
-            ]
-        },
-        "scanner-agent:build": {
-            "dependsOn": [
-                "s3-helpers:build",
-                "common-helpers:build",
-                "validation-helpers:build"
-            ]
-        },
-        "build": {
-            "dependsOn": [
-                "^build"
-            ],
-            "outputs": [
-                ".next/**",
-                "!.next/cache/**"
-            ]
-        },
-        "clever-logs": {},
-        "copy-types": {},
-        "db:format": {},
-        "db:generate": {
-            "cache": false
-        },
-        "db:migrate:deploy": {},
-        "db:migrate:dev": {},
-        "db:push": {
-            "cache": false
-        },
-        "dev": {
-            "dependsOn": [
-                "^build",
-                "^db:generate"
-            ],
-            "cache": false,
-            "persistent": true
-        },
-        "lint": {},
-        "test": {
-            "cache": false,
-            "dependsOn": [
-                "^db:generate"
-            ]
-        },
-        "worker": {
-            "dependsOn": [
-                "^build"
-            ]
-        }
-    }
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": [
+		".env"
+	],
+	"globalEnv": [
+		"PORT",
+		"REDIS_URL",
+		"WEB_CONCURRENCY",
+		"SCANNER_URL",
+		"DOS_URL",
+		"SPACES_ENDPOINT",
+		"SPACES_KEY",
+		"SPACES_SECRET",
+		"SPACES_BUCKET",
+		"DATABASE_URL",
+		"ORT_TOKEN",
+		"SA_TOKEN",
+		"SERVER_TOKEN",
+		"SCANCODE_PROCESSES",
+		"REDIS_PW",
+		"DL_CONCURRENCY",
+		"UL_CONCURRENCY",
+		"SIZE_LIMIT_FOR_COMPRESSION",
+		"SCANCODE_FILES_IN_MEMORY"
+	],
+	"pipeline": {
+		"api:build": {
+			"dependsOn": [
+				"s3-helpers:build",
+				"common-helpers:build",
+				"validation-helpers:build"
+			]
+		},
+		"scanner-agent:build": {
+			"dependsOn": [
+				"s3-helpers:build",
+				"common-helpers:build",
+				"validation-helpers:build"
+			]
+		},
+		"build": {
+			"dependsOn": [
+				"^build"
+			],
+			"outputs": [
+				".next/**",
+				"!.next/cache/**"
+			]
+		},
+		"clever-logs": {},
+		"copy-types": {},
+		"db:format": {},
+		"db:generate": {
+			"cache": false
+		},
+		"db:migrate:deploy": {},
+		"db:migrate:dev": {},
+		"db:push": {
+			"cache": false
+		},
+		"dev": {
+			"dependsOn": [
+				"^build",
+				"^db:generate"
+			],
+			"cache": false,
+			"persistent": true
+		},
+		"lint": {},
+		"test": {
+			"cache": false,
+			"dependsOn": [
+				"^db:generate"
+			]
+		},
+		"worker": {
+			"dependsOn": [
+				"^build"
+			]
+		}
+	}
 }
