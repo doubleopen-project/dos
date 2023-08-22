@@ -5,10 +5,15 @@
 import { zodiosApp } from '@zodios/express';
 import router from './routes/router';
 import express from 'express';
+import { loadEnv } from 'common-helpers';
 import { dosApi } from 'validation-helpers';
 import { serve, setup } from 'swagger-ui-express';
 import { openApiBuilder } from '@zodios/openapi';
 import compression from 'compression';
+
+loadEnv('../../.env');
+
+const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION) : 0;
 
 const opts = {
 	enableJsonBodyParser: false
@@ -18,7 +23,7 @@ const app = zodiosApp(dosApi, opts);
 app.use(express.json({ limit: '50mb' }));
 app.use(compression({
     level: -1, // Default compression level
-    threshold: 0, // 100 kB
+    threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
 app.use('/api', router);
 

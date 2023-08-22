@@ -6,17 +6,14 @@ import { zodiosRouter } from "@zodios/express";
 import { scannerAgentApi } from "validation-helpers";
 import Queue, { Job } from 'bull';
 import fetch from "cross-fetch";
-import { loadEnv } from 'common-helpers';
 import milliseconds from "milliseconds";
 import { authenticateAPIToken } from "../helpers/auth_helpers";
+
+const router = zodiosRouter(scannerAgentApi);
 
 //////////////////////////
 // Environment variables
 //////////////////////////
-
-loadEnv("../../.env");
-
-const router = zodiosRouter(scannerAgentApi);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";

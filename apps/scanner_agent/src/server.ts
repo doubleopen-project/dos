@@ -9,6 +9,11 @@ import { scannerAgentApi } from "validation-helpers";
 import { serve, setup } from 'swagger-ui-express';
 import { openApiBuilder } from "@zodios/openapi";
 import compression from "compression";
+import { loadEnv } from 'common-helpers';
+
+loadEnv("../../.env");
+
+const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION) : 0;
 
 const opts = {
   enableJsonBodyParser: false
@@ -19,7 +24,7 @@ const app = zodiosApp(scannerAgentApi, opts);
 app.use(express.json({limit: '50mb'}));
 app.use(compression({
     level: -1, // Default compression level
-    threshold: 0, // 100 kB
+    threshold: COMPRESSION_LIMIT, // Minimum size in bytes to compress
 }));
 app.use('/', router);
 
