@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import { deflate, inflate } from "pako";
 
 export function compress(json: string): Uint8Array {
