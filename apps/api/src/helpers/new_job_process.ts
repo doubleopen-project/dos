@@ -126,8 +126,7 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
         } catch (error) {
-            console.log('Error: Unable to connect to database');
-            console.log(error);
+            console.log(scannerJobId + ': Unable to update ScannerJob and Package statuses to "failed"');
         }
     }
 }
