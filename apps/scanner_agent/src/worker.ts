@@ -34,6 +34,7 @@ const SPACES_BUCKET: string = process.env.SPACES_BUCKET? process.env.SPACES_BUCK
 
 // The maximum number of OS processes to use for ScanCode
 const SCANCODE_PROCESSES: number = process.env.SCANCODE_PROCESSES? parseInt(process.env.SCANCODE_PROCESSES) : 1;
+const SCANCODE_FILES_IN_MEMORY: number = process.env.SCANCODE_FILES_IN_MEMORY? parseInt(process.env.SCANCODE_FILES_IN_MEMORY) : 10000;
 
 // The maximum number of jobs each worker should process at once. This will need
 // to be tuned for your application. If each job is mostly waiting on network 
@@ -107,6 +108,7 @@ const start = (): void => {
             "-i",
             "-q",
             "--strip-root",
+            "--max-in-memory " + SCANCODE_FILES_IN_MEMORY,
             "--json",
             "-",
             "-n " + SCANCODE_PROCESSES,
