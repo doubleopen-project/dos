@@ -261,28 +261,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         const batchSize = 1000;
         const batchCount = Math.ceil(files.length / batchSize);
 
-        const licenseFindingMatches: {
-            startLine: number,
-            endLine: number,
-            score: number,
-            licenseFindingId: number
-        }[] = [];
-        const copyrightFindings: {
-            startLine: number,
-            endLine: number,
-            copyright: string,
-            scanner: string,
-            scannerConfig: string,
-            fileSha256: string
-        }[] = [];
-        const scanIssues: {
-            severity: string,
-            message: string,
-            scanner: string,
-            scannerConfig: string,
-            fileSha256: string
-        }[] = [];
-
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
 
@@ -325,7 +303,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                 }
                             })
                         }
-                        
+
                         await dbQueries.updateFile({
                             id: dbFile.id,
                             data: {
@@ -346,11 +324,13 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                         for (const license of file.license_detections) {
 
                             for (const match of license.matches) {
-                                licenseFindingMatches.push({
-                                    startLine: match.start_line,
-                                    endLine: match.end_line,
-                                    score: match.score,
-                                    licenseFindingId: finding.id
+                                await dbQueries.createLicenseFindingMatch({
+                                    data: {
+                                        startLine: match.start_line,
+                                        endLine: match.end_line,
+                                        score: match.score,
+                                        licenseFindingId: finding.id
+                                    }
                                 })
                             }
                         }
@@ -359,23 +339,27 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     }
 
                     for (const copyright of file.copyrights) {
-                        copyrightFindings.push({
-                            startLine: copyright.start_line,
-                            endLine: copyright.end_line,
-                            copyright: copyright.copyright,
-                            scanner: scanner,
-                            scannerConfig: scannerConfig,
-                            fileSha256: file.sha256
+                        await dbQueries.createCopyrightFinding({
+                            data: {
+                                startLine: copyright.start_line,
+                                endLine: copyright.end_line,
+                                copyright: copyright.copyright,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256
+                            }
                         })
                     }
 
                     for (const scanError of file.scan_errors) {
-                        scanIssues.push({
-                            severity: 'ERROR',
-                            message: scanError,
-                            scanner: scanner,
-                            scannerConfig: scannerConfig,
-                            fileSha256: file.sha256
+                        await dbQueries.createScanIssue({
+                            data: {
+                                severity: 'ERROR',
+                                message: scanError,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256
+                            }
                         })
                     }
                 }
@@ -392,15 +376,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             await Promise.all(promises);
                         }*/
         }
-        if (licenseFindingMatches.length > 0) {
-            await dbQueries.createManyLicenseFindingMatches(licenseFindingMatches);
-        }
-        if (copyrightFindings.length > 0) {
-            await dbQueries.createManyCopyrightFindings(copyrightFindings);
-        }
-        if (scanIssues.length > 0) {
-            await dbQueries.createManyScanIssues(scanIssues);
-        }
+        
         console.timeEnd(jobId + ': Saving results to database took');
         result = null;
 
