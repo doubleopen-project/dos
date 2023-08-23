@@ -8,6 +8,7 @@ import * as dbQueries from '../helpers/db_queries';
 import { ScannerJob } from 'database';
 import { ScannerJobResultSchema } from 'validation-helpers';
 import { formatDateString } from './date_helpers';
+//import fs from 'fs';
 
 // ------------------------- Database operations -------------------------
 
@@ -231,6 +232,12 @@ const getScannerConfigString = (options: { [key: string]: string | boolean | num
 
 export const saveJobResults = async (jobId: string, result: ScannerJobResultSchema): Promise<void> => {
     try {
+        // Save result locally for debugging
+        //fs.writeFileSync('/tmp/' + jobId + '.json', JSON.stringify(result));
+        
+        if (result.headers.length > 1) {
+            throw ('Error: More than one header in result. What to do now???');
+        }
         console.log(jobId + ': Saving results to database');
         console.time(jobId + ': Saving results to database took');
 
@@ -253,8 +260,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
             }
         )
         console.log(jobId + ': Changed state to "savingResults"');
-
-        //console.log('Adding LicenseFindings and CopyrightFindings for files');
+        console.log(jobId + ': Adding LicenseFindings and CopyrightFindings for files');
 
         // Handle files list in batches of 1000
         const files = result.files;
@@ -264,41 +270,77 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
 
-            //const CONCURRENCY_LIMIT = 20;
-            //const promises: Promise<void>[] = [];
+            const DB_CONCURRENCY = parseInt(process.env.DB_CONCURRENCY as string) | 10;
+            const promises: Promise<void>[] = [];
             for (const file of batch) {
-                //const queryTask = (async () => {
+                const queryTask = (async () => {
+                    if (file.type === 'file' && file.sha256) {
+                        let dbFile = await dbQueries.findFileByHash(file.sha256);
 
-                if (file.type === 'file' && file.sha256) {
-                    let dbFile = await dbQueries.findFileByHash(file.sha256);
+                        if (!dbFile) {
+                            dbFile = await dbQueries.createFile({
+                                data: {
+                                    sha256: file.sha256,
+                                    scanStatus: 'notStarted'
+                                }
+                            });
+                        }
 
-                    if (!dbFile) {
-                        // Create file
-                        dbFile = await dbQueries.createFile({
-                            data: {
-                                sha256: file.sha256,
-                                scanStatus: 'scanned'
-                            }
-                        })
-
-                        // Create FileTree
-                        await dbQueries.createFileTree({
+                        await dbQueries.createFileTreeIfNotExists({
                             data: {
                                 path: file.path,
                                 fileSha256: file.sha256,
                                 packageId: scannerJob.packageId
                             }
-                        })
-                    } else {
-                        const filetree = await dbQueries.findFileTreeByHashAndPackageIdAndPath(file.sha256, scannerJob.packageId, file.path);
+                        });
 
-                        if (!filetree) {
-                            // Create FileTree
-                            await dbQueries.createFileTree({
+                        if (file.detected_license_expression_spdx) {
+                            const finding = await dbQueries.createLicenseFinding({
                                 data: {
-                                    path: file.path,
-                                    fileSha256: file.sha256,
-                                    packageId: scannerJob.packageId
+                                    scanner: scanner,
+                                    scannerConfig: scannerConfig,
+                                    licenseExpressionSPDX: file.detected_license_expression_spdx,
+                                    fileSha256: file.sha256
+                                }
+                            })
+                            for (const license of file.license_detections) {
+
+                                for (const match of license.matches) {
+                                    await dbQueries.createLicenseFindingMatch({
+                                        data: {
+                                            startLine: match.start_line,
+                                            endLine: match.end_line,
+                                            score: match.score,
+                                            licenseFindingId: finding.id
+                                        }
+                                    })
+                                }
+                            }
+                        } else if (!file.detected_license_expression_spdx && file.license_detections.length > 0) {
+                            throw ('Error: File ' + file.sha256 + ' ' + file.path + ' has license_detections but no detected_license_expression_spdx');
+                        }
+
+                        for (const copyright of file.copyrights) {
+                            await dbQueries.createCopyrightFinding({
+                                data: {
+                                    startLine: copyright.start_line,
+                                    endLine: copyright.end_line,
+                                    copyright: copyright.copyright,
+                                    scanner: scanner,
+                                    scannerConfig: scannerConfig,
+                                    fileSha256: file.sha256
+                                }
+                            })
+                        }
+
+                        for (const scanError of file.scan_errors) {
+                            await dbQueries.createScanIssue({
+                                data: {
+                                    severity: 'ERROR',
+                                    message: scanError,
+                                    scanner: scanner,
+                                    scannerConfig: scannerConfig,
+                                    fileSha256: file.sha256
                                 }
                             })
                         }
@@ -310,73 +352,21 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             }
                         })
                     }
+                })();
 
-                    if (file.detected_license_expression_spdx) {
-                        const finding = await dbQueries.createLicenseFinding({
-                            data: {
-                                scanner: scanner,
-                                scannerConfig: scannerConfig,
-                                licenseExpressionSPDX: file.detected_license_expression_spdx,
-                                fileSha256: file.sha256
-                            }
-                        })
-                        for (const license of file.license_detections) {
-
-                            for (const match of license.matches) {
-                                await dbQueries.createLicenseFindingMatch({
-                                    data: {
-                                        startLine: match.start_line,
-                                        endLine: match.end_line,
-                                        score: match.score,
-                                        licenseFindingId: finding.id
-                                    }
-                                })
-                            }
-                        }
-                    } else if (!file.detected_license_expression_spdx && file.license_detections.length > 0) {
-                        throw ('Error: File ' + file.sha256 + ' ' + file.path + ' has license_detections but no detected_license_expression_spdx');
-                    }
-
-                    for (const copyright of file.copyrights) {
-                        await dbQueries.createCopyrightFinding({
-                            data: {
-                                startLine: copyright.start_line,
-                                endLine: copyright.end_line,
-                                copyright: copyright.copyright,
-                                scanner: scanner,
-                                scannerConfig: scannerConfig,
-                                fileSha256: file.sha256
-                            }
-                        })
-                    }
-
-                    for (const scanError of file.scan_errors) {
-                        await dbQueries.createScanIssue({
-                            data: {
-                                severity: 'ERROR',
-                                message: scanError,
-                                scanner: scanner,
-                                scannerConfig: scannerConfig,
-                                fileSha256: file.sha256
-                            }
-                        })
-                    }
-                }
-                /*})();
                 promises.push(queryTask);
-                
-                if (promises.length >= CONCURRENCY_LIMIT) {
+
+                if (promises.length >= DB_CONCURRENCY) {
                     await Promise.all(promises);
                     promises.length = 0;
-                }*/
+                }
             }
-            /*
-                        if (promises.length > 0) {
-                            await Promise.all(promises);
-                        }*/
+            if (promises.length > 0) {
+                await Promise.all(promises);
+            }
         }
-
         console.timeEnd(jobId + ': Saving results to database took');
+
         result = null;
 
         console.log(jobId + ': Changing Package scanStatus to "scanned"');
@@ -390,8 +380,13 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
             id: scannerJob.id,
             data: { state: 'completed' }
         })
+        // TODO:
+        // Inform Scanner Agent that saving results was successful
+
     } catch (error) {
         console.log(error);
+        // TODO:
+        // Inform Scanner Agent that saving results failed
         try {
             console.log(jobId + ': Changing ScannerJob state to "failed"');
             const editedScannerJob = await dbQueries.updateScannerJob({
