@@ -21,7 +21,7 @@ router.post('/scan-results', authenticateORTToken, async (req, res) => {
     // Reason: purl might not mean that the package has all the same files, because this can vary based on where the package has been uploaded from
     try {
         console.log('Searching for results for package with purl: ' + req.body.purl);
-        
+
         const response = await dbOperations.getPackageResults(req.body.purl);
         res.status(200).json(response);
     } catch (error) {
@@ -162,7 +162,7 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
         } else {
             let message = stateMap.get(scannerJob.state) || scannerJob.state;
 
-            if(scannerJob.state === 'processing') {
+            if (scannerJob.state === 'processing') {
                 message = jobStateMap.get(scannerJob.id) || stateMap.get(scannerJob.state) || scannerJob.state;
             }
             res.status(200).json({
@@ -198,7 +198,7 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
                 })
             }
             console.log(req.params.id + ': Changed state to "' + req.body.state + '"');
-            
+
             res.status(200).json({
                 message: 'Received job with id ' + req.params.id + '. Changed state to ' + req.body.state
             })
@@ -212,17 +212,10 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
 // Save job results to database
 router.post('/job-results', authenticateSAToken, async (req, res) => {
     try {
-        if (req.body.result.headers.length === 1) {
-            dbOperations.saveJobResults(req.body.id, req.body.result)
-            res.status(200).json({
-                message: 'Received and saving results for job with with id ' + req.body.id
-            })
-        } else {
-            console.log('Alert in job-results! More headers!!!');
-            res.status(500).json({ message: 'Internal server error' });
-            //TODO: figure out if there could be more header objects and why and what to do then
-        }
-
+        dbOperations.saveJobResults(req.body.id, req.body.result)
+        res.status(200).json({
+            message: 'Received and saving results for job with with id ' + req.body.id
+        })
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).json({ message: 'Internal server error' });

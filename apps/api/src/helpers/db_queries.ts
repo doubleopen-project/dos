@@ -86,13 +86,19 @@ export const createManyScanIssues = async (scanIssues: Prisma.ScanIssueCreateMan
 
 // Create file if it doesn't exist, otherwise return existing file
 export const createFileIfNotExists = async (input: dbZodSchemas.CreateFileInput): Promise<File> => {
-    return await prisma.file.upsert({
+    const existingFile = await prisma.file.findUnique({
         where: {
             sha256: input.data.sha256
-        },
-        create: input.data,
-        update: input.data
+        }
     });
+
+    if (!existingFile) {
+        return await prisma.file.create({
+            data: input.data
+        });
+    } else {
+        return existingFile;
+    }
 }
 
 // Create file tree if it doesn't exist, otherwise return existing file tree
@@ -366,4 +372,3 @@ export const deleteScanIssuesByFileHashes = async (fileHashes: string[]): Promis
         }
     })
 }
-
