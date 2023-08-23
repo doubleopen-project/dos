@@ -47,18 +47,17 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
         // Saving files in extracted folder to object storage
 
-        // Listing file paths and the corresponding file hashes
-        let fileHashesAndPaths: { hash: string, path: string }[] | null = await fileHelpers.getFileHashesMappedToPaths(extractPath);
+        // Mapping file hashes and the corresponding paths in an array
+        const fileHashesMappedToPaths: {filesCount: number, fileHashesAndPaths: Map<string, string[]>} = await fileHelpers.getFileHashesMappedToPaths(extractPath);
 
-        console.log(scannerJobId + ': Found files: ' + fileHashesAndPaths.length);
-
-        // Save FileTrees to existing Files and get list of files to be scanned
-
-        let filesToBeScanned: { hash: string, path: string }[] | null = await findFilesToBeScanned(packageId, fileHashesAndPaths)
+        console.log(scannerJobId + ': Found files: ' + fileHashesMappedToPaths.filesCount);
+        //console.log(scannerJobId + ': Found unique files: ' + fileHashesMappedToPaths.fileHashesAndPaths.size);
+        
+        // Save FileTrees to existing Files (and for files with multiple paths) and get array of files to be scanned
+        let filesToBeScanned: { hash: string, path: string }[] | null = await findFilesToBeScanned(packageId, fileHashesMappedToPaths.fileHashesAndPaths)
         console.log(scannerJobId + ': Uploading and sending to be scanned: ', filesToBeScanned.length);
 
-        // Uploading files to object storage individually with the file hash as the key
-
+        // Uploading files to object storage with the file hash as the key
         const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(filesToBeScanned, extractPath, process.env.SPACES_BUCKET, scannerJobId, jobStateMap);
 
         jobStateMap.delete(scannerJobId);
@@ -68,7 +67,6 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
             throw new Error('Error: Uploading files to object storage failed');
         }
-
         //console.log('Files uploaded to object storage');
 
         // Deleting local files
@@ -115,16 +113,16 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
             dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'scanned' } });
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'completed' } });
         }
-        fileHashesAndPaths = null;
+        fileHashesMappedToPaths.fileHashesAndPaths.clear();
         filesToBeScanned = null;
 
     } catch (error) {
         console.log(error);
         try {
-            console.log('Attempting to change ScannerJob state and Package scanStatus to "failed"');
-            
-            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
+            console.log(scannerJobId + ': Changing ScannerJob state to "failed"');
             dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
+            console.log(scannerJobId + ': Changing Package scanStatus to "failed"');
+            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
         } catch (error) {
             console.log(scannerJobId + ': Unable to update ScannerJob and Package statuses to "failed"');
         }

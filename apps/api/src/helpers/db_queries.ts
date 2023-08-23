@@ -84,6 +84,36 @@ export const createManyScanIssues = async (scanIssues: Prisma.ScanIssueCreateMan
     });
 }
 
+// Create file if it doesn't exist, otherwise return existing file
+export const createFileIfNotExists = async (input: dbZodSchemas.CreateFileInput): Promise<File> => {
+    return await prisma.file.upsert({
+        where: {
+            sha256: input.data.sha256
+        },
+        create: input.data,
+        update: input.data
+    });
+}
+
+// Create file tree if it doesn't exist, otherwise return existing file tree
+export const createFileTreeIfNotExists = async (input: dbZodSchemas.CreateFileTreeInput): Promise<FileTree> => {
+    const existingFileTree = await prisma.fileTree.findFirst({
+        where: {
+            fileSha256: input.data.fileSha256,
+            packageId: input.data.packageId,
+            path: input.data.path
+        }
+    });
+
+    if (!existingFileTree) {
+        return await prisma.fileTree.create({
+            data: input.data
+        });
+    } else {
+        return existingFileTree;
+    }
+}
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput): Promise<ScannerJob> => {

@@ -46,10 +46,12 @@ export const deleteLocalFiles = async (downloadPath: string, extractPath: string
 }
 
 // Iterate through all files in a directory and return an array of file hashes and paths 
-export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array<{ hash: string, path: string }>> => {
+export const getFileHashesMappedToPaths = async (baseDir: string): Promise<{filesCount: number, fileHashesAndPaths: Map<string, string[]>}> => {
     // Get the file paths as an array
-    const fileHashesAndPaths: Array<{ hash: string, path: string }> = [];
+    const fileHashesAndPaths = new Map<string, string[]>();
     const directories: string[] = [baseDir];
+
+    let filesCount = 0;
 
     while (directories.length > 0) {
         const currentDir = directories.pop() as string;
@@ -76,6 +78,7 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
             const stat = await fs.promises.stat(fromPath);
 
             if (stat.isFile()) {
+                filesCount++;
                 // Get sha256 hash of the file
                 const fileBuffer = fs.readFileSync(fromPath);
                 const hashSum = crypto.createHash('sha256');
@@ -84,15 +87,27 @@ export const getFileHashesMappedToPaths = async (baseDir: string): Promise<Array
 
                 const filePath = fromPath.split(baseDir).pop();
 
-                fileHashesAndPaths.push({
-                    hash: hashSum.digest('hex'),
-                    path: filePath as string
-                });
+                const hex = hashSum.digest('hex');
+
+                // If Map contains the hash, add the path to the array
+                if (fileHashesAndPaths.has(hex)) {
+                    const paths = fileHashesAndPaths.get(hex) as string[];
+                    paths.push(filePath as string);
+                    fileHashesAndPaths.set(hex, paths);
+                    continue;
+                }
+                // Otherwise, create a new entry
+                fileHashesAndPaths.set(hex, [filePath as string]);
+
             } else if (stat.isDirectory()) {
                 directories.push(fromPath);
             }
         }
     }
 
-    return fileHashesAndPaths;
+
+    return {
+        filesCount: filesCount,
+        fileHashesAndPaths: fileHashesAndPaths
+    }
 }

@@ -3,6 +3,7 @@
         "lib": [
             "ES2021"
         ],
+        "downlevelIteration": true,
         "outDir": "./dist",
         "rootDir": "./",
         "types": [
