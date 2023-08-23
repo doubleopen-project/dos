@@ -270,7 +270,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                 //const queryTask = (async () => {
 
                 if (file.type === 'file' && file.sha256) {
-
                     let dbFile = await dbQueries.findFileByHash(file.sha256);
 
                     if (!dbFile) {
@@ -376,7 +375,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                             await Promise.all(promises);
                         }*/
         }
-        
+
         console.timeEnd(jobId + ': Saving results to database took');
         result = null;
 
@@ -411,37 +410,56 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
     }
 }
 
-export const findFilesToBeScanned = async (packageId: number, files: { hash: string, path: string }[]): Promise<{ hash: string, path: string }[]> => {
+export const findFilesToBeScanned = async (packageId: number, files: Map<string, string[]>): Promise<{ hash: string, path: string }[]> => {
 
     const filesToBeScanned: { hash: string, path: string }[] = [];
     const CONCURRENCY_LIMIT = 20;
     const promises: Promise<void>[] = [];
 
-    for (const file of files) {
+    for (const [hash, paths] of files) {
         const queryTask = (async () => {
             // Check if File already exists
-            const existingFile = await dbQueries.findFileByHash(file.hash);
+            let file = await dbQueries.findFileByHash(hash);
 
-            if (existingFile) {
-                const existingFileTree = await dbQueries.findFileTreeByHashAndPackageId(file.hash, packageId);
-
-                if (!existingFileTree) {
-                    // Create new FileTree
-                    await dbQueries.createFileTree({
+            if (paths.length > 1) {
+                // Multiple paths for the same hash
+                if (!file) {
+                    // Create new File
+                    file = await dbQueries.createFile({
                         data: {
-                            path: file.path,
-                            fileSha256: file.hash,
-                            packageId: packageId,
+                            sha256: hash,
+                            scanStatus: 'notStarted'
                         }
                     });
                 }
-
-                if (existingFile.scanStatus === 'notStarted' || existingFile.scanStatus === 'failed') {
-                    filesToBeScanned.push(file);
+                // Create FileTrees for file
+                for (const path of paths) {
+                    await dbQueries.createFileTreeIfNotExists({
+                        data: {
+                            path: path,
+                            fileSha256: hash,
+                            packageId: packageId
+                        }
+                    });
                 }
+                // Push file to be scanned if scanStatus is 'notStarted' or 'failed', with the first path
+                if (file.scanStatus === 'notStarted' || file.scanStatus === 'failed') {
+                    filesToBeScanned.push({ hash: hash, path: paths[0] });
+                }
+            } else if (file) {
+                await dbQueries.createFileTreeIfNotExists({
+                    data: {
+                        path: paths[0],
+                        fileSha256: hash,
+                        packageId: packageId
+                    }
+                });
 
+                if (file.scanStatus === 'notStarted' || file.scanStatus === 'failed') {
+                    filesToBeScanned.push({ hash: hash, path: paths[0] });
+                }
             } else {
-                filesToBeScanned.push(file);
+                filesToBeScanned.push({ hash: hash, path: paths[0] });
             }
         })();
 
@@ -451,12 +469,9 @@ export const findFilesToBeScanned = async (packageId: number, files: { hash: str
             await Promise.all(promises);
             promises.length = 0;
         }
-
     }
-
     if (promises.length > 0) {
         await Promise.all(promises);
     }
-
     return filesToBeScanned;
 }
