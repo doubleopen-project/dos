@@ -25,6 +25,8 @@
 		"SPACES_KEY",
 		"SPACES_SECRET",
 		"UL_CONCURRENCY",
+		"UL_RETRIES",
+		"UL_RETRY_INTERVAL",
 		"WEB_CONCURRENCY"
 	],
 	"pipeline": {
