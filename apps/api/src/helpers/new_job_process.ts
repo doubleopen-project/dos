@@ -58,15 +58,17 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
         console.log(scannerJobId + ': Uploading and sending to be scanned: ', filesToBeScanned.length);
 
         // Uploading files to object storage with the file hash as the key
-        const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(filesToBeScanned, extractPath, process.env.SPACES_BUCKET, scannerJobId, jobStateMap);
+        if (filesToBeScanned.length > 0) {
+            const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(filesToBeScanned, extractPath, process.env.SPACES_BUCKET, scannerJobId, jobStateMap);
 
+            if (!uploadedWithHash) {
+                dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
+                dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
+                throw new Error('Error: Uploading files to object storage failed');
+            }
+        }
         jobStateMap.delete(scannerJobId);
 
-        if (!uploadedWithHash) {
-            dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
-            dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
-            throw new Error('Error: Uploading files to object storage failed');
-        }
         //console.log('Files uploaded to object storage');
 
         // Deleting local files
