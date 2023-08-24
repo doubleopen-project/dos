@@ -270,7 +270,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
 
-            const DB_CONCURRENCY = parseInt(process.env.DB_CONCURRENCY as string) | 10;
+            const DB_CONCURRENCY = parseInt(process.env.DB_CONCURRENCY as string) || 10;
             const promises: Promise<void>[] = [];
             for (const file of batch) {
                 const queryTask = (async () => {
@@ -408,7 +408,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 export const findFilesToBeScanned = async (packageId: number, files: Map<string, string[]>): Promise<{ hash: string, path: string }[]> => {
 
     const filesToBeScanned: { hash: string, path: string }[] = [];
-    const CONCURRENCY_LIMIT = 20;
+    const CONCURRENCY_LIMIT = parseInt(process.env.DB_CONCURRENCY as string) || 10;
     const promises: Promise<void>[] = [];
 
     for (const [hash, paths] of files) {
