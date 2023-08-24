@@ -286,10 +286,10 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
 
         for (const file of fileHashesAndPaths) {
             const uploadTask = (async () => {
-                const retries = 3;
-                let retryCount = 0;
+                let retries = parseInt(process.env.UL_RETRIES as string) || 3;
+                const retryInterval = parseInt(process.env.UL_RETRY_INTERVAL as string) || 1000;
                 let uploadSuccess = false;
-                while (!uploadSuccess && retryCount < retries) {
+                while (!uploadSuccess && retries > 0) {
                     try {
                         // Upload file to S3
                         const fileBuffer: Buffer = fs.readFileSync(baseDir + file.path);
@@ -297,7 +297,8 @@ export const saveFilesWithHashKey = async (fileHashesAndPaths: Array<{ hash: str
                         uploadSuccess = true;
                     } catch (error) {
                         console.log(error);
-                        retryCount++;
+                        retries--;
+                        await new Promise(resolve => setTimeout(resolve, retryInterval));
                     }
                 }
                 if (!uploadSuccess) {
