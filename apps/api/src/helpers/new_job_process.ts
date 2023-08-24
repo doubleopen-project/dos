@@ -95,7 +95,18 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
                 })
             }
 
-            const response = await fetch(postJobUrl, request);
+            let retries = parseInt(process.env.NEW_JOB_RETRIES as string) || 3;
+            const retryInterval = parseInt(process.env.NEW_JOB_RETRY_INTERVAL as string) || 1000;
+
+            let response = await fetch(postJobUrl, request);
+
+            while ((!response || response.status !== 201) && retries > 0) {
+                console.log(scannerJobId + ': Retrying to add job to queue');
+                await new Promise(resolve => setTimeout(resolve, retryInterval));
+                response = await fetch(postJobUrl, request);
+                retries--;
+            }
+
 
             if (response.status === 201) {
                 console.log(scannerJobId + ': Updating ScannerJob state to "queued"');
