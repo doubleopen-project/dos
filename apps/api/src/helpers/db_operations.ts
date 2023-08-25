@@ -369,6 +369,10 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
         result = null;
 
+        const finalFileTreeCount = await dbQueries.countFileTreesByPackageId(scannerJob.packageId);
+
+        console.log(jobId + ': Final filetree count for package: ' + finalFileTreeCount);
+        
         console.log(jobId + ': Changing Package scanStatus to "scanned"');
         await dbQueries.updatePackage({
             id: scannerJob.packageId,
