@@ -372,3 +372,13 @@ export const deleteScanIssuesByFileHashes = async (fileHashes: string[]): Promis
         }
     })
 }
+
+// ------------------------------ Count --------------------------------
+
+export const countFileTreesByPackageId = async (packageId: number): Promise<number> => {
+    return await prisma.fileTree.count({
+        where: {
+            packageId: packageId
+        }
+    })
+}
