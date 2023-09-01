@@ -230,7 +230,7 @@ const getScannerConfigString = (options: { [key: string]: string | boolean | num
     return configString;
 }
 
-export const saveJobResults = async (jobId: string, result: ScannerJobResultSchema): Promise<void> => {
+export const saveJobResults = async (jobId: string, result: ScannerJobResultSchema, jobStateMap: Map<string, string>): Promise<void> => {
     try {
         // Save result locally for debugging
         //fs.writeFileSync('/tmp/' + jobId + '.json', JSON.stringify(result));
@@ -266,6 +266,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         const files = result.files;
         const batchSize = 1000;
         const batchCount = Math.ceil(files.length / batchSize);
+        const filesCount = result.headers[0].extra_data.files_count;
+        let j = 0;
 
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
@@ -360,6 +362,9 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     await Promise.all(promises);
                     promises.length = 0;
                 }
+
+                j++;
+                jobStateMap.set(jobId, `Saving results (${j}/${filesCount})`);
             }
             if (promises.length > 0) {
                 await Promise.all(promises);
@@ -368,6 +373,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         console.timeEnd(jobId + ': Saving results to database took');
 
         result = null;
+        jobStateMap.delete(jobId);
 
         const finalFileTreeCount = await dbQueries.countFileTreesByPackageId(scannerJob.packageId);
 
