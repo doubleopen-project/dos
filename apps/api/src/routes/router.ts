@@ -162,8 +162,8 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
         } else {
             let message = stateMap.get(scannerJob.state) || scannerJob.state;
 
-            if (scannerJob.state === 'processing') {
-                message = jobStateMap.get(scannerJob.id) || stateMap.get(scannerJob.state) || scannerJob.state;
+            if (scannerJob.state === 'processing' || scannerJob.state === 'savingResults') {
+                message = jobStateMap.get(scannerJob.id) || stateMap.get(scannerJob.state) || message;
             }
             res.status(200).json({
                 state: {
@@ -218,7 +218,7 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
 // Save job results to database
 router.post('/job-results', authenticateSAToken, async (req, res) => {
     try {
-        dbOperations.saveJobResults(req.body.id, req.body.result)
+        dbOperations.saveJobResults(req.body.id, req.body.result, jobStateMap)
         res.status(200).json({
             message: 'Received and saving results for job with with id ' + req.body.id
         })
