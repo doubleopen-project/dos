@@ -108,6 +108,7 @@ const CreateLicenseFindingMatchSchema = z.object({
         startLine: z.number(),
         endLine: z.number(),
         score: z.number(),
+        licenseExpression: z.string(),
         licenseFindingId: z.number()
     })
 })

@@ -313,7 +313,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                             startLine: match.start_line,
                                             endLine: match.end_line,
                                             score: match.score,
-                                            licenseFindingId: finding.id
+                                            licenseFindingId: finding.id,
+                                            licenseExpression: match.license_expression
                                         }
                                     })
                                 }

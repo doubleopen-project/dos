@@ -1710,16 +1710,19 @@ declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
         startLine: z.ZodNumber;
         endLine: z.ZodNumber;
         score: z.ZodNumber;
+        licenseExpression: z.ZodString;
         licenseFindingId: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
         score: number;
         startLine: number;
         endLine: number;
+        licenseExpression: string;
         licenseFindingId: number;
     }, {
         score: number;
         startLine: number;
         endLine: number;
+        licenseExpression: string;
         licenseFindingId: number;
     }>;
 }, "strip", z.ZodTypeAny, {
@@ -1727,6 +1730,7 @@ declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
         score: number;
         startLine: number;
         endLine: number;
+        licenseExpression: string;
         licenseFindingId: number;
     };
 }, {
@@ -1734,6 +1738,7 @@ declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
         score: number;
         startLine: number;
         endLine: number;
+        licenseExpression: string;
         licenseFindingId: number;
     };
 }>;
