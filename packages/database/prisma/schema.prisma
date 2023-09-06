@@ -88,12 +88,13 @@ model LicenseFinding {
 
 /// A license finding match
 model LicenseFindingMatch {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  startLine Int
-  endLine   Int
-  score     Float
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  startLine         Int
+  endLine           Int
+  score             Float
+  licenseExpression String?
 
   licenseFindingId Int
   licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id], onDelete: Cascade)
