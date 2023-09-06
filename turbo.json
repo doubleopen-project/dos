@@ -6,6 +6,8 @@
 	"globalEnv": [
 		"DATABASE_URL",
 		"DB_CONCURRENCY",
+		"DB_RETRIES",
+		"DB_RETRY_INTERVAL",
 		"DL_CONCURRENCY",
 		"DOS_URL",
 		"NEW_JOB_RETRIES",
