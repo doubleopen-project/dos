@@ -126,7 +126,7 @@ export const getScanResults = async (packageId: number) => {
                         }
 
                         message = "ERROR: Timeout after " + timeout
-                            + " seconds while scanning file '" + filetree.path + "'";
+                            + " seconds while scanning file '" + filetree.path + "'.";
                     } else {
                         message += ' Path to file: ' + filetree.path + '.';
                     }
