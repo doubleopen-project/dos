@@ -14,6 +14,9 @@ export const ScannerJobRequestBodySchema = z.object({
 	jobId: z.string({
         required_error: "Job ID is required"
     }),
+    options: z.object({
+        timeout: z.string().optional()
+    }),
     files: z.array(
         z.object({
             hash: z.string({
