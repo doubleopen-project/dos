@@ -52,9 +52,15 @@ type ScannedFile = {
     path: string;
 }
 
+// Options for ScanCode
+type ScanCodeOptions = {
+    timeout?: string;
+}
+
 // Scan job with its parameters
 type ScannerJob = {
     jobId: string;
+    options: ScanCodeOptions;
     files: ScannedFile[];
 }
 
@@ -74,11 +80,13 @@ const start = (): void => {
         console.log("***");
         console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
         console.log("***                       Files to scan:", job.data.files.length);
+        console.log("***                             Timeout:", job.data.options.timeout);
         console.log("***                      Processes used:", SCANCODE_PROCESSES);
         console.log("***                 Max files in memory:", SCANCODE_FILES_IN_MEMORY);
         console.log("***");
     
         const jobIdDir = String(job.id);
+        const timeout = job.data.options.timeout? parseInt(job.data.options.timeout) : 120;
         const localJobDir = path.join(baseDir, jobIdDir);
         console.log(job.id + ": DL from S3 & create local dir");
         console.time(job.id + ": Downloading files took")
@@ -111,6 +119,8 @@ const start = (): void => {
             "--strip-root",
             "--max-in-memory",
             SCANCODE_FILES_IN_MEMORY.toString(),
+            "--timeout",
+            timeout.toString(),
             "--json",
             "-",
             "-n " + SCANCODE_PROCESSES,
