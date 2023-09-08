@@ -77,16 +77,17 @@ const start = (): void => {
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
 
+        const timeout = job.data.options.timeout? parseInt(job.data.options.timeout) : 120;
+
         console.log("***");
         console.log("***",  getCurrentDateTime(), "New scanner job:", job.id);
         console.log("***                       Files to scan:", job.data.files.length);
-        console.log("***                             Timeout:", job.data.options.timeout);
+        console.log("***                             Timeout:", timeout);
         console.log("***                      Processes used:", SCANCODE_PROCESSES);
         console.log("***                 Max files in memory:", SCANCODE_FILES_IN_MEMORY);
         console.log("***");
     
         const jobIdDir = String(job.id);
-        const timeout = job.data.options.timeout? parseInt(job.data.options.timeout) : 120;
         const localJobDir = path.join(baseDir, jobIdDir);
         console.log(job.id + ": DL from S3 & create local dir");
         console.time(job.id + ": Downloading files took")
