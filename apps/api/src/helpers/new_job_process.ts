@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import fetch from 'cross-fetch';
 import * as dbQueries from './db_queries';
 import { findFilesToBeScanned } from './db_operations';
+import { sendJobToQueue } from './sa_queries';
 import * as s3Helpers from 's3-helpers';
 import * as fileHelpers from './file_helpers';
 
@@ -80,46 +80,18 @@ export const processPackageAndSendToScanner = async (zipFileKey: string, scanner
 
         if (filesToBeScanned.length > 0) {
             console.log(scannerJobId + ': Sending a request to Scanner Agent to add new job to the work queue');
-            const scannerUrl: string = process.env.SCANNER_URL ? process.env.SCANNER_URL : 'http://localhost:5001/';
-            const postJobUrl = scannerUrl + 'job';
+            
+            const addedToQueue = await sendJobToQueue(scannerJobId, filesToBeScanned);
 
-            const request = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + process.env.SA_TOKEN
-                },
-                body: JSON.stringify({
-                    jobId: scannerJobId,
-                    files: filesToBeScanned
-                })
-            }
-
-            let retries = parseInt(process.env.NEW_JOB_RETRIES as string) || 3;
-            const retryInterval = parseInt(process.env.NEW_JOB_RETRY_INTERVAL as string) || 1000;
-
-            let response = await fetch(postJobUrl, request);
-
-            while ((!response || response.status !== 201) && retries > 0) {
-                console.log(scannerJobId + ': Retrying to add job to queue');
-                await new Promise(resolve => setTimeout(resolve, retryInterval));
-                response = await fetch(postJobUrl, request);
-                retries--;
-            }
-
-
-            if (response.status === 201) {
+            if (addedToQueue) {
                 console.log(scannerJobId + ': Updating ScannerJob state to "queued"');
 
                 await dbQueries.updateScannerJob({
                     id: scannerJobId,
                     data: { state: 'queued' }
                 })
-
             } else {
-                dbQueries.updatePackage({ id: packageId, data: { scanStatus: 'failed' } });
-                dbQueries.updateScannerJob({ id: scannerJobId, data: { state: 'failed' } });
-                throw new Error('Error: Adding to queue was unsuccessful. Scanner Agent returned status code ' + response.status);
+                throw new Error('Error: Adding to queue was unsuccessful.');
             }
         } else {
             // Update package scanStatus and ScannerJob to completed
