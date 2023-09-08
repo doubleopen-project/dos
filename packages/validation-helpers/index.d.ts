@@ -2046,6 +2046,13 @@ declare const scannerAgentApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             jobId: zod.ZodString;
+            options: zod.ZodObject<{
+                timeout: zod.ZodOptional<zod.ZodString>;
+            }, "strip", zod.ZodTypeAny, {
+                timeout?: string | undefined;
+            }, {
+                timeout?: string | undefined;
+            }>;
             files: zod.ZodArray<zod.ZodObject<{
                 hash: zod.ZodString;
                 path: zod.ZodString;
@@ -2057,12 +2064,18 @@ declare const scannerAgentApi: [{
                 hash: string;
             }>, "many">;
         }, "strip", zod.ZodTypeAny, {
+            options: {
+                timeout?: string | undefined;
+            };
             jobId: string;
             files: {
                 path: string;
                 hash: string;
             }[];
         }, {
+            options: {
+                timeout?: string | undefined;
+            };
             jobId: string;
             files: {
                 path: string;

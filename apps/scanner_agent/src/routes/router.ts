@@ -37,9 +37,15 @@ type ScannedFile = {
     path: string;
 }
 
+// Options for ScanCode
+type ScanCodeOptions = {
+    timeout?: string;
+}
+
 // Scan job with its parameters
 type ScannerJob = {
     jobId: string;
+    options: ScanCodeOptions;
     files: ScannedFile[];
 }
 
@@ -94,6 +100,7 @@ router.post("/job", authenticateAPIToken, async (req, res) => {
         // Add the job to the work queue
         await workQueue.add({
             jobId: req.body.jobId,
+            options: req.body.options,
             files: req.body.files
         }, jobOpts);
         
