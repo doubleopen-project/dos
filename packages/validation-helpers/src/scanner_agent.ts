@@ -76,4 +76,23 @@ export const scannerAgentApi = makeApi([
         response: schemas.ScannerJobInfoResponseBodySchema,
         errors
     },
+    {
+        method: "post",
+        path: "/result-state/:id",
+        description: "Set scanner job result state",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.ResultStateRequestSchema
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.ResultStateRequestBodySchema
+            }
+        ],
+        response: schemas.ResultStateResponseBodySchema,
+        errors
+    },
 ]);

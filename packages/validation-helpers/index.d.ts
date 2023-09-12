@@ -2817,6 +2817,83 @@ declare const scannerAgentApi: [{
             error: string;
         }>;
     }];
+}, {
+    method: "post";
+    path: "/result-state/:id";
+    description: "Set scanner job result state";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            state: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            state: string;
+        }, {
+            state: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }, {
+        status: 404;
+        description: "No such job in the work queue";
+        schema: zod.ZodObject<{
+            error: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            error: string;
+        }, {
+            error: string;
+        }>;
+    }];
 }];
 
 export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };

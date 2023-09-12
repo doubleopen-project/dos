@@ -33,6 +33,20 @@ export const ScannerJobResponseBodySchema = z.object({
 	id: z.string()
 })
 
+export const ResultStateRequestSchema = z.string({
+    required_error: "Job ID is required"
+})
+
+export const ResultStateRequestBodySchema = z.object({
+    state: z.string({
+        required_error: "Job state is required"
+    })
+})
+
+export const ResultStateResponseBodySchema = z.object({
+    message: z.string()
+})
+
 export const ScannerJoblistRequestSchema = z.object({});
 
 export const ScannerJoblistResponseBodySchema = z.array(

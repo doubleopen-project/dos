@@ -146,6 +146,14 @@ router.get("/job/:id", authenticateAPIToken, async(req, res) => {
     }
 });
 
+// Node: Used by the API to post the results state of job [id] so the job can be removed from the queue
+router.post("/result-state/:id", authenticateAPIToken, async(req, res) => {
+    const id = req.params.id;
+    const state = req.body.state;
+    const job: Job | null = await workQueue.getJob(id);
+
+});
+
 // Node: Query statuses of all active/waiting jobs in the work queue
 router.get("/jobs", authenticateAPIToken, async(_req, res) => {
     const jobs: Job[] = await workQueue.getJobs(["active", "waiting", "completed", "failed"]);
