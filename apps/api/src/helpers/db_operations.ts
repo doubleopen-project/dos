@@ -394,26 +394,28 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         if (newJobFilesList.length > 0) {
 
             try {
-                const newScannerJob = await dbQueries.createScannerJob({
-                    data: {
-                        state: 'created',
-                        packageId: scannerJob.packageId
+                const newTimeout = scannerJob.timeout ? scannerJob.timeout * 10 : 2000;
+                if (newTimeout <= (parseInt(process.env.TIMEOUT_MAX as string) || 3600)) {
+                    const newScannerJob = await dbQueries.createScannerJob({
+                        data: {
+                            state: 'created',
+                            packageId: scannerJob.packageId
+                        }
+                    });
+
+                    console.log(newScannerJob.id + ': Rescanning ' + newJobFilesList.length + ' files with timeout: ' + newTimeout);
+                    console.log(newScannerJob.id + ': Sending a request to Scanner Agent to add new job to the work queue');
+
+                    const addedToQueue = await sendJobToQueue(newScannerJob.id, newJobFilesList, { timeout: newTimeout.toString() });
+
+                    if (addedToQueue) {
+                        console.log(newScannerJob.id + ': Updating ScannerJob state to "queued"');
+
+                        await dbQueries.updateScannerJob(newScannerJob.id, {
+                            state: 'queued',
+                            timeout: newTimeout
+                        })
                     }
-                });
-
-                const newTimeout = scannerJob.timeout? scannerJob.timeout * 10 : 2000;
-                console.log(newScannerJob.id + ': Rescanning ' + newJobFilesList.length + ' files with timeout: ' + newTimeout);
-                console.log(newScannerJob.id + ': Sending a request to Scanner Agent to add new job to the work queue');
-
-                const addedToQueue = await sendJobToQueue(newScannerJob.id, newJobFilesList, { timeout: newTimeout.toString() });
-
-                if (addedToQueue) {
-                    console.log(newScannerJob.id + ': Updating ScannerJob state to "queued"');
-
-                    await dbQueries.updateScannerJob(newScannerJob.id, {
-                        state: 'queued',
-                        timeout: newTimeout
-                    })
                 }
             } catch (error) {
                 console.log(error);
