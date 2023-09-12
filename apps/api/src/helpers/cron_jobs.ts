@@ -21,20 +21,24 @@ export const rescanFilesWithTimeoutIssues = async () => {
                 const match = scanIssue.message.match(timeoutErrorRegex);
                 if (match) {
                     const newTimeout = (parseInt(match.groups?.timeout as string) * 10);
+                    if (newTimeout <= (parseInt(process.env.TIMEOUT_MAX as string) || 3600)) {
 
-                    const newScannerJob = await dbQueries.createScannerJob({
-                        data: {
-                            state: 'created',
-                            packageId: scanIssue.file.filetrees[0].packageId
-                        }
-                    });
-                    console.log(newScannerJob.id + ': Rescanning file with timeout issue for package ' + scanIssue.file.filetrees[0].package.purl);
+                        const newScannerJob = await dbQueries.createScannerJob({
+                            data: {
+                                state: 'created',
+                                packageId: scanIssue.file.filetrees[0].packageId
+                            }
+                        });
+                        console.log(newScannerJob.id + ': Rescanning file with timeout issue for package ' + scanIssue.file.filetrees[0].package.purl);
 
-                    sendJobToQueue(newScannerJob.id, [{ hash: scanIssue.fileSha256, path: scanIssue.file.filetrees[0].path }], { timeout: newTimeout.toString() });
+                        sendJobToQueue(newScannerJob.id, [{ hash: scanIssue.fileSha256, path: scanIssue.file.filetrees[0].path }], { timeout: newTimeout.toString() });
 
-                    await dbQueries.updateScannerJob(newScannerJob.id, { state: 'queued', timeout: newTimeout });
+                        await dbQueries.updateScannerJob(newScannerJob.id, { state: 'queued', timeout: newTimeout });
 
-                    counter++;
+                        counter++;
+                    } else {
+                        console.log('Timeout limit exceeded for file ' + scanIssue.fileSha256);
+                    }
                 }
             }
             console.log('Resolved ' + counter + ' timeout issues');
