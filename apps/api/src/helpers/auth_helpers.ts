@@ -2,25 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 import { NextFunction, Request, Response } from 'express';
+import { findUser } from './db_queries'
 
-export const authenticateORTToken = (req: Request, res: Response, next: NextFunction) => {
+export const authenticateORTToken = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
 
-    /*
-    jwt.verify(token, process.env.ORT_TOKEN as string, (err: any, user: any) => {
-        console.log(err)
-
-        if (err) return res.sendStatus(403)
-
-        req.user = user
-
-        next()
-    })*/
-
-    if (token === process.env.ORT_TOKEN) {
+    if (token === process.env.ORT_TOKEN || await findUser(token)) {
         next();
     } else {
         return res.status(403).json({ message: 'Forbidden' });
@@ -28,12 +18,26 @@ export const authenticateORTToken = (req: Request, res: Response, next: NextFunc
 }
 
 export const authenticateSAToken = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
 
     if (token === process.env.SA_TOKEN) {
+        next();
+    } else {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
+
+export const authenticateAdminToken = async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token == null) return res.status(401).json({ message: 'Unauthorized' })
+    
+    const user = await findUser(token);
+    if (token === process.env.ADMIN_TOKEN || (user && user.admin)) {
         next();
     } else {
         return res.status(403).json({ message: 'Forbidden' });

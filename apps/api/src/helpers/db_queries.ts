@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue, Prisma } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue, Prisma, User } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
@@ -226,6 +226,33 @@ export const createScanIssue = async (input: dbZodSchemas.CreateScanIssueInput):
     }
 
     return scanIssue;
+}
+
+export const createUser = async (input: Prisma.UserCreateInput): Promise<User> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let user: User | null = null;
+
+    while (!user && retries > 0) {
+        try {
+            user = await prisma.user.create({
+                data: input
+            });
+        } catch (error) {
+            console.log('Error creating User: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval));
+                console.log("Retrying database query");
+            }
+        }
+    }
+
+    if (!user) {
+        throw ('Error: Unable to create User');
+    }
+
+    return user;
 }
 
 // Create file if it doesn't exist, otherwise return existing file
@@ -915,6 +942,32 @@ export const findScanIssuesWithRelatedFileAndPackageAndFileTree = async (): Prom
         }
     }
     return scanIssues;
+}
+
+export const findUser = async (token: string): Promise<User | null> => {
+    let user: User | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            user = await prisma.user.findUnique({
+                where: {
+                    token: token
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find User: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            }
+        }
+    }
+    return user;
 }
 
 // ------------------------------ Delete ------------------------------

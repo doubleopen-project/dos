@@ -183,3 +183,13 @@ model ScannerJob {
 
   @@index([packageId])
 }
+
+/// A temporary simple user model for authentication.
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  token     String   @unique
+  admin     Boolean  @default(false)
+  ortUser   Boolean  @default(true)
+}

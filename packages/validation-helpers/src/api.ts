@@ -131,5 +131,33 @@ export const dosApi = makeApi([
 		],
 		response: schemas.PostJobResultsRes,
 		errors
+	},
+	{
+		method: 'post',
+		path: '/user',
+		description: 'Add user',
+		parameters: [
+			{
+				name: 'body',
+				type: 'Body',
+				schema: schemas.PostUserReq
+			}
+		],
+		response: schemas.PostUserRes,
+		errors
+	},
+	{
+		method: 'delete',
+		path: '/user',
+		description: 'Delete user',
+		parameters: [
+			{
+				name: 'body',
+				type: 'Body',
+				schema: schemas.DeleteUserReq
+			}
+		],
+		response: schemas.DeleteUserRes,
+		errors
 	}
 ]);

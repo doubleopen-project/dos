@@ -4,6 +4,7 @@
 		".env"
 	],
 	"globalEnv": [
+		"ADMIN_TOKEN",
 		"DATABASE_URL",
 		"DB_CONCURRENCY",
 		"DB_RETRIES",
