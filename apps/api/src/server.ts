@@ -10,6 +10,8 @@ import { dosApi } from 'validation-helpers';
 import { serve, setup } from 'swagger-ui-express';
 import { openApiBuilder } from '@zodios/openapi';
 import compression from 'compression';
+import cron from 'node-cron';
+import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
 
 loadEnv('../../.env');
 
@@ -39,6 +41,12 @@ const document = openApiBuilder({
 app.use(`/docs/swagger.json`, (_, res) => res.json(document));
 app.use('/docs', serve);
 app.use('/docs', setup(undefined, { swaggerUrl: '/docs/swagger.json' }));
+
+const rescanSchedule = process.env.RESCAN_SCHEDULE || '0 0 * * *';
+
+cron.schedule(rescanSchedule, () => {
+	rescanFilesWithTimeoutIssues();
+});
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
