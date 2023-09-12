@@ -147,6 +147,7 @@ router.get("/job/:id", authenticateAPIToken, async(req, res) => {
 });
 
 // Node: Used by the API to post the results state of job [id] so the job can be removed from the queue
+// when results are saved to DB
 router.post("/result-state/:id", authenticateAPIToken, async(req, res) => {
     const id = req.params.id;
     const state = req.body.state;
@@ -170,7 +171,7 @@ router.post("/result-state/:id", authenticateAPIToken, async(req, res) => {
             console.log("Job", id, ": results saved, job removed from the queue");
         } else {
             res.status(400).json({
-                error: "Invalid job state"
+                error: "Invalid result state"
             });
         }
     }
@@ -228,6 +229,7 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
         await postJobState(jobId, "failed");
     }
 
+    /*
     // Remove the job from the queue once completed
     try {
         const job = await workQueue.getJob(jobId);
@@ -236,11 +238,12 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     } catch (error) {
         console.log(error);
     }
+    */
 })
 
 // All old jobs cleanup from the queue
 const cleanQueue = async (): Promise<void> => {
-    const cleanupInterval: number = milliseconds.minutes(1);
+    const cleanupInterval: number = milliseconds.days(1);
     try {
         await workQueue.clean(cleanupInterval, "completed");
         await workQueue.clean(cleanupInterval, "failed");
