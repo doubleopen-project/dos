@@ -172,6 +172,7 @@ model ScannerJob {
   scannerName            String?
   scannerVersion         String?
   scannerConfig          String?
+  timeout                Int       @default(120)
   duration               Float?
   scanStartTS            DateTime?
   scanEndTS              DateTime?

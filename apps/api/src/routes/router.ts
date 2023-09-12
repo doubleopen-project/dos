@@ -192,9 +192,8 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
                 await new Promise(resolve => setTimeout(resolve, 5));
             }
 
-            const updatedScannerJob = await dbQueries.updateScannerJob({
-                id: req.params.id as string,
-                data: { state: req.body.state }
+            const updatedScannerJob = await dbQueries.updateScannerJob(req.params.id as string, {
+                state: req.body.state
             })
 
             if (updatedScannerJob && req.body.state === 'failed') {

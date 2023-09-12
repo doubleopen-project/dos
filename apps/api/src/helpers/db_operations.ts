@@ -238,24 +238,23 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         console.log(jobId + ': Saving results to database');
         console.time(jobId + ': Saving results to database took');
 
-        const scannerConfig = getScannerConfigString(result.headers[0].options);
+        let scannerConfig = getScannerConfigString(result.headers[0].options);
         const scanner = result.headers[0].tool_name + '@' + result.headers[0].tool_version;
         //console.log('Editing ScannerJob');
-        const scannerJob = await dbQueries.updateScannerJob(
+        const scannerJob = await dbQueries.updateScannerJob(jobId,
             {
-                id: jobId,
-                data: {
-                    state: 'savingResults',
-                    scannerName: result.headers[0].tool_name,
-                    scannerVersion: result.headers[0].tool_version,
-                    scannerConfig: scannerConfig,
-                    duration: result.headers[0].duration,
-                    scanStartTS: new Date(formatDateString(result.headers[0].start_timestamp)),
-                    scanEndTS: new Date(formatDateString(result.headers[0].end_timestamp)),
-                    spdxLicenseListVersion: result.headers[0].extra_data.spdx_license_list_version
-                }
+                state: 'savingResults',
+                scannerName: result.headers[0].tool_name,
+                scannerVersion: result.headers[0].tool_version,
+                scannerConfig: scannerConfig,
+                duration: result.headers[0].duration,
+                scanStartTS: new Date(formatDateString(result.headers[0].start_timestamp)),
+                scanEndTS: new Date(formatDateString(result.headers[0].end_timestamp)),
+                spdxLicenseListVersion: result.headers[0].extra_data.spdx_license_list_version
             }
         )
+
+        scannerConfig = '--timeout ' + scannerJob.timeout + ' ' + scannerConfig;
         console.log(jobId + ': Changed state to "savingResults"');
         console.log(jobId + ': Adding LicenseFindings and CopyrightFindings for files');
 
@@ -267,7 +266,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         let j = 0;
 
         const newJobFilesList: { hash: string, path: string }[] = [];
-        let newTimeout: number = 500;
 
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
@@ -362,7 +360,6 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                                     hash: file.sha256,
                                     path: file.path
                                 });
-                                newTimeout = parseInt(timeoutErrorMatch.groups.timeout) * 10;
                             }
                         }
 
@@ -395,6 +392,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         jobStateMap.delete(jobId);
 
         if (newJobFilesList.length > 0) {
+
             try {
                 const newScannerJob = await dbQueries.createScannerJob({
                     data: {
@@ -403,6 +401,7 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                     }
                 });
 
+                const newTimeout = scannerJob.timeout? scannerJob.timeout * 10 : 2000;
                 console.log(newScannerJob.id + ': Rescanning ' + newJobFilesList.length + ' files with timeout: ' + newTimeout);
                 console.log(newScannerJob.id + ': Sending a request to Scanner Agent to add new job to the work queue');
 
@@ -411,14 +410,15 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
                 if (addedToQueue) {
                     console.log(newScannerJob.id + ': Updating ScannerJob state to "queued"');
 
-                    await dbQueries.updateScannerJob({
-                        id: newScannerJob.id,
-                        data: { state: 'queued' }
+                    await dbQueries.updateScannerJob(newScannerJob.id, {
+                        state: 'queued',
+                        timeout: newTimeout
                     })
                 }
             } catch (error) {
                 console.log(error);
             }
+
         }
         const finalFileTreeCount = await dbQueries.countFileTreesByPackageId(scannerJob.packageId);
 
@@ -431,9 +431,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         })
 
         console.log(jobId + ': Changing ScannerJob state to "completed"');
-        await dbQueries.updateScannerJob({
-            id: scannerJob.id,
-            data: { state: 'completed' }
+        await dbQueries.updateScannerJob(scannerJob.id, {
+            state: 'completed'
         })
         // TODO:
         // Inform Scanner Agent that saving results was successful
@@ -444,9 +443,8 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         // Inform Scanner Agent that saving results failed
         try {
             console.log(jobId + ': Changing ScannerJob state to "failed"');
-            const editedScannerJob = await dbQueries.updateScannerJob({
-                id: jobId,
-                data: { state: 'failed' }
+            const editedScannerJob = await dbQueries.updateScannerJob(jobId, {
+                state: 'failed'
             })
             console.log(jobId + ': Changing Package scanStatus to "failed"');
             await dbQueries.updatePackage({

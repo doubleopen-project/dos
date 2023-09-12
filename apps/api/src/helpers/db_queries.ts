@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue, Prisma } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
@@ -252,7 +252,7 @@ export const createFileTreeIfNotExists = async (input: dbZodSchemas.CreateFileTr
 
 // ------------------------------ Update ------------------------------
 
-export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput): Promise<ScannerJob> => {
+export const updateScannerJob = async (id: string, input: Prisma.ScannerJobUpdateInput): Promise<ScannerJob> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
     let scannerJob: ScannerJob | null = null;
@@ -261,9 +261,9 @@ export const updateScannerJob = async (input: dbZodSchemas.UpdateScannerJobInput
         try {
             scannerJob = await prisma.scannerJob.update({
                 where: {
-                    id: input.id
+                    id: id
                 },
-                data: input.data
+                data: input
             })
         } catch (error) {
             console.log('Error with trying to update ScannerJob: ' + error);
@@ -865,6 +865,56 @@ export const findMostRecentScannerJobByPackageId = async (packageId: number): Pr
     }
 
     return scannerJob;
+}
+
+type ScanIssueWithRelations = Prisma.ScanIssueGetPayload<{
+    include: {
+        file: {
+            include: {
+                filetrees: {
+                    include: {
+                        package: true
+                    }
+                }
+            }
+        }
+    }
+}>;
+
+export const findScanIssuesWithRelatedFileAndPackageAndFileTree = async (): Promise<ScanIssueWithRelations[]> => {
+    let scanIssues: ScanIssueWithRelations[] = [];
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            scanIssues = await prisma.scanIssue.findMany(
+                {
+                    include: {
+                        file: {
+                            include: {
+                                filetrees: {
+                                    include: {
+                                        package: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find ScanIssues: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            }
+        }
+    }
+    return scanIssues;
 }
 
 // ------------------------------ Delete ------------------------------
