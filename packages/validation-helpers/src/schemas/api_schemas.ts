@@ -143,7 +143,32 @@ export const PostJobResultsRes = z.object({
     message: z.string()
 })
 
-//---------------- Error schema ----------------
+
+//-------------------- POST user --------------------
+
+export const PostUserReq = z.object({
+    admin: z.boolean({
+        required_error: 'Admin (true/false) is required'
+    }),
+})
+
+export const PostUserRes = z.object({
+    token: z.string()
+})
+
+//------------------- DELETE user -------------------
+
+export const DeleteUserReq = z.object({
+    id: z.number({
+        required_error: 'Id is required'
+    })
+})
+
+export const DeleteUserRes = z.object({
+    message: z.string()
+})
+
+//------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({
     message: z.string()

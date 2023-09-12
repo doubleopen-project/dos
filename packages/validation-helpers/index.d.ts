@@ -1479,6 +1479,132 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "post";
+    path: "/user";
+    description: "Add user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            admin: zod.ZodBoolean;
+        }, "strip", zod.ZodTypeAny, {
+            admin: boolean;
+        }, {
+            admin: boolean;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        token: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        token: string;
+    }, {
+        token: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/user";
+    description: "Delete user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            id: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+        }, {
+            id: number;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
