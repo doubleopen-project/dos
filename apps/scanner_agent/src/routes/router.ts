@@ -152,6 +152,28 @@ router.post("/result-state/:id", authenticateAPIToken, async(req, res) => {
     const state = req.body.state;
     const job: Job | null = await workQueue.getJob(id);
 
+    if (job === null) {
+        res.status(404).json({
+            error: "No such job in the work queue"
+        });
+    } else {
+        if (state == "failed") {
+            res.status(200).json({
+                message: "API failed to process the job results, keeping the job in the queue"
+            });
+            console.log("Job", id, ": saving results failed, keeping job in the queue");
+        } else if (state == "saved") {
+            res.status(200).json({
+                message: "API processed the job results, removing the job from the queue"
+            });
+            await job.remove();
+            console.log("Job", id, ": results saved, job removed from the queue");
+        } else {
+            res.status(400).json({
+                error: "Invalid job state"
+            });
+        }
+    }
 });
 
 // Node: Query statuses of all active/waiting jobs in the work queue
