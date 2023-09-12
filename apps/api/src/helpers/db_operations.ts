@@ -8,7 +8,7 @@ import * as dbQueries from '../helpers/db_queries';
 import { ScannerJob } from 'database';
 import { ScannerJobResultSchema } from 'validation-helpers';
 import { formatDateString } from './date_helpers';
-import { sendJobToQueue } from './sa_queries';
+import { reportResultState, sendJobToQueue } from './sa_queries';
 
 // ------------------------- Database operations -------------------------
 
@@ -439,6 +439,11 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
         // TODO:
         // Inform Scanner Agent that saving results was successful
 
+        const reportSuccess = await reportResultState(jobId, 'saved');
+        if (!reportSuccess) {
+            console.log(jobId + ': Unable to report result state to Scanner Agent');
+        }
+
     } catch (error) {
         console.log(error);
         // TODO:
@@ -456,6 +461,15 @@ export const saveJobResults = async (jobId: string, result: ScannerJobResultSche
 
         } catch (error) {
             console.log(jobId + ': Unable to update ScannerJob and Package statuses to "failed"');
+        }
+
+        try {
+            const reportSuccess = await reportResultState(jobId, 'failed');
+            if (!reportSuccess) {
+                console.log(jobId + ': Unable to report result state to Scanner Agent');
+            }
+        } catch (error) {
+            console.log(jobId + ': Unable to report result state to Scanner Agent');
         }
     }
 }
