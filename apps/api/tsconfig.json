@@ -9,8 +9,7 @@
         "types": [
             "@types/node",
             "@types/chai",
-            "@types/mocha",
-            "@types/supertest"
+            "@types/mocha"
         ]
     },
     "exclude": [
