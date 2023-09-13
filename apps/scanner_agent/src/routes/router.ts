@@ -6,7 +6,7 @@ import { zodiosRouter } from "@zodios/express";
 import { scannerAgentApi } from "validation-helpers";
 import Queue, { Job } from 'bull';
 import fetch from "cross-fetch";
-import milliseconds from "milliseconds";
+//import milliseconds from "milliseconds";
 import { authenticateAPIToken } from "../helpers/auth_helpers";
 
 const router = zodiosRouter(scannerAgentApi);
@@ -241,6 +241,7 @@ workQueue.on("global:completed", async (jobId: Queue.JobId, result: string) => {
     */
 })
 
+/*
 // All old jobs cleanup from the queue
 const cleanQueue = async (): Promise<void> => {
     const cleanupInterval: number = milliseconds.days(1);
@@ -254,6 +255,7 @@ const cleanQueue = async (): Promise<void> => {
     }
 }
 void cleanQueue();
+*/
 
 // Create a request to send the job state to DOS
 export const createRequestState = (state: string): RequestInit => {
