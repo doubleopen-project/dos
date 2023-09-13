@@ -55,8 +55,5 @@
     "overrides": {
         "formidable": "1.2.6",
         "typescript": "5.0.2"
-    },
-    "dependencies": {
-        "compression": "^1.7.4"
     }
 }
