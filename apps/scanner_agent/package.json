@@ -42,7 +42,7 @@
         "mocha": "10.2.0",
         "nock": "13.3.3",
         "tsconfig": "*",
-        "tsup": "6.7.0",
-        "typescript": "5.0.2"
+        "tsup": "7.2.0",
+        "typescript": "5.2.2"
     }
 }

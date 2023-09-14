@@ -22,7 +22,7 @@
     "devDependencies": {
         "prisma": "5.3.0",
         "prisma-zod-generator": "0.8.13",
-        "tsup": "6.7.0",
-        "typescript": "5.0.2"
+        "tsup": "7.2.0",
+        "typescript": "5.2.2"
     }
 }
