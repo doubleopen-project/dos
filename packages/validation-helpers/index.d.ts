@@ -1605,6 +1605,217 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "post";
+    path: "/license-conclusion";
+    description: "Add a new license conclusion";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            licenseExpressionSPDX: zod.ZodString;
+            comment: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+            fileSha256: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            licenseExpressionSPDX: string;
+            comment: string;
+            startLine: number;
+            endLine: number;
+            fileSha256: string;
+        }, {
+            licenseExpressionSPDX: string;
+            comment: string;
+            startLine: number;
+            endLine: number;
+            fileSha256: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        licenseConclusionId: zod.ZodNumber;
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+        licenseConclusionId: number;
+    }, {
+        message: string;
+        licenseConclusionId: number;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "put";
+    path: "/license-conclusion/:id";
+    description: "Update a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            licenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            comment: zod.ZodOptional<zod.ZodString>;
+            startLine: zod.ZodOptional<zod.ZodNumber>;
+            endLine: zod.ZodOptional<zod.ZodNumber>;
+        }, "strip", zod.ZodTypeAny, {
+            licenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }, {
+            licenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/license-conclusion/:id";
+    description: "Delete a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
@@ -1805,29 +2016,29 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         licenseExpressionSPDX: z.ZodString;
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        scannerConfig: string;
-        scanner: string;
         licenseExpressionSPDX: string;
         fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     }, {
-        scannerConfig: string;
-        scanner: string;
         licenseExpressionSPDX: string;
         fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        scannerConfig: string;
-        scanner: string;
         licenseExpressionSPDX: string;
         fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     };
 }, {
     data: {
-        scannerConfig: string;
-        scanner: string;
         licenseExpressionSPDX: string;
         fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -1869,6 +2080,49 @@ declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
     };
 }>;
 type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFindingMatchSchema>;
+declare const CreateLicenseConclusionSchema: z.ZodObject<{
+    data: z.ZodObject<{
+        licenseExpressionSPDX: z.ZodString;
+        comment: z.ZodString;
+        startLine: z.ZodNumber;
+        endLine: z.ZodNumber;
+        score: z.ZodNumber;
+        fileSha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        score: number;
+        licenseExpressionSPDX: string;
+        comment: string;
+        startLine: number;
+        endLine: number;
+        fileSha256: string;
+    }, {
+        score: number;
+        licenseExpressionSPDX: string;
+        comment: string;
+        startLine: number;
+        endLine: number;
+        fileSha256: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        score: number;
+        licenseExpressionSPDX: string;
+        comment: string;
+        startLine: number;
+        endLine: number;
+        fileSha256: string;
+    };
+}, {
+    data: {
+        score: number;
+        licenseExpressionSPDX: string;
+        comment: string;
+        startLine: number;
+        endLine: number;
+        fileSha256: string;
+    };
+}>;
+type CreateLicenseConclusionInput = z.infer<typeof CreateLicenseConclusionSchema>;
 declare const CreateCopyrightFindingSchema: z.ZodObject<{
     data: z.ZodObject<{
         startLine: z.ZodNumber;
@@ -1879,36 +2133,36 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         copyright: string;
-        scannerConfig: string;
-        scanner: string;
-        fileSha256: string;
         startLine: number;
         endLine: number;
+        fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     }, {
         copyright: string;
-        scannerConfig: string;
-        scanner: string;
-        fileSha256: string;
         startLine: number;
         endLine: number;
+        fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         copyright: string;
-        scannerConfig: string;
-        scanner: string;
-        fileSha256: string;
         startLine: number;
         endLine: number;
+        fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     };
 }, {
     data: {
         copyright: string;
-        scannerConfig: string;
-        scanner: string;
-        fileSha256: string;
         startLine: number;
         endLine: number;
+        fileSha256: string;
+        scannerConfig: string;
+        scanner: string;
     };
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
@@ -1922,31 +2176,31 @@ declare const CreateScanIssueSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         message: string;
         severity: string;
+        fileSha256: string;
         scannerConfig: string;
         scanner: string;
-        fileSha256: string;
     }, {
         message: string;
         severity: string;
+        fileSha256: string;
         scannerConfig: string;
         scanner: string;
-        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         message: string;
         severity: string;
+        fileSha256: string;
         scannerConfig: string;
         scanner: string;
-        fileSha256: string;
     };
 }, {
     data: {
         message: string;
         severity: string;
+        fileSha256: string;
         scannerConfig: string;
         scanner: string;
-        fileSha256: string;
     };
 }>;
 type CreateScanIssueInput = z.infer<typeof CreateScanIssueSchema>;
@@ -2011,24 +2265,24 @@ declare const CreateFileTreeSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         path: string;
-        packageId: number;
         fileSha256: string;
+        packageId: number;
     }, {
         path: string;
-        packageId: number;
         fileSha256: string;
+        packageId: number;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         path: string;
-        packageId: number;
         fileSha256: string;
+        packageId: number;
     };
 }, {
     data: {
         path: string;
-        packageId: number;
         fileSha256: string;
+        packageId: number;
     };
 }>;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
@@ -2896,4 +3150,4 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };

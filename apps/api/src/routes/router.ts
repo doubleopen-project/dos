@@ -16,6 +16,80 @@ const router = zodiosRouter(dosApi);
 
 const jobStateMap: Map<string, string> = new Map();
 
+// ---------------------------------- CURATION ROUTES ----------------------------------
+
+router.post('/license-conclusion', authenticateORTToken, async (req, res) => {
+    try {
+        const licenseConclusion = await dbQueries.createLicenseConclusion({
+            data: {
+                licenseExpressionSPDX: req.body.licenseExpressionSPDX,
+                comment: req.body.comment,
+                startLine: req.body.startLine,
+                endLine: req.body.endLine,
+                score: 100,
+                fileSha256: req.body.fileSha256,
+            }
+        })
+
+        if (licenseConclusion) {
+
+            res.status(200).json({
+                licenseConclusionId: licenseConclusion.id,
+                message: 'License conclusion created'
+            });
+        } else {
+            res.status(400).json({ message: 'Bad request: License conclusion could not be created' });
+        }
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.put('/license-conclusion/:id', authenticateORTToken, async (req, res) => {
+    try {
+        await dbQueries.updateLicenseConclusion(
+            parseInt(req.params.id),
+            {
+                licenseExpressionSPDX: req.body.licenseExpressionSPDX,
+                comment: req.body.comment,
+                startLine: req.body.startLine,
+                endLine: req.body.endLine
+            }
+        )
+
+        res.status(200).json({ message: 'License conclusion updated' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.log('Error: ', error);
+
+        if (error.code === 'P2025') {
+            return res.status(400).json({ message: 'Bad request: License conclusion to update not found' });
+        } else {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+})
+
+router.delete('/license-conclusion/:id', authenticateORTToken, async (req, res) => {
+    try {
+        await dbQueries.deleteLicenseConclusion(parseInt(req.params.id))
+
+        res.status(200).json({ message: 'License conclusion deleted' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.log('Error: ', error);
+
+        if (error.code === 'P2025') {
+            return res.status(400).json({ message: 'Bad request: License conclusion with the requested id does not exist' });
+        } else {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+})
+
+// ------------------------------------ ORT ROUTES ------------------------------------
+
 // Get scan results for package with purl
 router.post('/scan-results', authenticateORTToken, async (req, res) => {
     // TODO: add checking package hash
@@ -179,6 +253,8 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
     }
 })
 
+// ------------------------------------- SA ROUTES -------------------------------------
+
 // Update ScannerJob state
 router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
     try {
@@ -227,6 +303,8 @@ router.post('/job-results', authenticateSAToken, async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 })
+
+// ----------------------------------- ADMIN ROUTES -----------------------------------
 
 // Add new user
 router.post('/user', authenticateAdminToken, async (req, res) => {

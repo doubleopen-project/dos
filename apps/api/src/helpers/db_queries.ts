@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
-import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue, Prisma, User } from 'database';
+import { CopyrightFinding, File, FileTree, LicenseFinding, LicenseFindingMatch, Package, PrismaClient, ScannerJob, ScanIssue, Prisma, User, LicenseConclusion } from 'database';
 const prisma: PrismaClient = new PrismaClient();
 import * as dbZodSchemas from 'validation-helpers';
 
@@ -173,6 +173,33 @@ export const createLicenseFindingMatch = async (input: dbZodSchemas.CreateLicens
 
     return licenseFindingMatch;
 }
+
+export const createLicenseConclusion = async (input: dbZodSchemas.CreateLicenseConclusionInput): Promise<LicenseConclusion> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let licenseConclusion: LicenseConclusion | null = null;
+
+    while (!licenseConclusion && retries > 0) {
+        try {
+            licenseConclusion = await prisma.licenseConclusion.create({
+                data: input.data
+            });
+        } catch (error) {
+            console.log('Error creating LicenseConclusion: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval));
+            }
+        }
+    }
+
+    if (!licenseConclusion) {
+        throw ('Error: Unable to create LicenseConclusion');
+    }
+
+    return licenseConclusion;
+}
+
 
 export const createCopyrightFinding = async (input: dbZodSchemas.CreateCopyrightFindingInput): Promise<CopyrightFinding> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
@@ -467,6 +494,38 @@ export const updatePackagesScanStatusesByPurl = async (purl: string, scanStatus:
     }
 
     return batchUpdate;
+}
+
+export const updateLicenseConclusion = async (id: number, input: Prisma.LicenseConclusionUpdateInput): Promise<LicenseConclusion | null> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let licenseConclusion: LicenseConclusion | null = null;
+
+    while (!licenseConclusion && retries > 0) {
+        try {
+            licenseConclusion = await prisma.licenseConclusion.update({
+                where: {
+                    id: id
+                },
+                data: input
+            })
+        } catch (error) {
+            console.log('Error with trying to update LicenseConclusion: ' + error);
+            
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval));
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    if (!licenseConclusion) {
+        throw ('Error: Unable to update LicenseConclusion');
+    }
+
+    return licenseConclusion;
 }
 
 // ------------------------------- Find -------------------------------
@@ -1066,6 +1125,14 @@ export const deleteScanIssuesByFileHashes = async (fileHashes: string[]): Promis
     }
 
     return batchDelete;
+}
+
+export const deleteLicenseConclusion = async (id: number): Promise<LicenseConclusion | null> => {
+    return await prisma.licenseConclusion.delete({
+        where: {
+            id: id
+        }
+    });
 }
 
 // ------------------------------ Count --------------------------------

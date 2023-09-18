@@ -115,6 +115,20 @@ const CreateLicenseFindingMatchSchema = z.object({
 
 export type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFindingMatchSchema>
 
+// -------------------------- LicenseConclusion --------------------------
+
+const CreateLicenseConclusionSchema = z.object({
+    data: z.object({
+        licenseExpressionSPDX: z.string(),
+        comment: z.string(),
+        startLine: z.number(),
+        endLine: z.number(),
+        score: z.number(),
+        fileSha256: z.string()
+    })
+})
+
+export type CreateLicenseConclusionInput = z.infer<typeof CreateLicenseConclusionSchema>
 
 // ------------------------- CopyrightFinding -------------------------
 
