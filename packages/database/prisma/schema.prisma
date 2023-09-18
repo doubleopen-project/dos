@@ -30,10 +30,11 @@ model File {
   updatedAt  DateTime @updatedAt
   scanStatus String
 
-  filetrees         FileTree[]
-  licenseFindings   LicenseFinding[]
-  copyrightFindings CopyrightFinding[]
-  scanIssues        ScanIssue[]
+  filetrees          FileTree[]
+  licenseFindings    LicenseFinding[]
+  licenseConclusions LicenseConclusion[]
+  copyrightFindings  CopyrightFinding[]
+  scanIssues         ScanIssue[]
 }
 
 /// A package consisting of its source code files.
@@ -80,8 +81,7 @@ model LicenseFinding {
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
 
-  licenseFindingMatches   LicenseFindingMatch[]
-  licenseFindingCurations LicenseFindingCuration[]
+  licenseFindingMatches LicenseFindingMatch[]
 
   @@index([fileSha256])
 }
@@ -102,17 +102,21 @@ model LicenseFindingMatch {
   @@index([licenseFindingId])
 }
 
-/// A curation of a license finding.
-model LicenseFindingCuration {
-  id                Int      @id @default(autoincrement())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  licenseExpression String
+/// A license conclusion.
+model LicenseConclusion {
+  id                    Int      @id @default(autoincrement())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  licenseExpressionSPDX String
+  comment               String
+  startLine             Int
+  endLine               Int
+  score                 Float
 
-  licenseFindingId Int
-  licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id])
+  fileSha256 String
+  file       File   @relation(fields: [fileSha256], references: [sha256])
 
-  @@index([licenseFindingId])
+  @@index([fileSha256])
 }
 
 /// A copyright finding in a file.
