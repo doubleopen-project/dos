@@ -890,6 +890,7 @@ export const getPackageScanResults = async (packageId: number) => {
                                     licenseFindingMatches: true
                                 }
                             },
+                            licenseConclusions: true,
                             copyrightFindings: true,
                             scanIssues: true
                         }

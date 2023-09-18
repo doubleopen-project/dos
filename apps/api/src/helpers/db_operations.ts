@@ -61,7 +61,20 @@ export const getScanResults = async (packageId: number) => {
         const issues = [];
 
         for (const filetree of queriedScanResults) {
-            if (filetree.file.licenseFindings.length > 0) {
+            if (filetree.file.licenseConclusions.length > 0) {
+                for (const licenseConclusion of filetree.file.licenseConclusions) {
+                licenses.push({
+                    license: licenseConclusion.licenseExpressionSPDX,
+                    location: {
+                        path: filetree.path,
+                        start_line: licenseConclusion.startLine,
+                        end_line: licenseConclusion.endLine
+                    },
+                    score: licenseConclusion.score
+                })
+            }
+            
+            } else if (filetree.file.licenseFindings.length > 0) {
                 let startLine = 0;
                 let endLine = 0;
                 let scoreSum = 0;
