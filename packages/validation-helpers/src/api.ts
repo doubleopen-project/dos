@@ -159,5 +159,52 @@ export const dosApi = makeApi([
 		],
 		response: schemas.DeleteUserRes,
 		errors
+	},
+	{
+		method: 'post',
+		path: '/license-conclusion',
+		description: 'Add a new license conclusion',
+		parameters: [
+			{
+				name: 'body',
+				type: 'Body',
+				schema: schemas.PostLicenseConclusionReq
+			}
+		],
+		response: schemas.PostLicenseConclusionRes,
+		errors
+	},
+	{
+		method: 'put',
+		path: '/license-conclusion/:id',
+		description: 'Update a license conclusion',
+		parameters: [
+			{
+				name: 'id',
+				type: 'Path',
+				schema: schemas.PutLicenseConclusionReqPathParams
+			},
+			{
+				name: 'body',
+				type: 'Body',
+				schema: schemas.PutLicenseConclusionReq
+			}
+		],
+		response: schemas.PutLicenseConclusionRes,
+		errors
+	},
+	{
+		method: 'delete',
+		path: '/license-conclusion/:id',
+		description: 'Delete a license conclusion',
+		parameters: [
+			{
+				name: 'id',
+				type: 'Path',
+				schema: schemas.DeleteLicenseConclusionReqPathParams
+			}
+		],
+		response: schemas.DeleteLicenseConclusionRes,
+		errors
 	}
 ]);
