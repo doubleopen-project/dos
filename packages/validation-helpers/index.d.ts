@@ -1816,6 +1816,84 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "post";
+    path: "/filetree";
+    description: "Get file tree for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        files: zod.ZodArray<zod.ZodObject<{
+            path: zod.ZodString;
+            fileSha256: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            path: string;
+            fileSha256: string;
+        }, {
+            path: string;
+            fileSha256: string;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        files: {
+            path: string;
+            fileSha256: string;
+        }[];
+    }, {
+        files: {
+            path: string;
+            fileSha256: string;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
