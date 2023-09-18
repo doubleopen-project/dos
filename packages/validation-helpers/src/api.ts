@@ -206,5 +206,19 @@ export const dosApi = makeApi([
 		],
 		response: schemas.DeleteLicenseConclusionRes,
 		errors
+	},
+	{
+		method: 'post',
+		path: '/filetree',
+		description: 'Get file tree for specified purl',
+		parameters: [
+			{
+				name: 'body',
+				type: 'Body',
+				schema: schemas.PostFileTreeReq
+			}
+		],
+		response: schemas.PostFileTreeRes,
+		errors
 	}
 ]);

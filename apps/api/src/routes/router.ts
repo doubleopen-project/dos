@@ -18,6 +18,19 @@ const jobStateMap: Map<string, string> = new Map();
 
 // ---------------------------------- CURATION ROUTES ----------------------------------
 
+router.post('/filetree', authenticateORTToken, async (req, res) => {
+    try {
+        const files = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
+
+        if (files) {
+            res.status(200).json({files: files});
+        }
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
 router.post('/license-conclusion', authenticateORTToken, async (req, res) => {
     try {
         const licenseConclusion = await dbQueries.createLicenseConclusion({

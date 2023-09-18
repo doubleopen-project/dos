@@ -202,7 +202,7 @@ export const PutLicenseConclusionReq = z.object({
 })
 
 export const PutLicenseConclusionReqPathParams = z.string({
-        required_error: 'Id is required'
+    required_error: 'Id is required'
 })
 
 
@@ -212,13 +212,27 @@ export const PutLicenseConclusionRes = z.object({
 
 //------------- DELETE license conclusion -------------
 export const DeleteLicenseConclusionReqPathParams = z.string({
-        required_error: 'Id is required'
+    required_error: 'Id is required'
 })
 
 export const DeleteLicenseConclusionRes = z.object({
     message: z.string()
 })
 
+//------------------ POST filetree -------------------
+export const PostFileTreeReq = z.object({
+    purl: z.string({
+        required_error: 'Purl is required'
+    })
+})
+
+export const PostFileTreeRes = z.object({
+    files: z.array(z.object({
+        path: z.string(),
+        fileSha256: z.string(),
+    })
+    )
+})
 //------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({

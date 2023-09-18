@@ -662,6 +662,22 @@ export const findFileTreeByHashAndPackageId = async (hash: string, packageId: nu
     return fileTree;
 }
 
+export const findFileTreesByPackagePurl = async (purl: string): Promise<{path: string, fileSha256: string}[] | null> => {
+    const filetrees = await prisma.fileTree.findMany({
+        where: {
+            package: {
+                purl: purl
+            }
+        },
+        select: {
+            path: true,
+            fileSha256: true
+        }
+    });
+
+    return filetrees;
+}
+
 export const findScannerJobStateById = async (id: string): Promise<{ id: string, state: string } | null> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
