@@ -13,7 +13,7 @@ import { reportResultState, sendJobToQueue } from './sa_queries';
 // ------------------------- Database operations -------------------------
 
 // Get results for package with purl if exists
-export const getPackageResults = async (purl: string) => {
+export const getPackageResults = async (purl: string, options: { fetchConcluded?: boolean }) => {
     const queriedPackage = await dbQueries.findPackageByPurl(purl);
 
     let status = 'no-results';
@@ -35,7 +35,7 @@ export const getPackageResults = async (purl: string) => {
         } else if (queriedPackage.scanStatus === 'scanned') {
             console.log('Found results for package with purl ' + purl);
 
-            results = await getScanResults(queriedPackage.id);
+            results = await getScanResults(queriedPackage.id, options);
             status = 'ready';
         }
     } else {
@@ -52,7 +52,7 @@ export const getPackageResults = async (purl: string) => {
 }
 
 // Get scan results for package
-export const getScanResults = async (packageId: number) => {
+export const getScanResults = async (packageId: number, options: { fetchConcluded?: boolean }) => {
     const queriedScanResults = await dbQueries.getPackageScanResults(packageId);
 
     if (queriedScanResults) {
@@ -61,19 +61,18 @@ export const getScanResults = async (packageId: number) => {
         const issues = [];
 
         for (const filetree of queriedScanResults) {
-            if (filetree.file.licenseConclusions.length > 0) {
+            if (options.fetchConcluded && filetree.file.licenseConclusions.length > 0) {
                 for (const licenseConclusion of filetree.file.licenseConclusions) {
-                licenses.push({
-                    license: licenseConclusion.concludedLicenseExpressionSPDX,
-                    location: {
-                        path: filetree.path,
-                        start_line: licenseConclusion.startLine,
-                        end_line: licenseConclusion.endLine
-                    },
-                    score: licenseConclusion.score
-                })
-            }
-            
+                    licenses.push({
+                        license: licenseConclusion.concludedLicenseExpressionSPDX,
+                        location: {
+                            path: filetree.path,
+                            start_line: licenseConclusion.startLine,
+                            end_line: licenseConclusion.endLine
+                        },
+                        score: licenseConclusion.score
+                    })
+                }
             } else if (filetree.file.licenseFindings.length > 0) {
                 let startLine = 0;
                 let endLine = 0;

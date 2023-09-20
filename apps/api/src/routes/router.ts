@@ -109,12 +109,12 @@ router.delete('/license-conclusion/:id', authenticateORTToken, async (req, res) 
 
 // Get scan results for package with purl
 router.post('/scan-results', authenticateORTToken, async (req, res) => {
-    // TODO: add checking package hash
-    // Reason: purl might not mean that the package has all the same files, because this can vary based on where the package has been uploaded from
     try {
         console.log('Searching for results for package with purl: ' + req.body.purl);
 
-        const response = await dbOperations.getPackageResults(req.body.purl);
+        const options = req.body.options || {};
+
+        const response = await dbOperations.getPackageResults(req.body.purl, options);
         res.status(200).json(response);
     } catch (error) {
         console.log('Error: ', error);
