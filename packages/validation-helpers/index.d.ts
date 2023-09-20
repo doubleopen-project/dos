@@ -367,10 +367,23 @@ declare const dosApi: [{
         type: "Body";
         schema: zod.ZodObject<{
             purl: zod.ZodString;
+            options: zod.ZodOptional<zod.ZodObject<{
+                fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+            }, "strip", zod.ZodTypeAny, {
+                fetchConcluded?: boolean | undefined;
+            }, {
+                fetchConcluded?: boolean | undefined;
+            }>>;
         }, "strip", zod.ZodTypeAny, {
             purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
         }, {
             purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
         }>;
     }];
     response: zod.ZodObject<{

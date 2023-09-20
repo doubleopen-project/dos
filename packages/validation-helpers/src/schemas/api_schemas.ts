@@ -10,7 +10,10 @@ import { ScannerJobResultSchema } from './scanner_agent_schemas';
 export const PostScanResultsReq = z.object({
     purl: z.string({
         required_error: 'Purl is required'
-    })
+    }),
+    options: z.object({
+        fetchConcluded: z.boolean().optional(),
+    }).optional(),
 })
 
 export const PostScanResultsRes = z.object({
