@@ -119,8 +119,10 @@ export type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFinding
 
 const CreateLicenseConclusionSchema = z.object({
     data: z.object({
-        licenseExpressionSPDX: z.string(),
+        concludedLicenseExpressionSPDX: z.string(),
+        detectedLicenseExpressionSPDX: z.string(),
         comment: z.string(),
+        reason: z.string(),
         startLine: z.number(),
         endLine: z.number(),
         score: z.number(),

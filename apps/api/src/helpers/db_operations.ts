@@ -64,7 +64,7 @@ export const getScanResults = async (packageId: number) => {
             if (filetree.file.licenseConclusions.length > 0) {
                 for (const licenseConclusion of filetree.file.licenseConclusions) {
                 licenses.push({
-                    license: licenseConclusion.licenseExpressionSPDX,
+                    license: licenseConclusion.concludedLicenseExpressionSPDX,
                     location: {
                         path: filetree.path,
                         start_line: licenseConclusion.startLine,

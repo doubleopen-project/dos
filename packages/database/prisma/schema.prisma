@@ -107,8 +107,10 @@ model LicenseConclusion {
   id                    Int      @id @default(autoincrement())
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  licenseExpressionSPDX String
+  concludedLicenseExpressionSPDX String
+  detectedLicenseExpressionSPDX String
   comment               String
+  reason                String
   startLine             Int
   endLine               Int
   score                 Float
