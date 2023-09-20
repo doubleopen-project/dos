@@ -1,0 +1,19 @@
+{
+  "name": "curation_front_end",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.22",
+    "autoprefixer": "10.4.15",
+    "eslint-config-custom": "*",
+    "next": "13.5.1",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.2.2"
+  }
+}
