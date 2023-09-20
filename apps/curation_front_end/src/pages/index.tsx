@@ -2,17 +2,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import Header from '../components/Header'
 
 export default function Home() {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-
+    <main className={`bg-gray-100 min-h-screen`}>
+        <Header />
     </main>
   )
 }
