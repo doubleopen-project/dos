@@ -54,5 +54,8 @@
     "packageManager": "npm@9.5.0",
     "overrides": {
         "formidable": "1.2.6"
+    },
+    "dependencies": {
+        "react-icons": "^4.11.0"
     }
 }
