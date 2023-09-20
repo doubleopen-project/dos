@@ -35,8 +35,10 @@ router.post('/license-conclusion', authenticateORTToken, async (req, res) => {
     try {
         const licenseConclusion = await dbQueries.createLicenseConclusion({
             data: {
-                licenseExpressionSPDX: req.body.licenseExpressionSPDX,
+                concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
+                reason: req.body.reason,
                 startLine: req.body.startLine,
                 endLine: req.body.endLine,
                 score: 100,
@@ -64,8 +66,10 @@ router.put('/license-conclusion/:id', authenticateORTToken, async (req, res) => 
         await dbQueries.updateLicenseConclusion(
             parseInt(req.params.id),
             {
-                licenseExpressionSPDX: req.body.licenseExpressionSPDX,
+                concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
+                reason: req.body.reason,
                 startLine: req.body.startLine,
                 endLine: req.body.endLine
             }

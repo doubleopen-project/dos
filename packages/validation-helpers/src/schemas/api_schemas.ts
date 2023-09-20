@@ -171,11 +171,17 @@ export const DeleteUserRes = z.object({
 //-------------- POST license conclusion --------------
 
 export const PostLicenseConclusionReq = z.object({
-    licenseExpressionSPDX: z.string({
-        required_error: 'License expression is required'
+    concludedLicenseExpressionSPDX: z.string({
+        required_error: 'Concluded license expression is required'
+    }),
+    detectedLicenseExpressionSPDX: z.string({
+        required_error: 'Detected license expression is required'
     }),
     comment: z.string({
         required_error: 'Comment is required'
+    }),
+    reason: z.string({
+        required_error: 'Reason is required'
     }),
     startLine: z.number({
         required_error: 'Start line is required'
@@ -195,8 +201,10 @@ export const PostLicenseConclusionRes = z.object({
 
 //--------------- PUT license conclusion ---------------
 export const PutLicenseConclusionReq = z.object({
-    licenseExpressionSPDX: z.string().optional(),
+    concludedLicenseExpressionSPDX: z.string().optional(),
+    detectedLicenseExpressionSPDX: z.string().optional(),
     comment: z.string().optional(),
+    reason: z.string().optional(),
     startLine: z.number().optional(),
     endLine: z.number().optional()
 })

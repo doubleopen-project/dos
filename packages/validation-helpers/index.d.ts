@@ -1613,20 +1613,26 @@ declare const dosApi: [{
         name: "body";
         type: "Body";
         schema: zod.ZodObject<{
-            licenseExpressionSPDX: zod.ZodString;
+            concludedLicenseExpressionSPDX: zod.ZodString;
+            detectedLicenseExpressionSPDX: zod.ZodString;
             comment: zod.ZodString;
+            reason: zod.ZodString;
             startLine: zod.ZodNumber;
             endLine: zod.ZodNumber;
             fileSha256: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
-            licenseExpressionSPDX: string;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
             comment: string;
+            reason: string;
             startLine: number;
             endLine: number;
             fileSha256: string;
         }, {
-            licenseExpressionSPDX: string;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
             comment: string;
+            reason: string;
             startLine: number;
             endLine: number;
             fileSha256: string;
@@ -1695,18 +1701,24 @@ declare const dosApi: [{
         name: "body";
         type: "Body";
         schema: zod.ZodObject<{
-            licenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
             comment: zod.ZodOptional<zod.ZodString>;
+            reason: zod.ZodOptional<zod.ZodString>;
             startLine: zod.ZodOptional<zod.ZodNumber>;
             endLine: zod.ZodOptional<zod.ZodNumber>;
         }, "strip", zod.ZodTypeAny, {
-            licenseExpressionSPDX?: string | undefined;
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            reason?: string | undefined;
             startLine?: number | undefined;
             endLine?: number | undefined;
         }, {
-            licenseExpressionSPDX?: string | undefined;
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            reason?: string | undefined;
             startLine?: number | undefined;
             endLine?: number | undefined;
         }>;
@@ -2094,29 +2106,29 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         licenseExpressionSPDX: z.ZodString;
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        licenseExpressionSPDX: string;
         fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
     }, {
-        licenseExpressionSPDX: string;
         fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        licenseExpressionSPDX: string;
         fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
     };
 }, {
     data: {
-        licenseExpressionSPDX: string;
         fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -2160,23 +2172,29 @@ declare const CreateLicenseFindingMatchSchema: z.ZodObject<{
 type CreateLicenseFindingMatchInput = z.infer<typeof CreateLicenseFindingMatchSchema>;
 declare const CreateLicenseConclusionSchema: z.ZodObject<{
     data: z.ZodObject<{
-        licenseExpressionSPDX: z.ZodString;
+        concludedLicenseExpressionSPDX: z.ZodString;
+        detectedLicenseExpressionSPDX: z.ZodString;
         comment: z.ZodString;
+        reason: z.ZodString;
         startLine: z.ZodNumber;
         endLine: z.ZodNumber;
         score: z.ZodNumber;
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         score: number;
-        licenseExpressionSPDX: string;
+        concludedLicenseExpressionSPDX: string;
+        detectedLicenseExpressionSPDX: string;
         comment: string;
+        reason: string;
         startLine: number;
         endLine: number;
         fileSha256: string;
     }, {
         score: number;
-        licenseExpressionSPDX: string;
+        concludedLicenseExpressionSPDX: string;
+        detectedLicenseExpressionSPDX: string;
         comment: string;
+        reason: string;
         startLine: number;
         endLine: number;
         fileSha256: string;
@@ -2184,8 +2202,10 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     data: {
         score: number;
-        licenseExpressionSPDX: string;
+        concludedLicenseExpressionSPDX: string;
+        detectedLicenseExpressionSPDX: string;
         comment: string;
+        reason: string;
         startLine: number;
         endLine: number;
         fileSha256: string;
@@ -2193,8 +2213,10 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<{
 }, {
     data: {
         score: number;
-        licenseExpressionSPDX: string;
+        concludedLicenseExpressionSPDX: string;
+        detectedLicenseExpressionSPDX: string;
         comment: string;
+        reason: string;
         startLine: number;
         endLine: number;
         fileSha256: string;
