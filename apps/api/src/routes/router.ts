@@ -21,7 +21,8 @@ const jobStateMap: Map<string, string> = new Map();
 router.post('/filetree', async (req, res) => {
     try {
         const files = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
-
+        console.log('We are the champions');
+        
         if (files) {
             res.status(200).json({files: files});
         }

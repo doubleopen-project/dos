@@ -12,6 +12,7 @@ import { openApiBuilder } from '@zodios/openapi';
 import compression from 'compression';
 import cron from 'node-cron';
 import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
+import cors from 'cors';
 
 loadEnv('../../.env');
 
@@ -27,6 +28,7 @@ app.use(compression({
     level: -1, // Default compression level
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
+app.use(cors());
 app.use('/api', router);
 
 const document = openApiBuilder({
