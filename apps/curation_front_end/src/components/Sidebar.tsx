@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import React from 'react'
 import Link from 'next/link'
 import { GrInspect, GrCatalog } from 'react-icons/gr'
@@ -20,13 +24,13 @@ const Sidebar = ({ children }: SidebarProps) => {
                             <AiOutlineHome size={20} />
                         </div>
                     </Link>
-                    <Link href='/'>
+                    <Link href='/curation'>
                         <div className={iconSettings} title='Inspect & Curate Packages'>
                             <GrInspect size={20} style={{filter: negCorrection}} />
                         </div>
                     </Link>
-                    <Link href='/'>
-                        <div className={iconSettings} title='Curations Library'>
+                    <Link href='/packageLibrary'>
+                        <div className={iconSettings} title='Package Library'>
                             <GrCatalog size={20} style={{filter: negCorrection}} />
                         </div>
                     </Link>
