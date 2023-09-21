@@ -18,7 +18,7 @@ const jobStateMap: Map<string, string> = new Map();
 
 // ---------------------------------- CURATION ROUTES ----------------------------------
 
-router.post('/filetree', authenticateORTToken, async (req, res) => {
+router.post('/filetree', async (req, res) => {
     try {
         const files = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
 
