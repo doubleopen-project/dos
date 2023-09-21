@@ -1844,6 +1844,7 @@ declare const dosApi: [{
 }, {
     method: "post";
     path: "/filetree";
+    alias: "GetFileTree";
     description: "Get file tree for specified purl";
     parameters: [{
         name: "body";
@@ -3263,4 +3264,28 @@ declare const scannerAgentApi: [{
     }];
 }];
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+declare const PostFileTreeRes: z.ZodObject<{
+    files: z.ZodArray<z.ZodObject<{
+        path: z.ZodString;
+        fileSha256: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        path: string;
+        fileSha256: string;
+    }, {
+        path: string;
+        fileSha256: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    files: {
+        path: string;
+        fileSha256: string;
+    }[];
+}, {
+    files: {
+        path: string;
+        fileSha256: string;
+    }[];
+}>;
+type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
+
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };

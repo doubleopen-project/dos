@@ -210,6 +210,7 @@ export const dosApi = makeApi([
 	{
 		method: 'post',
 		path: '/filetree',
+		alias: 'GetFileTree',
 		description: 'Get file tree for specified purl',
 		parameters: [
 			{

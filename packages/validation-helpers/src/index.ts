@@ -5,4 +5,4 @@ export { ScannerJobResultSchema } from './schemas/scanner_agent_schemas';
 export * from './api';
 export * from './schemas/db_schemas';
 export * from "./scanner_agent";
-
+export type { PostFileTreeResType } from './schemas/api_schemas'

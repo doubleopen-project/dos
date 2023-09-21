@@ -244,6 +244,8 @@ export const PostFileTreeRes = z.object({
     })
     )
 })
+
+export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>
 //------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({
