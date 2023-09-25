@@ -255,6 +255,8 @@ export const GetPackagesRes = z.object({
     }))
 })
 
+export type GetPackagesResType = z.infer<typeof GetPackagesRes>
+
 //------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({

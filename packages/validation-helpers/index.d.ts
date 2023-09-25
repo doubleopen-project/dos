@@ -3354,5 +3354,28 @@ declare const PostFileTreeRes: z.ZodObject<{
     }[];
 }>;
 type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
+declare const GetPackagesRes: z.ZodObject<{
+    packages: z.ZodArray<z.ZodObject<{
+        purl: z.ZodString;
+        updatedAt: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        purl: string;
+        updatedAt: Date;
+    }, {
+        purl: string;
+        updatedAt: Date;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    packages: {
+        purl: string;
+        updatedAt: Date;
+    }[];
+}, {
+    packages: {
+        purl: string;
+        updatedAt: Date;
+    }[];
+}>;
+type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, GetPackagesResType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
