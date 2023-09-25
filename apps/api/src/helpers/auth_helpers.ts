@@ -37,7 +37,7 @@ export const authenticateAdminToken = async (req: Request, res: Response, next: 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
     
     const user = await findUser(token);
-    if (token === process.env.ADMIN_TOKEN || (user && user.admin)) {
+    if (token === process.env.ADMIN_TOKEN || (user && user.role === 'ADMIN')) {
         next();
     } else {
         return res.status(403).json({ message: 'Forbidden' });

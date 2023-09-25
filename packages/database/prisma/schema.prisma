@@ -104,19 +104,22 @@ model LicenseFindingMatch {
 
 /// A license conclusion.
 model LicenseConclusion {
-  id                    Int      @id @default(autoincrement())
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                             Int      @id @default(autoincrement())
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
   concludedLicenseExpressionSPDX String
-  detectedLicenseExpressionSPDX String
-  comment               String
-  reason                String
-  startLine             Int
-  endLine               Int
-  score                 Float
+  detectedLicenseExpressionSPDX  String
+  comment                        String
+  reason                         String
+  startLine                      Int
+  endLine                        Int
+  score                          Float
 
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
 
   @@index([fileSha256])
 }
@@ -192,10 +195,26 @@ model ScannerJob {
 
 /// A temporary simple user model for authentication.
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  token     String   @unique
-  admin     Boolean  @default(false)
-  ortUser   Boolean  @default(true)
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  username       String       @unique
+  hashedPassword Bytes        @db.ByteA
+  salt           Bytes        @db.ByteA
+  token          String       @unique
+  role           Role         @default(USER)
+  subscription   Subscription? @default(SILVER)
+
+  licenseConclusions LicenseConclusion[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Subscription {
+  FREE
+  SILVER
+  GOLD
 }
