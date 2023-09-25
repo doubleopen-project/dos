@@ -672,6 +672,9 @@ export const findFileTreesByPackagePurl = async (purl: string): Promise<{path: s
         select: {
             path: true,
             fileSha256: true
+        },
+        orderBy: {
+            path: 'asc'
         }
     });
 
@@ -1045,6 +1048,42 @@ export const findUser = async (token: string): Promise<User | null> => {
     }
     return user;
 }
+
+export const findScannedPackages = async (): Promise<{purl: string, updatedAt: Date}[]> => {
+    let scannedPackages: {purl: string, updatedAt: Date}[] = [];
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            scannedPackages = await prisma.package.findMany({
+                where: {
+                    scanStatus: 'scanned'
+                },
+                select: {
+                    purl: true,
+                    updatedAt: true
+                },
+                orderBy: {
+                    purl: 'asc'
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find ScannedPackages: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            } else {
+                throw new Error('Error: Unable to perform query to find ScannedPackages')
+            }
+        }
+    }
+    return scannedPackages;
+}
+
 
 // ------------------------------ Delete ------------------------------
 
