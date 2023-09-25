@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 
 export default function Home() {
     return (
-        <main className='bg-gradient-to-br from-black to-gray-900 text-white min-h-screen'>
+        <main className='bg-gray-200 min-h-screen'>
             <Header />
             <h1>Welcome to DoubleOpen Front End</h1>
         </main>

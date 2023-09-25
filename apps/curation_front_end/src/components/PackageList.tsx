@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
-import { data } from '@/testData/packages';
+import type { GetPackagesResType } from 'validation-helpers';
 
-const PackageList = () => {
+interface PackageListProps {
+    data: GetPackagesResType;
+}
+
+const PackageList = ({data}: PackageListProps) => {
   return (
     <div>
-        <ul>
+        <ul className='flex flex-col gap-4'>
             {data.packages.map(({ purl, updatedAt }) => (
-                <li key={purl}>
-                    <div>{updatedAt}</div>
-                    <div><a href={`/packages/${purl}`}>{purl}</a></div>
+                <li key={purl} className='flex flex-row'>
+                    <div className='w-1/6'>{updatedAt.toLocaleString()}</div>
+                    <div className='w-5/6 hover:text-blue-400'><a href={`/packages/${encodeURIComponent(purl)}`}>{purl}</a></div>
                 </li>
             ))}
         </ul>

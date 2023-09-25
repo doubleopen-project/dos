@@ -37,7 +37,7 @@ const PackageTree = ({ data }:{ data:PostFileTreeResType}) => {
     };
 
     return (
-        <div className='w-full md:col-span-1 relative lg:h-[90vh] h-[70vh] m-auto p-4 border rounded-lg bg-gray-900 overflow-y-auto'>
+        <div className='w-full md:col-span-1 relative lg:h-[90vh] h-[70vh] m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
             <div className='flex items-center text-sm'>
                 <input
                     type='text'
