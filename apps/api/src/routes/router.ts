@@ -8,9 +8,8 @@ import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
 import { processPackageAndSendToScanner } from '../helpers/new_job_process';
-import { authenticateAdminToken, authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
+import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
 import { stateMap } from '../helpers/state_helpers';
-import crypto from 'crypto';
 
 const router = zodiosRouter(dosApi);
 
@@ -327,25 +326,6 @@ router.post('/job-results', authenticateSAToken, async (req, res) => {
         dbOperations.saveJobResults(req.body.id, req.body.result, jobStateMap)
         res.status(200).json({
             message: 'Received and saving results for job with with id ' + req.body.id
-        })
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-})
-
-// ----------------------------------- ADMIN ROUTES -----------------------------------
-
-// Add new user
-router.post('/user', authenticateAdminToken, async (req, res) => {
-    try {
-        const newUser = await dbQueries.createUser({
-            token: crypto.randomBytes(16).toString('hex'),
-            admin: req.body.admin,
-        });
-
-        res.status(200).json({
-            token: newUser.token
         })
     } catch (error) {
         console.log('Error: ', error);
