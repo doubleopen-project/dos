@@ -12,26 +12,24 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ children }: SidebarProps) => {
-    const toolbarSettings = "fixed w-20 h-screen p-4 bg-black border-r-[1px] flex flex-col justify-between";
-    const iconSettings = "bg-gray-600 text-white my-4 p-3 hover:bg-gray-400 rounded-lg inline-block";
-    const negCorrection = "brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(175deg)";
     return (
         <div className='flex'>
-            <div className={toolbarSettings}>
+            <div className="fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between">
                 <div className='flex flex-col items-center'>
                     <Link href='/'>
-                        <div className={iconSettings} title='Home'>
+                        <div className='bg-purple-800 hover:bg-purple-400 text-white p-3 rounded-lg inline-block' title='Home'>
                             <AiOutlineHome size={20} />
                         </div>
                     </Link>
+                    <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
                     <Link href='/packages'>
-                        <div className={iconSettings} title='Package Library'>
-                            <GrCatalog size={20} style={{filter: negCorrection}} />
+                        <div className='bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block' title='Package Library'>
+                            <GrCatalog size={20} />
                         </div>
                     </Link>
                     <Link href='/curation'>
-                        <div className={iconSettings} title='Package Curations'>
-                            <GrInspect size={20} style={{filter: negCorrection}} />
+                        <div className='bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block' title='Package Curations'>
+                            <GrInspect size={20} />
                         </div>
                     </Link>
                     

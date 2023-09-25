@@ -27,7 +27,7 @@ export default function Package() {
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
     return (
-        <main className='bg-gradient-to-br from-black to-gray-900 text-white min-h-screen'>
+        <main className='bg-gray-200 min-h-screen'>
             <Header />
             <div className='p-4 grid md:grid-cols-3 grid-cols-1 gap-4'>
                 <PackageTree data={data} />
