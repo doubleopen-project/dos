@@ -221,5 +221,12 @@ export const dosApi = makeApi([
 		],
 		response: schemas.PostFileTreeRes,
 		errors
-	}
+	},
+	{
+		method: 'get',
+		path: '/packages',
+		description: 'Get packages',
+		response: schemas.GetPackagesRes,
+		errors
+	},
 ]);

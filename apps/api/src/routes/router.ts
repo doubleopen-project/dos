@@ -18,13 +18,25 @@ const jobStateMap: Map<string, string> = new Map();
 
 // ---------------------------------- CURATION ROUTES ----------------------------------
 
+router.get('/packages', async (req, res) => {
+    try {
+        const packages = await dbQueries.findScannedPackages();
+        res.status(200).json({ packages: packages });
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' })
+    }
+})
+
 router.post('/filetree', async (req, res) => {
     try {
         const files = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
-        console.log('We are the champions');
         
         if (files) {
-            res.status(200).json({files: files});
+            const pathsWithFolders = files.filter(file => file.path.includes('/'));
+            const pathsWithoutFolders = files.filter(file => !file.path.includes('/'));
+
+            res.status(200).json({files: pathsWithFolders.concat(pathsWithoutFolders)});
         }
     } catch (error) {
         console.log('Error: ', error);

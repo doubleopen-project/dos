@@ -246,6 +246,15 @@ export const PostFileTreeRes = z.object({
 })
 
 export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>
+
+//------------------ GET packages -------------------
+export const GetPackagesRes = z.object({
+    packages: z.array(z.object({
+        purl: z.string(),
+        updatedAt: z.date(),
+    }))
+})
+
 //------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({

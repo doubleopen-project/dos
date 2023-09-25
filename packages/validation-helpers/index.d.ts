@@ -1920,6 +1920,73 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "get";
+    path: "/packages";
+    description: "Get packages";
+    response: zod.ZodObject<{
+        packages: zod.ZodArray<zod.ZodObject<{
+            purl: zod.ZodString;
+            updatedAt: zod.ZodDate;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+            updatedAt: Date;
+        }, {
+            purl: string;
+            updatedAt: Date;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        packages: {
+            purl: string;
+            updatedAt: Date;
+        }[];
+    }, {
+        packages: {
+            purl: string;
+            updatedAt: Date;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const DBScannerJobSchema: z.ZodObject<{
@@ -1938,8 +2005,8 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: string;
     state: string;
-    createdAt: Date;
     updatedAt: Date;
+    createdAt: Date;
     packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
@@ -1951,8 +2018,8 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, {
     id: string;
     state: string;
-    createdAt: Date;
     updatedAt: Date;
+    createdAt: Date;
     packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
@@ -2059,14 +2126,14 @@ declare const DBFileSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: number;
     sha256: string;
-    createdAt: Date;
     updatedAt: Date;
+    createdAt: Date;
     scanStatus: string;
 }, {
     id: number;
     sha256: string;
-    createdAt: Date;
     updatedAt: Date;
+    createdAt: Date;
     scanStatus: string;
 }>;
 declare const CreateFileSchema: z.ZodObject<{
