@@ -3,16 +3,27 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosApp } from '@zodios/express';
-import router from './routes/router';
 import express from 'express';
-import { loadEnv } from 'common-helpers';
-import { dosApi } from 'validation-helpers';
 import { serve, setup } from 'swagger-ui-express';
 import { openApiBuilder } from '@zodios/openapi';
 import compression from 'compression';
 import cron from 'node-cron';
-import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
 import cors from 'cors';
+import session from 'express-session';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
+
+import router from './routes/router';
+import authRouter from './routes/auth';
+import adminRouter from './routes/admin';
+
+import { loadEnv } from 'common-helpers';
+import { dosApi } from 'validation-helpers';
+
+import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
+import { localStrategy } from './passport_strategies/local_strategy';
+import * as dbQueries from './helpers/db_queries';
+import { User as DBUser } from 'database';
 
 loadEnv('../../.env');
 
@@ -29,7 +40,53 @@ app.use(compression({
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
 app.use(cors());
+app.use(cookieParser());
+
+// Use User from database package in serialization and deserialization
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace Express {
+        interface User extends DBUser { }
+    }
+}
+
+const memoryStore = new session.MemoryStore();
+
+app.use(
+    session({
+        secret: 'secret',
+        resave: false,
+        saveUninitialized: false,
+        store: memoryStore,
+    })
+)
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(localStrategy);
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id: number, done) => {
+    try {
+        const user = await dbQueries.findUserById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
+app.use((req, res, next) => {
+    console.log(memoryStore);
+    next();
+});
+
 app.use('/api', router);
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 const document = openApiBuilder({
 	title: 'DOS API',

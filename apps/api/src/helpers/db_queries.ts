@@ -1049,6 +1049,58 @@ export const findUser = async (token: string): Promise<User | null> => {
     return user;
 }
 
+export const findUserById = async (id: number): Promise<User | null> => {
+    let user: User | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            user = await prisma.user.findUnique({
+                where: {
+                    id: id
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find User: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            }
+        }
+    }
+    return user;
+}
+
+export const findUserByUsername = async (username: string): Promise<User | null> => {
+    let user: User | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            user = await prisma.user.findUnique({
+                where: {
+                    username: username
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find User: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            }
+        }
+    }
+    return user;
+}
+
 export const findScannedPackages = async (): Promise<{purl: string, updatedAt: Date}[]> => {
     let scannedPackages: {purl: string, updatedAt: Date}[] = [];
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;

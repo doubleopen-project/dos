@@ -150,13 +150,19 @@ export const PostJobResultsRes = z.object({
 //-------------------- POST user --------------------
 
 export const PostUserReq = z.object({
-    admin: z.boolean({
-        required_error: 'Admin (true/false) is required'
+    username: z.string({
+        required_error: 'Username is required'
     }),
+    password: z.string({
+        required_error: 'Password is required'
+    }),
+    role: z.enum(['ADMIN', 'USER']).optional(),
+    subscription: z.enum(['SILVER', 'GOLD']).optional(),
+    token: z.string().optional(),
 })
 
 export const PostUserRes = z.object({
-    token: z.string()
+    message: z.string()
 })
 
 //------------------- DELETE user -------------------
@@ -256,6 +262,41 @@ export const GetPackagesRes = z.object({
 })
 
 export type GetPackagesResType = z.infer<typeof GetPackagesRes>
+
+//------------------ POST login/password -------------------
+
+export const PostLoginPasswordReq = z.object({
+    username: z.string({
+        required_error: 'Username is required'
+    }),
+    password: z.string({
+        required_error: 'Password is required'
+    })
+})
+
+export const PostLoginPasswordRes = z.object({})
+
+//------------------- POST logout --------------------
+
+export const PostLogoutRes = z.object({
+    message: z.string()
+})
+//------------------ POST register -------------------
+
+export const PostRegisterReq = z.object({
+    username: z.string({
+        required_error: 'Username is required'
+    }),
+    password: z.string({
+        required_error: 'Password is required'
+    }),
+    role: z.enum(['ADMIN', 'USER']).optional(),
+    subscription: z.enum(['SILVER', 'GOLD']).optional(),
+})
+
+export const PostRegisterRes = z.object({
+    message: z.string()
+})
 
 //------------------- Error schema -------------------
 
