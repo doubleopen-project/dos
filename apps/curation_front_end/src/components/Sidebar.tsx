@@ -24,16 +24,17 @@ const Sidebar = ({ children }: SidebarProps) => {
                             <AiOutlineHome size={20} />
                         </div>
                     </Link>
-                    <Link href='/curation'>
-                        <div className={iconSettings} title='Inspect & Curate Packages'>
-                            <GrInspect size={20} style={{filter: negCorrection}} />
-                        </div>
-                    </Link>
-                    <Link href='/packageLibrary'>
+                    <Link href='/packages'>
                         <div className={iconSettings} title='Package Library'>
                             <GrCatalog size={20} style={{filter: negCorrection}} />
                         </div>
                     </Link>
+                    <Link href='/curation'>
+                        <div className={iconSettings} title='Package Curations'>
+                            <GrInspect size={20} style={{filter: negCorrection}} />
+                        </div>
+                    </Link>
+                    
                 </div>
             </div>
             <main className='ml-20 w-full'>{children}</main>
