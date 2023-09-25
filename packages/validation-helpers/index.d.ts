@@ -1500,19 +1500,31 @@ declare const dosApi: [{
         name: "body";
         type: "Body";
         schema: zod.ZodObject<{
-            admin: zod.ZodBoolean;
+            username: zod.ZodString;
+            password: zod.ZodString;
+            role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
+            subscription: zod.ZodOptional<zod.ZodEnum<["SILVER", "GOLD"]>>;
+            token: zod.ZodOptional<zod.ZodString>;
         }, "strip", zod.ZodTypeAny, {
-            admin: boolean;
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
         }, {
-            admin: boolean;
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
         }>;
     }];
     response: zod.ZodObject<{
-        token: zod.ZodString;
+        message: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        token: string;
+        message: string;
     }, {
-        token: string;
+        message: string;
     }>;
     errors: [{
         status: 500;
@@ -1945,6 +1957,118 @@ declare const dosApi: [{
             purl: string;
             updatedAt: Date;
         }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/login/password";
+    description: "Login with password";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            username: zod.ZodString;
+            password: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            username: string;
+            password: string;
+        }, {
+            username: string;
+            password: string;
+        }>;
+    }];
+    response: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/logout";
+    description: "Logout";
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
     }>;
     errors: [{
         status: 500;
