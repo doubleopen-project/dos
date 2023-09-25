@@ -3,19 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 import Header from '@/components/Header';
-import PackageTree from '@/components/PackageTree';
-import CodeInspector from '@/components/CodeInspector';
-import { data } from '@/testData/filetree'
 
-export default function Curation() {
+export default function Curations() {
     return (
         <main className='bg-gradient-to-br from-black to-gray-900 text-white min-h-screen'>
-
             <Header />
-            <div className='p-4 grid md:grid-cols-3 grid-cols-1 gap-4'>
-                <PackageTree data={data} />
-                <CodeInspector />
-            </div>
+            <h1>Welcome to Package Curations</h1>
         </main>
     )
 }
