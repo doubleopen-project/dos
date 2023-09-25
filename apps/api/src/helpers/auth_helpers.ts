@@ -43,3 +43,13 @@ export const authenticateAdminToken = async (req: Request, res: Response, next: 
         return res.status(403).json({ message: 'Forbidden' });
     }
 }
+
+export const authorizeAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const { user } = req;
+    if (user && user.role === 'ADMIN') {
+        next();
+    }
+    else {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
