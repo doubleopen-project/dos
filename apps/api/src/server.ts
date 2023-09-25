@@ -24,6 +24,7 @@ import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
 import { localStrategy } from './passport_strategies/local_strategy';
 import * as dbQueries from './helpers/db_queries';
 import { User as DBUser } from 'database';
+import { authorizeAdmin } from './helpers/auth_helpers';
 
 loadEnv('../../.env');
 
@@ -86,7 +87,7 @@ app.use((req, res, next) => {
 
 app.use('/api', router);
 app.use('/api/auth', authRouter);
-app.use('/api/admin', adminRouter);
+app.use('/api/admin', authorizeAdmin, adminRouter);
 
 const document = openApiBuilder({
 	title: 'DOS API',
