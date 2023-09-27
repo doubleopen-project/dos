@@ -1870,25 +1870,67 @@ declare const dosApi: [{
         }>;
     }];
     response: zod.ZodObject<{
-        files: zod.ZodArray<zod.ZodObject<{
+        filetrees: zod.ZodArray<zod.ZodObject<{
             path: zod.ZodString;
+            packageId: zod.ZodNumber;
             fileSha256: zod.ZodString;
+            file: zod.ZodObject<{
+                licenseFindings: zod.ZodArray<zod.ZodObject<{
+                    licenseExpressionSPDX: zod.ZodString;
+                }, "strip", zod.ZodTypeAny, {
+                    licenseExpressionSPDX: string;
+                }, {
+                    licenseExpressionSPDX: string;
+                }>, "many">;
+            }, "strip", zod.ZodTypeAny, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }>;
         }, "strip", zod.ZodTypeAny, {
             path: string;
             fileSha256: string;
+            packageId: number;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
         }, {
             path: string;
             fileSha256: string;
+            packageId: number;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
         }>, "many">;
     }, "strip", zod.ZodTypeAny, {
-        files: {
+        filetrees: {
             path: string;
             fileSha256: string;
+            packageId: number;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
         }[];
     }, {
-        files: {
+        filetrees: {
             path: string;
             fileSha256: string;
+            packageId: number;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
         }[];
     }>;
     errors: [{
@@ -2129,9 +2171,9 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: string;
     state: string;
+    packageId: number;
     updatedAt: Date;
     createdAt: Date;
-    packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
     scannerConfig?: string | null | undefined;
@@ -2142,9 +2184,9 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, {
     id: string;
     state: string;
+    packageId: number;
     updatedAt: Date;
     createdAt: Date;
-    packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
     scannerConfig?: string | null | undefined;
@@ -2312,28 +2354,28 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         fileSha256: string;
+        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
-        licenseExpressionSPDX: string;
     }, {
         fileSha256: string;
+        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
-        licenseExpressionSPDX: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         fileSha256: string;
+        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
-        licenseExpressionSPDX: string;
     };
 }, {
     data: {
         fileSha256: string;
+        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
-        licenseExpressionSPDX: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -3455,26 +3497,109 @@ declare const scannerAgentApi: [{
     }];
 }];
 
+declare const FileTree: z.ZodObject<{
+    path: z.ZodString;
+    packageId: z.ZodNumber;
+    fileSha256: z.ZodString;
+    file: z.ZodObject<{
+        licenseFindings: z.ZodArray<z.ZodObject<{
+            licenseExpressionSPDX: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            licenseExpressionSPDX: string;
+        }, {
+            licenseExpressionSPDX: string;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+        }[];
+    }, {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+        }[];
+    }>;
+}, "strip", z.ZodTypeAny, {
+    path: string;
+    fileSha256: string;
+    packageId: number;
+    file: {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+        }[];
+    };
+}, {
+    path: string;
+    fileSha256: string;
+    packageId: number;
+    file: {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+        }[];
+    };
+}>;
+type FileTreeType = z.infer<typeof FileTree>;
 declare const PostFileTreeRes: z.ZodObject<{
-    files: z.ZodArray<z.ZodObject<{
+    filetrees: z.ZodArray<z.ZodObject<{
         path: z.ZodString;
+        packageId: z.ZodNumber;
         fileSha256: z.ZodString;
+        file: z.ZodObject<{
+            licenseFindings: z.ZodArray<z.ZodObject<{
+                licenseExpressionSPDX: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                licenseExpressionSPDX: string;
+            }, {
+                licenseExpressionSPDX: string;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        }, {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        }>;
     }, "strip", z.ZodTypeAny, {
         path: string;
         fileSha256: string;
+        packageId: number;
+        file: {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        };
     }, {
         path: string;
         fileSha256: string;
+        packageId: number;
+        file: {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        };
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
-    files: {
+    filetrees: {
         path: string;
         fileSha256: string;
+        packageId: number;
+        file: {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        };
     }[];
 }, {
-    files: {
+    filetrees: {
         path: string;
         fileSha256: string;
+        packageId: number;
+        file: {
+            licenseFindings: {
+                licenseExpressionSPDX: string;
+            }[];
+        };
     }[];
 }>;
 type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
@@ -3502,4 +3627,4 @@ declare const GetPackagesRes: z.ZodObject<{
 }>;
 type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, GetPackagesResType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, FileTreeType, GetPackagesResType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, scannerAgentApi };
