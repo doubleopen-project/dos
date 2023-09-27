@@ -29,13 +29,21 @@ router.get('/packages', async (req, res) => {
 
 router.post('/filetree', async (req, res) => {
     try {
-        const files = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
-        
-        if (files) {
-            const pathsWithFolders = files.filter(file => file.path.includes('/'));
-            const pathsWithoutFolders = files.filter(file => !file.path.includes('/'));
+        const filetrees = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
 
-            res.status(200).json({files: pathsWithFolders.concat(pathsWithoutFolders)});
+        if (filetrees) {
+            res.status(200).json({filetrees: filetrees.map((filetree) => {
+                return {
+                    path: filetree.path,
+                    packageId: filetree.packageId,
+                    fileSha256: filetree.fileSha256,
+                    file: {
+                        licenseFindings: (filetree.file.licenseFindings).map((licenseFinding) => {
+                            return {licenseExpressionSPDX: licenseFinding.licenseExpressionSPDX}
+                        }),
+                    }
+                }
+            })});
         }
     } catch (error) {
         console.log('Error: ', error);
