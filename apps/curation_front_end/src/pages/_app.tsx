@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import Header from '@/components/Header';
 import Sidebar from "../components/Sidebar";
 import TanstackProvider from '@/components/providers/TanstackProvider';
 
@@ -11,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <TanstackProvider>
             <Sidebar>
+                <Header />
                 <Component {...pageProps} />
             </Sidebar>
         </TanstackProvider>
