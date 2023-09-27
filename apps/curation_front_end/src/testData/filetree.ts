@@ -3,74 +3,210 @@
 // SPDX-License-Identifier: MIT
 
 export const data = {
-    "files": [
+    "filetrees": [
         {
-            "path": ".npmignore",
-            "fileSha256": "c294862216027baf6ec05e9fbef5350fcf95789b5aacbd4afc587222e5410d94"
+            "path": ".eslintignore",
+            "packageId": 22,
+            "fileSha256": "0b2e7bd6fe8e195b1b6eea336b8bf52a906125a75a799e1bfa3b7cf6d918efe7",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": ".travis.yml",
-            "fileSha256": "4856acb9b5f25d183baf1a3b2b4c569b513115748ecf0f064443a9d123d6e044"
+            "path": ".eslintrc.yml",
+            "packageId": 22,
+            "fileSha256": "dd077a0b6168d2dff32bc7aa0511d9baa31a0daa78430f7af826984c22e97159",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "bin/download-node-tests.js",
-            "fileSha256": "74a493722b5fce5ddad7b74c2f714922fbd8dfc73102906378849890faa38d42"
+            "path": ".github/workflows/ci.yml",
+            "packageId": 22,
+            "fileSha256": "169fdd0ba389e0d736198a31eb42a097f041ebc185f9f820c692716c7b671ebf",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "perf/bracket-notation.js",
-            "fileSha256": "8955fa3e0ca9c0d5d2ff31ec720ec9ae632395c817e0836ead7b4014d79d61e4"
+            "path": "HISTORY.md",
+            "packageId": 22,
+            "fileSha256": "7380e30d7a0045a0d7ca28249255bca1f1fd5691c32d3fab25f4ba2bfd514def",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "perf/concat.js",
-            "fileSha256": "9d9c7e3333d4de15e608fc91b63431208bbc41fefdd5ae956ea6caeb9bdb920c"
+            "path": "LICENSE",
+            "packageId": 22,
+            "fileSha256": "23d466b1b134b415b66fa50c6526b4cf3e7b9258554da88d3abb371721e7ce68",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "perf/copy-big.js",
-            "fileSha256": "e7e1580e9347fd86ae6260e27389e48c3b3738f6b331a0cf55468ef0e3b14bd8"
+            "path": "README.md",
+            "packageId": 22,
+            "fileSha256": "3d07452b8828e00e0609fbece718ec5131087135c6bb630210a0dda4950978fc",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "perf/writeUtf8.js",
-            "fileSha256": "c9a2ca030f471ae25739fe2f08b2c3e6ae63c684aea03683de5422e288e39b59"
+            "path": "SECURITY.md",
+            "packageId": 22,
+            "fileSha256": "0448ff6c00a9d808b70c4adba9e6c6e1d81569bbb0abcb335e1dd6f453b83334",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "test/_polyfill.js",
-            "fileSha256": "2d9001b8a96ad53e13e0d38406bd8a7c6bbd432dd705bb6993ed00620874b3a8"
+            "path": "index.js",
+            "packageId": 22,
+            "fileSha256": "9c6c900e7e85fb599c62d9b9e4dfd2ea2f61d119dce5ed69ac3a8da828819241",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/base64.js",
-            "fileSha256": "0b9cf24547d72d6e2c52be885b26cd95b79cd2ed65d894854e3b31cc199b8edc"
+            "path": "lib/read.js",
+            "packageId": 22,
+            "fileSha256": "1e9e274755366c39ae70e8b9a7a42fc12219566e67efaf9b7ebc2a8b337f5b6b",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/static.js",
-            "fileSha256": "4659b1a29b898bf6b8bc018c76bb51ccd6f0643e6c33c38fb2315fd7bb407e0b"
+            "path": "lib/types/json.js",
+            "packageId": 22,
+            "fileSha256": "fba069b0aa7b1789a03deaaa5f4f1bc238ced7299d174d2e6fe95d30dc02f865",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/to-string.js",
-            "fileSha256": "ef7520e03a197b0ff4fb9e614c9eb0afca9ccb4c0d3d7564c04c582d3258f58a"
+            "path": "lib/types/raw.js",
+            "packageId": 22,
+            "fileSha256": "4e9cc80a7ee8bd667c68c264b4c374b28e731246ddb6ec22c3968daf837e30a2",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/write.js",
-            "fileSha256": "1815c81eeb22a13c64091d24751d4234ddd397b2f7762ec667b4924bb0ec5aab"
+            "path": "lib/types/text.js",
+            "packageId": 22,
+            "fileSha256": "54a6e8ef720b06a300b21f6c60387805dec743a64154784a609dfe8c6860776a",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/write_infinity.js",
-            "fileSha256": "7afe0281328032b7f3fb46d772d2aa47fed9240e499d98b2c36c6e72084b64a2"
+            "path": "lib/types/urlencoded.js",
+            "packageId": 22,
+            "fileSha256": "752717d87aad57451638af2073b04eba964f348910c0bcf0070c43e732de5eb2",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/node/test-buffer-alloc.js",
-            "fileSha256": "4cf9e79dd125acb25bf48628984ea7ce60a8c31f813046052fb74cc8bc439e68"
+            "path": "package.json",
+            "packageId": 22,
+            "fileSha256": "039dbc6b0e8ccdefcc06d618aea4da08d3fca7489dcbed6404827be29d41314f",
+            "file": {
+                "licenseFindings": [
+                    {
+                        "licenseExpressionSPDX": "MIT"
+                    }
+                ]
+            }
         },
         {
-            "path": "test/node/test-buffer-inspect.js",
-            "fileSha256": "89ee65f509c1c9f56bdaad5f7544fd1b427a90b46da5f70bd23dec06148afe15"
+            "path": "test/.eslintrc.yml",
+            "packageId": 22,
+            "fileSha256": "d5191500ede898e4317a74798ecefe46d3db55185bdeadc49bded8d02e1722e5",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "test/node/test-buffer-zero-fill-reset.js",
-            "fileSha256": "461b9fac069dcaece188cf0c1d3d93eb6454695b410a50cf7af34a4863207169"
+            "path": "test/body-parser.js",
+            "packageId": 22,
+            "fileSha256": "d88e2438be84d8e0276043ace4b3ebedeb5d4de3de0936fc07d76ef0e11d4834",
+            "file": {
+                "licenseFindings": []
+            }
         },
         {
-            "path": "test/node/test-buffer.js",
-            "fileSha256": "c7f5d157d8de6737b84feceb8f1e3285d18b2cbc8114717bc012ad78761b5af3"
+            "path": "test/json.js",
+            "packageId": 22,
+            "fileSha256": "e8af45c6af3ec611a05603bbcb90cc2bc867702f254ef986be4a666d4963ec50",
+            "file": {
+                "licenseFindings": []
+            }
+        },
+        {
+            "path": "test/raw.js",
+            "packageId": 22,
+            "fileSha256": "69ddba269ce7a50922ffce5928a3768dffb6b709e0c04afda07f44e07674fd75",
+            "file": {
+                "licenseFindings": []
+            }
+        },
+        {
+            "path": "test/support/env.js",
+            "packageId": 22,
+            "fileSha256": "5c8596aa2ddc5455135b893b6ada9535b1574f6e54fc58f3a372c059d2b0d195",
+            "file": {
+                "licenseFindings": []
+            }
+        },
+        {
+            "path": "test/text.js",
+            "packageId": 22,
+            "fileSha256": "ac2c353d0249e2def7f6223a472b8e569e72b23a88bf9821565ff17812983a51",
+            "file": {
+                "licenseFindings": []
+            }
+        },
+        {
+            "path": "test/urlencoded.js",
+            "packageId": 22,
+            "fileSha256": "ab8cf38ee0bf989ad58fa28b66a847e2e9ef6edb3934b6bc9abb78ecdb792303",
+            "file": {
+                "licenseFindings": []
+            }
         }
     ]
 };
