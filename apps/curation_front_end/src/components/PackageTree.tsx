@@ -15,7 +15,7 @@ import type { PostFileTreeResType } from 'validation-helpers'
 const PackageTree = ({ data }:{ data:PostFileTreeResType}) => {
     
     // Convert the JSON
-    const convertedData = convertJsonToTree(data.files);
+    const convertedData = convertJsonToTree(data.filetrees);
 
     const [searchText, setSearchText] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);

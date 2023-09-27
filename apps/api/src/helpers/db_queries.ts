@@ -662,22 +662,35 @@ export const findFileTreeByHashAndPackageId = async (hash: string, packageId: nu
     return fileTree;
 }
 
-export const findFileTreesByPackagePurl = async (purl: string): Promise<{path: string, fileSha256: string}[] | null> => {
+export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
+    include: {
+        file: {
+            include: {
+                licenseFindings: true,
+            }
+        }
+    }
+}>;
+
+export const findFileTreesByPackagePurl = async (purl: string): Promise<FileTreeWithRelations[]> => {
     const filetrees = await prisma.fileTree.findMany({
         where: {
             package: {
                 purl: purl
             }
         },
-        select: {
-            path: true,
-            fileSha256: true
+        include: {
+            file: {
+                include: {
+                    licenseFindings: true,
+                }
+            }
         },
         orderBy: {
             path: 'asc'
         }
     });
-
+    
     return filetrees;
 }
 
