@@ -57,7 +57,7 @@ const PackageTree = ({data}:{data:PostFileTreeResType}) => {
     }, []);
 
     return (
-        <div className='w-full relative lg:h-[90vh] h-[70vh] overflow-y-auto m-auto p-4 border rounded-lg bg-white' ref={treeRef}>
+        <div ref={treeRef}>
 
             <div className='flex items-center text-sm'>
                 <input
@@ -75,7 +75,7 @@ const PackageTree = ({data}:{data:PostFileTreeResType}) => {
                 </button>
             </div>
 
-            <div className='flex h-full'>
+            <div>
                 <Tree
                     data={convertedData}
                     openByDefault={false}
