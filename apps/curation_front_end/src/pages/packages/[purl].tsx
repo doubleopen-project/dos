@@ -27,12 +27,15 @@ export default function Package() {
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
     return (
-        <main className='bg-gray-200 min-h-screen'>
-            <Header />
-            <div className='p-4 grid md:grid-cols-3 grid-cols-1 gap-4'>
-                <PackageTree data={data} />
-                <CodeInspector />
+        <div className='bg-gray-200 min-h-screen'>
+            <div className='grid grid-cols-12 md:grid-cols-3 gap-2 p-4 mt-3'>
+                <div className='col-span-6 md:col-span-1'>
+                    <PackageTree data={data} />
+                </div>
+                <div className='col-span-6 md:col-span-2'>
+                    <CodeInspector />
+                </div>
             </div>
-        </main>
+        </div>
     )
 }

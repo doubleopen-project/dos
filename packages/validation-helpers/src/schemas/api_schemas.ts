@@ -257,7 +257,7 @@ export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>
 export const GetPackagesRes = z.object({
     packages: z.array(z.object({
         purl: z.string(),
-        updatedAt: z.date(),
+        updatedAt: z.coerce.date(),
     }))
 })
 
