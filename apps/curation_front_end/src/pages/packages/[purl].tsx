@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { useRouter } from "next/router";
-import Header from '@/components/Header';
 import PackageTree from '@/components/PackageTree';
 import CodeInspector from '@/components/CodeInspector';
 import { zodiosHooks } from '../../hooks/zodiosHooks'
@@ -26,14 +25,74 @@ export default function Package() {
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
+
     return (
-        <div className='bg-gray-200 min-h-screen'>
-            <div className='grid grid-cols-12 md:grid-cols-3 gap-2 p-4 mt-3'>
-                <div className='col-span-6 md:col-span-1'>
-                    <PackageTree data={data} />
+        <div className='bg-gray-200 h-screen'>
+            <div className='flex flex-col md:flex-row w-full'>
+
+                {/* 1st column (5/12): Show and filter package */}
+                <div className="w-full md:w-5/12 h-screen flex flex-col">
+
+                    {/* Filter and navigate within packet */}
+                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
+                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter' />
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            Expand
+                        </button>
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            {"<-"}
+                        </button>
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            {"->"}
+                        </button>
+                    </div>
+                    
+                    {/* FileTree */}
+                    <div className='flex-1 rounded-md bg-white shadow overflow-y-auto p-2 m-2'>
+                        <PackageTree data={data} />
+                    </div>
+
+                    {/* Filter with specific licenses */}
+                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
+                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter with a detected license' />
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            {"V"}
+                        </button>
+                    </div>
+
                 </div>
-                <div className='col-span-6 md:col-span-2'>
-                    <CodeInspector />
+
+                {/* 2nd column (7/12): Show file, do curation */}
+                <div className="w-full md:w-7/12 h-screen flex flex-col">
+
+                    {/* Filter and navigate within file */}
+                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
+                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter' />
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            {"<-"}
+                        </button>
+                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                            {"->"}
+                        </button>
+                    </div>
+                        
+                    {/* Code window */}
+                    <div className='flex-1 rounded-md bg-white shadow overflow-hidden p-2 m-2'>
+                        <CodeInspector />
+                    </div>
+
+                    {/* Detected license, curation */}
+                    <div className="p-2 m-2 rounded-md bg-white shadow flex-row text-sm">
+                        <p className="p-2">
+                            DETECTED LICENSE FOR THIS FILE
+                        </p>
+                        <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
+                            <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='CONCLUDED LICENSE' />
+                            <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2' >
+                                Add curation
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
