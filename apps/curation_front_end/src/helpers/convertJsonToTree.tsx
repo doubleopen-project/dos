@@ -2,16 +2,24 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { FileTreeType } from 'validation-helpers';
-import type { TreeNode } from '../types';
+type FileObject = {
+    path: string;
+    fileSha256: string;
+};
+  
+type TreeNode = {
+    id: string;
+    name: string;
+    children?: TreeNode[];
+};
 
-export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
+export const convertJsonToTree = (files: FileObject[]): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
     const root: TreeNode[] = []; // Initialize an empty root
     const map: { [key: string]: TreeNode } = {}; // Maintain a mapping from directory name to TreeNode object
   
-    for (const fileTree of filetrees) {
-        const pathParts = fileTree.path.split('/');
+    for (const file of files) {
+        const pathParts = file.path.split('/');
         let currentNode: TreeNode[] = root;
         let fullPath = '';
     
@@ -36,6 +44,5 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
             }
         }    
     }
-    
     return root;
 }; 

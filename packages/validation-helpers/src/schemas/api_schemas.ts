@@ -243,21 +243,12 @@ export const PostFileTreeReq = z.object({
     })
 })
 
-export const FileTree = z.object({
-    path: z.string(),
-    packageId: z.number(),
-    fileSha256: z.string(),
-    file: z.object({
-        licenseFindings: z.array(z.object({
-            licenseExpressionSPDX: z.string(),
-        })),
-    }),
-})
-
-export type FileTreeType = z.infer<typeof FileTree>
-
 export const PostFileTreeRes = z.object({
-    filetrees: z.array(FileTree)
+    files: z.array(z.object({
+        path: z.string(),
+        fileSha256: z.string(),
+    })
+    )
 })
 
 export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>
