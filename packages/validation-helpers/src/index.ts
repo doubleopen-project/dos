@@ -6,3 +6,4 @@ export * from './api';
 export * from './schemas/db_schemas';
 export * from "./scanner_agent";
 export type { FileTreeType, PostFileTreeResType, GetPackagesResType } from './schemas/api_schemas'
+export * from './schemas/ui_schemas'
