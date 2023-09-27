@@ -4,6 +4,7 @@
 
 import type { FileTreeType } from 'validation-helpers';
 import type { TreeNode } from '../types';
+import { sortTree } from './sortTree';
 
 export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
@@ -37,5 +38,5 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
         }    
     }
     
-    return root;
+    return sortTree(root);
 }; 
