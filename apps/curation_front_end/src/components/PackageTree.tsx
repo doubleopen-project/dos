@@ -10,20 +10,27 @@ import {
     BsFolder2Open as FolderOpen
 } from 'react-icons/bs';
 import type { TreeNode } from "@/types/index";
+import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 
-const PackageTree = ({data}:{data:TreeNode[]}) => {
+const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
 
     // TODO: fix useEffect to resize the tree
 
-    const [searchText, setSearchText] = useState('');
+    const [fileSearchText, setFileSearchText] = useState('');
+    const [licenseSearchText, setLicenseSearchText] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
+    const [treeData, setTreeData] = useState<TreeNode[]>(initialData); // TODO: use data from props
     const treeRef = useRef<HTMLDivElement>(null);
 
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(event.target.value);
+    const handleFileSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFileSearchText(event.target.value);
     };
 
+    const handleLicenseSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLicenseSearchText(event.target.value);
+    };
+    
     let tree: any;
 
     const handleExpand = () => {
@@ -48,6 +55,13 @@ const PackageTree = ({data}:{data:TreeNode[]}) => {
         window.addEventListener('resize', handleResize);
     }, []);
     
+    // Update `hasLicenseFindings` whenever `licenseSearchText` changes
+    useEffect(() => {
+        const updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
+        updateHasLicenseFindings(updatedTreeData, licenseSearchText);
+        setTreeData(updatedTreeData);  // Set the updated tree data to trigger a re-render
+    }, [licenseSearchText]);
+
     return (
         <div className="flex flex-col h-full">
             
@@ -55,8 +69,8 @@ const PackageTree = ({data}:{data:TreeNode[]}) => {
                 <input className='bg-gray-200 p-2 rounded-lg w-full' 
                     type='text' 
                     placeholder='Filter' 
-                    value={searchText}
-                    onChange={handleSearch} 
+                    value={fileSearchText}
+                    onChange={handleFileSearch} 
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
                     onClick={handleExpand}
@@ -73,9 +87,9 @@ const PackageTree = ({data}:{data:TreeNode[]}) => {
 
             <div className="flex-1 pl-1 overflow-auto bg-gray-100"  ref={treeRef}>
                 <Tree
-                    data={data}
+                    data={treeData}
                     openByDefault={false}
-                    searchTerm={searchText}
+                    searchTerm={fileSearchText}
                     searchMatch={(node, term) => 
                         node.data.name.toLowerCase().includes(term.toLowerCase())
                     }
@@ -95,7 +109,9 @@ const PackageTree = ({data}:{data:TreeNode[]}) => {
             <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
                 <input className='bg-gray-200 p-2 rounded-lg w-full' 
                     type='text' 
-                    placeholder='Filter with a detected license' 
+                    placeholder='Filter with a detected license'
+                    value={licenseSearchText}
+                    onChange={handleLicenseSearch} 
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
                     {"V"}
@@ -106,6 +122,19 @@ const PackageTree = ({data}:{data:TreeNode[]}) => {
 }
 
 function Node({ node, style }: NodeRendererProps<any>) {
+    const { isLeaf, isClosed, data } = node;
+    const { hasLicenseFindings, name } = data;
+    const boldStyle = {strokeWidth: 0.5};
+    let icon;
+    
+    if (isLeaf) {
+        icon = hasLicenseFindings ? <FileText color="red" style={boldStyle} /> : <FileText />;
+    } else if (isClosed) {
+        icon = hasLicenseFindings ? <FolderClosed color="red" style={boldStyle} /> : <FolderClosed />;
+    } else {
+        icon = hasLicenseFindings ? <FolderOpen color="red" style={boldStyle} /> : <FolderOpen />;
+    }
+    
     return (
         <div
             className="flex items-center cursor-pointer"
@@ -113,14 +142,10 @@ function Node({ node, style }: NodeRendererProps<any>) {
             onClick={() => node.toggle()}
         >
             <span className="flex items-center">
-                {
-                    node.isLeaf ? node.data.hasLicenseFindings ? <FileText color="red" /> : <FileText /> : 
-                    node.isClosed ? node.data.hasLicenseFindings ? <FolderClosed color="red" /> : <FolderClosed /> : 
-                    node.data.hasLicenseFindings ? <FolderOpen color="red" /> : <FolderOpen />
-                }
+                {icon}
             </span>
             <span className="ml-1 font-mono text-xs">
-                {node.data.name}
+                {name}
             </span>
         </div>
     );

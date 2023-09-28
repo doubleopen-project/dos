@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import type { FileTreeType } from 'validation-helpers';
-import type { TreeNode, LicenseFindings } from '../types';
+import type { TreeNode } from '../types';
 import { sortTree } from './sortTree';
 
 export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
