@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from '@zodios/express';
-import { dosApi } from 'validation-helpers';
+import { authAPI } from 'validation-helpers';
 import passport from 'passport';
 
-const router = zodiosRouter(dosApi);
+const router = zodiosRouter(authAPI);
 
 // ---------------------------------- AUTHENTICATION ROUTES ----------------------------------
 router.post('/login/password', passport.authenticate('local'), (req, res) => {

@@ -16,8 +16,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import React from 'react';
+import { zodios, zodiosHooks } from '@/hooks/zodiosHooks';
 
-const LoginForm = () => {
+interface LoginFormProps {
+    onSubmit: (data: LoginFormType) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     const form = useForm<LoginFormType>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -25,10 +31,6 @@ const LoginForm = () => {
             password: '',
         },
     });
-
-    const onSubmit = (data: LoginFormType) => {
-        console.log(data);
-    }
 
     return (
         <div className='w-72 bg-white rounded-md h-min'>
