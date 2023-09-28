@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
