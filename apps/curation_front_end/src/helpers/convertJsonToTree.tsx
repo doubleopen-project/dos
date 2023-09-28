@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import type { FileTreeType } from 'validation-helpers';
-import type { TreeNode } from '../types';
+import type { TreeNode, LicenseFindings } from '../types';
 import { sortTree } from './sortTree';
 
 export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
@@ -23,17 +23,52 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
             fullPath += (i > 0 ? '/' : '') + part;
 
             if (!map[fullPath]) {
-            const newNode: TreeNode = { id: id.toString(), name: part };
-            id++;
-            if (!isLastPart) {
-                newNode.children = [];
+                
+                const newNode: TreeNode = { 
+                    id: id.toString(), 
+                    name: part,
+                    fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
+                    hasLicenseFindings: false,
+                    file: {
+                        licenseFindings: isLastPart ? fileTree.file.licenseFindings : [],
+                    }
+                };
+                
+                // If this is a leaf node and there are any license findings, mark the node
+                if (isLastPart && fileTree.file.licenseFindings.length > 0) {
+                    newNode.hasLicenseFindings = true;
+                }
+
+                id++;
+                
+                if (!isLastPart) {
+                    newNode.children = [];
+                }
+                
+                map[fullPath] = newNode;
+                currentNode.push(newNode);
+
+            } else if (isLastPart) {
+                // Merge licenseFindings for existing nodes
+                map[fullPath].file?.licenseFindings?.push(...fileTree.file.licenseFindings);
+                if (fileTree.file.licenseFindings.length > 0) {
+                    map[fullPath].hasLicenseFindings = true;
+                }
             }
-            map[fullPath] = newNode;
-            currentNode.push(newNode);
+        
+            // Propagate the hasLicenseFindings flag to ancestor directories
+            if (fileTree.file.licenseFindings.length > 0) {
+                let ancestorPath = '';
+                for (let j = 0; j <= i; j++) {
+                    ancestorPath += (j > 0 ? '/' : '') + pathParts[j];
+                    if (map[ancestorPath]) {
+                        map[ancestorPath].hasLicenseFindings = true;
+                    }
+                }
             }
-    
+
             if (!isLastPart) {
-            currentNode = map[fullPath].children!;
+                currentNode = map[fullPath].children!;
             }
         }    
     }
