@@ -14,6 +14,7 @@ export default function Login() {
     }, []);
 
     const router = useRouter();
+    const [error, setError] = useState<string | undefined>(undefined);
 
     const { mutate } = authHooks.usePostLoginPassword(undefined, {
         onSuccess: () => {
@@ -23,17 +24,28 @@ export default function Login() {
             } else {
                 router.push('/');
             }
-        }
+        },
+        onError(error) {
+            const errorCode = parseInt(error.message.slice(-3) as string);
+            switch (errorCode) {
+                case 401:
+                    setError('Invalid username or password');
+                    break;
+                default:
+                    setError('Something went wrong. Please try again.')
+                    break;
+            }
+            
+        },
     })
 
     const submitForm = (loginData: LoginFormType) => {
         mutate(loginData);
     }
 
-
     return (
         <main className='bg-gray-200 h-screen flex justify-center items-center'>
-            <LoginForm onSubmit={submitForm} />
+            <LoginForm onSubmit={submitForm} errMsg={error? error : undefined} />
         </main>
     )
 

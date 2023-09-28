@@ -21,9 +21,10 @@ import { zodios, zodiosHooks } from '@/hooks/zodiosHooks';
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
+    errMsg?: string;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
     const form = useForm<LoginFormType>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -32,9 +33,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         },
     });
 
+    const errVisibilityClass = errMsg ? 'visible' : 'hidden';
+
     return (
         <div className='w-72 bg-white rounded-md h-min'>
             <Form {...form}>
+            <div className={errVisibilityClass + ' text-xs text-red-500 pt-4 pr-4 pl-4'}>{errMsg}</div>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-4">
                     <FormField
                         control={form.control}
