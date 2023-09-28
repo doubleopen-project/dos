@@ -28,6 +28,9 @@ import { authorizeAdmin } from './helpers/auth_helpers';
 
 loadEnv('../../.env');
 
+if(!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET not set');
+if(!process.env.DATABASE_URL) throw new Error('DATABASE_URL not set');
+
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION) : 0;
 
 const opts = {
@@ -55,7 +58,7 @@ const memoryStore = new session.MemoryStore();
 
 app.use(
     session({
-        secret: 'secret',
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         store: memoryStore,
