@@ -12,7 +12,6 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <TanstackProvider>
             <Sidebar>
-                <Header />
                 <Component {...pageProps} />
             </Sidebar>
         </TanstackProvider>
