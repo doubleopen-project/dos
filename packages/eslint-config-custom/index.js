@@ -5,10 +5,12 @@
 module.exports = {
     extends: [
         "next",
-        "next/core-web-vitals", 
-        "react-hooks",
+        "next/core-web-vitals",
         "prettier",
         "turbo"
+    ],
+    plugins: [
+        "react-hooks"
     ],
     rules: {
         "@next/next/no-html-link-for-pages": "off",
