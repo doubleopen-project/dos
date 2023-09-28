@@ -5,7 +5,8 @@
 import { useRouter } from "next/router";
 import PackageTree from '@/components/PackageTree';
 import CodeInspector from '@/components/CodeInspector';
-import { zodiosHooks } from '../../hooks/zodiosHooks'
+import { zodiosHooks } from '../../hooks/zodiosHooks';
+import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 
 export default function Package() {
     const router = useRouter();
@@ -26,75 +27,23 @@ export default function Package() {
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
 
+    // Convert the JSON
+    const convertedData = convertJsonToTree(data.filetrees);
+
     return (
-        <div className='bg-gray-200 h-screen'>
-            <div className='flex flex-col md:flex-row w-full'>
+        <body className='bg-gray-200 h-screen'>
+            <div className='flex flex-col md:flex-row h-screen'>
 
-                {/* 1st column (5/12): Show and filter package */}
-                <div className="w-full md:w-5/12 h-screen flex flex-col">
-
-                    {/* Filter and navigate within packet */}
-                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
-                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter' />
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            Expand
-                        </button>
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            {"<-"}
-                        </button>
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            {"->"}
-                        </button>
-                    </div>
-                    
-                    {/* FileTree */}
-                    <div className='flex-1 rounded-md bg-white shadow overflow-y-auto p-2 m-2'>
-                        <PackageTree data={data} />
-                    </div>
-
-                    {/* Filter with specific licenses */}
-                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
-                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter with a detected license' />
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            {"V"}
-                        </button>
-                    </div>
-
+                {/* 1st column (4/12): Show and filter package */}
+                <div className="w-full md:w-4/12 flex flex-col m-4 mr-2 p-2 rounded-md bg-white shadow">
+                    <PackageTree data={convertedData} />
                 </div>
 
-                {/* 2nd column (7/12): Show file, do curation */}
-                <div className="w-full md:w-7/12 h-screen flex flex-col">
-
-                    {/* Filter and navigate within file */}
-                    <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
-                        <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='Filter' />
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            {"<-"}
-                        </button>
-                        <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                            {"->"}
-                        </button>
-                    </div>
-                        
-                    {/* Code window */}
-                    <div className='flex-1 rounded-md bg-white shadow overflow-hidden p-2 m-2'>
-                        <CodeInspector />
-                    </div>
-
-                    {/* Detected license, curation */}
-                    <div className="p-2 m-2 rounded-md bg-white shadow flex-row text-sm">
-                        <p className="p-2">
-                            DETECTED LICENSE FOR THIS FILE
-                        </p>
-                        <div className="p-2 m-2 rounded-md bg-white shadow flex items-center text-sm">
-                            <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='CONCLUDED LICENSE' />
-                            <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2' >
-                                Add curation
-                            </button>
-                        </div>
-                    </div>
+                {/* 2nd column (8/12): Show file, do curation */}
+                <div className="w-full md:w-8/12 flex flex-col m-4 ml-2 p-2 rounded-md bg-white shadow">
+                    <CodeInspector />
                 </div>
             </div>
-        </div>
+        </body>
     )
 }

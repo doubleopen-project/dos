@@ -3,22 +3,21 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useRef, useEffect } from 'react';
-import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 import { Tree, NodeRendererProps } from 'react-arborist';
 import {
     BsFileText as FileText,
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen
 } from 'react-icons/bs';
-import type { PostFileTreeResType } from 'validation-helpers'
+import type { TreeNode } from "@/types/index";
 
-const PackageTree = ({data}:{data:PostFileTreeResType}) => {
-    
-    // Convert the JSON
-    const convertedData = convertJsonToTree(data.filetrees);
+const PackageTree = ({data}:{data:TreeNode[]}) => {
+
+    // TODO: fix useEffect to resize the tree
 
     const [searchText, setSearchText] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
+    const [treeHeight, setTreeHeight] = useState(0);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,54 +36,51 @@ const PackageTree = ({data}:{data:PostFileTreeResType}) => {
         }
     };
 
+    const handleResize = () => {
+        if (treeRef.current) {
+            const { offsetHeight } = treeRef.current;
+            setTreeHeight(offsetHeight);
+        }
+    };
+
     useEffect(() => {
-        const handleResize = () => {
-            if (treeRef.current) {
-                const { offsetWidth, offsetHeight } = treeRef.current;
-                treeRef.current.style.width = `${offsetWidth}px`;
-                const innerScrollContainer = treeRef.current.querySelector('.ReactVirtualized__Grid__innerScrollContainer') as HTMLElement;
-                if (innerScrollContainer) {
-                    innerScrollContainer.style.height = `${offsetHeight}px`;
-                }
-            }
-        };
-    
-        window.addEventListener('resize', handleResize);
         handleResize();
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
+        window.addEventListener('resize', handleResize);
     }, []);
-
+    
     return (
-        <div ref={treeRef}>
-
-            <div className='flex items-center text-sm'>
-                <input
-                    type='text'
-                    placeholder='Search'
-                    className='bg-gray-200 p-2 rounded-lg w-full'
+        <div className="flex flex-col h-full">
+            
+            <div className="p-2 mb-2 rounded-md bg-white shadow flex items-center text-sm">
+                <input className='bg-gray-200 p-2 rounded-lg w-full' 
+                    type='text' 
+                    placeholder='Filter' 
                     value={searchText}
-                    onChange={handleSearch}
+                    onChange={handleSearch} 
                 />
-                <button 
-                    className='bg-gray-200 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
+                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
                     onClick={handleExpand}
                 >
                     {isExpanded ? 'Collapse' : 'Expand'}
                 </button>
+                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                    {"<-"}
+                </button>
+                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                    {"->"}
+                </button>
             </div>
 
-            <div>
+            <div className="flex-1 pl-1 overflow-auto bg-gray-100"  ref={treeRef}>
                 <Tree
-                    data={convertedData}
+                    data={data}
                     openByDefault={false}
                     searchTerm={searchText}
                     searchMatch={(node, term) => 
                         node.data.name.toLowerCase().includes(term.toLowerCase())
                     }
-                    width={treeRef.current?.offsetWidth || 0}
-                    height={treeRef.current?.offsetHeight || 0}
+                    width="100%"
+                    height={treeHeight}
                     indent={12}
                     rowHeight={20}
                     paddingTop={30}
@@ -96,6 +92,15 @@ const PackageTree = ({data}:{data:PostFileTreeResType}) => {
                 </Tree>
             </div>
 
+            <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
+                <input className='bg-gray-200 p-2 rounded-lg w-full' 
+                    type='text' 
+                    placeholder='Filter with a detected license' 
+                />
+                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                    {"V"}
+                </button>
+            </div>
         </div>
     )
 }
