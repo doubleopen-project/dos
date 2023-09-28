@@ -2045,6 +2045,7 @@ declare const dosApi: [{
     method: "post";
     path: "/login/password";
     description: "Login with password";
+    alias: "PostLoginPassword";
     parameters: [{
         name: "body";
         type: "Body";
