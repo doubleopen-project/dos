@@ -11,6 +11,7 @@ import {
 } from 'react-icons/bs';
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
+import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 
 const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
 
@@ -32,6 +33,7 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
     };
     
     let tree: any;
+    //console.log(extractUniqueLicenses(treeData));
 
     const handleExpand = () => {
         if (!isExpanded) {
