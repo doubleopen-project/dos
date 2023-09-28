@@ -113,9 +113,13 @@ function Node({ node, style }: NodeRendererProps<any>) {
             onClick={() => node.toggle()}
         >
             <span className="flex items-center">
-                {node.isLeaf ? <FileText /> : node.isClosed ? <FolderClosed /> : <FolderOpen />}
+                {
+                    node.isLeaf ? node.data.hasLicenseFindings ? <FileText color="red" /> : <FileText /> : 
+                    node.isClosed ? node.data.hasLicenseFindings ? <FolderClosed color="red" /> : <FolderClosed /> : 
+                    node.data.hasLicenseFindings ? <FolderOpen color="red" /> : <FolderOpen />
+                }
             </span>
-            <span className="ml-2 font-mono text-xs">
+            <span className="ml-1 font-mono text-xs">
                 {node.data.name}
             </span>
         </div>
