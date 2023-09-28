@@ -2041,7 +2041,9 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
-}, {
+}];
+
+declare const authAPI: [{
     method: "post";
     path: "/login/password";
     description: "Login with password";
@@ -3640,4 +3642,4 @@ declare const loginFormSchema: z.ZodObject<{
 }>;
 type LoginFormType = z.infer<typeof loginFormSchema>;
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, FileTreeType, GetPackagesResType, LoginFormType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, dosApi, loginFormSchema, scannerAgentApi };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, FileTreeType, GetPackagesResType, LoginFormType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, authAPI, dosApi, loginFormSchema, scannerAgentApi };
