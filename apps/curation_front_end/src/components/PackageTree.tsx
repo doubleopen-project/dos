@@ -12,24 +12,28 @@ import {
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
+import { parseAsString, useQueryState } from 'next-usequerystate';
 
 const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
 
     // TODO: fix useEffect to resize the tree
 
-    const [fileSearchText, setFileSearchText] = useState('');
-    const [licenseSearchText, setLicenseSearchText] = useState('');
+    const [treeFilter, setTreeFilter] = useState('');
+    const [licenseFilter, setLicenseFilter] = useQueryState('licenseFilter', parseAsString.withDefault(''));
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
     const [treeData, setTreeData] = useState<TreeNode[]>(initialData); // TODO: use data from props
     const treeRef = useRef<HTMLDivElement>(null);
 
-    const handleFileSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFileSearchText(event.target.value);
+    const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTreeFilter(event.target.value);
     };
 
-    const handleLicenseSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLicenseSearchText(event.target.value);
+    const handleLicenseFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLicenseFilter(event.target.value);
+        if (event.target.value === '') {
+            setLicenseFilter(null);
+        }
     };
     
     let tree: any;
@@ -60,9 +64,9 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
     // Update `hasLicenseFindings` whenever `licenseSearchText` changes
     useEffect(() => {
         const updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
-        updateHasLicenseFindings(updatedTreeData, licenseSearchText);
+        updateHasLicenseFindings(updatedTreeData, licenseFilter);
         setTreeData(updatedTreeData);  // Set the updated tree data to trigger a re-render
-    }, [licenseSearchText]);
+    }, [licenseFilter]);
 
     return (
         <div className="flex flex-col h-full">
@@ -71,8 +75,8 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
                 <input className='bg-gray-200 p-2 rounded-lg w-full' 
                     type='text' 
                     placeholder='Filter' 
-                    value={fileSearchText}
-                    onChange={handleFileSearch} 
+                    value={treeFilter}
+                    onChange={handleTreeFilter} 
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
                     onClick={handleExpand}
@@ -91,7 +95,7 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
                 <Tree
                     data={treeData}
                     openByDefault={false}
-                    searchTerm={fileSearchText}
+                    searchTerm={treeFilter}
                     searchMatch={(node, term) => 
                         node.data.name.toLowerCase().includes(term.toLowerCase())
                     }
@@ -112,8 +116,8 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
                 <input className='bg-gray-200 p-2 rounded-lg w-full' 
                     type='text' 
                     placeholder='Filter with a detected license'
-                    value={licenseSearchText}
-                    onChange={handleLicenseSearch} 
+                    value={licenseFilter}
+                    onChange={handleLicenseFilter} 
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
                     {"V"}
