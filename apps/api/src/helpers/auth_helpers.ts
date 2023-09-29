@@ -53,3 +53,15 @@ export const authorizeAdmin = async (req: Request, res: Response, next: NextFunc
         return res.status(403).json({ message: 'Forbidden' });
     }
 }
+
+export const authorizeUser = async (req: Request, res: Response, next: NextFunction) => {
+    const { user } = req;
+    console.log(user);
+    
+    if (user) {
+        next();
+    }
+    else {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
