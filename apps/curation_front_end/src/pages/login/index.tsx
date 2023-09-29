@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import LoginForm from "@/components/LoginForm";
-import { useEffect, useState } from "react";
+import LoginForm from '@/components/LoginForm';
+import { useEffect, useState } from 'react';
 import { authHooks } from '@/hooks/zodiosHooks';
-import { LoginFormType } from "validation-helpers";
+import { LoginFormType } from 'validation-helpers';
 import { useRouter } from 'next/router';
 
 export default function Login() {
@@ -44,9 +44,9 @@ export default function Login() {
     }
 
     return (
-        <main className='bg-gray-200 h-screen flex justify-center items-center'>
+        <div className='bg-gray-200 h-screen flex justify-center items-center'>
             <LoginForm onSubmit={submitForm} errMsg={error? error : undefined} />
-        </main>
+        </div>
     )
 
 }

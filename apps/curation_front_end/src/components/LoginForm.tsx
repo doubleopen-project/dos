@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { loginFormSchema, LoginFormType } from 'validation-helpers';
@@ -13,11 +14,10 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import React from 'react';
-import { zodios, zodiosHooks } from '@/hooks/zodiosHooks';
+} from '@/components/ui/form'
+import { PasswordInput, UsernameInput } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
@@ -38,16 +38,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
     return (
         <div className='w-72 bg-white rounded-md h-min'>
             <Form {...form}>
-            <div className={errVisibilityClass + ' text-xs text-red-500 pt-4 pr-4 pl-4'}>{errMsg}</div>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-4">
+                <div className={errVisibilityClass + ' text-xs text-red-500 pt-4 pr-4 pl-4'}>{errMsg}</div>
+                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 p-4 flex flex-col'>
+
                     <FormField
                         control={form.control}
-                        name="username"
+                        name='username'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="username" {...field} />
+                                    <UsernameInput placeholder='username' {...field} required />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -55,18 +56,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
                     />
                     <FormField
                         control={form.control}
-                        name="password"
+                        name='password'
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className='!mt-4'>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="********" type='password' {...field} />
+                                    <PasswordInput placeholder='********' type='password' {...field} required />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Login</Button>
+                    <Button className='grow' type='submit'>Login</Button>
                 </form>
             </Form>
         </div>
