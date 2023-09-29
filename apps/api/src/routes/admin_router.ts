@@ -7,11 +7,11 @@ import { dosApi } from 'validation-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import crypto from 'crypto';
 
-const router = zodiosRouter(dosApi);
+const adminRouter = zodiosRouter(dosApi);
 
 // ----------------------------------- ADMIN ROUTES -----------------------------------
 
-router.post('/user', async (req, res) => {
+adminRouter.post('/user', async (req, res) => {
     try {
         const { username, password } = req.body;
         const role = req.body.role ? req.body.role : 'USER';
@@ -38,4 +38,4 @@ router.post('/user', async (req, res) => {
     }
 })
 
-export default router;
+export default adminRouter;

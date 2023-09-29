@@ -14,9 +14,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 
 import router from './routes/router';
-import authRouter from './routes/auth';
-import adminRouter from './routes/admin';
-
+import { adminRouter, authRouter, userRouter } from './routes';
 import { loadEnv } from 'common-helpers';
 import { dosApi } from 'validation-helpers';
 
@@ -24,7 +22,7 @@ import { rescanFilesWithTimeoutIssues } from './helpers/cron_jobs';
 import { localStrategy } from './passport_strategies/local_strategy';
 import * as dbQueries from './helpers/db_queries';
 import { User as DBUser } from 'database';
-import { authorizeAdmin } from './helpers/auth_helpers';
+import { authorizeAdmin, authorizeUser } from './helpers/auth_helpers';
 
 loadEnv('../../.env');
 
@@ -91,6 +89,7 @@ app.use((req, res, next) => {
 app.use('/api', router);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', authorizeAdmin, adminRouter);
+app.use('/api/user', authorizeUser, userRouter);
 
 const document = openApiBuilder({
 	title: 'DOS API',
