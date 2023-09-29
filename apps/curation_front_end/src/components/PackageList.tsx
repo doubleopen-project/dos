@@ -12,7 +12,7 @@ interface PackageListProps {
 const PackageList = ({data}: PackageListProps) => {
   return (
     <div>
-        <ul className='flex flex-col gap-4'>
+        <ul className='flex flex-col'>
             {data.packages.map(({ purl, updatedAt }) => (
                 <li key={purl} className='flex flex-row'>
                     <div className='w-1/6'>{updatedAt.toLocaleString()}</div>

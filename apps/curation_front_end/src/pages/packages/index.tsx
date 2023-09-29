@@ -2,18 +2,17 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Header from '@/components/Header';
 import PackageList from '@/components/PackageList';
 import { zodiosHooks } from '../../hooks/zodiosHooks';
 
 export default function PackageLibrary() {
-    
+
     const { data, isLoading, error } = zodiosHooks.useGet('/packages');
     if (isLoading) {
         return (
-        <div>
-            Loading package list...
-        </div>)
+            <div>
+                Loading package list...
+            </div>)
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
@@ -24,12 +23,18 @@ export default function PackageLibrary() {
     }));
 
     return (
-        <div className='bg-gray-200 min-h-screen'>
-            <div className='w-full col-span-1 relative mx-4 p-4'>
+        <div className='flex flex-col p-2 bg-gray-200 h-screen'>
+            <div className="flex-none p-4 m-1 rounded-md bg-white shadow">
                 <h1>Packages with scan results</h1>
             </div>
-            <div className='w-full col-span-1 relative lg:h-[70vh] h-[50vh] mx-4 p-4 border rounded-lg overflow-scroll'>
-                <PackageList data={{packages}}/>
+            <div className="flex-none p-4 m-1 rounded-md bg-white shadow">
+                <input className='bg-gray-200 p-2 rounded-lg w-full'
+                    type='text'
+                    placeholder='Search packages by name'
+                />
+            </div>
+            <div className='flex-1 p-4 m-1 border bg-white shadow rounded-lg overflow-auto'>
+                <PackageList data={{ packages }} />
             </div>
         </div>
     )
