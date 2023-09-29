@@ -12,6 +12,7 @@ import {
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
+import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { parseAsString, useQueryState } from 'next-usequerystate';
 
 const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
@@ -22,7 +23,8 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
     const [licenseFilter, setLicenseFilter] = useQueryState('licenseFilter', parseAsString.withDefault(''));
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
-    const [treeData, setTreeData] = useState<TreeNode[]>(initialData); // TODO: use data from props
+    const [treeData, setTreeData] = useState<TreeNode[]>(initialData);
+    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>(initialData);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,12 +63,26 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
         window.addEventListener('resize', handleResize);
     }, []);
     
-    // Update `hasLicenseFindings` whenever `licenseSearchText` changes
+    // Update tree data when the license search text is changed
     useEffect(() => {
-        const updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
-        updateHasLicenseFindings(updatedTreeData, licenseFilter);
-        setTreeData(updatedTreeData);  // Set the updated tree data to trigger a re-render
-    }, [licenseFilter]);
+        if (licenseFilter) {
+            let updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
+            updateHasLicenseFindings(updatedTreeData, licenseFilter);  // Update hasLicenseFindings flag
+            
+            // Filter the tree based on the licenseSearchText
+            updatedTreeData = filterTreeDataByLicense(updatedTreeData, licenseFilter);
+            
+            setTreeData(updatedTreeData);  // Set the updated and/or filtered tree data to trigger a re-render
+        } else {
+            // Reset to original tree data if licenseFilter is empty
+            setTreeData(originalTreeData);
+        }
+    }, [licenseFilter, originalTreeData]);    
+
+    // Return the whole original tree data when the license search text is empty
+    useEffect(() => {
+        setOriginalTreeData(initialData);
+    }, []);
 
     return (
         <div className="flex flex-col h-full">
