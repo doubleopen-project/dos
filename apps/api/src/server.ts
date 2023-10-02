@@ -27,6 +27,7 @@ import { authorizeAdmin, authorizeUser } from './helpers/auth_helpers';
 loadEnv('../../.env');
 
 if(!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET not set');
+if(!process.env.COOKIE_SECRET) throw new Error('COOKIE_SECRET not set');
 if(!process.env.DATABASE_URL) throw new Error('DATABASE_URL not set');
 
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION) : 0;
@@ -42,7 +43,7 @@ app.use(compression({
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
 app.use(cors());
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Use User from database package in serialization and deserialization
 declare global {
@@ -80,11 +81,11 @@ passport.deserializeUser(async (id: number, done) => {
         done(error);
     }
 });
-
+/*
 app.use((req, res, next) => {
     console.log(memoryStore);
     next();
-});
+});*/
 
 app.use('/api', router);
 app.use('/api/auth', authRouter);

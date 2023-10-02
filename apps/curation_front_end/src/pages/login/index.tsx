@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import LoginForm from '@/components/LoginForm';
-import { useEffect } from 'react';
-import { authHooks } from '@/hooks/zodiosHooks';
-import { LoginFormType } from 'validation-helpers';
 import { useRouter } from 'next/router';
+import { LoginFormType } from 'validation-helpers';
+import LoginForm from '@/components/LoginForm';
+//import { useUser } from '@/hooks/useUser';
+import { authHooks } from '@/hooks/zodiosHooks';
 
 const getErrorString = (errorCode: number) => {
     switch (errorCode) {
@@ -18,9 +18,7 @@ const getErrorString = (errorCode: number) => {
 }
 
 export default function Login() {
-    useEffect(() => {
-        // redirect to home if already logged in
-    }, []);
+    //useUser({ redirectTo: '/', redirectIfFound: true });
 
     const router = useRouter();
 
