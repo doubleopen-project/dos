@@ -229,4 +229,19 @@ export const dosApi = makeApi([
 		response: schemas.GetPackagesRes,
 		errors
 	},
+	{
+		method: 'get',
+		path: '/file/:sha256',
+		alias: 'GetFileData',
+		description: 'Get file download url and findings',
+		parameters: [
+			{
+				name: 'sha256',
+				type: 'Path',
+				schema: schemas.GetFileReqSha256Param
+			}
+		],
+		response: schemas.GetFileRes,
+		errors
+	}
 ]);

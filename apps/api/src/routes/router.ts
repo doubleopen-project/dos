@@ -15,7 +15,33 @@ const router = zodiosRouter(dosApi);
 
 const jobStateMap: Map<string, string> = new Map();
 
+if (!process.env.SPACES_BUCKET) throw new Error('Error: SPACES_BUCKET environment variable is not defined');
+
 // ---------------------------------- CURATION ROUTES ----------------------------------
+
+router.get('/file/:sha256', async (req, res) => {
+    try {
+        const fileData = await dbQueries.findFileData(req.params.sha256);
+        const presignedGetUrl = await s3Helpers.getPresignedGetUrl(req.params.sha256, process.env.SPACES_BUCKET as string);
+
+        if(!presignedGetUrl) {
+            throw new Error('Error: Presigned URL is undefined');
+        }
+
+        if (fileData) {
+            res.status(200).json({
+                downloadUrl: presignedGetUrl,
+                licenseFindings: fileData.licenseFindings,
+                copyrightFindings: fileData.copyrightFindings
+            });
+        } else {
+            res.status(400).json({ message: 'Bad request: File with the requested sha256 does not exist' });
+        }
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' })
+    }
+})
 
 router.get('/packages', async (req, res) => {
     try {

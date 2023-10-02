@@ -241,6 +241,24 @@ export const getPresignedPutUrl = async (key: string, bucketName: string): Promi
     }
 };
 
+// Get presigned get url
+export const getPresignedGetUrl = async (key: string, bucketName: string): Promise<string | undefined> => {
+    checkS3ClientEnvs();
+
+    try {
+        const command: GetObjectCommand = new GetObjectCommand({
+            Bucket: bucketName,
+            Key: key,
+        });
+
+        const url: string = await getSignedUrl(s3Client, command);
+        return url;
+    } catch (error) {
+        console.log(error);
+        return undefined;
+    }
+};
+
 const checkS3ClientEnvs = (): void => {
     if (!process.env.SPACES_ENDPOINT) {
         throw new Error("SPACES_ENDPOINT environment variable is missing");
