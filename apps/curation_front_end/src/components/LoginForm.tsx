@@ -5,11 +5,11 @@
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { Loader2 } from 'lucide-react';
 import { loginFormSchema, LoginFormType } from 'validation-helpers';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -22,9 +22,10 @@ import { Button } from '@/components/ui/button';
 interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
     errMsg?: string;
+    isLoading?: boolean;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg, isLoading }) => {
     const form = useForm<LoginFormType>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -32,6 +33,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
             password: '',
         },
     });
+
+    let loginButton = <Button className='grow' type='submit'>Login</Button>
+
+    if (isLoading) {
+        loginButton = <Button className='grow' type='submit' disabled><Loader2 className='mr-2 h-4 w-4 animate-spin' />Please wait</Button>
+    }
 
     const errVisibilityClass = errMsg ? 'visible' : 'hidden';
 
@@ -67,7 +74,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errMsg }) => {
                             </FormItem>
                         )}
                     />
-                    <Button className='grow' type='submit'>Login</Button>
+                    {loginButton}
                 </form>
             </Form>
         </div>
