@@ -2,9 +2,25 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 
 const CodeInspector = () => {
+
+    const editorRef = useRef(null);
+    const monaco = useMonaco();
+
+    useEffect(() => {
+        if (monaco) {
+            console.log("Here is a monaco instance: ", monaco);
+        }
+    }, [monaco]);
+
+    const handleEditorDidMount = (editor: any, monaco: any) => {
+        editorRef.current = editor;
+        editor.focus();
+    }
+
     return (
         <div className="flex flex-col h-full">
             
@@ -21,8 +37,11 @@ const CodeInspector = () => {
                 </button>
             </div>
             
-            <div className="flex-1 p-1 overflow-auto bg-gray-100">
-                CodeInspector
+            <div className="flex-1 overflow-auto bg-gray-100">
+                <Editor 
+                    theme="vs-light"
+                    onMount={handleEditorDidMount}
+                />
             </div>
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">

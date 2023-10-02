@@ -38,6 +38,10 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
         }
     };
     
+    const handleClick = () => {
+        console.log("Clicked!");
+    }
+
     let tree: any;
     //console.log(extractUniqueLicenses(treeData));
 
@@ -133,7 +137,7 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
                     type='text' 
                     placeholder='Filter with a detected license'
                     value={licenseFilter}
-                    onChange={handleLicenseFilter} 
+                    onChange={handleLicenseFilter}
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
                     {"V"}
@@ -161,8 +165,13 @@ function Node({ node, style }: NodeRendererProps<any>) {
         <div
             className="flex items-center cursor-pointer"
             style={style}
-            onClick={() => node.toggle()}
-        >
+            onClick={() => {
+                if (isLeaf) {
+                    console.log("File: " + name);
+                } else { 
+                    node.toggle()
+                }
+            }}>
             <span className="flex items-center">
                 {icon}
             </span>
