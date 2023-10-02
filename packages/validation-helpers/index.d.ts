@@ -2041,6 +2041,140 @@ declare const dosApi: [{
             message: string;
         }>;
     }];
+}, {
+    method: "get";
+    path: "/file/:sha256";
+    alias: "GetFileData";
+    description: "Get file download url and findings";
+    parameters: [{
+        name: "sha256";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        downloadUrl: zod.ZodString;
+        licenseFindings: zod.ZodArray<zod.ZodObject<{
+            licenseExpressionSPDX: zod.ZodString;
+            licenseFindingMatches: zod.ZodArray<zod.ZodObject<{
+                licenseExpression: zod.ZodNullable<zod.ZodString>;
+                startLine: zod.ZodNumber;
+                endLine: zod.ZodNumber;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }, {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }, {
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }>, "many">;
+        copyrightFindings: zod.ZodArray<zod.ZodObject<{
+            copyright: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            copyright: string;
+            startLine: number;
+            endLine: number;
+        }, {
+            copyright: string;
+            startLine: number;
+            endLine: number;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            copyright: string;
+            startLine: number;
+            endLine: number;
+        }[];
+    }, {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                score: number;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            copyright: string;
+            startLine: number;
+            endLine: number;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
 }];
 
 declare const scannerAgentApi: [{

@@ -511,7 +511,7 @@ export const updateLicenseConclusion = async (id: number, input: Prisma.LicenseC
             })
         } catch (error) {
             console.log('Error with trying to update LicenseConclusion: ' + error);
-            
+
             retries--;
             if (retries > 0) {
                 await new Promise((resolve) => setTimeout(resolve, retryInterval));
@@ -690,7 +690,7 @@ export const findFileTreesByPackagePurl = async (purl: string): Promise<FileTree
             path: 'asc'
         }
     });
-    
+
     return filetrees;
 }
 
@@ -1114,8 +1114,8 @@ export const findUserByUsername = async (username: string): Promise<User | null>
     return user;
 }
 
-export const findScannedPackages = async (): Promise<{purl: string, updatedAt: Date}[]> => {
-    let scannedPackages: {purl: string, updatedAt: Date}[] = [];
+export const findScannedPackages = async (): Promise<{ purl: string, updatedAt: Date }[]> => {
+    let scannedPackages: { purl: string, updatedAt: Date }[] = [];
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
     let querySuccess = false;
@@ -1149,6 +1149,80 @@ export const findScannedPackages = async (): Promise<{purl: string, updatedAt: D
     return scannedPackages;
 }
 
+export type FileWithRelations = Prisma.FileGetPayload<{
+    select: {
+        licenseFindings: {
+            select: {
+                licenseExpressionSPDX: true,
+                licenseFindingMatches: {
+                    select: {
+                        licenseExpression: true,
+                        startLine: true,
+                        endLine: true,
+                        score: true,
+                    }
+                }
+            }
+        },
+        copyrightFindings: {
+            select: {
+                copyright: true,
+                startLine: true,
+                endLine: true,
+            }
+        }
+    }
+}>;
+
+export const findFileData = async (sha256: string): Promise<FileWithRelations | null> => {
+    let file: FileWithRelations | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            file = await prisma.file.findUnique({
+                where: {
+                    sha256: sha256
+                },
+                select: {
+                    licenseFindings: {
+                        select: {
+                            licenseExpressionSPDX: true,
+                            licenseFindingMatches: {
+                                select: {
+                                    licenseExpression: true,
+                                    startLine: true,
+                                    endLine: true,
+                                    score: true,
+                                }
+                            }
+                        }
+                    },
+                    copyrightFindings: {
+                        select: {
+                            copyright: true,
+                            startLine: true,
+                            endLine: true,
+                        }
+                    }
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find FileData: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            } else {
+                throw new Error('Error: Unable to perform query to find FileData')
+            }
+        }
+    }
+    return file;
+}
 
 // ------------------------------ Delete ------------------------------
 
