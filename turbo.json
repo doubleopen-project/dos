@@ -5,6 +5,7 @@
 	],
 	"globalEnv": [
 		"ADMIN_TOKEN",
+		"COOKIE_SECRET",
 		"DATABASE_URL",
 		"DB_CONCURRENCY",
 		"DB_RETRIES",
