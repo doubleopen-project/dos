@@ -2,26 +2,29 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState } from 'react'
+import React from 'react';
 import type { GetPackagesResType } from 'validation-helpers';
+import { columns } from '@/components/datatable/columns';
+import { DataTable } from './datatable/data-table';
 
 interface PackageListProps {
     data: GetPackagesResType;
 }
 
 const PackageList = ({data}: PackageListProps) => {
-  return (
-    <div>
-        <ul className='flex flex-col'>
-            {data.packages.map(({ purl, updatedAt }) => (
-                <li key={purl} className='flex flex-row'>
-                    <div className='w-1/6'>{updatedAt.toLocaleString()}</div>
-                    <div className='w-5/6 hover:text-blue-400'><a href={`/packages/${encodeURIComponent(purl)}`}>{purl}</a></div>
-                </li>
-            ))}
-        </ul>
-    </div>
-  )
+  
+    return (
+        <div className="container mx-auto py-10">
+            <DataTable 
+                columns={columns} 
+                data={data.packages.map((pkg) => ({
+                    purl: pkg.purl,
+                    updatedAt: pkg.updatedAt,
+                }))} 
+            />
+        </div>
+    )
+
 }
 
 export default PackageList;
