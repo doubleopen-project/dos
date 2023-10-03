@@ -7,7 +7,7 @@ import type { GetPackagesResType } from 'validation-helpers';
 import { columns } from '@/components/datatable/columns';
 import { DataTable } from './datatable/data-table';
 
-interface PackageListProps {
+type PackageListProps = {
     data: GetPackagesResType;
 }
 
