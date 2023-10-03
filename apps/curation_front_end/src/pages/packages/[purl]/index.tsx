@@ -5,7 +5,7 @@
 import { useRouter } from "next/router";
 import PackageTree from '@/components/PackageTree';
 import CodeInspector from '@/components/CodeInspector';
-import { zodiosHooks } from '../../hooks/zodiosHooks';
+import { zodiosHooks } from '../../../hooks/zodiosHooks';
 import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 
 export default function Package() {
@@ -31,7 +31,7 @@ export default function Package() {
     const convertedData = convertJsonToTree(data.filetrees);
 
     return (
-        <body className='bg-gray-200 h-screen'>
+        <div className='bg-gray-200 h-screen'>
             <div className='flex flex-col md:flex-row h-screen'>
 
                 {/* 1st column (4/12): Show and filter package */}
@@ -39,11 +39,11 @@ export default function Package() {
                     <PackageTree data={convertedData} />
                 </div>
 
-                {/* 2nd column (8/12): Show file, do curation */}
+                {/* 2nd column (8/12): No file opened yet */}
                 <div className="w-full md:w-8/12 flex flex-col m-4 ml-2 p-2 rounded-md bg-white shadow">
-                    <CodeInspector />
+                    <CodeInspector contents="This is test data" />
                 </div>
             </div>
-        </body>
+        </div>
     )
 }

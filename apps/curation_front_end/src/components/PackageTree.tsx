@@ -15,7 +15,11 @@ import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { parseAsString, useQueryState } from 'next-usequerystate';
 
-const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
+type PackageTreeProps = {
+    data: TreeNode[];
+}
+
+const PackageTree = ({data}: PackageTreeProps) => {
 
     // TODO: fix useEffect to resize the tree
 
@@ -23,8 +27,8 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
     const [licenseFilter, setLicenseFilter] = useQueryState('licenseFilter', parseAsString.withDefault(''));
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
-    const [treeData, setTreeData] = useState<TreeNode[]>(initialData);
-    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>(initialData);
+    const [treeData, setTreeData] = useState<TreeNode[]>(data);
+    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>(data);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,10 +41,6 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
             setLicenseFilter(null);
         }
     };
-    
-    const handleClick = () => {
-        console.log("Clicked!");
-    }
 
     let tree: any;
     //console.log(extractUniqueLicenses(treeData));
@@ -85,7 +85,7 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
-        setOriginalTreeData(initialData);
+        setOriginalTreeData(data);
     }, []);
 
     return (
@@ -149,7 +149,7 @@ const PackageTree = ({data: initialData}:{data:TreeNode[]}) => {
 
 function Node({ node, style }: NodeRendererProps<any>) {
     const { isLeaf, isClosed, data } = node;
-    const { hasLicenseFindings, name } = data;
+    const { hasLicenseFindings, name, fileSha256 } = data;
     const boldStyle = {strokeWidth: 0.5};
     let icon;
     
@@ -167,7 +167,7 @@ function Node({ node, style }: NodeRendererProps<any>) {
             style={style}
             onClick={() => {
                 if (isLeaf) {
-                    console.log("File: " + name);
+                    console.log("Name =", name, " SHA256 =", fileSha256);
                 } else { 
                     node.toggle()
                 }

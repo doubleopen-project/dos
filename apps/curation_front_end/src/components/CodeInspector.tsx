@@ -5,7 +5,11 @@
 import React, { useEffect, useRef } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 
-const CodeInspector = () => {
+type CodeInspectorProps = {
+    contents: string;
+}
+
+const CodeInspector = (data: CodeInspectorProps) => {
 
     const editorRef = useRef(null);
     const monaco = useMonaco();
@@ -41,6 +45,7 @@ const CodeInspector = () => {
                 <Editor 
                     theme="vs-light"
                     onMount={handleEditorDidMount}
+                    value={data.contents}
                 />
             </div>
             
