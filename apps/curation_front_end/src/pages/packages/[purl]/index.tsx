@@ -5,8 +5,6 @@
 import { useRouter } from "next/router";
 import PackageTree from '@/components/PackageTree';
 import CodeInspector from '@/components/CodeInspector';
-import { zodiosHooks } from '../../../hooks/zodiosHooks';
-import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 
 export default function Package() {
     const router = useRouter();
@@ -17,26 +15,13 @@ export default function Package() {
 
     purl = purl?.toString().replace(/\/@/g, '/%40');
 
-    const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, {enabled: !!purl});
-    if (isLoading) {
-        return (
-        <div>
-            Loading...{purl}
-        </div>)
-    }
-    if (error) return <div>{error.message}</div>;
-    if (!data) return <div>No data</div>;
-
-    // Convert the JSON
-    const convertedData = convertJsonToTree(data.filetrees);
-
     return (
         <div className='bg-gray-200 h-screen'>
             <div className='flex flex-col md:flex-row h-screen'>
 
                 {/* 1st column (4/12): Show and filter package */}
                 <div className="w-full md:w-4/12 flex flex-col m-4 mr-2 p-2 rounded-md bg-white shadow">
-                    <PackageTree data={convertedData} />
+                    <PackageTree purl={purl} />
                 </div>
 
                 {/* 2nd column (8/12): No file opened yet */}
