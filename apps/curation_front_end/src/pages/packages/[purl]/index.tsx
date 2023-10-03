@@ -17,7 +17,7 @@ export default function Package() {
 
     purl = purl?.toString().replace(/\/@/g, '/%40');
 
-    const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string });
+    const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, {enabled: !!purl});
     if (isLoading) {
         return (
         <div>
