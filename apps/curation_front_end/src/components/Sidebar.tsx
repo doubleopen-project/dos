@@ -4,14 +4,16 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { GrInspect, GrCatalog } from 'react-icons/gr'
-import { AiOutlineHome } from 'react-icons/ai'
+import { GrInspect, GrCatalog, GrLogout } from 'react-icons/gr'
+import { AiOutlineHome, AiOutlineUser, AiOutlineProfile } from 'react-icons/ai'
+import { useUser } from '@/hooks/useUser'
 
 interface SidebarProps {
     children: React.ReactNode
 }
 
 const Sidebar = ({ children }: SidebarProps) => {
+    const user = useUser({});
     return (
         <div className='flex'>
             <div className="fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between">
@@ -32,7 +34,23 @@ const Sidebar = ({ children }: SidebarProps) => {
                             <GrInspect size={20} />
                         </div>
                     </Link>
-                    
+                    {!user && <Link href='/login'>
+                        <div className='bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block' title='Login'>
+                            <AiOutlineUser size={20} />
+                        </div>
+                    </Link>}
+                    {user && <Link href='/profile'>
+                    <div className='bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block' title='Profile'>
+                            <AiOutlineProfile size={20} />
+                        </div>
+                    </Link>
+                    }
+                    {user && <Link href='/logout'>
+                    <div className='bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block' title='Logout'>
+                            <GrLogout size={20} />
+                        </div>
+                    </Link>
+                    }
                 </div>
             </div>
             <main className='ml-20 w-full'>{children}</main>

@@ -42,7 +42,7 @@ app.use(compression({
     level: -1, // Default compression level
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Use User from database package in serialization and deserialization
@@ -61,6 +61,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: memoryStore,
+        //cookie: { secure: true }
     })
 )
 

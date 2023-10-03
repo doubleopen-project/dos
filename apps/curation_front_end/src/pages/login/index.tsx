@@ -5,7 +5,7 @@
 import { useRouter } from 'next/router';
 import { LoginFormType } from 'validation-helpers';
 import LoginForm from '@/components/LoginForm';
-//import { useUser } from '@/hooks/useUser';
+import { useUser } from '@/hooks/useUser';
 import { authHooks } from '@/hooks/zodiosHooks';
 
 const getErrorString = (errorCode: number) => {
@@ -18,11 +18,11 @@ const getErrorString = (errorCode: number) => {
 }
 
 export default function Login() {
-    //useUser({ redirectTo: '/', redirectIfFound: true });
+    useUser({ redirectTo: '/', redirectIfFound: true });
 
     const router = useRouter();
 
-    const { error, isSuccess, isLoading, mutate: loginUser } = authHooks.useMutation('post', '/login/password')
+    const { error, isSuccess, isLoading, mutate: loginUser } = authHooks.useMutation('post', '/login/password', {withCredentials: true})
 
     const submitForm = (loginData: LoginFormType) => {
         loginUser(loginData);
