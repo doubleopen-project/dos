@@ -14,22 +14,29 @@ import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { parseAsString, useQueryState } from 'next-usequerystate';
+import { convertJsonToTree } from '@/helpers/convertJsonToTree';
+import { zodiosHooks } from '@/hooks/zodiosHooks';
+import { Loader2 } from 'lucide-react';
 
 type PackageTreeProps = {
-    data: TreeNode[];
+    purl: string | undefined;
 }
 
-const PackageTree = ({data}: PackageTreeProps) => {
+const PackageTree = ({ purl }: PackageTreeProps) => {
 
     // TODO: fix useEffect to resize the tree
-
+    
     const [treeFilter, setTreeFilter] = useState('');
     const [licenseFilter, setLicenseFilter] = useQueryState('licenseFilter', parseAsString.withDefault(''));
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
-    const [treeData, setTreeData] = useState<TreeNode[]>(data);
-    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>(data);
+    const [treeData, setTreeData] = useState<TreeNode[]>([]);
+    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
+
+    const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, { enabled: !!purl });
+
+    //const convertedData = convertJsonToTree(data.filetrees);
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
@@ -66,37 +73,45 @@ const PackageTree = ({data}: PackageTreeProps) => {
         handleResize();
         window.addEventListener('resize', handleResize);
     }, []);
-    
+
     // Update tree data when the license search text is changed
+
     useEffect(() => {
         if (licenseFilter) {
             let updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
             updateHasLicenseFindings(updatedTreeData, licenseFilter);  // Update hasLicenseFindings flag
-            
+
             // Filter the tree based on the licenseSearchText
             updatedTreeData = filterTreeDataByLicense(updatedTreeData, licenseFilter);
-            
+
             setTreeData(updatedTreeData);  // Set the updated and/or filtered tree data to trigger a re-render
         } else {
             // Reset to original tree data if licenseFilter is empty
             setTreeData(originalTreeData);
         }
-    }, [licenseFilter, originalTreeData]);    
+    }, [licenseFilter, originalTreeData]);
 
     // Return the whole original tree data when the license search text is empty
+    
     useEffect(() => {
-        setOriginalTreeData(data);
-    }, []);
+        //setOriginalTreeData(data);
+        if (data) {
+            const convertedData = convertJsonToTree(data.filetrees);
+            setTreeData(convertedData);
+            setOriginalTreeData(convertedData);
+        }
+    }, [data]);
+    let treeComponent;
 
     return (
         <div className="flex flex-col h-full">
-            
+
             <div className="p-2 mb-2 rounded-md bg-white shadow flex items-center text-sm">
-                <input className='bg-gray-200 p-2 rounded-lg w-full' 
-                    type='text' 
-                    placeholder='Filter' 
+                <input className='bg-gray-200 p-2 rounded-lg w-full'
+                    type='text'
+                    placeholder='Filter'
                     value={treeFilter}
-                    onChange={handleTreeFilter} 
+                    onChange={handleTreeFilter}
                 />
                 <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
                     onClick={handleExpand}
@@ -111,12 +126,13 @@ const PackageTree = ({data}: PackageTreeProps) => {
                 </button>
             </div>
 
-            <div className="flex-1 pl-1 overflow-auto bg-gray-100"  ref={treeRef}>
-                <Tree
+            <div className="flex-1 pl-1 overflow-auto bg-gray-100" ref={treeRef}>
+                {isLoading && (<div className='flex justify-center items-center h-full'><Loader2 className='mr-2 h-16 w-16 animate-spin' /></div>)}
+                {data && (<Tree
                     data={treeData}
                     openByDefault={false}
                     searchTerm={treeFilter}
-                    searchMatch={(node, term) => 
+                    searchMatch={(node, term) =>
                         node.data.name.toLowerCase().includes(term.toLowerCase())
                     }
                     width="100%"
@@ -129,12 +145,14 @@ const PackageTree = ({data}: PackageTreeProps) => {
                     ref={(t) => (tree = t)}
                 >
                     {Node}
-                </Tree>
+                </Tree>)
+                }
+                {error && (<div className='flex justify-center items-center h-full'>Unable to fetch package data</div>)}
             </div>
 
             <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
-                <input className='bg-gray-200 p-2 rounded-lg w-full' 
-                    type='text' 
+                <input className='bg-gray-200 p-2 rounded-lg w-full'
+                    type='text'
                     placeholder='Filter with a detected license'
                     value={licenseFilter}
                     onChange={handleLicenseFilter}
@@ -150,9 +168,9 @@ const PackageTree = ({data}: PackageTreeProps) => {
 function Node({ node, style }: NodeRendererProps<any>) {
     const { isLeaf, isClosed, data } = node;
     const { hasLicenseFindings, name, fileSha256 } = data;
-    const boldStyle = {strokeWidth: 0.5};
+    const boldStyle = { strokeWidth: 0.5 };
     let icon;
-    
+
     if (isLeaf) {
         icon = hasLicenseFindings ? <FileText color="red" style={boldStyle} /> : <FileText />;
     } else if (isClosed) {
@@ -160,7 +178,7 @@ function Node({ node, style }: NodeRendererProps<any>) {
     } else {
         icon = hasLicenseFindings ? <FolderOpen color="red" style={boldStyle} /> : <FolderOpen />;
     }
-    
+
     return (
         <div
             className="flex items-center cursor-pointer"
@@ -168,7 +186,7 @@ function Node({ node, style }: NodeRendererProps<any>) {
             onClick={() => {
                 if (isLeaf) {
                     console.log("Name =", name, " SHA256 =", fileSha256);
-                } else { 
+                } else {
                     node.toggle()
                 }
             }}>
