@@ -26,7 +26,7 @@ export default function Package() {
 
                 {/* 2nd column (8/12): No file opened yet */}
                 <div className="w-full md:w-8/12 flex flex-col m-4 ml-2 p-2 rounded-md bg-white shadow">
-                    <CodeInspector contents="This is test data" />
+                    <CodeInspector />
                 </div>
             </div>
         </div>

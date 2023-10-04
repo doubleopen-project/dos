@@ -17,14 +17,15 @@ import { parseAsString, useQueryState } from 'next-usequerystate';
 import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 import { zodiosHooks } from '@/hooks/zodiosHooks';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 type PackageTreeProps = {
     purl: string | undefined;
 }
 
-const PackageTree = ({ purl }: PackageTreeProps) => {
+let globalPurl = "";
 
-    // TODO: fix useEffect to resize the tree
+const PackageTree = ({ purl }: PackageTreeProps) => {
     
     const [treeFilter, setTreeFilter] = useState('');
     const [licenseFilter, setLicenseFilter] = useQueryState('licenseFilter', parseAsString.withDefault(''));
@@ -35,8 +36,9 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     const treeRef = useRef<HTMLDivElement>(null);
 
     const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, { enabled: !!purl });
-
-    //const convertedData = convertJsonToTree(data.filetrees);
+    
+    // Ugly hack to get the purl to the Node component
+    globalPurl = purl as string;
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
@@ -92,16 +94,13 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     }, [licenseFilter, originalTreeData]);
 
     // Return the whole original tree data when the license search text is empty
-    
     useEffect(() => {
-        //setOriginalTreeData(data);
         if (data) {
             const convertedData = convertJsonToTree(data.filetrees);
             setTreeData(convertedData);
             setOriginalTreeData(convertedData);
         }
     }, [data]);
-    let treeComponent;
 
     return (
         <div className="flex flex-col h-full">
@@ -165,7 +164,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     )
 }
 
-function Node({ node, style }: NodeRendererProps<any>) {
+function Node({ node, style}: NodeRendererProps<any>) {
     const { isLeaf, isClosed, data } = node;
     const { hasLicenseFindings, name, fileSha256 } = data;
     const boldStyle = { strokeWidth: 0.5 };
@@ -184,9 +183,7 @@ function Node({ node, style }: NodeRendererProps<any>) {
             className="flex items-center cursor-pointer"
             style={style}
             onClick={() => {
-                if (isLeaf) {
-                    console.log("Name =", name, " SHA256 =", fileSha256);
-                } else {
+                if (!isLeaf) {
                     node.toggle()
                 }
             }}>
@@ -194,7 +191,13 @@ function Node({ node, style }: NodeRendererProps<any>) {
                 {icon}
             </span>
             <span className="ml-1 font-mono text-xs">
-                {name}
+                {isLeaf ? (
+                    <Link href={`/packages/${encodeURIComponent(globalPurl)}/${encodeURIComponent(fileSha256)}`}>
+                        {name}
+                    </Link>
+                ) : (
+                    name
+                )}
             </span>
         </div>
     );
