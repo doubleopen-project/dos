@@ -2,24 +2,34 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect, useRef } from 'react';
-import Editor, { EditorProps, useMonaco } from '@monaco-editor/react';
-import { edit } from 'react-arborist/dist/state/edit-slice';
+import React, { useState, useEffect, useRef } from 'react';
+import Editor, { useMonaco } from '@monaco-editor/react';
+import { Loader2 } from 'lucide-react';
+import { zodiosHooks } from '@/hooks/zodiosHooks';
 
 type CodeInspectorProps = {
-    contents?: string;
+    sha256: string | undefined;
 }
 
-const CodeInspector = (data: CodeInspectorProps) => {
+const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
+    const [fileContents, setFileContents] = useState<string>("");
+    const { data, isLoading, error } = zodiosHooks.useGetFileData({params:{ sha256: sha256 as string }}, { enabled: !!sha256 });
     const editorRef = useRef(null);
     const monaco = useMonaco();
+    const fileUrl = data?.downloadUrl;
 
+    // Fetch ASCII data from the URL
     useEffect(() => {
-        if (monaco) {
-            //setupEditor(monaco, editorRef.current);
+        if (fileUrl) {
+            fetch(fileUrl)
+                .then(response => response.text())  // Assuming the data is text/ASCII
+                .then(contents => {
+                    setFileContents(contents);
+                })
+                .catch(error => console.error("Error fetching data:", error));
         }
-    }, [monaco]);
+    }, [fileUrl]);
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
         editorRef.current = editor;
@@ -44,11 +54,12 @@ const CodeInspector = (data: CodeInspectorProps) => {
             </div>
             
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
-                {!data.contents && <p className="p-2">No file opened yet</p>}
-                {data.contents && <Editor 
+                {!sha256 && (<div className='flex justify-center items-center h-full'>No file opened</div>)}
+                {(sha256 && isLoading) && (<div className='flex justify-center items-center h-full'><Loader2 className='mr-2 h-16 w-16 animate-spin' /></div>)}
+                {data && (<Editor 
                     theme="vs-light"
                     onMount={handleEditorDidMount}
-                    value={data.contents}
+                    value={fileContents}
                     options={{
                         fontFamily: 'Source Code Pro',
                         fontSize: 12,
@@ -68,7 +79,8 @@ const CodeInspector = (data: CodeInspectorProps) => {
                         lineNumbersMinChars: 3,
                         readOnly: true,
                     }}  
-                />}
+                />)}
+                {error && (<div className='flex justify-center items-center h-full'>Unable to fetch file data</div>)}
             </div>
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
