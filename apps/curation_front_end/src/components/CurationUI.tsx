@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import React from 'react'
 import PackageTree from '@/components/PackageTree';
 import CodeInspector from '@/components/CodeInspector';
