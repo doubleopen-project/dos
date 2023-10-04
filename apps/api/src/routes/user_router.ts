@@ -13,7 +13,6 @@ const userRouter = zodiosRouter(userAPI);
 userRouter.get('/user', async (req, res) => {
     try {
         const { user } = req;
-        console.log(req);
         
         if (!user) {
             res.status(401).send({ message: 'Unauthorized' });

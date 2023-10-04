@@ -55,11 +55,13 @@ export const authorizeAdmin = async (req: Request, res: Response, next: NextFunc
 }
 
 export const authorizeUser = async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.hostname);
+    req.hostname
     console.log('cookies:');
     console.dir(req.cookies, { depth: null });
     
     const { user } = req;
-    //console.log(user);
+    console.log(user);
     
     if (user) {
         next();
