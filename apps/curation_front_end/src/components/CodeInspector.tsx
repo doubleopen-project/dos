@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { Loader2 } from 'lucide-react';
 import { zodiosHooks } from '@/hooks/zodiosHooks';
+import styles from '../styles/CodeInspector.module.css';
 
 type CodeInspectorProps = {
     sha256: string | undefined;
@@ -31,10 +32,17 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
         }
     }, [fileUrl]);
 
+    useEffect(() => {
+        if (editorRef.current && monaco && data?.licenseFindings) {
+            showLicenseFindingMatches(monaco, editorRef.current, data?.licenseFindings);
+        }
+    }, [monaco, editorRef.current, data?.licenseFindings]);
+
     const handleEditorDidMount = (editor: any, monaco: any) => {
         editorRef.current = editor;
         editor.focus();
-        setupEditor(monaco, editorRef.current);
+        //setupEditor(monaco, editorRef.current);
+        //showLicenseFindingMatches(monaco, editorRef.current, data?.licenseFindings);
     }
 
     return (
@@ -104,6 +112,29 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
         </div>
     )
+}
+
+function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: any) {
+    const decorations: any[] = [];
+    licenseFindings.forEach((licenseFinding: { licenseFindingMatches: any[] }) => {
+        licenseFinding.licenseFindingMatches.forEach((licenseFindingMatch: any) => {
+            const startLine = licenseFindingMatch.startLine;
+            const endLine = licenseFindingMatch.endLine;
+            const range = new monaco.Range(startLine, 1, endLine, 1);
+            const decoration = {
+                range: range,
+                options: {
+                    isWholeLine: true,
+                    linesDecorationsClassName: styles['myLineDecoration'],
+                    //glyphMargin: true,
+                    //inlineClassName: styles['license-finding-inline'],
+                    //glyphMarginClassName: styles['license-finding-glyph-margin'],
+                },
+            };
+            decorations.push(decoration);
+        });
+    });
+    editor.deltaDecorations([], decorations);
 }
 
 function setupEditor(monaco: any, editor: any) {
