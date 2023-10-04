@@ -23,8 +23,6 @@ type PackageTreeProps = {
     purl: string | undefined;
 }
 
-let globalPurl = "";
-
 const PackageTree = ({ purl }: PackageTreeProps) => {
     
     const [treeFilter, setTreeFilter] = useState('');
@@ -36,9 +34,6 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     const treeRef = useRef<HTMLDivElement>(null);
 
     const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, { enabled: !!purl });
-    
-    // Ugly hack to get the purl to the Node component
-    globalPurl = purl as string;
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
@@ -142,7 +137,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                     padding={25}
                     ref={(t) => (tree = t)}
                 >
-                    {Node}
+                    {(nodeProps) => <Node {...nodeProps} licenseFilter={licenseFilter} purl={purl} />}
                 </Tree>)
                 }
                 {error && (<div className='flex justify-center items-center h-full'>Unable to fetch package data</div>)}
@@ -163,7 +158,12 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     )
 }
 
-function Node({ node, style}: NodeRendererProps<any>) {
+type NodeProps = NodeRendererProps<any> & {
+    purl: string | undefined;
+    licenseFilter: string | null;
+};
+
+function Node({ node, style, purl, licenseFilter}: NodeProps) {
     const { isLeaf, isClosed, data } = node;
     const { hasLicenseFindings, name, fileSha256 } = data;
     const boldStyle = { strokeWidth: 0.5 };
@@ -191,7 +191,10 @@ function Node({ node, style}: NodeRendererProps<any>) {
             </span>
             <span className="ml-1 font-mono text-xs">
                 {isLeaf ? (
-                    <Link href={`/packages/${encodeURIComponent(globalPurl)}/${encodeURIComponent(fileSha256)}`}>
+                    <Link href={{
+                        pathname: `/packages/${encodeURIComponent(purl || '')}/${encodeURIComponent(fileSha256)}`,
+                        query: licenseFilter ? { licenseFilter: `${licenseFilter}`} : {}
+                    }}>
                         {name}
                     </Link>
                 ) : (
