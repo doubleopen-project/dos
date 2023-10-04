@@ -77,7 +77,6 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     }, []);
 
     // Update tree data when the license search text is changed
-
     useEffect(() => {
         if (licenseFilter) {
             let updatedTreeData = JSON.parse(JSON.stringify(treeData));  // Create a deep copy
