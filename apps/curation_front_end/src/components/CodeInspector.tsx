@@ -39,7 +39,17 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            
+            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center text-sm">
+                <p className="p-1 font-bold">
+                    Detected SPDX license expression for this file:
+                </p>
+                <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-sm">
+                    {data && data.licenseFindings.map((license: any) => (
+                        <span key={license.licenseExpressionSPDX}>{license.licenseExpressionSPDX}</span>
+                    ))}
+                </p>
+            </div>
+
             <div className="p-2 mb-2 rounded-md bg-white shadow flex items-center text-sm">
                 <input className='bg-gray-200 p-2 rounded-lg w-full' 
                     type='text' 
@@ -84,9 +94,6 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
             </div>
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
-                <p className="p-2">
-                    DETECTED LICENSE FOR THIS FILE
-                </p>
                 <div className="p-2 m-1 rounded-md bg-white shadow flex items-center text-sm">
                     <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='CONCLUDED LICENSE' />
                     <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2' >
