@@ -3,10 +3,11 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useEffect, useRef } from 'react';
-import Editor, { useMonaco } from '@monaco-editor/react';
+import Editor, { EditorProps, useMonaco } from '@monaco-editor/react';
+import { edit } from 'react-arborist/dist/state/edit-slice';
 
 type CodeInspectorProps = {
-    contents: string;
+    contents?: string;
 }
 
 const CodeInspector = (data: CodeInspectorProps) => {
@@ -16,13 +17,14 @@ const CodeInspector = (data: CodeInspectorProps) => {
 
     useEffect(() => {
         if (monaco) {
-            console.log("Here is a monaco instance: ", monaco);
+            //setupEditor(monaco, editorRef.current);
         }
     }, [monaco]);
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
         editorRef.current = editor;
         editor.focus();
+        setupEditor(monaco, editorRef.current);
     }
 
     return (
@@ -41,12 +43,32 @@ const CodeInspector = (data: CodeInspectorProps) => {
                 </button>
             </div>
             
-            <div className="flex-1 overflow-auto bg-gray-100">
-                <Editor 
+            <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
+                {!data.contents && <p className="p-2">No file opened yet</p>}
+                {data.contents && <Editor 
                     theme="vs-light"
                     onMount={handleEditorDidMount}
                     value={data.contents}
-                />
+                    options={{
+                        fontFamily: 'Source Code Pro',
+                        fontSize: 12,
+                        minimap: {
+                            enabled: true,
+                        },
+                        wordWrap: 'on',
+                        wrappingIndent: 'indent',
+                        scrollBeyondLastLine: false,
+                        scrollbar: {
+                            vertical: 'auto',
+                            horizontal: 'auto',
+                        },
+                        glyphMargin: true,
+                        lineNumbers: "on",
+                        lineDecorationsWidth: 0,
+                        lineNumbersMinChars: 3,
+                        readOnly: true,
+                    }}  
+                />}
             </div>
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
@@ -63,6 +85,25 @@ const CodeInspector = (data: CodeInspectorProps) => {
 
         </div>
     )
+}
+
+function setupEditor(monaco: any, editor: any) {
+    
+    editor.decorations = editor.createDecorationsCollection({
+        range: new monaco.Range(1, 1, 1, 1),
+        options: {
+			isWholeLine: true,
+			//linesDecorationsClassName: "myLineDecoration",
+		},
+    });
+    
+    editor.updateOptions(
+        // Set up line numbers
+        {
+            lineNumbers: 'on',
+            lineNumbersMinChars: 3,
+        },
+    );
 }
 
 export default CodeInspector;
