@@ -42,6 +42,7 @@ app.use(compression({
     level: -1, // Default compression level
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
+
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -61,7 +62,12 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: memoryStore,
-        //cookie: { secure: true }
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+        }
     })
 )
 
@@ -82,11 +88,6 @@ passport.deserializeUser(async (id: number, done) => {
         done(error);
     }
 });
-/*
-app.use((req, res, next) => {
-    console.log(memoryStore);
-    next();
-});*/
 
 app.use('/api', router);
 app.use('/api/auth', authRouter);
