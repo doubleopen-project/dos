@@ -17,14 +17,11 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
     const { data, isLoading, error } = zodiosHooks.useGetFileData({params:{ sha256: sha256 as string }}, { enabled: !!sha256 });
-    //const editorRef = useRef(null);
-    //const monaco = useMonaco();
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL
     useEffect(() => {
         if (fileUrl) {
-            console.log("Fetching file data from " + fileUrl);
             fetch(fileUrl)
                 .then(response => response.text())  // Assuming the data is text/ASCII
                 .then(contents => {
@@ -33,18 +30,7 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
                 .catch(error => console.error("Error fetching data:", error));
         }
     }, [fileUrl]);
-/*
-    useEffect(() => {
-        if (editorRef.current && monaco && data?.licenseFindings) {
-            showLicenseFindingMatches(monaco, editorRef.current, data?.licenseFindings);
-        }
-    }, [monaco, editorRef.current, data?.licenseFindings]);
 
-    const handleEditorDidMount = (editor: any, monaco: any) => {
-        editorRef.current = editor;
-        //editor.focus();
-    }
-*/
     return (
         <div className="flex flex-col h-full">
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center text-sm">
@@ -52,8 +38,8 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
                     Detected SPDX license expression for this file:
                 </p>
                 <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-sm">
-                    {data && data.licenseFindings.map((license: any) => (
-                        <span key={license.licenseExpressionSPDX}>{license.licenseExpressionSPDX}</span>
+                    {data && data.licenseFindings.map((license: any, index) => (
+                        <span key={index}>{license.licenseExpressionSPDX}</span>
                     ))}
                 </p>
             </div>
@@ -73,8 +59,8 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
             
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
                 {!sha256 && (<div className='flex justify-center items-center h-full'>No file opened</div>)}
-                {(sha256 && isLoading) && (<div className='flex justify-center items-center h-full'><Loader2 className='mr-2 h-16 w-16 animate-spin' /></div>)}
-                {data && fileContents && (<CodeEditor key={sha256} contents={fileContents} licenseFindings={data.licenseFindings}/>)}
+                {sha256 && isLoading && (<div className='flex justify-center items-center h-full'><Loader2 className='mr-2 h-16 w-16 animate-spin' /></div>)}
+                {sha256 && data && fileContents && (<CodeEditor contents={fileContents} licenseFindings={data.licenseFindings}/>)}
                 {error && (<div className='flex justify-center items-center h-full'>Unable to fetch file data</div>)}
             </div>
             

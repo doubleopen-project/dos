@@ -1,10 +1,10 @@
-import { Editor, EditorProps, useMonaco } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { dosApi } from 'validation-helpers';
 import React, { useRef } from 'react';
 import styles from '../styles/CodeInspector.module.css';
 
-type LicenseFindings = ZodiosResponseByPath<typeof dosApi,'get','/file/:sha256'>;
+type LicenseFindings = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
 
 type CodeEditorProps = {
     contents: string;
@@ -12,11 +12,8 @@ type CodeEditorProps = {
 }
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
-    
+
     const editorRef = useRef(null);
-    const monaco = useMonaco();
-    console.log(contents);
-    console.log(JSON.stringify(licenseFindings));
 
     function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: CodeEditorProps["licenseFindings"]) {
         const decorations: any[] = [];
@@ -30,9 +27,6 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                     options: {
                         isWholeLine: true,
                         linesDecorationsClassName: styles['myLineDecoration'],
-                        //glyphMargin: true,
-                        //inlineClassName: styles['license-finding-inline'],
-                        //glyphMarginClassName: styles['license-finding-glyph-margin'],
                     },
                 };
                 decorations.push(decoration);
@@ -42,36 +36,13 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
     }
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
-        editorRef.current = editor;
         showLicenseFindingMatches(monaco, editor, licenseFindings);
-        //editor.focus();
     };
 
     return (
-        <Editor 
+        <Editor
             key={contents}
-            onMount={(editor, monaco) => {      
-                const decorations: any[] = [];
-                licenseFindings.forEach((licenseFinding: { licenseFindingMatches: any[] }) => {
-                    licenseFinding.licenseFindingMatches.forEach((licenseFindingMatch: any) => {
-                        const startLine = licenseFindingMatch.startLine;
-                        const endLine = licenseFindingMatch.endLine;
-                        const range = new monaco.Range(startLine, 1, endLine, 1);
-                        const decoration = {
-                            range: range,
-                            options: {
-                                isWholeLine: true,
-                                linesDecorationsClassName: styles['myLineDecoration'],
-                                //glyphMargin: true,
-                                //inlineClassName: styles['license-finding-inline'],
-                                //glyphMarginClassName: styles['license-finding-glyph-margin'],
-                            },
-                        };
-                        decorations.push(decoration);
-                    });
-                });
-                editor.deltaDecorations([], decorations);
-            }}
+            onMount={handleEditorDidMount}
             theme="vs-light"
             value={contents}
             options={{
@@ -92,9 +63,9 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                 lineDecorationsWidth: 0,
                 lineNumbersMinChars: 3,
                 readOnly: true,
-            }}  
+            }}
         />
-  )
+    )
 }
 
 export default CodeEditor;
