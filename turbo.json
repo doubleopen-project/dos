@@ -5,6 +5,7 @@
 	],
 	"globalEnv": [
 		"ADMIN_TOKEN",
+		"ALLOWED_ORIGINS",
 		"COOKIE_SECRET",
 		"COOKIE_SECURE",
 		"DATABASE_URL",
