@@ -30,7 +30,7 @@ if(!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET not set');
 if(!process.env.COOKIE_SECRET) throw new Error('COOKIE_SECRET not set');
 if(!process.env.DATABASE_URL) throw new Error('DATABASE_URL not set');
 
-const environment = process.env.NODE_ENV || 'development';
+//const environment = process.env.NODE_ENV || 'development';
 
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION) : 0;
 
@@ -79,9 +79,9 @@ app.use(
         saveUninitialized: false,
         store: memoryStore,
         cookie: {
-            secure: environment === 'production',
+            //secure: environment === 'production',
             httpOnly: true,
-            sameSite: environment === 'production' ? 'none' : 'strict',
+            sameSite: 'none',
             maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
         }
     })
