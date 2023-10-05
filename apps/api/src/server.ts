@@ -43,7 +43,21 @@ app.use(compression({
     threshold: COMPRESSION_LIMIT, // Size limit for compression
 }));
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
+console.log(allowedOrigins);
+
+const corsOptions = {
+    credentials: true,
+    origin: (origin: string | undefined, callback: (error: Error | null, allowed: boolean) => void) => {
+        if(!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'), false);
+        }
+    }
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Use User from database package in serialization and deserialization
@@ -63,7 +77,7 @@ app.use(
         saveUninitialized: false,
         store: memoryStore,
         cookie: {
-            secure: process.env.NODE_ENV === 'production',
+            //secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             sameSite: 'strict',
             maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
