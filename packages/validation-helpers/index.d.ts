@@ -2054,84 +2054,118 @@ declare const dosApi: [{
     response: zod.ZodObject<{
         downloadUrl: zod.ZodString;
         licenseFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
             licenseExpressionSPDX: zod.ZodString;
             licenseFindingMatches: zod.ZodArray<zod.ZodObject<{
+                id: zod.ZodNumber;
+                updatedAt: zod.ZodDate;
                 licenseExpression: zod.ZodNullable<zod.ZodString>;
                 startLine: zod.ZodNumber;
                 endLine: zod.ZodNumber;
                 score: zod.ZodNumber;
             }, "strip", zod.ZodTypeAny, {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }, {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }>, "many">;
         }, "strip", zod.ZodTypeAny, {
+            id: number;
             licenseExpressionSPDX: string;
+            updatedAt: Date;
             licenseFindingMatches: {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }[];
         }, {
+            id: number;
             licenseExpressionSPDX: string;
+            updatedAt: Date;
             licenseFindingMatches: {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }[];
         }>, "many">;
         copyrightFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
             copyright: zod.ZodString;
             startLine: zod.ZodNumber;
             endLine: zod.ZodNumber;
         }, "strip", zod.ZodTypeAny, {
+            id: number;
             copyright: string;
             startLine: number;
             endLine: number;
+            updatedAt: Date;
         }, {
+            id: number;
             copyright: string;
             startLine: number;
             endLine: number;
+            updatedAt: Date;
         }>, "many">;
     }, "strip", zod.ZodTypeAny, {
         licenseFindings: {
+            id: number;
             licenseExpressionSPDX: string;
+            updatedAt: Date;
             licenseFindingMatches: {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }[];
         }[];
         downloadUrl: string;
         copyrightFindings: {
+            id: number;
             copyright: string;
             startLine: number;
             endLine: number;
+            updatedAt: Date;
         }[];
     }, {
         licenseFindings: {
+            id: number;
             licenseExpressionSPDX: string;
+            updatedAt: Date;
             licenseFindingMatches: {
+                id: number;
                 score: number;
                 startLine: number;
                 endLine: number;
+                updatedAt: Date;
                 licenseExpression: string | null;
             }[];
         }[];
         downloadUrl: string;
         copyrightFindings: {
+            id: number;
             copyright: string;
             startLine: number;
             endLine: number;
+            updatedAt: Date;
         }[];
     }>;
     errors: [{
