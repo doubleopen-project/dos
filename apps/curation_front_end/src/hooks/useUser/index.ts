@@ -16,7 +16,7 @@ export const useUser = (options: UseUserOptions) => {
 
     const router = useRouter();
 
-    const user = { username: data?.username };
+    const user = data ? { username: data.username } : null;
     const finished = Boolean(data);
     const hasUser = Boolean(user);
 
