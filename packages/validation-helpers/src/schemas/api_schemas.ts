@@ -316,8 +316,12 @@ export const GetFileReqSha256Param = z.string({
 export const GetFileRes = z.object({
     downloadUrl: z.string(),
     licenseFindings: z.array(z.object({
+        id: z.number(),
+        updatedAt: z.coerce.date(),
         licenseExpressionSPDX: z.string(),
         licenseFindingMatches: z.array(z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
             licenseExpression: z.nullable(z.string()),
             startLine: z.number(),
             endLine: z.number(),
@@ -325,6 +329,8 @@ export const GetFileRes = z.object({
         })),
     })),
     copyrightFindings: z.array(z.object({
+        id: z.number(),
+        updatedAt: z.coerce.date(),
         copyright: z.string(),
         startLine: z.number(),
         endLine: z.number(),
