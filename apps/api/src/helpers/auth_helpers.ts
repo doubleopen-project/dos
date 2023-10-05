@@ -10,11 +10,8 @@ export const authenticateORTToken = async (req: Request, res: Response, next: Ne
 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
 
-    if (token === process.env.ORT_TOKEN || await findUser(token)) {
-        next();
-    } else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
+    if (token === process.env.ORT_TOKEN || await findUser(token)) next();
+    else return res.status(403).json({ message: 'Forbidden' });
 }
 
 export const authenticateSAToken = (req: Request, res: Response, next: NextFunction) => {
@@ -23,11 +20,8 @@ export const authenticateSAToken = (req: Request, res: Response, next: NextFunct
 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
 
-    if (token === process.env.SA_TOKEN) {
-        next();
-    } else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
+    if (token === process.env.SA_TOKEN) next();
+    else return res.status(403).json({ message: 'Forbidden' });
 }
 
 export const authenticateAdminToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,36 +31,19 @@ export const authenticateAdminToken = async (req: Request, res: Response, next: 
     if (token == null) return res.status(401).json({ message: 'Unauthorized' })
     
     const user = await findUser(token);
-    if (token === process.env.ADMIN_TOKEN || (user && user.role === 'ADMIN')) {
-        next();
-    } else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
+    if (token === process.env.ADMIN_TOKEN || (user && user.role === 'ADMIN')) next();
+    else return res.status(403).json({ message: 'Forbidden' });
 }
 
 export const authorizeAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const { user } = req;
-    if (user && user.role === 'ADMIN') {
-        next();
-    }
-    else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
+    if (user && user.role === 'ADMIN') next();
+    else return res.status(403).json({ message: 'Forbidden' });
 }
 
 export const authorizeUser = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.hostname);
-    req.hostname
-    console.log('cookies:');
-    console.dir(req.cookies, { depth: null });
-    
     const { user } = req;
-    console.log(user);
     
-    if (user) {
-        next();
-    }
-    else {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
+    if (user) next();
+    else return res.status(403).json({ message: 'Forbidden' });
 }
