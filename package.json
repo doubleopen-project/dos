@@ -35,6 +35,7 @@
         "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
         "lint": "turbo run lint",
+        "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
