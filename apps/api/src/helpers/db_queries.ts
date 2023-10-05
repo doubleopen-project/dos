@@ -1153,9 +1153,13 @@ export type FileWithRelations = Prisma.FileGetPayload<{
     select: {
         licenseFindings: {
             select: {
+                id: true,
+                updatedAt: true,
                 licenseExpressionSPDX: true,
                 licenseFindingMatches: {
                     select: {
+                        id: true,
+                        updatedAt: true,
                         licenseExpression: true,
                         startLine: true,
                         endLine: true,
@@ -1166,6 +1170,8 @@ export type FileWithRelations = Prisma.FileGetPayload<{
         },
         copyrightFindings: {
             select: {
+                id: true,
+                updatedAt: true,
                 copyright: true,
                 startLine: true,
                 endLine: true,
@@ -1189,9 +1195,13 @@ export const findFileData = async (sha256: string): Promise<FileWithRelations | 
                 select: {
                     licenseFindings: {
                         select: {
+                            id: true,
+                            updatedAt: true,
                             licenseExpressionSPDX: true,
                             licenseFindingMatches: {
                                 select: {
+                                    id: true,
+                                    updatedAt: true,
                                     licenseExpression: true,
                                     startLine: true,
                                     endLine: true,
@@ -1202,6 +1212,8 @@ export const findFileData = async (sha256: string): Promise<FileWithRelations | 
                     },
                     copyrightFindings: {
                         select: {
+                            id: true,
+                            updatedAt: true,
                             copyright: true,
                             startLine: true,
                             endLine: true,
