@@ -20,6 +20,8 @@ import { convertJsonToTree } from '@/helpers/convertJsonToTree';
 import { zodiosHooks } from '@/hooks/zodiosHooks';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { Label } from './ui/label';
+import { Badge } from './ui/badge';
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -100,6 +102,10 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
 
     return (
         <div className="flex flex-col h-full">
+            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow">
+                <Label className="font-bold">Package: </Label>
+                <Badge className="rounded-md">{purl}</Badge>
+            </div>
 
             <div className="p-2 mb-2 rounded-md bg-white shadow flex items-center text-sm">
                 <input className='bg-gray-200 p-2 rounded-lg w-full'
