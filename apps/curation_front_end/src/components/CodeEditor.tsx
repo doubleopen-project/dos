@@ -1,4 +1,4 @@
-import Editor from '@monaco-editor/react';
+import Editor, { EditorProps } from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { dosApi } from 'validation-helpers';
 import React, { useRef } from 'react';
@@ -9,11 +9,12 @@ type LicenseFindings = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256
 type CodeEditorProps = {
     contents: string;
     licenseFindings: LicenseFindings["licenseFindings"];
+    line: number;
 }
 
-const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
+const CodeEditor = ({ contents, licenseFindings, line }: CodeEditorProps) => {
 
-    const editorRef = useRef(null);
+    //const editorRef = useRef(null);
 
     function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: CodeEditorProps["licenseFindings"]) {
         const decorations: any[] = [];
@@ -33,15 +34,20 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
             });
         });
         editor.deltaDecorations([], decorations);
+        
     }
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
+        // Show the decorations for all individual license matches
         showLicenseFindingMatches(monaco, editor, licenseFindings);
+
+        // Move the editor to the specified line
+        editor.revealLineInCenter(line);
     };
 
     return (
         <Editor
-            key={contents}
+            key={contents+line} 
             onMount={handleEditorDidMount}
             theme="vs-light"
             value={contents}
