@@ -11,7 +11,7 @@ import { ZodiosResponseByPath } from '@zodios/core';
 import { dosApi } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
-import { data } from '@/testData/filetree';
+import { Label } from './ui/label';
 
 type DataType = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -46,9 +46,14 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
     return (
         <div className="flex flex-col h-full">
-
+            
+            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow">
+                <Label className="font-bold">File: </Label>
+                <Label>file.ts</Label>
+            </div>
+            
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
-                <p className="p-1 font-bold text-sm">Detected SPDX license expression for the whole file</p>
+                <Label className="p-1 text-sm">Detected SPDX license expression for the whole file</Label>
                 <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
                     {
                         data && data.licenseFindings.map((license) => (
@@ -64,7 +69,7 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
             </div>
 
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
-                <p className="p-1 text-sm">
+                <Label className="p-1 text-sm">
                     {
                         license ? (
                             <>
@@ -72,7 +77,7 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
                             </>
                         ) : "No license matches"
                     }
-                </p>
+                </Label>
                 <div className="flex items-center">
                     <p className='bg-slate-300 p-1 m-1 rounded-md w-full shadow text-xs'>
                         {
