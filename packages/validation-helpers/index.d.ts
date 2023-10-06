@@ -2223,6 +2223,7 @@ declare const guestAPI: [{
     path: "/file";
     alias: "GetFileData";
     description: "Get file download url and findings";
+    immutable: true;
     parameters: [{
         name: "body";
         type: "Body";
@@ -5602,6 +5603,7 @@ declare const dosAPI: [{
     path: "/guest/file";
     alias: "GetFileData";
     description: "Get file download url and findings";
+    immutable: true;
     parameters: [{
         name: "body";
         type: "Body";

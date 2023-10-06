@@ -34,6 +34,7 @@ export const guestAPI = makeApi([
 		path: '/file',
 		alias: 'GetFileData',
 		description: 'Get file download url and findings',
+        immutable: true,
 		parameters: [
 			{
 				name: 'body',

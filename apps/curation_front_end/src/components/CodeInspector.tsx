@@ -15,19 +15,19 @@ import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 
-type DataType = ZodiosResponseByPath<typeof guestAPI, 'get', '/file/:sha256'>;
+type DataType = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
+    purl: string | undefined;
     path: string | undefined;
-    sha256: string | undefined;
 }
 
-const CodeInspector = ({ path, sha256 }: CodeInspectorProps) => {
+const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
     const [licenseMatch, setLicenseMatch] = useQueryState('licenseMatch', parseAsInteger.withDefault(0));
-    const { data, isLoading, error } = zodiosHooks.useGetFileData({params:{ sha256: sha256 as string }}, { enabled: !!sha256 });
+    const { data, isLoading, error } = zodiosHooks.useGetFileData({ purl: purl as string, path: path as string }, undefined, { enabled: !!path && !!purl });
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL
@@ -114,14 +114,14 @@ const CodeInspector = ({ path, sha256 }: CodeInspectorProps) => {
 
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
                 {
-                    !sha256 && (
+                    !path && (
                         <div className='flex justify-center items-center h-full'>
                             No file opened
                         </div>
                     )
                 }
                 {
-                    sha256 && isLoading && (
+                    path && isLoading && (
                         <div className='flex justify-center items-center h-full'>
                             <Loader2 className='mr-2 h-16 w-16 animate-spin' />
                         </div>

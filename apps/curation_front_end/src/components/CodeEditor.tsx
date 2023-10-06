@@ -8,7 +8,7 @@ import { guestAPI } from 'validation-helpers';
 import React from 'react';
 import styles from '../styles/CodeInspector.module.css';
 
-type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'get', '/file/:sha256'>;
+type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 
 type CodeEditorProps = {
     contents: string;
