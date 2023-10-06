@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Editor, { EditorProps } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
-import { dosApi } from 'validation-helpers';
-import React, { useRef } from 'react';
+import { guestAPI } from 'validation-helpers';
+import React from 'react';
 import styles from '../styles/CodeInspector.module.css';
 
-type LicenseFindings = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
+type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'get', '/file/:sha256'>;
 
 type CodeEditorProps = {
     contents: string;
