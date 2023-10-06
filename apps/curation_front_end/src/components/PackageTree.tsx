@@ -173,7 +173,7 @@ type NodeProps = NodeRendererProps<any> & {
 
 function Node({ node, style, purl, licenseFilter}: NodeProps) {
     const { isLeaf, isClosed, data } = node;
-    const { hasLicenseFindings, name, fileSha256 } = data;
+    const { hasLicenseFindings, name, path } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let icon;
 
@@ -200,7 +200,7 @@ function Node({ node, style, purl, licenseFilter}: NodeProps) {
             <span className="ml-1 font-mono text-xs">
                 {isLeaf ? (
                     <Link href={{
-                        pathname: `/packages/${encodeURIComponent(purl || '')}/${encodeURIComponent(fileSha256)}`,
+                        pathname: `/packages/${encodeURIComponent(purl || '')}/${encodeURIComponent(path || '')}`,
                         query: licenseFilter ? { licenseFilter: `${licenseFilter}`} : {}
                     }}>
                         {name}

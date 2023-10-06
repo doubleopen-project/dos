@@ -12,15 +12,17 @@ import { dosApi } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
 import { Label } from './ui/label';
+import { Badge } from './ui/badge';
 
 type DataType = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
+    path: string | undefined;
     sha256: string | undefined;
 }
 
-const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
+const CodeInspector = ({ path, sha256 }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
     const [licenseMatch, setLicenseMatch] = useQueryState('licenseMatch', parseAsInteger.withDefault(0));
@@ -49,7 +51,7 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
             
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow">
                 <Label className="font-bold">File: </Label>
-                <Label>file.ts</Label>
+                <Badge className="rounded-md">{path}</Badge>
             </div>
             
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
