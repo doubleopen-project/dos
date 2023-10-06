@@ -11,10 +11,13 @@ const guestRouter = zodiosRouter(guestAPI);
 
 // ----------------------------------- GUEST ROUTES -----------------------------------
 
-guestRouter.get('/file/:sha256', async (req, res) => {
+guestRouter.post('/file', async (req, res) => {
     try {
-        const fileData = await dbQueries.findFileData(req.params.sha256);
-        const presignedGetUrl = await s3Helpers.getPresignedGetUrl(req.params.sha256, process.env.SPACES_BUCKET as string);
+        const sha256 = await dbQueries.findFileSha256(req.body.purl, req.body.path);
+        console.log('sha256: ', sha256);
+        
+        const fileData = await dbQueries.findFileData(sha256);
+        const presignedGetUrl = await s3Helpers.getPresignedGetUrl(sha256, process.env.SPACES_BUCKET as string);
 
         if(!presignedGetUrl) {
             throw new Error('Error: Presigned URL is undefined');

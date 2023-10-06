@@ -40,13 +40,18 @@ export const GetPackagesRes = z.object({
 
 export type GetPackagesResType = z.infer<typeof GetPackagesRes>
 
-//------------------- GET file -------------------
+//------------------- POST file -------------------
 
-export const GetFileReqSha256Param = z.string({
-    required_error: 'Sha256 is required'
+export const PostFileReq = z.object({
+    purl: z.string({
+        required_error: 'Purl is required'
+    }),
+    path: z.string({
+        required_error: 'Path is required'
+    })
 })
 
-export const GetFileRes = z.object({
+export const PostFileRes = z.object({
     downloadUrl: z.string(),
     licenseFindings: z.array(z.object({
         id: z.number(),

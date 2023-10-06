@@ -30,18 +30,18 @@ export const guestAPI = makeApi([
 		errors
 	},
 	{
-		method: 'get',
-		path: '/file/:sha256',
+		method: 'post',
+		path: '/file',
 		alias: 'GetFileData',
 		description: 'Get file download url and findings',
 		parameters: [
 			{
-				name: 'sha256',
-				type: 'Path',
-				schema: schemas.GetFileReqSha256Param
+				name: 'body',
+				type: 'Body',
+				schema: schemas.PostFileReq
 			}
 		],
-		response: schemas.GetFileRes,
+		response: schemas.PostFileRes,
 		errors
 	}
 ]);
