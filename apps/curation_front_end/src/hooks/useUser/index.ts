@@ -12,7 +12,7 @@ interface UseUserOptions {
 }
 
 export const useUser = (options: UseUserOptions) => {
-    const { data, error } = userHooks.useGetUser({withCredentials: true});
+    const { data, error } = userHooks.useGetUser({withCredentials: true}, {retry: false});
 
     const router = useRouter();
 
