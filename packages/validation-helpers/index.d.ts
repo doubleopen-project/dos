@@ -2219,14 +2219,23 @@ declare const guestAPI: [{
         }>;
     }];
 }, {
-    method: "get";
-    path: "/file/:sha256";
+    method: "post";
+    path: "/file";
     alias: "GetFileData";
     description: "Get file download url and findings";
     parameters: [{
-        name: "sha256";
-        type: "Path";
-        schema: zod.ZodString;
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+            path: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            path: string;
+            purl: string;
+        }, {
+            path: string;
+            purl: string;
+        }>;
     }];
     response: zod.ZodObject<{
         downloadUrl: zod.ZodString;
@@ -5589,14 +5598,23 @@ declare const dosAPI: [{
         }>;
     }];
 }, {
-    method: "get";
-    path: "/guest/file/:sha256";
+    method: "post";
+    path: "/guest/file";
     alias: "GetFileData";
     description: "Get file download url and findings";
     parameters: [{
-        name: "sha256";
-        type: "Path";
-        schema: zod.ZodString;
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+            path: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            path: string;
+            purl: string;
+        }, {
+            path: string;
+            purl: string;
+        }>;
     }];
     response: zod.ZodObject<{
         downloadUrl: zod.ZodString;

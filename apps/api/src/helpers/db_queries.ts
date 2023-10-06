@@ -1180,6 +1180,48 @@ export type FileWithRelations = Prisma.FileGetPayload<{
     }
 }>;
 
+export const findFileSha256 = async (purl: string, path: string): Promise<string> => {
+    let fileSha256: string | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            fileSha256 = await prisma.fileTree.findFirst({
+                where: {
+                    package: {
+                        purl: purl
+                    },
+                    path: path,
+                },
+                select: {
+                    fileSha256: true
+                }
+            }).then((fileTree: { fileSha256: string } | null) => {
+                if (!fileTree) {
+                    throw new Error('Error: Unable to find file sha256')
+                }
+                return fileTree.fileSha256
+            })
+            querySuccess = true;
+        }
+        catch (error) {
+            console.log('Error with trying to find FileSha256: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            } else {
+                throw new Error('Error: Unable to perform query to find FileSha256')
+            }
+        }
+    }
+
+    if (!fileSha256) throw new Error('Error: Unable to find FileSha256');
+    return fileSha256;
+}
+
 export const findFileData = async (sha256: string): Promise<FileWithRelations | null> => {
     let file: FileWithRelations | null = null;
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
