@@ -3,158 +3,20 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from '@zodios/express';
-import { dosApi } from 'validation-helpers';
+import { scannerAPI } from 'validation-helpers';
 import * as s3Helpers from 's3-helpers';
 import * as dbQueries from '../helpers/db_queries';
 import * as dbOperations from '../helpers/db_operations';
-import { processPackageAndSendToScanner } from '../helpers/new_job_process';
 import { authenticateORTToken, authenticateSAToken } from '../helpers/auth_helpers';
+import { processPackageAndSendToScanner } from '../helpers/new_job_process';
 import { stateMap } from '../helpers/state_helpers';
 
-const router = zodiosRouter(dosApi);
+const scannerRouter = zodiosRouter(scannerAPI);
 
 const jobStateMap: Map<string, string> = new Map();
 
-if (!process.env.SPACES_BUCKET) throw new Error('Error: SPACES_BUCKET environment variable is not defined');
-
-// ---------------------------------- CURATION ROUTES ----------------------------------
-
-router.get('/file/:sha256', async (req, res) => {
-    try {
-        const fileData = await dbQueries.findFileData(req.params.sha256);
-        const presignedGetUrl = await s3Helpers.getPresignedGetUrl(req.params.sha256, process.env.SPACES_BUCKET as string);
-
-        if(!presignedGetUrl) {
-            throw new Error('Error: Presigned URL is undefined');
-        }
-
-        if (fileData) {
-            res.status(200).json({
-                downloadUrl: presignedGetUrl,
-                licenseFindings: fileData.licenseFindings,
-                copyrightFindings: fileData.copyrightFindings
-            });
-        } else {
-            res.status(400).json({ message: 'Bad request: File with the requested sha256 does not exist' });
-        }
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' })
-    }
-})
-
-router.get('/packages', async (req, res) => {
-    try {
-        const packages = await dbQueries.findScannedPackages();
-        res.status(200).json({ packages: packages });
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' })
-    }
-})
-
-router.post('/filetree', async (req, res) => {
-    try {
-        const filetrees = await dbQueries.findFileTreesByPackagePurl(req.body.purl);
-
-        if (filetrees) {
-            res.status(200).json({filetrees: filetrees.map((filetree) => {
-                return {
-                    path: filetree.path,
-                    packageId: filetree.packageId,
-                    fileSha256: filetree.fileSha256,
-                    file: {
-                        licenseFindings: (filetree.file.licenseFindings).map((licenseFinding) => {
-                            return {licenseExpressionSPDX: licenseFinding.licenseExpressionSPDX}
-                        }),
-                    }
-                }
-            })});
-        }
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-})
-
-router.post('/license-conclusion', authenticateORTToken, async (req, res) => {
-    try {
-        const licenseConclusion = await dbQueries.createLicenseConclusion({
-            data: {
-                concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-                reason: req.body.reason,
-                startLine: req.body.startLine,
-                endLine: req.body.endLine,
-                score: 100,
-                fileSha256: req.body.fileSha256,
-            }
-        })
-
-        if (licenseConclusion) {
-
-            res.status(200).json({
-                licenseConclusionId: licenseConclusion.id,
-                message: 'License conclusion created'
-            });
-        } else {
-            res.status(400).json({ message: 'Bad request: License conclusion could not be created' });
-        }
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-})
-
-router.put('/license-conclusion/:id', authenticateORTToken, async (req, res) => {
-    try {
-        await dbQueries.updateLicenseConclusion(
-            parseInt(req.params.id),
-            {
-                concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-                reason: req.body.reason,
-                startLine: req.body.startLine,
-                endLine: req.body.endLine
-            }
-        )
-
-        res.status(200).json({ message: 'License conclusion updated' });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-        console.log('Error: ', error);
-
-        if (error.code === 'P2025') {
-            return res.status(400).json({ message: 'Bad request: License conclusion to update not found' });
-        } else {
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    }
-})
-
-router.delete('/license-conclusion/:id', authenticateORTToken, async (req, res) => {
-    try {
-        await dbQueries.deleteLicenseConclusion(parseInt(req.params.id))
-
-        res.status(200).json({ message: 'License conclusion deleted' });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-        console.log('Error: ', error);
-
-        if (error.code === 'P2025') {
-            return res.status(400).json({ message: 'Bad request: License conclusion with the requested id does not exist' });
-        } else {
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    }
-})
-
-// ------------------------------------ ORT ROUTES ------------------------------------
-
 // Get scan results for package with purl
-router.post('/scan-results', authenticateORTToken, async (req, res) => {
+scannerRouter.post('/scan-results', authenticateORTToken, async (req, res) => {
     try {
         console.log('Searching for results for package with purl: ' + req.body.purl);
 
@@ -168,20 +30,8 @@ router.post('/scan-results', authenticateORTToken, async (req, res) => {
     }
 })
 
-// Delete scan results for a specified package purl
-router.delete('/scan-results', authenticateORTToken, async (req, res) => {
-    // TODO: this endpoint should only be used by specific users
-    try {
-        const message = await dbOperations.deletePackageDataByPurl(req.body.purl);
-        res.status(200).json({ message: message });
-    } catch (error) {
-        console.log('Error: ', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-})
-
 // Request presigned upload url for a file
-router.post('/upload-url', authenticateORTToken, async (req, res) => {
+scannerRouter.post('/upload-url', authenticateORTToken, async (req, res) => {
     try {
         if (!process.env.SPACES_BUCKET) {
             throw new Error('Error: SPACES_BUCKET environment variable is not defined');
@@ -229,7 +79,7 @@ router.post('/upload-url', authenticateORTToken, async (req, res) => {
 })
 
 // Add new ScannerJob
-router.post('/job', authenticateORTToken, async (req, res) => {
+scannerRouter.post('/job', authenticateORTToken, async (req, res) => {
     try {
         if (!process.env.SPACES_BUCKET) {
             throw new Error('Error: SPACES_BUCKET environment variable is not defined');
@@ -291,7 +141,7 @@ router.post('/job', authenticateORTToken, async (req, res) => {
 })
 
 // Get ScannerJob state
-router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
+scannerRouter.get('/job-state/:id', authenticateORTToken, async (req, res) => {
     try {
         const scannerJob = await dbQueries.findScannerJobStateById(req.params.id);
 
@@ -319,7 +169,7 @@ router.get('/job-state/:id', authenticateORTToken, async (req, res) => {
 // ------------------------------------- SA ROUTES -------------------------------------
 
 // Update ScannerJob state
-router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
+scannerRouter.put('/job-state/:id', authenticateSAToken, async (req, res) => {
     try {
         if (req.body.state === 'completed') {
             return res.status(400).json({
@@ -355,7 +205,7 @@ router.put('/job-state/:id', authenticateSAToken, async (req, res) => {
 })
 
 // Save job results to database
-router.post('/job-results', authenticateSAToken, async (req, res) => {
+scannerRouter.post('/job-results', authenticateSAToken, async (req, res) => {
     try {
         dbOperations.saveJobResults(req.body.id, req.body.result, jobStateMap)
         res.status(200).json({
@@ -367,4 +217,4 @@ router.post('/job-results', authenticateSAToken, async (req, res) => {
     }
 })
 
-export default router;
+export default scannerRouter;

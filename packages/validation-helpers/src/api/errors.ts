@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { makeErrors } from '@zodios/core';
-import { ErrorSchema } from '../schemas/api_schemas';
+import { ErrorSchema } from './schemas/error_schemas';
 
 export const errors = makeErrors([
 	{

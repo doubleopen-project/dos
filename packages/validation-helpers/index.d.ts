@@ -358,1859 +358,6 @@ declare const ScannerJobResultSchema: z.ZodObject<{
     }[];
 }>;
 
-declare const dosApi: [{
-    method: "post";
-    path: "/scan-results";
-    description: "Get scan results for specified purl";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            purl: zod.ZodString;
-            options: zod.ZodOptional<zod.ZodObject<{
-                fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-            }, "strip", zod.ZodTypeAny, {
-                fetchConcluded?: boolean | undefined;
-            }, {
-                fetchConcluded?: boolean | undefined;
-            }>>;
-        }, "strip", zod.ZodTypeAny, {
-            purl: string;
-            options?: {
-                fetchConcluded?: boolean | undefined;
-            } | undefined;
-        }, {
-            purl: string;
-            options?: {
-                fetchConcluded?: boolean | undefined;
-            } | undefined;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        state: zod.ZodObject<{
-            status: zod.ZodString;
-            id: zod.ZodNullable<zod.ZodString>;
-        }, "strip", zod.ZodTypeAny, {
-            status: string;
-            id: string | null;
-        }, {
-            status: string;
-            id: string | null;
-        }>;
-        results: zod.ZodUnion<[zod.ZodNull, zod.ZodObject<{
-            licenses: zod.ZodArray<zod.ZodObject<{
-                license: zod.ZodString;
-                location: zod.ZodObject<{
-                    path: zod.ZodString;
-                    start_line: zod.ZodNumber;
-                    end_line: zod.ZodNumber;
-                }, "strip", zod.ZodTypeAny, {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                }, {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                }>;
-                score: zod.ZodNumber;
-            }, "strip", zod.ZodTypeAny, {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }, {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }>, "many">;
-            copyrights: zod.ZodArray<zod.ZodObject<{
-                statement: zod.ZodString;
-                location: zod.ZodObject<{
-                    path: zod.ZodString;
-                    start_line: zod.ZodNumber;
-                    end_line: zod.ZodNumber;
-                }, "strip", zod.ZodTypeAny, {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                }, {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                }>;
-            }, "strip", zod.ZodTypeAny, {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }, {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }>, "many">;
-            issues: zod.ZodArray<zod.ZodObject<{
-                timestamp: zod.ZodDate;
-                source: zod.ZodString;
-                message: zod.ZodString;
-                severity: zod.ZodString;
-            }, "strip", zod.ZodTypeAny, {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }, {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }>, "many">;
-        }, "strip", zod.ZodTypeAny, {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-            issues: {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }[];
-        }, {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-            issues: {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }[];
-        }>]>;
-    }, "strip", zod.ZodTypeAny, {
-        state: {
-            status: string;
-            id: string | null;
-        };
-        results: {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-            issues: {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }[];
-        } | null;
-    }, {
-        state: {
-            status: string;
-            id: string | null;
-        };
-        results: {
-            copyrights: {
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-                statement: string;
-            }[];
-            licenses: {
-                score: number;
-                license: string;
-                location: {
-                    path: string;
-                    start_line: number;
-                    end_line: number;
-                };
-            }[];
-            issues: {
-                message: string;
-                timestamp: Date;
-                source: string;
-                severity: string;
-            }[];
-        } | null;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "delete";
-    path: "/scan-results";
-    description: "Delete scan results for specified purl";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            purl: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            purl: string;
-        }, {
-            purl: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/upload-url";
-    description: "Get presigned upload URL for S3 object storage with specified object key";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            key: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            key: string;
-        }, {
-            key: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        success: zod.ZodBoolean;
-        presignedUrl: zod.ZodOptional<zod.ZodString>;
-        message: zod.ZodOptional<zod.ZodString>;
-    }, "strip", zod.ZodTypeAny, {
-        success: boolean;
-        presignedUrl?: string | undefined;
-        message?: string | undefined;
-    }, {
-        success: boolean;
-        presignedUrl?: string | undefined;
-        message?: string | undefined;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/job";
-    description: "Add scanner job for package";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            zipFileKey: zod.ZodString;
-            purl: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            purl: string;
-            zipFileKey: string;
-        }, {
-            purl: string;
-            zipFileKey: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        scannerJobId: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        scannerJobId: string;
-    }, {
-        scannerJobId: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "get";
-    path: "/job-state/:id";
-    description: "Get state for scanner job with given id";
-    parameters: [{
-        name: "id";
-        type: "Path";
-        schema: zod.ZodString;
-    }];
-    response: zod.ZodObject<{
-        state: zod.ZodObject<{
-            status: zod.ZodString;
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-            status: string;
-        }, {
-            message: string;
-            status: string;
-        }>;
-    }, "strip", zod.ZodTypeAny, {
-        state: {
-            message: string;
-            status: string;
-        };
-    }, {
-        state: {
-            message: string;
-            status: string;
-        };
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "put";
-    path: "/job-state/:id";
-    description: "Edit scanner job state";
-    parameters: [{
-        name: "id";
-        type: "Path";
-        schema: zod.ZodString;
-    }, {
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            state: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            state: string;
-        }, {
-            state: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/job-results";
-    description: "Save scanner job results";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            id: zod.ZodString;
-            result: zod.ZodObject<{
-                headers: zod.ZodArray<zod.ZodObject<{
-                    tool_name: zod.ZodString;
-                    tool_version: zod.ZodString;
-                    options: zod.ZodObject<{
-                        input: zod.ZodArray<zod.ZodString, "many">;
-                        "--copyright": zod.ZodBoolean;
-                        "--info": zod.ZodBoolean;
-                        "--json": zod.ZodOptional<zod.ZodString>;
-                        "--json-pp": zod.ZodOptional<zod.ZodString>;
-                        "--license": zod.ZodBoolean;
-                        "--package": zod.ZodOptional<zod.ZodBoolean>;
-                    }, "strip", zod.ZodTypeAny, {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    }, {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    }>;
-                    notice: zod.ZodString;
-                    start_timestamp: zod.ZodString;
-                    end_timestamp: zod.ZodString;
-                    output_format_version: zod.ZodString;
-                    duration: zod.ZodNumber;
-                    message: zod.ZodNullable<zod.ZodString>;
-                    errors: zod.ZodArray<zod.ZodUnknown, "many">;
-                    warnings: zod.ZodArray<zod.ZodUnknown, "many">;
-                    extra_data: zod.ZodObject<{
-                        system_environment: zod.ZodObject<{
-                            operating_system: zod.ZodString;
-                            cpu_architecture: zod.ZodString;
-                            platform: zod.ZodString;
-                            platform_version: zod.ZodString;
-                            python_version: zod.ZodString;
-                        }, "strip", zod.ZodTypeAny, {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        }, {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        }>;
-                        spdx_license_list_version: zod.ZodString;
-                        files_count: zod.ZodNumber;
-                    }, "strip", zod.ZodTypeAny, {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    }, {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    }>;
-                }, "strip", zod.ZodTypeAny, {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }, {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }>, "many">;
-                files: zod.ZodArray<zod.ZodObject<{
-                    path: zod.ZodString;
-                    type: zod.ZodString;
-                    sha256: zod.ZodNullable<zod.ZodString>;
-                    detected_license_expression: zod.ZodNullable<zod.ZodString>;
-                    detected_license_expression_spdx: zod.ZodNullable<zod.ZodString>;
-                    license_detections: zod.ZodArray<zod.ZodObject<{
-                        license_expression: zod.ZodString;
-                        matches: zod.ZodArray<zod.ZodObject<{
-                            score: zod.ZodNumber;
-                            start_line: zod.ZodNumber;
-                            end_line: zod.ZodNumber;
-                            license_expression: zod.ZodString;
-                        }, "strip", zod.ZodTypeAny, {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }, {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }>, "many">;
-                    }, "strip", zod.ZodTypeAny, {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }, {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }>, "many">;
-                    copyrights: zod.ZodArray<zod.ZodObject<{
-                        copyright: zod.ZodString;
-                        start_line: zod.ZodNumber;
-                        end_line: zod.ZodNumber;
-                    }, "strip", zod.ZodTypeAny, {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }, {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }>, "many">;
-                    scan_errors: zod.ZodArray<zod.ZodString, "many">;
-                }, "strip", zod.ZodTypeAny, {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }, {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }>, "many">;
-            }, "strip", zod.ZodTypeAny, {
-                files: {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }[];
-                headers: {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }[];
-            }, {
-                files: {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }[];
-                headers: {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }[];
-            }>;
-        }, "strip", zod.ZodTypeAny, {
-            id: string;
-            result: {
-                files: {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }[];
-                headers: {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }[];
-            };
-        }, {
-            id: string;
-            result: {
-                files: {
-                    path: string;
-                    type: string;
-                    sha256: string | null;
-                    detected_license_expression: string | null;
-                    detected_license_expression_spdx: string | null;
-                    license_detections: {
-                        license_expression: string;
-                        matches: {
-                            license_expression: string;
-                            score: number;
-                            start_line: number;
-                            end_line: number;
-                        }[];
-                    }[];
-                    copyrights: {
-                        start_line: number;
-                        end_line: number;
-                        copyright: string;
-                    }[];
-                    scan_errors: string[];
-                }[];
-                headers: {
-                    message: string | null;
-                    options: {
-                        input: string[];
-                        "--copyright": boolean;
-                        "--info": boolean;
-                        "--license": boolean;
-                        "--json"?: string | undefined;
-                        "--json-pp"?: string | undefined;
-                        "--package"?: boolean | undefined;
-                    };
-                    tool_name: string;
-                    tool_version: string;
-                    notice: string;
-                    start_timestamp: string;
-                    end_timestamp: string;
-                    output_format_version: string;
-                    duration: number;
-                    errors: unknown[];
-                    warnings: unknown[];
-                    extra_data: {
-                        system_environment: {
-                            operating_system: string;
-                            cpu_architecture: string;
-                            platform: string;
-                            platform_version: string;
-                            python_version: string;
-                        };
-                        spdx_license_list_version: string;
-                        files_count: number;
-                    };
-                }[];
-            };
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/user";
-    description: "Add user";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            username: zod.ZodString;
-            password: zod.ZodString;
-            role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
-            subscription: zod.ZodOptional<zod.ZodEnum<["SILVER", "GOLD"]>>;
-            token: zod.ZodOptional<zod.ZodString>;
-        }, "strip", zod.ZodTypeAny, {
-            username: string;
-            password: string;
-            role?: "ADMIN" | "USER" | undefined;
-            subscription?: "SILVER" | "GOLD" | undefined;
-            token?: string | undefined;
-        }, {
-            username: string;
-            password: string;
-            role?: "ADMIN" | "USER" | undefined;
-            subscription?: "SILVER" | "GOLD" | undefined;
-            token?: string | undefined;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "delete";
-    path: "/user";
-    description: "Delete user";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            id: zod.ZodNumber;
-        }, "strip", zod.ZodTypeAny, {
-            id: number;
-        }, {
-            id: number;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/license-conclusion";
-    description: "Add a new license conclusion";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            concludedLicenseExpressionSPDX: zod.ZodString;
-            detectedLicenseExpressionSPDX: zod.ZodString;
-            comment: zod.ZodString;
-            reason: zod.ZodString;
-            startLine: zod.ZodNumber;
-            endLine: zod.ZodNumber;
-            fileSha256: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            concludedLicenseExpressionSPDX: string;
-            detectedLicenseExpressionSPDX: string;
-            comment: string;
-            reason: string;
-            startLine: number;
-            endLine: number;
-            fileSha256: string;
-        }, {
-            concludedLicenseExpressionSPDX: string;
-            detectedLicenseExpressionSPDX: string;
-            comment: string;
-            reason: string;
-            startLine: number;
-            endLine: number;
-            fileSha256: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        licenseConclusionId: zod.ZodNumber;
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-        licenseConclusionId: number;
-    }, {
-        message: string;
-        licenseConclusionId: number;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "put";
-    path: "/license-conclusion/:id";
-    description: "Update a license conclusion";
-    parameters: [{
-        name: "id";
-        type: "Path";
-        schema: zod.ZodString;
-    }, {
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-            detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-            comment: zod.ZodOptional<zod.ZodString>;
-            reason: zod.ZodOptional<zod.ZodString>;
-            startLine: zod.ZodOptional<zod.ZodNumber>;
-            endLine: zod.ZodOptional<zod.ZodNumber>;
-        }, "strip", zod.ZodTypeAny, {
-            concludedLicenseExpressionSPDX?: string | undefined;
-            detectedLicenseExpressionSPDX?: string | undefined;
-            comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
-        }, {
-            concludedLicenseExpressionSPDX?: string | undefined;
-            detectedLicenseExpressionSPDX?: string | undefined;
-            comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "delete";
-    path: "/license-conclusion/:id";
-    description: "Delete a license conclusion";
-    parameters: [{
-        name: "id";
-        type: "Path";
-        schema: zod.ZodString;
-    }];
-    response: zod.ZodObject<{
-        message: zod.ZodString;
-    }, "strip", zod.ZodTypeAny, {
-        message: string;
-    }, {
-        message: string;
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "post";
-    path: "/filetree";
-    alias: "GetFileTree";
-    description: "Get file tree for specified purl";
-    parameters: [{
-        name: "body";
-        type: "Body";
-        schema: zod.ZodObject<{
-            purl: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            purl: string;
-        }, {
-            purl: string;
-        }>;
-    }];
-    response: zod.ZodObject<{
-        filetrees: zod.ZodArray<zod.ZodObject<{
-            path: zod.ZodString;
-            packageId: zod.ZodNumber;
-            fileSha256: zod.ZodString;
-            file: zod.ZodObject<{
-                licenseFindings: zod.ZodArray<zod.ZodObject<{
-                    licenseExpressionSPDX: zod.ZodString;
-                }, "strip", zod.ZodTypeAny, {
-                    licenseExpressionSPDX: string;
-                }, {
-                    licenseExpressionSPDX: string;
-                }>, "many">;
-            }, "strip", zod.ZodTypeAny, {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            }, {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            }>;
-        }, "strip", zod.ZodTypeAny, {
-            path: string;
-            fileSha256: string;
-            packageId: number;
-            file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-        }, {
-            path: string;
-            fileSha256: string;
-            packageId: number;
-            file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-        }>, "many">;
-    }, "strip", zod.ZodTypeAny, {
-        filetrees: {
-            path: string;
-            fileSha256: string;
-            packageId: number;
-            file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-        }[];
-    }, {
-        filetrees: {
-            path: string;
-            fileSha256: string;
-            packageId: number;
-            file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-        }[];
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "get";
-    path: "/packages";
-    description: "Get packages";
-    response: zod.ZodObject<{
-        packages: zod.ZodArray<zod.ZodObject<{
-            purl: zod.ZodString;
-            updatedAt: zod.ZodDate;
-        }, "strip", zod.ZodTypeAny, {
-            purl: string;
-            updatedAt: Date;
-        }, {
-            purl: string;
-            updatedAt: Date;
-        }>, "many">;
-    }, "strip", zod.ZodTypeAny, {
-        packages: {
-            purl: string;
-            updatedAt: Date;
-        }[];
-    }, {
-        packages: {
-            purl: string;
-            updatedAt: Date;
-        }[];
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}, {
-    method: "get";
-    path: "/file/:sha256";
-    alias: "GetFileData";
-    description: "Get file download url and findings";
-    parameters: [{
-        name: "sha256";
-        type: "Path";
-        schema: zod.ZodString;
-    }];
-    response: zod.ZodObject<{
-        downloadUrl: zod.ZodString;
-        licenseFindings: zod.ZodArray<zod.ZodObject<{
-            id: zod.ZodNumber;
-            updatedAt: zod.ZodDate;
-            licenseExpressionSPDX: zod.ZodString;
-            licenseFindingMatches: zod.ZodArray<zod.ZodObject<{
-                id: zod.ZodNumber;
-                updatedAt: zod.ZodDate;
-                licenseExpression: zod.ZodNullable<zod.ZodString>;
-                startLine: zod.ZodNumber;
-                endLine: zod.ZodNumber;
-                score: zod.ZodNumber;
-            }, "strip", zod.ZodTypeAny, {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }, {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }>, "many">;
-        }, "strip", zod.ZodTypeAny, {
-            id: number;
-            licenseExpressionSPDX: string;
-            updatedAt: Date;
-            licenseFindingMatches: {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }[];
-        }, {
-            id: number;
-            licenseExpressionSPDX: string;
-            updatedAt: Date;
-            licenseFindingMatches: {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }[];
-        }>, "many">;
-        copyrightFindings: zod.ZodArray<zod.ZodObject<{
-            id: zod.ZodNumber;
-            updatedAt: zod.ZodDate;
-            copyright: zod.ZodString;
-            startLine: zod.ZodNumber;
-            endLine: zod.ZodNumber;
-        }, "strip", zod.ZodTypeAny, {
-            id: number;
-            copyright: string;
-            startLine: number;
-            endLine: number;
-            updatedAt: Date;
-        }, {
-            id: number;
-            copyright: string;
-            startLine: number;
-            endLine: number;
-            updatedAt: Date;
-        }>, "many">;
-    }, "strip", zod.ZodTypeAny, {
-        licenseFindings: {
-            id: number;
-            licenseExpressionSPDX: string;
-            updatedAt: Date;
-            licenseFindingMatches: {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }[];
-        }[];
-        downloadUrl: string;
-        copyrightFindings: {
-            id: number;
-            copyright: string;
-            startLine: number;
-            endLine: number;
-            updatedAt: Date;
-        }[];
-    }, {
-        licenseFindings: {
-            id: number;
-            licenseExpressionSPDX: string;
-            updatedAt: Date;
-            licenseFindingMatches: {
-                id: number;
-                score: number;
-                startLine: number;
-                endLine: number;
-                updatedAt: Date;
-                licenseExpression: string | null;
-            }[];
-        }[];
-        downloadUrl: string;
-        copyrightFindings: {
-            id: number;
-            copyright: string;
-            startLine: number;
-            endLine: number;
-            updatedAt: Date;
-        }[];
-    }>;
-    errors: [{
-        status: 500;
-        description: "Internal server error";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 400;
-        description: "Bad request";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 403;
-        description: "Token is invalid";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }, {
-        status: 401;
-        description: "No token provided";
-        schema: zod.ZodObject<{
-            message: zod.ZodString;
-        }, "strip", zod.ZodTypeAny, {
-            message: string;
-        }, {
-            message: string;
-        }>;
-    }];
-}];
-
 declare const scannerAgentApi: [{
     method: "get";
     path: "/";
@@ -3090,9 +1237,9 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: string;
     state: string;
-    packageId: number;
-    updatedAt: Date;
     createdAt: Date;
+    updatedAt: Date;
+    packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
     scannerConfig?: string | null | undefined;
@@ -3103,9 +1250,9 @@ declare const DBScannerJobSchema: z.ZodObject<{
 }, {
     id: string;
     state: string;
-    packageId: number;
-    updatedAt: Date;
     createdAt: Date;
+    updatedAt: Date;
+    packageId: number;
     scannerName?: string | null | undefined;
     scannerVersion?: string | null | undefined;
     scannerConfig?: string | null | undefined;
@@ -3211,14 +1358,14 @@ declare const DBFileSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: number;
     sha256: string;
-    updatedAt: Date;
     createdAt: Date;
+    updatedAt: Date;
     scanStatus: string;
 }, {
     id: number;
     sha256: string;
-    updatedAt: Date;
     createdAt: Date;
+    updatedAt: Date;
     scanStatus: string;
 }>;
 declare const CreateFileSchema: z.ZodObject<{
@@ -3272,29 +1419,29 @@ declare const CreateLicenseFindingSchema: z.ZodObject<{
         licenseExpressionSPDX: z.ZodString;
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        fileSha256: string;
-        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
+        fileSha256: string;
     }, {
-        fileSha256: string;
-        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
+        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        fileSha256: string;
-        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
+        fileSha256: string;
     };
 }, {
     data: {
-        fileSha256: string;
-        licenseExpressionSPDX: string;
         scannerConfig: string;
         scanner: string;
+        licenseExpressionSPDX: string;
+        fileSha256: string;
     };
 }>;
 type CreateLicenseFindingInput = z.infer<typeof CreateLicenseFindingSchema>;
@@ -3348,44 +1495,44 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         score: number;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
         reason: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
     }, {
         score: number;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
         reason: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         score: number;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
         reason: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
     };
 }, {
     data: {
         score: number;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
         reason: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
     };
 }>;
 type CreateLicenseConclusionInput = z.infer<typeof CreateLicenseConclusionSchema>;
@@ -3399,36 +1546,36 @@ declare const CreateCopyrightFindingSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         copyright: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
     }, {
         copyright: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         copyright: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
     };
 }, {
     data: {
         copyright: string;
-        startLine: number;
-        endLine: number;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        startLine: number;
+        endLine: number;
     };
 }>;
 type CreateCopyrightFindingInput = z.infer<typeof CreateCopyrightFindingSchema>;
@@ -3441,32 +1588,32 @@ declare const CreateScanIssueSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         message: string;
-        severity: string;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        severity: string;
     }, {
         message: string;
-        severity: string;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        severity: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         message: string;
-        severity: string;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        severity: string;
     };
 }, {
     data: {
         message: string;
-        severity: string;
-        fileSha256: string;
         scannerConfig: string;
         scanner: string;
+        fileSha256: string;
+        severity: string;
     };
 }>;
 type CreateScanIssueInput = z.infer<typeof CreateScanIssueSchema>;
@@ -3477,28 +1624,28 @@ declare const CreatePackageSchema: z.ZodObject<{
         version: z.ZodString;
         scanStatus: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        purl: string;
         name: string;
         scanStatus: string;
+        purl: string;
         version: string;
     }, {
-        purl: string;
         name: string;
         scanStatus: string;
+        purl: string;
         version: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        purl: string;
         name: string;
         scanStatus: string;
+        purl: string;
         version: string;
     };
 }, {
     data: {
-        purl: string;
         name: string;
         scanStatus: string;
+        purl: string;
         version: string;
     };
 }>;
@@ -3531,24 +1678,24 @@ declare const CreateFileTreeSchema: z.ZodObject<{
         fileSha256: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
     }, {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
     };
 }, {
     data: {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
     };
 }>;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
@@ -3564,6 +1711,209 @@ declare const loginFormSchema: z.ZodObject<{
     password: string;
 }>;
 type LoginFormType = z.infer<typeof loginFormSchema>;
+
+declare const adminAPI: [{
+    method: "delete";
+    path: "/scan-results";
+    description: "Delete scan results for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/user";
+    description: "Add user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            username: zod.ZodString;
+            password: zod.ZodString;
+            role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
+            subscription: zod.ZodOptional<zod.ZodEnum<["SILVER", "GOLD"]>>;
+            token: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
+        }, {
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/user";
+    description: "Delete user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            id: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+        }, {
+            id: number;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}];
 
 declare const authAPI: [{
     method: "post";
@@ -3680,6 +2030,1437 @@ declare const authAPI: [{
     }];
 }];
 
+declare const guestAPI: [{
+    method: "post";
+    path: "/filetree";
+    alias: "GetFileTree";
+    description: "Get file tree for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        filetrees: zod.ZodArray<zod.ZodObject<{
+            path: zod.ZodString;
+            packageId: zod.ZodNumber;
+            fileSha256: zod.ZodString;
+            file: zod.ZodObject<{
+                licenseFindings: zod.ZodArray<zod.ZodObject<{
+                    licenseExpressionSPDX: zod.ZodString;
+                }, "strip", zod.ZodTypeAny, {
+                    licenseExpressionSPDX: string;
+                }, {
+                    licenseExpressionSPDX: string;
+                }>, "many">;
+            }, "strip", zod.ZodTypeAny, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }, {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        filetrees: {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }[];
+    }, {
+        filetrees: {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/packages";
+    description: "Get packages";
+    response: zod.ZodObject<{
+        packages: zod.ZodArray<zod.ZodObject<{
+            purl: zod.ZodString;
+            updatedAt: zod.ZodDate;
+        }, "strip", zod.ZodTypeAny, {
+            updatedAt: Date;
+            purl: string;
+        }, {
+            updatedAt: Date;
+            purl: string;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        packages: {
+            updatedAt: Date;
+            purl: string;
+        }[];
+    }, {
+        packages: {
+            updatedAt: Date;
+            purl: string;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/file/:sha256";
+    alias: "GetFileData";
+    description: "Get file download url and findings";
+    parameters: [{
+        name: "sha256";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        downloadUrl: zod.ZodString;
+        licenseFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
+            licenseExpressionSPDX: zod.ZodString;
+            licenseFindingMatches: zod.ZodArray<zod.ZodObject<{
+                id: zod.ZodNumber;
+                updatedAt: zod.ZodDate;
+                licenseExpression: zod.ZodNullable<zod.ZodString>;
+                startLine: zod.ZodNumber;
+                endLine: zod.ZodNumber;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }, {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }, {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }>, "many">;
+        copyrightFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
+            copyright: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }, {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        licenseFindings: {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }[];
+    }, {
+        licenseFindings: {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}];
+
+declare const scannerAPI: [{
+    method: "post";
+    path: "/scan-results";
+    description: "Get scan results for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+            options: zod.ZodOptional<zod.ZodObject<{
+                fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+            }, "strip", zod.ZodTypeAny, {
+                fetchConcluded?: boolean | undefined;
+            }, {
+                fetchConcluded?: boolean | undefined;
+            }>>;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
+        }, {
+            purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            id: zod.ZodNullable<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            status: string;
+            id: string | null;
+        }, {
+            status: string;
+            id: string | null;
+        }>;
+        results: zod.ZodUnion<[zod.ZodNull, zod.ZodObject<{
+            licenses: zod.ZodArray<zod.ZodObject<{
+                license: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }>, "many">;
+            copyrights: zod.ZodArray<zod.ZodObject<{
+                statement: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+            }, "strip", zod.ZodTypeAny, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }>, "many">;
+            issues: zod.ZodArray<zod.ZodObject<{
+                timestamp: zod.ZodDate;
+                source: zod.ZodString;
+                message: zod.ZodString;
+                severity: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }, {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        }, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        }>]>;
+    }, "strip", zod.ZodTypeAny, {
+        state: {
+            status: string;
+            id: string | null;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        } | null;
+    }, {
+        state: {
+            status: string;
+            id: string | null;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        } | null;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/upload-url";
+    description: "Get presigned upload URL for S3 object storage with specified object key";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            key: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            key: string;
+        }, {
+            key: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        success: zod.ZodBoolean;
+        presignedUrl: zod.ZodOptional<zod.ZodString>;
+        message: zod.ZodOptional<zod.ZodString>;
+    }, "strip", zod.ZodTypeAny, {
+        success: boolean;
+        presignedUrl?: string | undefined;
+        message?: string | undefined;
+    }, {
+        success: boolean;
+        presignedUrl?: string | undefined;
+        message?: string | undefined;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/job";
+    description: "Add scanner job for package";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            zipFileKey: zod.ZodString;
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+            zipFileKey: string;
+        }, {
+            purl: string;
+            zipFileKey: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        scannerJobId: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        scannerJobId: string;
+    }, {
+        scannerJobId: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/job-state/:id";
+    description: "Get state for scanner job with given id";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+            status: string;
+        }, {
+            message: string;
+            status: string;
+        }>;
+    }, "strip", zod.ZodTypeAny, {
+        state: {
+            message: string;
+            status: string;
+        };
+    }, {
+        state: {
+            message: string;
+            status: string;
+        };
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "put";
+    path: "/job-state/:id";
+    description: "Edit scanner job state";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            state: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            state: string;
+        }, {
+            state: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/job-results";
+    description: "Save scanner job results";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            id: zod.ZodString;
+            result: zod.ZodObject<{
+                headers: zod.ZodArray<zod.ZodObject<{
+                    tool_name: zod.ZodString;
+                    tool_version: zod.ZodString;
+                    options: zod.ZodObject<{
+                        input: zod.ZodArray<zod.ZodString, "many">;
+                        "--copyright": zod.ZodBoolean;
+                        "--info": zod.ZodBoolean;
+                        "--json": zod.ZodOptional<zod.ZodString>;
+                        "--json-pp": zod.ZodOptional<zod.ZodString>;
+                        "--license": zod.ZodBoolean;
+                        "--package": zod.ZodOptional<zod.ZodBoolean>;
+                    }, "strip", zod.ZodTypeAny, {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    }, {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    }>;
+                    notice: zod.ZodString;
+                    start_timestamp: zod.ZodString;
+                    end_timestamp: zod.ZodString;
+                    output_format_version: zod.ZodString;
+                    duration: zod.ZodNumber;
+                    message: zod.ZodNullable<zod.ZodString>;
+                    errors: zod.ZodArray<zod.ZodUnknown, "many">;
+                    warnings: zod.ZodArray<zod.ZodUnknown, "many">;
+                    extra_data: zod.ZodObject<{
+                        system_environment: zod.ZodObject<{
+                            operating_system: zod.ZodString;
+                            cpu_architecture: zod.ZodString;
+                            platform: zod.ZodString;
+                            platform_version: zod.ZodString;
+                            python_version: zod.ZodString;
+                        }, "strip", zod.ZodTypeAny, {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        }, {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        }>;
+                        spdx_license_list_version: zod.ZodString;
+                        files_count: zod.ZodNumber;
+                    }, "strip", zod.ZodTypeAny, {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    }, {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    }>;
+                }, "strip", zod.ZodTypeAny, {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }, {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }>, "many">;
+                files: zod.ZodArray<zod.ZodObject<{
+                    path: zod.ZodString;
+                    type: zod.ZodString;
+                    sha256: zod.ZodNullable<zod.ZodString>;
+                    detected_license_expression: zod.ZodNullable<zod.ZodString>;
+                    detected_license_expression_spdx: zod.ZodNullable<zod.ZodString>;
+                    license_detections: zod.ZodArray<zod.ZodObject<{
+                        license_expression: zod.ZodString;
+                        matches: zod.ZodArray<zod.ZodObject<{
+                            score: zod.ZodNumber;
+                            start_line: zod.ZodNumber;
+                            end_line: zod.ZodNumber;
+                            license_expression: zod.ZodString;
+                        }, "strip", zod.ZodTypeAny, {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }, {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }>, "many">;
+                    }, "strip", zod.ZodTypeAny, {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }, {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }>, "many">;
+                    copyrights: zod.ZodArray<zod.ZodObject<{
+                        copyright: zod.ZodString;
+                        start_line: zod.ZodNumber;
+                        end_line: zod.ZodNumber;
+                    }, "strip", zod.ZodTypeAny, {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }, {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }>, "many">;
+                    scan_errors: zod.ZodArray<zod.ZodString, "many">;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }, {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }>, "many">;
+            }, "strip", zod.ZodTypeAny, {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            }, {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            id: string;
+            result: {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            };
+        }, {
+            id: string;
+            result: {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            };
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}];
+
 declare const userAPI: [{
     method: "get";
     path: "/user";
@@ -3691,6 +3472,2248 @@ declare const userAPI: [{
         username: string;
     }, {
         username: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/license-conclusion";
+    description: "Add a new license conclusion";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            concludedLicenseExpressionSPDX: zod.ZodString;
+            detectedLicenseExpressionSPDX: zod.ZodString;
+            comment: zod.ZodString;
+            reason: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+            fileSha256: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            fileSha256: string;
+            startLine: number;
+            endLine: number;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            reason: string;
+        }, {
+            fileSha256: string;
+            startLine: number;
+            endLine: number;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            reason: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        licenseConclusionId: zod.ZodNumber;
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+        licenseConclusionId: number;
+    }, {
+        message: string;
+        licenseConclusionId: number;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "put";
+    path: "/license-conclusion/:id";
+    description: "Update a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            comment: zod.ZodOptional<zod.ZodString>;
+            reason: zod.ZodOptional<zod.ZodString>;
+            startLine: zod.ZodOptional<zod.ZodNumber>;
+            endLine: zod.ZodOptional<zod.ZodNumber>;
+        }, "strip", zod.ZodTypeAny, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            reason?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            reason?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/license-conclusion/:id";
+    description: "Delete a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}];
+
+declare const dosAPI: [{
+    method: "post";
+    path: "/scan-results";
+    description: "Get scan results for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+            options: zod.ZodOptional<zod.ZodObject<{
+                fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+            }, "strip", zod.ZodTypeAny, {
+                fetchConcluded?: boolean | undefined;
+            }, {
+                fetchConcluded?: boolean | undefined;
+            }>>;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
+        }, {
+            purl: string;
+            options?: {
+                fetchConcluded?: boolean | undefined;
+            } | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            id: zod.ZodNullable<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            status: string;
+            id: string | null;
+        }, {
+            status: string;
+            id: string | null;
+        }>;
+        results: zod.ZodUnion<[zod.ZodNull, zod.ZodObject<{
+            licenses: zod.ZodArray<zod.ZodObject<{
+                license: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }, {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }>, "many">;
+            copyrights: zod.ZodArray<zod.ZodObject<{
+                statement: zod.ZodString;
+                location: zod.ZodObject<{
+                    path: zod.ZodString;
+                    start_line: zod.ZodNumber;
+                    end_line: zod.ZodNumber;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }, {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                }>;
+            }, "strip", zod.ZodTypeAny, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }, {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }>, "many">;
+            issues: zod.ZodArray<zod.ZodObject<{
+                timestamp: zod.ZodDate;
+                source: zod.ZodString;
+                message: zod.ZodString;
+                severity: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }, {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        }, {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        }>]>;
+    }, "strip", zod.ZodTypeAny, {
+        state: {
+            status: string;
+            id: string | null;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        } | null;
+    }, {
+        state: {
+            status: string;
+            id: string | null;
+        };
+        results: {
+            copyrights: {
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+                statement: string;
+            }[];
+            licenses: {
+                score: number;
+                license: string;
+                location: {
+                    path: string;
+                    start_line: number;
+                    end_line: number;
+                };
+            }[];
+            issues: {
+                message: string;
+                severity: string;
+                timestamp: Date;
+                source: string;
+            }[];
+        } | null;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/upload-url";
+    description: "Get presigned upload URL for S3 object storage with specified object key";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            key: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            key: string;
+        }, {
+            key: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        success: zod.ZodBoolean;
+        presignedUrl: zod.ZodOptional<zod.ZodString>;
+        message: zod.ZodOptional<zod.ZodString>;
+    }, "strip", zod.ZodTypeAny, {
+        success: boolean;
+        presignedUrl?: string | undefined;
+        message?: string | undefined;
+    }, {
+        success: boolean;
+        presignedUrl?: string | undefined;
+        message?: string | undefined;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/job";
+    description: "Add scanner job for package";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            zipFileKey: zod.ZodString;
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+            zipFileKey: string;
+        }, {
+            purl: string;
+            zipFileKey: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        scannerJobId: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        scannerJobId: string;
+    }, {
+        scannerJobId: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/job-state/:id";
+    description: "Get state for scanner job with given id";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        state: zod.ZodObject<{
+            status: zod.ZodString;
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+            status: string;
+        }, {
+            message: string;
+            status: string;
+        }>;
+    }, "strip", zod.ZodTypeAny, {
+        state: {
+            message: string;
+            status: string;
+        };
+    }, {
+        state: {
+            message: string;
+            status: string;
+        };
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "put";
+    path: "/job-state/:id";
+    description: "Edit scanner job state";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            state: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            state: string;
+        }, {
+            state: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/job-results";
+    description: "Save scanner job results";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            id: zod.ZodString;
+            result: zod.ZodObject<{
+                headers: zod.ZodArray<zod.ZodObject<{
+                    tool_name: zod.ZodString;
+                    tool_version: zod.ZodString;
+                    options: zod.ZodObject<{
+                        input: zod.ZodArray<zod.ZodString, "many">;
+                        "--copyright": zod.ZodBoolean;
+                        "--info": zod.ZodBoolean;
+                        "--json": zod.ZodOptional<zod.ZodString>;
+                        "--json-pp": zod.ZodOptional<zod.ZodString>;
+                        "--license": zod.ZodBoolean;
+                        "--package": zod.ZodOptional<zod.ZodBoolean>;
+                    }, "strip", zod.ZodTypeAny, {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    }, {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    }>;
+                    notice: zod.ZodString;
+                    start_timestamp: zod.ZodString;
+                    end_timestamp: zod.ZodString;
+                    output_format_version: zod.ZodString;
+                    duration: zod.ZodNumber;
+                    message: zod.ZodNullable<zod.ZodString>;
+                    errors: zod.ZodArray<zod.ZodUnknown, "many">;
+                    warnings: zod.ZodArray<zod.ZodUnknown, "many">;
+                    extra_data: zod.ZodObject<{
+                        system_environment: zod.ZodObject<{
+                            operating_system: zod.ZodString;
+                            cpu_architecture: zod.ZodString;
+                            platform: zod.ZodString;
+                            platform_version: zod.ZodString;
+                            python_version: zod.ZodString;
+                        }, "strip", zod.ZodTypeAny, {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        }, {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        }>;
+                        spdx_license_list_version: zod.ZodString;
+                        files_count: zod.ZodNumber;
+                    }, "strip", zod.ZodTypeAny, {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    }, {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    }>;
+                }, "strip", zod.ZodTypeAny, {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }, {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }>, "many">;
+                files: zod.ZodArray<zod.ZodObject<{
+                    path: zod.ZodString;
+                    type: zod.ZodString;
+                    sha256: zod.ZodNullable<zod.ZodString>;
+                    detected_license_expression: zod.ZodNullable<zod.ZodString>;
+                    detected_license_expression_spdx: zod.ZodNullable<zod.ZodString>;
+                    license_detections: zod.ZodArray<zod.ZodObject<{
+                        license_expression: zod.ZodString;
+                        matches: zod.ZodArray<zod.ZodObject<{
+                            score: zod.ZodNumber;
+                            start_line: zod.ZodNumber;
+                            end_line: zod.ZodNumber;
+                            license_expression: zod.ZodString;
+                        }, "strip", zod.ZodTypeAny, {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }, {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }>, "many">;
+                    }, "strip", zod.ZodTypeAny, {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }, {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }>, "many">;
+                    copyrights: zod.ZodArray<zod.ZodObject<{
+                        copyright: zod.ZodString;
+                        start_line: zod.ZodNumber;
+                        end_line: zod.ZodNumber;
+                    }, "strip", zod.ZodTypeAny, {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }, {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }>, "many">;
+                    scan_errors: zod.ZodArray<zod.ZodString, "many">;
+                }, "strip", zod.ZodTypeAny, {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }, {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }>, "many">;
+            }, "strip", zod.ZodTypeAny, {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            }, {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            id: string;
+            result: {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            };
+        }, {
+            id: string;
+            result: {
+                files: {
+                    path: string;
+                    type: string;
+                    sha256: string | null;
+                    detected_license_expression: string | null;
+                    detected_license_expression_spdx: string | null;
+                    license_detections: {
+                        license_expression: string;
+                        matches: {
+                            license_expression: string;
+                            score: number;
+                            start_line: number;
+                            end_line: number;
+                        }[];
+                    }[];
+                    copyrights: {
+                        start_line: number;
+                        end_line: number;
+                        copyright: string;
+                    }[];
+                    scan_errors: string[];
+                }[];
+                headers: {
+                    message: string | null;
+                    options: {
+                        input: string[];
+                        "--copyright": boolean;
+                        "--info": boolean;
+                        "--license": boolean;
+                        "--json"?: string | undefined;
+                        "--json-pp"?: string | undefined;
+                        "--package"?: boolean | undefined;
+                    };
+                    tool_name: string;
+                    tool_version: string;
+                    notice: string;
+                    start_timestamp: string;
+                    end_timestamp: string;
+                    output_format_version: string;
+                    duration: number;
+                    errors: unknown[];
+                    warnings: unknown[];
+                    extra_data: {
+                        system_environment: {
+                            operating_system: string;
+                            cpu_architecture: string;
+                            platform: string;
+                            platform_version: string;
+                            python_version: string;
+                        };
+                        spdx_license_list_version: string;
+                        files_count: number;
+                    };
+                }[];
+            };
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/user/user";
+    description: "Get user";
+    alias: "GetUser";
+    response: zod.ZodObject<{
+        username: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        username: string;
+    }, {
+        username: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/user/license-conclusion";
+    description: "Add a new license conclusion";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            concludedLicenseExpressionSPDX: zod.ZodString;
+            detectedLicenseExpressionSPDX: zod.ZodString;
+            comment: zod.ZodString;
+            reason: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+            fileSha256: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            fileSha256: string;
+            startLine: number;
+            endLine: number;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            reason: string;
+        }, {
+            fileSha256: string;
+            startLine: number;
+            endLine: number;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            reason: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        licenseConclusionId: zod.ZodNumber;
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+        licenseConclusionId: number;
+    }, {
+        message: string;
+        licenseConclusionId: number;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "put";
+    path: "/user/license-conclusion/:id";
+    description: "Update a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }, {
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+            comment: zod.ZodOptional<zod.ZodString>;
+            reason: zod.ZodOptional<zod.ZodString>;
+            startLine: zod.ZodOptional<zod.ZodNumber>;
+            endLine: zod.ZodOptional<zod.ZodNumber>;
+        }, "strip", zod.ZodTypeAny, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            reason?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+            reason?: string | undefined;
+            startLine?: number | undefined;
+            endLine?: number | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/user/license-conclusion/:id";
+    description: "Delete a license conclusion";
+    parameters: [{
+        name: "id";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/admin/scan-results";
+    description: "Delete scan results for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/admin/user";
+    description: "Add user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            username: zod.ZodString;
+            password: zod.ZodString;
+            role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
+            subscription: zod.ZodOptional<zod.ZodEnum<["SILVER", "GOLD"]>>;
+            token: zod.ZodOptional<zod.ZodString>;
+        }, "strip", zod.ZodTypeAny, {
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
+        }, {
+            username: string;
+            password: string;
+            role?: "ADMIN" | "USER" | undefined;
+            subscription?: "SILVER" | "GOLD" | undefined;
+            token?: string | undefined;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "delete";
+    path: "/admin/user";
+    description: "Delete user";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            id: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+        }, {
+            id: number;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/auth/login/password";
+    description: "Login with password";
+    alias: "PostLoginPassword";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            username: zod.ZodString;
+            password: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            username: string;
+            password: string;
+        }, {
+            username: string;
+            password: string;
+        }>;
+    }];
+    response: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/auth/logout";
+    description: "Logout";
+    response: zod.ZodObject<{
+        message: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        message: string;
+    }, {
+        message: string;
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "post";
+    path: "/guest/filetree";
+    alias: "GetFileTree";
+    description: "Get file tree for specified purl";
+    parameters: [{
+        name: "body";
+        type: "Body";
+        schema: zod.ZodObject<{
+            purl: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            purl: string;
+        }, {
+            purl: string;
+        }>;
+    }];
+    response: zod.ZodObject<{
+        filetrees: zod.ZodArray<zod.ZodObject<{
+            path: zod.ZodString;
+            packageId: zod.ZodNumber;
+            fileSha256: zod.ZodString;
+            file: zod.ZodObject<{
+                licenseFindings: zod.ZodArray<zod.ZodObject<{
+                    licenseExpressionSPDX: zod.ZodString;
+                }, "strip", zod.ZodTypeAny, {
+                    licenseExpressionSPDX: string;
+                }, {
+                    licenseExpressionSPDX: string;
+                }>, "many">;
+            }, "strip", zod.ZodTypeAny, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }, {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }, {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        filetrees: {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }[];
+    }, {
+        filetrees: {
+            path: string;
+            packageId: number;
+            fileSha256: string;
+            file: {
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
+                }[];
+            };
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/guest/packages";
+    description: "Get packages";
+    response: zod.ZodObject<{
+        packages: zod.ZodArray<zod.ZodObject<{
+            purl: zod.ZodString;
+            updatedAt: zod.ZodDate;
+        }, "strip", zod.ZodTypeAny, {
+            updatedAt: Date;
+            purl: string;
+        }, {
+            updatedAt: Date;
+            purl: string;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        packages: {
+            updatedAt: Date;
+            purl: string;
+        }[];
+    }, {
+        packages: {
+            updatedAt: Date;
+            purl: string;
+        }[];
+    }>;
+    errors: [{
+        status: 500;
+        description: "Internal server error";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 400;
+        description: "Bad request";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 403;
+        description: "Token is invalid";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 401;
+        description: "No token provided";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }];
+}, {
+    method: "get";
+    path: "/guest/file/:sha256";
+    alias: "GetFileData";
+    description: "Get file download url and findings";
+    parameters: [{
+        name: "sha256";
+        type: "Path";
+        schema: zod.ZodString;
+    }];
+    response: zod.ZodObject<{
+        downloadUrl: zod.ZodString;
+        licenseFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
+            licenseExpressionSPDX: zod.ZodString;
+            licenseFindingMatches: zod.ZodArray<zod.ZodObject<{
+                id: zod.ZodNumber;
+                updatedAt: zod.ZodDate;
+                licenseExpression: zod.ZodNullable<zod.ZodString>;
+                startLine: zod.ZodNumber;
+                endLine: zod.ZodNumber;
+                score: zod.ZodNumber;
+            }, "strip", zod.ZodTypeAny, {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }, {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }>, "many">;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }, {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }>, "many">;
+        copyrightFindings: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            updatedAt: zod.ZodDate;
+            copyright: zod.ZodString;
+            startLine: zod.ZodNumber;
+            endLine: zod.ZodNumber;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }, {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }>, "many">;
+    }, "strip", zod.ZodTypeAny, {
+        licenseFindings: {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }[];
+    }, {
+        licenseFindings: {
+            id: number;
+            updatedAt: Date;
+            licenseExpressionSPDX: string;
+            licenseFindingMatches: {
+                id: number;
+                score: number;
+                updatedAt: Date;
+                startLine: number;
+                endLine: number;
+                licenseExpression: string | null;
+            }[];
+        }[];
+        downloadUrl: string;
+        copyrightFindings: {
+            id: number;
+            copyright: string;
+            updatedAt: Date;
+            startLine: number;
+            endLine: number;
+        }[];
     }>;
     errors: [{
         status: 500;
@@ -3758,8 +5781,8 @@ declare const FileTree: z.ZodObject<{
     }>;
 }, "strip", z.ZodTypeAny, {
     path: string;
-    fileSha256: string;
     packageId: number;
+    fileSha256: string;
     file: {
         licenseFindings: {
             licenseExpressionSPDX: string;
@@ -3767,8 +5790,8 @@ declare const FileTree: z.ZodObject<{
     };
 }, {
     path: string;
-    fileSha256: string;
     packageId: number;
+    fileSha256: string;
     file: {
         licenseFindings: {
             licenseExpressionSPDX: string;
@@ -3800,8 +5823,8 @@ declare const PostFileTreeRes: z.ZodObject<{
         }>;
     }, "strip", z.ZodTypeAny, {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
         file: {
             licenseFindings: {
                 licenseExpressionSPDX: string;
@@ -3809,8 +5832,8 @@ declare const PostFileTreeRes: z.ZodObject<{
         };
     }, {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
         file: {
             licenseFindings: {
                 licenseExpressionSPDX: string;
@@ -3820,8 +5843,8 @@ declare const PostFileTreeRes: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     filetrees: {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
         file: {
             licenseFindings: {
                 licenseExpressionSPDX: string;
@@ -3831,8 +5854,8 @@ declare const PostFileTreeRes: z.ZodObject<{
 }, {
     filetrees: {
         path: string;
-        fileSha256: string;
         packageId: number;
+        fileSha256: string;
         file: {
             licenseFindings: {
                 licenseExpressionSPDX: string;
@@ -3846,23 +5869,23 @@ declare const GetPackagesRes: z.ZodObject<{
         purl: z.ZodString;
         updatedAt: z.ZodDate;
     }, "strip", z.ZodTypeAny, {
-        purl: string;
         updatedAt: Date;
+        purl: string;
     }, {
-        purl: string;
         updatedAt: Date;
+        purl: string;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     packages: {
-        purl: string;
         updatedAt: Date;
+        purl: string;
     }[];
 }, {
     packages: {
-        purl: string;
         updatedAt: Date;
+        purl: string;
     }[];
 }>;
 type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
-export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, FileTreeType, GetPackagesResType, LoginFormType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, authAPI, dosApi, loginFormSchema, scannerAgentApi, userAPI };
+export { CreateCopyrightFindingInput, CreateFileInput, CreateFileTreeInput, CreateLicenseConclusionInput, CreateLicenseFindingInput, CreateLicenseFindingMatchInput, CreatePackageInput, CreateScanIssueInput, CreateScannerJobInput, DBFileSchema, DBScannerJobSchema, DBScannerJobType, FileTreeType, GetPackagesResType, LoginFormType, PostFileTreeResType, ScannerJobOnlyIdOutput, ScannerJobResultSchema, UpdateFileInput, UpdatePackageInput, UpdateScannerJobInput, adminAPI, authAPI, dosAPI, guestAPI, loginFormSchema, scannerAPI, scannerAgentApi, userAPI };
