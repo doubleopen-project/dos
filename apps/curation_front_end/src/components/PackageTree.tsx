@@ -22,6 +22,7 @@ import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
+import { Input } from './ui/input';
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -108,7 +109,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
             </div>
 
             <div className="p-2 mb-2 rounded-md bg-white shadow flex items-center text-sm">
-                <input className='bg-gray-200 p-2 rounded-lg w-full'
+                <Input className='bg-gray-200 p-2 rounded-lg w-full'
                     type='text'
                     placeholder='Filter'
                     value={treeFilter}
@@ -128,31 +129,44 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
             </div>
 
             <div className="flex-1 pl-1 overflow-auto bg-gray-100" ref={treeRef}>
-                {isLoading && (<div className='flex justify-center items-center h-full'><Loader2 className='mr-2 h-16 w-16 animate-spin' /></div>)}
-                {data && (<Tree
-                    data={treeData}
-                    openByDefault={false}
-                    searchTerm={treeFilter}
-                    searchMatch={(node, term) =>
-                        node.data.name.toLowerCase().includes(term.toLowerCase())
-                    }
-                    width="100%"
-                    height={treeHeight}
-                    indent={12}
-                    rowHeight={20}
-                    paddingTop={30}
-                    paddingBottom={10}
-                    padding={25}
-                    ref={(t) => (tree = t)}
-                >
-                    {(nodeProps) => <Node {...nodeProps} licenseFilter={licenseFilter} purl={purl} />}
-                </Tree>)
+                {
+                    isLoading && (
+                        <div className='flex justify-center items-center h-full'>
+                            <Loader2 className='mr-2 h-16 w-16 animate-spin' />
+                        </div>
+                    )
                 }
-                {error && (<div className='flex justify-center items-center h-full'>Unable to fetch package data</div>)}
+                {
+                    data && (
+                        <Tree
+                            data={treeData}
+                            openByDefault={false}
+                            searchTerm={treeFilter}
+                            searchMatch={(node, term) => node.data.name.toLowerCase().includes(term.toLowerCase())}
+                            width="100%"
+                            height={treeHeight}
+                            indent={12}
+                            rowHeight={20}
+                            paddingTop={30}
+                            paddingBottom={10}
+                            padding={25}
+                            ref={(t) => (tree = t)}
+                        >
+                        {(nodeProps) => <Node {...nodeProps} licenseFilter={licenseFilter} purl={purl} />}
+                        </Tree>
+                    )
+                }
+                {
+                    error && (
+                        <div className='flex justify-center items-center h-full'>
+                            Unable to fetch package data
+                        </div>
+                    )
+                }
             </div>
 
             <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
-                <input className='bg-gray-200 p-2 rounded-lg w-full'
+                <Input className='bg-gray-200 p-2 rounded-lg w-full'
                     type='text'
                     placeholder='Filter with a detected license'
                     value={licenseFilter}

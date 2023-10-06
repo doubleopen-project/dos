@@ -8,13 +8,14 @@ import { GrNext, GrPrevious } from 'react-icons/gr';
 import { Button } from "./ui/button";
 import { zodiosHooks } from '@/hooks/zodiosHooks';
 import { ZodiosResponseByPath } from '@zodios/core';
-import { dosApi } from 'validation-helpers';
+import { guestAPI } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
+import { Input } from './ui/input';
 
-type DataType = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
+type DataType = ZodiosResponseByPath<typeof guestAPI, 'get', '/file/:sha256'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
@@ -145,7 +146,7 @@ const CodeInspector = ({ path, sha256 }: CodeInspectorProps) => {
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
                 <div className="p-2 m-1 rounded-md bg-white shadow flex items-center text-sm">
-                    <input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='CONCLUDED LICENSE' />
+                    <Input className='bg-gray-200 p-2 rounded-lg w-full' type='text' placeholder='CONCLUDED LICENSE' />
                     <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2' >
                         Add curation
                     </Button>
