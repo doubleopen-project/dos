@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import Editor, { EditorProps } from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { dosApi } from 'validation-helpers';
