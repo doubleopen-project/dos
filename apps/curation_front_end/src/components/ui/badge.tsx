@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
