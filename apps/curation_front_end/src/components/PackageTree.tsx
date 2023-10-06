@@ -9,6 +9,8 @@ import {
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen
 } from 'react-icons/bs';
+import { GrNext, GrPrevious } from 'react-icons/gr';
+import { Button } from "./ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
@@ -106,17 +108,17 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                     value={treeFilter}
                     onChange={handleTreeFilter}
                 />
-                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
+                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
                     onClick={handleExpand}
                 >
                     {isExpanded ? 'Collapse' : 'Expand'}
-                </button>
-                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                    {"<-"}
-                </button>
-                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                    {"->"}
-                </button>
+                </Button>
+                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                    <GrPrevious size={20} />
+                </Button>
+                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                    <GrNext size={20} />
+                </Button>
             </div>
 
             <div className="flex-1 pl-1 overflow-auto bg-gray-100" ref={treeRef}>
@@ -150,9 +152,9 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                     value={licenseFilter}
                     onChange={handleLicenseFilter}
                 />
-                <button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
+                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
                     {"V"}
-                </button>
+                </Button>
             </div>
         </div>
     )
