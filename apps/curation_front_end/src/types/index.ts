@@ -5,6 +5,7 @@
 export type TreeNode = {
     id: string;
     name: string;
+    path?: string;
     fileSha256?: string;
     hasLicenseFindings: boolean;
     file?: {

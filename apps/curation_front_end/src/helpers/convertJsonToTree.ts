@@ -27,6 +27,7 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                 const newNode: TreeNode = { 
                     id: id.toString(), 
                     name: part,
+                    path: isLastPart ? fileTree.path : undefined,
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
                     hasLicenseFindings: false,
                     file: {

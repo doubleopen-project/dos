@@ -8,10 +8,11 @@ import CodeInspector from '@/components/CodeInspector';
 
 type CurationUIProps = {
     purl: string | undefined;
+    path: string | undefined;
     sha256: string | undefined;
 }
 
-const CurationUI = ({ purl, sha256 }: CurationUIProps) => {
+const CurationUI = ({ purl, path, sha256 }: CurationUIProps) => {
     return (
         <div className='flex flex-col md:flex-row h-screen'>
 
@@ -22,7 +23,7 @@ const CurationUI = ({ purl, sha256 }: CurationUIProps) => {
 
             {/* 2nd column (8/12): No file opened yet */}
             <div className="w-full md:w-8/12 flex flex-col m-2 ml-1 p-2 rounded-md bg-white shadow">
-                <CodeInspector sha256={sha256} />
+                <CodeInspector path={path} sha256={sha256} />
             </div>
         </div>
     )
