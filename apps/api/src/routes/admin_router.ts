@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from '@zodios/express';
-import { dosApi } from 'validation-helpers';
+import { adminAPI } from 'validation-helpers';
 import * as dbQueries from '../helpers/db_queries';
+import * as dbOperations from '../helpers/db_operations';
 import crypto from 'crypto';
 
-const adminRouter = zodiosRouter(dosApi);
+const adminRouter = zodiosRouter(adminAPI);
 
 // ----------------------------------- ADMIN ROUTES -----------------------------------
 
@@ -35,6 +36,18 @@ adminRouter.post('/user', async (req, res) => {
     } catch (error) {
         console.log('Error: ', error);
         res.status(500).send({ message: 'Internal server error' });
+    }
+})
+
+// Delete scan results for a specified package purl
+adminRouter.delete('/scan-results', async (req, res) => {
+    // TODO: this endpoint should only be used by specific users
+    try {
+        const message = await dbOperations.deletePackageDataByPurl(req.body.purl);
+        res.status(200).json({ message: message });
+    } catch (error) {
+        console.log('Error: ', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 })
 

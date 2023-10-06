@@ -4,6 +4,9 @@
 
 import adminRouter from "./admin_router";
 import authRouter from "./auth_router";
+import guestRouter from "./guest_router";
+import scannerRouter from "./scanner_router";
 import userRouter from "./user_router";
 
-export { adminRouter, authRouter, userRouter };
+
+export { adminRouter, authRouter, guestRouter, scannerRouter, userRouter };
