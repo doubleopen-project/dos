@@ -11,9 +11,10 @@ import { ZodiosResponseByPath } from '@zodios/core';
 import { dosApi } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
+import { data } from '@/testData/filetree';
 
-type LicenseFinding = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>["licenseFindings"][0];
-type LicenseMatches = LicenseFinding["licenseFindingMatches"];
+type DataType = ZodiosResponseByPath<typeof dosApi, 'get', '/file/:sha256'>;
+type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
     sha256: string | undefined;
@@ -22,7 +23,7 @@ type CodeInspectorProps = {
 const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
-    const [editorLine, setEditorLine] = useQueryState('editorLine', parseAsInteger.withDefault(1));
+    const [licenseMatch, setLicenseMatch] = useQueryState('licenseMatch', parseAsInteger.withDefault(0));
     const { data, isLoading, error } = zodiosHooks.useGetFileData({params:{ sha256: sha256 as string }}, { enabled: !!sha256 });
     const fileUrl = data?.downloadUrl;
 
@@ -38,38 +39,65 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
         }
     }, [fileUrl]);
 
+    let license: LicenseMatch | null = null;
+    if (data !== undefined) {
+        license = getLicenseMatch(data, licenseMatch);
+    }
+
     return (
         <div className="flex flex-col h-full">
 
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
                 <p className="p-1 font-bold text-sm">Detected SPDX license expression for the whole file</p>
                 <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
-                    {data && data.licenseFindings.map((license) => (
-                        <span key={license.id}>
-                            <>
-                                {new Date(license.updatedAt).toISOString()} : {license.licenseExpressionSPDX}
-                                <br />
-                            </>
-                        </span>
-                    ))}
+                    {
+                        data && data.licenseFindings.map((license) => (
+                            <span key={license.id}>
+                                <>
+                                    {new Date(license.updatedAt).toISOString()}:   {license.licenseExpressionSPDX}
+                                    <br />
+                                </>
+                            </span>
+                        ))
+                    }
                 </p>
             </div>
 
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
-                <p className="p-1 text-sm">Individual license matches</p>
+                <p className="p-1 text-sm">
+                    {
+                        license ? (
+                            <>
+                                Individual license matches ({licenseMatch+1}/{data?.licenseFindings[0]?.licenseFindingMatches.length || 0})
+                            </>
+                        ) : "No license matches"
+                    }
+                </p>
                 <div className="flex items-center">
                     <p className='bg-slate-300 p-1 m-1 rounded-md w-full shadow text-xs'>
-                        {getLicenseMatch(data?.licenseFindings[0]?.licenseFindingMatches || [], 0)?.licenseExpression}
+                        {
+                            license ? (
+                                <>
+                                    License Expression: {license.licenseExpression}
+                                    <br />
+                                    Score: {license.score}, lines: [{license.startLine}, {license.endLine}]
+                                    <br />
+                                    Updated at: {new Date(license.updatedAt).toISOString()}
+                                </>
+                            ) : null
+                        }
                     </p>
                     <Button 
                         className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
-                        onClick={() => setEditorLine(i => i - 1)}
+                        onClick={() => setLicenseMatch(i => i - 1)}
+                        disabled={licenseMatch <= 0}
                     >
                         <GrPrevious size={20} />
                     </Button>
                     <Button 
                         className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
-                        onClick={() => setEditorLine(i => i + 1)}
+                        onClick={() => setLicenseMatch(i => i + 1)}
+                        disabled={licenseMatch >= (data?.licenseFindings[0]?.licenseFindingMatches.length || 0) - 1}
                     >
                         <GrNext size={20} />
                     </Button>
@@ -93,7 +121,10 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
                 }
                 {
                     data && fileContents && (
-                        <CodeEditor contents={fileContents} licenseFindings={data.licenseFindings} line={editorLine} />
+                        <CodeEditor 
+                            contents={fileContents} 
+                            licenseFindings={data.licenseFindings} 
+                            line={getLicenseMatch(data, licenseMatch)?.startLine || 1} />
                     )
                 }
                 {
@@ -118,9 +149,13 @@ const CodeInspector = ({ sha256 }: CodeInspectorProps) => {
     )
 }
 
-function getLicenseMatch(matches: LicenseFinding["licenseFindingMatches"], index: number): any | null {
-    if (index < 0 || index >= matches.length) {
+const getLicenseMatch = (data: DataType, index: number): LicenseMatch | null => {
+    let matches = data?.licenseFindings[0]?.licenseFindingMatches || [];
+    if ( matches.length === 0 || index < 0 || index >= matches.length) {
         return null;
+    }
+    if (matches[index].licenseExpression === null) {
+        matches[index].licenseExpression = "No license expression";
     }
     return matches[index];
 }
