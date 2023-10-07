@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
 import * as React from "react"
 import { DialogProps } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"
