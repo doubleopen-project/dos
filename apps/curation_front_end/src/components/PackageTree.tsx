@@ -9,7 +9,6 @@ import {
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen
 } from 'react-icons/bs';
-import { GrNext, GrPrevious } from 'react-icons/gr';
 import { Button } from "./ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -23,6 +22,7 @@ import Link from 'next/link';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
+import ComboBox from './ComboBox';
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -44,15 +44,8 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
         setTreeFilter(event.target.value);
     };
 
-    const handleLicenseFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLicenseFilter(event.target.value);
-        if (event.target.value === '') {
-            setLicenseFilter(null);
-        }
-    };
-
     let tree: any;
-    //console.log(extractUniqueLicenses(treeData));
+    const uniqueLicenses = extractUniqueLicenses(treeData);
 
     const handleExpand = () => {
         if (!isExpanded) {
@@ -120,12 +113,6 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 >
                     {isExpanded ? 'Collapse' : 'Expand'}
                 </Button>
-                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                    <GrPrevious size={20} />
-                </Button>
-                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                    <GrNext size={20} />
-                </Button>
             </div>
 
             <div className="flex-1 pl-1 overflow-auto bg-gray-100" ref={treeRef}>
@@ -166,15 +153,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
             </div>
 
             <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
-                <Input className='bg-gray-200 p-2 rounded-lg w-full'
-                    type='text'
-                    placeholder='Filter with a detected license'
-                    value={licenseFilter}
-                    onChange={handleLicenseFilter}
-                />
-                <Button className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'>
-                    {"V"}
-                </Button>
+                <ComboBox data={uniqueLicenses} filterString={"licenseFilter"} />
             </div>
         </div>
     )
