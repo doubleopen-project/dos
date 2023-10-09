@@ -12,6 +12,7 @@ import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import genFunc from 'connect-pg-simple';
 import { adminRouter, authRouter, guestRouter, scannerRouter, userRouter } from './routes';
 import { loadEnv } from 'common-helpers';
 import { dosAPI } from 'validation-helpers';
@@ -65,7 +66,12 @@ declare global {
 	}
 }
 
-const memoryStore = new session.MemoryStore();
+const PostgresqlStore = genFunc(session);
+
+const sessionStore = new PostgresqlStore({
+	conString: process.env.DATABASE_URL,
+	tableName: 'Session',
+});
 
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
@@ -74,7 +80,7 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		store: memoryStore,
+		store: sessionStore,
 		proxy: true,
 		cookie: {
 			secure: process.env.NODE_ENV === 'production',
