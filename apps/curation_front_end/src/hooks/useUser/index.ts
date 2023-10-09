@@ -12,11 +12,11 @@ interface UseUserOptions {
 }
 
 export const useUser = (options: UseUserOptions) => {
-    const { data, error } = userHooks.useGetUser({withCredentials: true}, {retry: false});
+    const { data, error } = userHooks.useGetUser({withCredentials: true}, {retry: false, cacheTime: 0});
 
     const router = useRouter();
 
-    const user = data ? { username: data.username } : null;
+    const user = error? null : data ? { username: data.username } : null;
     const finished = Boolean(data);
     const hasUser = Boolean(user);
 
@@ -26,11 +26,11 @@ export const useUser = (options: UseUserOptions) => {
             // If redirectTo is set, redirect if the user was not found.
             (options.redirectTo && !options.redirectIfFound && !hasUser) ||
             // If redirectIfFound is also set, redirect if the user was found
-            (options.redirectIfFound && hasUser)
+            (options.redirectIfFound && hasUser && !error)
         ) {
             router.push(options.redirectTo);
         }
-    }, [options, finished, hasUser, router])
+    }, [options, finished, hasUser, error, router])
 
     return error ? null : user;
 }
