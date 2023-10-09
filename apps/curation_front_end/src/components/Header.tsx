@@ -8,7 +8,6 @@ import { useUser } from '@/hooks/useUser';
 
 const Header = () => {
     const user = useUser({});
-
     const username = user ? user.username : 'Guest';
     return (
         <div className='flex bg-gray-200 justify-between p-4'>
