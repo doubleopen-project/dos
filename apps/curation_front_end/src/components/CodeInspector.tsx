@@ -4,7 +4,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { GrNext, GrPrevious } from 'react-icons/gr';
 import { Button } from "./ui/button";
 import { zodiosHooks } from '@/hooks/zodiosHooks';
 import { ZodiosResponseByPath } from '@zodios/core';
@@ -98,10 +97,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 }
                 {
                     data && fileContents && (
-                        <CodeEditor 
-                            contents={fileContents} 
-                            licenseFindings={data.licenseFindings} 
-                            line={getLicenseMatch(data, licenseMatch)?.startLine || 1} />
+                        <CodeEditor contents={fileContents} licenseFindings={data.licenseFindings} />
                     )
                 }
                 {
@@ -131,11 +127,6 @@ const getLicenseMatch = (data: DataType, index: number): LicenseMatch | null => 
     if ( matches.length === 0 || index < 0 || index >= matches.length) {
         return null;
     }
-    /*
-    if (matches[index].licenseExpression === null) {
-        matches[index].licenseExpression = "No license expression";
-    } 
-    */
     return matches[index];
 }
 
