@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: 2023 HH Partners
+#
+# SPDX-License-Identifier: MIT
+
+version: "3"
+
+services:
+    postgres:
+        image: postgres:16.0
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+        env_file:
+            - .env
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    redis:
+        image: redis:7.2
+        volumes:
+            - redis-data:/data
+        command: /bin/sh -c "redis-server --requirepass redis"
+        ports:
+            - 6379:6379
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "redis-cli ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    minio:
+        image: minio/minio
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        volumes:
+            - minio-data:/data
+        environment:
+            MINIO_ROOT_USER: miniouser
+            MINIO_ROOT_PASSWORD: miniopassword
+        command: server --console-address ":9001" /data
+        restart: always
+        healthcheck:
+            test:
+                ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+            interval: 30s
+            timeout: 20s
+            retries: 3
+
+    createbuckets:
+        image: minio/mc
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            /usr/bin/mc alias set myminio http://minio:9000 miniouser miniopassword;
+            /usr/bin/mc mb myminio/doubleopen;
+            exit 0;
+            "
+
+volumes:
+    db-data:
+        driver: local
+    redis-data:
+        driver: local
+    minio-data:
+        driver: local
