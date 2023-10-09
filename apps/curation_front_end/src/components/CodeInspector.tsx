@@ -72,7 +72,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 </p>
             </div>
 
-            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
+            <div className="flex-row p-2 mb-2 rounded-md bg-white shadow items-center">
                 <Label className="p-1 text-sm">
                     {
                         license ? "Individual license matches" : "No license matches"

@@ -4,6 +4,12 @@
 
 import React, { useState, useMemo } from 'react';
 import { Button } from "./ui/button";
+import { 
+    Tooltip,
+    TooltipTrigger,
+    TooltipProvider,
+    TooltipContent
+} from "./ui/tooltip";
 import { ZodiosResponseByPath } from '@zodios/core';
 import { guestAPI } from 'validation-helpers';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
@@ -50,19 +56,32 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
                     RESET
                 </Button>
                 {uniqueData.map((d) => (
-                    <Button 
-                        key={d.id}
-                        className={`p-1 m-1 text-xs h-fit ${selectedId === d.id ? 
-                            "bg-red-300 hover:bg-red-300" : 
-                            "hover:bg-slate-200"}`}
-                        variant="secondary"
-                        onClick={() => {
-                            setSelectedId(d.id);
-                            setLine(d.startLine);
-                        }}
-                    >
-                        {d.startLine}: {d.licenseExpression ? d.licenseExpression : "null"}
-                    </Button>
+                    <TooltipProvider key={d.id}>
+                        <Tooltip delayDuration={400}>
+                            <TooltipTrigger asChild>
+                                <Button 
+                                    key={d.id}
+                                    className={`p-1 m-1 text-xs h-fit ${selectedId === d.id ? 
+                                        "bg-red-300 hover:bg-red-300" : 
+                                        "hover:bg-slate-200"}`}
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setSelectedId(d.id);
+                                        setLine(d.startLine);
+                                    }}
+                                >
+                                    {d.startLine}: {d.licenseExpression ? d.licenseExpression : "null"}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs">
+                                <span>
+                                    Timestamp: {new Date(d.updatedAt).toISOString()}
+                                    <br />
+                                    Score: {d.score}
+                                </span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 ))}
             </div>
         </div>
