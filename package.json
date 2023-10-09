@@ -30,7 +30,7 @@
         "clean-install": "npm run clean && npm install",
         "clean-turbo": "npm exec --workspaces -- npx rimraf .turbo",
         "clean-up": "npm run clean-turbo && npm run clean-dist && npm run clean",
-        "dev": "turbo run dev --no-cache --continue --no-daemon",
+        "dev": "turbo run dev --no-cache --continue --no-daemon --concurrency=12",
         "dev:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
