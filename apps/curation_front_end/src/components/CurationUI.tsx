@@ -20,7 +20,7 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
                 <PackageTree purl={purl} />
             </div>
 
-            {/* 2nd column (8/12): No file opened yet */}
+            {/* 2nd column (8/12): Open a file for license inspection and curation */}
             <div className="w-full md:w-8/12 flex flex-col m-2 ml-1 p-2 rounded-md bg-white shadow">
                 <CodeInspector purl={purl} path={path} />
             </div>
