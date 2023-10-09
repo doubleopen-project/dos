@@ -149,3 +149,7 @@ License: CC-BY-4.0
 Files: apps/curation_front_end/components.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
+
+Files: apps/curation_front_end/favicon.ico
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
