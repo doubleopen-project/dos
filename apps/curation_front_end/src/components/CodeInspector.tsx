@@ -14,6 +14,7 @@ import { parseAsInteger, useQueryState } from 'next-usequerystate';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
+import ButtonGroup from './ButtonGroup';
 
 type DataType = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -74,42 +75,10 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
                 <Label className="p-1 text-sm">
                     {
-                        license ? (
-                            <>
-                                Individual license matches ({licenseMatch+1}/{data?.licenseFindings[0]?.licenseFindingMatches.length || 0})
-                            </>
-                        ) : "No license matches"
+                        license ? "Individual license matches" : "No license matches"
                     }
                 </Label>
-                <div className="flex items-center">
-                    <p className='bg-slate-300 p-1 m-1 rounded-md w-full shadow text-xs'>
-                        {
-                            license ? (
-                                <>
-                                    License Expression: {license.licenseExpression}
-                                    <br />
-                                    Score: {license.score}, lines: [{license.startLine}, {license.endLine}]
-                                    <br />
-                                    Updated at: {new Date(license.updatedAt).toISOString()}
-                                </>
-                            ) : null
-                        }
-                    </p>
-                    <Button 
-                        className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
-                        onClick={() => setLicenseMatch(i => i - 1)}
-                        disabled={licenseMatch <= 0}
-                    >
-                        <GrPrevious size={20} />
-                    </Button>
-                    <Button 
-                        className='bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2'
-                        onClick={() => setLicenseMatch(i => i + 1)}
-                        disabled={licenseMatch >= (data?.licenseFindings[0]?.licenseFindingMatches.length || 0) - 1}
-                    >
-                        <GrNext size={20} />
-                    </Button>
-                </div>
+                <ButtonGroup data={data?.licenseFindings[0].licenseFindingMatches} />
             </div>
 
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
@@ -162,9 +131,11 @@ const getLicenseMatch = (data: DataType, index: number): LicenseMatch | null => 
     if ( matches.length === 0 || index < 0 || index >= matches.length) {
         return null;
     }
+    /*
     if (matches[index].licenseExpression === null) {
         matches[index].licenseExpression = "No license expression";
-    }
+    } 
+    */
     return matches[index];
 }
 

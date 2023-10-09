@@ -1,4 +1,8 @@
-import React from 'react';
+// SPDX-FileCopyrightText: 2023 HH Partners
+//
+// SPDX-License-Identifier: MIT
+
+import React, { useState } from 'react';
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,10 +26,9 @@ type ComboBoxProps = {
 }
 
 const ComboBox = ({ data, filterString }: ComboBoxProps) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [value, setValue] = useQueryState(filterString, parseAsString.withDefault(''));
 
-    
     // Map data to the format required by the Command component
     const licenses = Array.from(data).map((license) => ({
         value: license.toLowerCase(),
@@ -41,8 +44,12 @@ const ComboBox = ({ data, filterString }: ComboBoxProps) => {
                     aria-expanded={open}
                     className="w-full h-fit justify-between"
                 >
-                    <span className="text-sm">
-                        {value ? licenses.find((license) => license.value === value)?.label : "Select license..."}
+                    <span className="text-xs">
+                        {
+                            value ? 
+                            licenses.find((license) => license.value === value)?.label : 
+                            (typeof window !== 'undefined' && "Select license...")
+                        }
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -51,7 +58,7 @@ const ComboBox = ({ data, filterString }: ComboBoxProps) => {
                 <Command>
                     <CommandInput placeholder="Search license..." />
                     <CommandEmpty>No license found.</CommandEmpty>
-                    <CommandGroup>
+                    <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
                         {licenses.map((license) => (
                             <CommandItem
                                 key={license.value}
