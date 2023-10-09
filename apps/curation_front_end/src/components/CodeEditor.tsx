@@ -14,7 +14,6 @@ type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 type CodeEditorProps = {
     contents: string;
     licenseFindings: LicenseFindings["licenseFindings"];
-    line: number;
 }
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
@@ -53,6 +52,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
 
     return (
         <Editor
+            language=''
             key={contents+line} 
             onMount={handleEditorDidMount}
             theme="vs-light"
