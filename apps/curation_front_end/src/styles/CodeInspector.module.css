@@ -27,3 +27,7 @@
 	width: 5px !important;
 	margin-left: 3px;
 }
+
+.myWholeLineDecoration {
+    background-color: rgba(0, 128, 0, 0.2); /* example background color */
+}

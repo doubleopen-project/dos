@@ -32,6 +32,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                     range: range,
                     options: {
                         isWholeLine: true,
+                        className: styles['myWholeLineDecoration'],
                         linesDecorationsClassName: styles['myLineDecoration'],
                     },
                 };
