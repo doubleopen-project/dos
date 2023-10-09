@@ -193,16 +193,23 @@ model ScannerJob {
   @@index([packageId])
 }
 
-/// A temporary simple user model for authentication.
+/// A session for authentication.
+model Session {
+  sid       String   @id
+  expire    DateTime
+  sess      Json
+}
+
+/// A user model for authentication.
 model User {
-  id             Int          @id @default(autoincrement())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  username       String       @unique
-  hashedPassword Bytes        @db.ByteA
-  salt           Bytes        @db.ByteA
-  token          String       @unique
-  role           Role         @default(USER)
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  username       String        @unique
+  hashedPassword Bytes         @db.ByteA
+  salt           Bytes         @db.ByteA
+  token          String        @unique
+  role           Role          @default(USER)
   subscription   Subscription? @default(SILVER)
 
   licenseConclusions LicenseConclusion[]
