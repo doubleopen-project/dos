@@ -7,6 +7,7 @@ import { ZodiosResponseByPath } from '@zodios/core';
 import { guestAPI } from 'validation-helpers';
 import React from 'react';
 import styles from '../styles/CodeInspector.module.css';
+import { parseAsInteger, useQueryState } from 'next-usequerystate';
 
 type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 
@@ -16,9 +17,9 @@ type CodeEditorProps = {
     line: number;
 }
 
-const CodeEditor = ({ contents, licenseFindings, line }: CodeEditorProps) => {
+const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
 
-    //const editorRef = useRef(null);
+    const [line, setLine] = useQueryState('line', parseAsInteger.withDefault(1));
 
     function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: CodeEditorProps["licenseFindings"]) {
         const decorations: any[] = [];
