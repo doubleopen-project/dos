@@ -19,6 +19,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { parseAsString, useQueryState } from 'next-usequerystate';
+import { useRouter } from 'next/router';
 
 type ComboBoxProps = {
     data: Set<string>;
@@ -28,6 +29,7 @@ type ComboBoxProps = {
 const ComboBox = ({ data, filterString }: ComboBoxProps) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useQueryState(filterString, parseAsString.withDefault(''));
+    const router = useRouter();
 
     // Map data to the format required by the Command component
     const licenses = Array.from(data).map((license) => ({
@@ -46,10 +48,11 @@ const ComboBox = ({ data, filterString }: ComboBoxProps) => {
                 >
                     <span className="text-xs">
                         {
-                            value ? 
-                            licenses.find((license) => license.value === value)?.label : 
-                            (typeof window !== 'undefined' && "Select license...")
+                            router.isReady ? 
+                            (value ? licenses.find((license) => license.value === value)?.label : "Select license...") : 
+                            null
                         }
+                        
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
