@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Editor from "@monaco-editor/react";
+import Editor, { OnMount } from "@monaco-editor/react";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import React from "react";
@@ -22,38 +22,27 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
   const router = useRouter();
   const { path } = router.query;
 
-  function showLicenseFindingMatches(
-    monaco: any,
-    editor: any,
-    licenseFindings: CodeEditorProps["licenseFindings"],
-  ) {
-    const decorations: any[] = [];
-    licenseFindings.forEach(
-      (licenseFinding: { licenseFindingMatches: any[] }) => {
-        licenseFinding.licenseFindingMatches.forEach(
-          (licenseFindingMatch: any) => {
-            const startLine = licenseFindingMatch.startLine;
-            const endLine = licenseFindingMatch.endLine;
-            const range = new monaco.Range(startLine, 1, endLine, 1);
-            const decoration = {
-              range: range,
-              options: {
-                isWholeLine: true,
-                className: styles["myWholeLineDecoration"],
-                linesDecorationsClassName: styles["myLineDecoration"],
-              },
-            };
-            decorations.push(decoration);
-          },
-        );
-      },
-    );
-    editor.deltaDecorations([], decorations);
-  }
-
-  const handleEditorDidMount = (editor: any, monaco: any) => {
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
     // Show the decorations for all individual license matches
-    showLicenseFindingMatches(monaco, editor, licenseFindings);
+    const decorations = licenseFindings.flatMap((licenseFinding) => {
+      return licenseFinding.licenseFindingMatches.map(
+        (licenseFindingMatch: any) => {
+          const startLine = licenseFindingMatch.startLine;
+          const endLine = licenseFindingMatch.endLine;
+          const range = new monaco.Range(startLine, 1, endLine, 1);
+          const decoration = {
+            range: range,
+            options: {
+              isWholeLine: true,
+              className: styles["myWholeLineDecoration"],
+              linesDecorationsClassName: styles["myLineDecoration"],
+            },
+          };
+          return decoration;
+        },
+      );
+    });
+    editor.deltaDecorations([], decorations);
 
     // Move the editor to the specified line
     editor.revealLineInCenter(line);
@@ -89,9 +78,12 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
         yaml: "yaml",
         yml: "yaml",
       };
-      if (fileType && fileTypes[fileType]) {
+
+      const model = editor.getModel();
+
+      if (fileType && fileTypes[fileType] && model) {
         //console.log("Editor language:", fileTypes[fileType]);
-        monaco.editor.setModelLanguage(editor.getModel(), fileTypes[fileType]);
+        monaco.editor.setModelLanguage(model, fileTypes[fileType]);
       }
     }
   };
