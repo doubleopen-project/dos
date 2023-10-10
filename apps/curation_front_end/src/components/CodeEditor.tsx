@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Editor from '@monaco-editor/react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { guestAPI } from 'validation-helpers';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '../styles/CodeInspector.module.css';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
 
@@ -17,8 +17,16 @@ type CodeEditorProps = {
 }
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
-
     const [line, setLine] = useQueryState('line', parseAsInteger.withDefault(1));
+    const editorRef = useRef(null);
+    const monacoRef = useRef(null);
+    const monaco = useMonaco();
+
+    useEffect(() => {
+        if (monaco) {
+          //console.log('here is the monaco instance:', monaco);
+        }
+      }, [monaco]);
 
     function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: CodeEditorProps["licenseFindings"]) {
         const decorations: any[] = [];
@@ -43,6 +51,9 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
     }
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
+        editorRef.current = editor;
+        monacoRef.current = monaco;
+
         // Show the decorations for all individual license matches
         showLicenseFindingMatches(monaco, editor, licenseFindings);
 

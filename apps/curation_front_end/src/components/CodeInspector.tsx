@@ -9,7 +9,6 @@ import { zodiosHooks } from '@/hooks/zodiosHooks';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { guestAPI } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
-import { parseAsInteger, useQueryState } from 'next-usequerystate';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
@@ -26,7 +25,6 @@ type CodeInspectorProps = {
 const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
-    const [licenseMatch, setLicenseMatch] = useQueryState('licenseMatch', parseAsInteger.withDefault(0));
     const { data, isLoading, error } = zodiosHooks.useGetFileData({ purl: purl as string, path: path as string }, undefined, { enabled: !!path && !!purl });
     const fileUrl = data?.downloadUrl;
 
@@ -42,71 +40,61 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         }
     }, [fileUrl]);
 
-    let license: LicenseMatch | null = null;
-    if (data !== undefined) {
-        license = getLicenseMatch(data, licenseMatch);
-    }
-
     return (
         <div className="flex flex-col h-full">
             
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow">
                 <Label className="font-bold">File: </Label>
-                <Badge className="rounded-md">{path}</Badge>
+                {path ? 
+                <Badge className="rounded-md">{path}</Badge> : 
+                <Label className="text-sm">No file opened</Label>}
             </div>
             
             <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
-                <Label className="p-1 text-sm">Detected SPDX license expression for the whole file</Label>
-                <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
-                    {
-                        data && data.licenseFindings.map((license) => (
-                            <span key={license.id}>
-                                <>
-                                    {new Date(license.updatedAt).toISOString()}:   {license.licenseExpressionSPDX}
-                                    <br />
-                                </>
-                            </span>
-                        ))
-                    }
-                </p>
+                {data?.licenseFindings[0] ?
+                <>
+                    <Label className="p-1 text-sm">Detected SPDX license expression for the whole file</Label>
+                    <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
+                        {
+                            data.licenseFindings.map((license) => (
+                                <span key={license.id}>
+                                    <>
+                                        {new Date(license.updatedAt).toISOString()}:   {license.licenseExpressionSPDX}
+                                        <br />
+                                    </>
+                                </span>
+                            ))
+                        }
+                    </p>
+                </> : 
+                <Label className="p-1 text-sm">No license found from this file</Label>}
             </div>
 
+            {data?.licenseFindings[0]?.licenseFindingMatches && 
             <div className="flex-row p-2 mb-2 rounded-md bg-white shadow items-center">
-                <Label className="p-1 text-sm">
-                    {
-                        license ? "Individual license matches" : "No license matches"
-                    }
-                </Label>
-                <ButtonGroup data={data?.licenseFindings[0].licenseFindingMatches} />
-            </div>
+                <Label className="p-1 text-sm">Individual license matches</Label>
+                <ButtonGroup data={data.licenseFindings[0].licenseFindingMatches} />
+            </div>}
 
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
-                {
-                    !path && (
-                        <div className='flex justify-center items-center h-full'>
-                            No file opened
-                        </div>
-                    )
-                }
-                {
-                    path && isLoading && (
-                        <div className='flex justify-center items-center h-full'>
-                            <Loader2 className='mr-2 h-16 w-16 animate-spin' />
-                        </div>
-                    )
-                }
-                {
-                    data && fileContents && (
-                        <CodeEditor contents={fileContents} licenseFindings={data.licenseFindings} />
-                    )
-                }
-                {
-                    error && (
-                        <div className='flex justify-center items-center h-full'>
-                            Unable to fetch file data
-                        </div>
-                    )
-                }
+                {!path && (
+                    <div className='flex justify-center items-center h-full'>
+                        No file opened
+                    </div>
+                )}
+                {path && isLoading && (
+                    <div className='flex justify-center items-center h-full'>
+                        <Loader2 className='mr-2 h-16 w-16 animate-spin' />
+                    </div>
+                )}
+                {data && fileContents && (
+                    <CodeEditor contents={fileContents} licenseFindings={data.licenseFindings} />
+                )}
+                {error && (
+                    <div className='flex justify-center items-center h-full'>
+                        Unable to fetch file data
+                    </div>
+                )}
             </div>
             
             <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
