@@ -5,16 +5,16 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from "./ui/button";
-import { zodiosHooks } from '@/hooks/zodiosHooks';
+import { userHooks } from '@/hooks/zodiosHooks';
 import { ZodiosResponseByPath } from '@zodios/core';
-import { guestAPI } from 'validation-helpers';
+import { userAPI } from 'validation-helpers';
 import CodeEditor from './CodeEditor';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import ButtonGroup from './ButtonGroup';
 
-type DataType = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
+type DataType = ZodiosResponseByPath<typeof userAPI, 'post', '/file'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
@@ -25,7 +25,7 @@ type CodeInspectorProps = {
 const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     const [fileContents, setFileContents] = useState<string | undefined>(undefined);
-    const { data, isLoading, error } = zodiosHooks.useGetFileData({ purl: purl as string, path: path as string }, undefined, { enabled: !!path && !!purl });
+    const { data, isLoading, error } = userHooks.useGetFileData({ purl: purl as string, path: path as string }, undefined, { enabled: !!path && !!purl });
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL

@@ -13,7 +13,7 @@ import session from 'express-session';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import genFunc from 'connect-pg-simple';
-import { adminRouter, authRouter, guestRouter, scannerRouter, userRouter } from './routes';
+import { adminRouter, authRouter, scannerRouter, userRouter } from './routes';
 import { loadEnv } from 'common-helpers';
 import { dosAPI } from 'validation-helpers';
 
@@ -111,7 +111,6 @@ passport.deserializeUser(async (id: number, done) => {
 
 app.use('/api/admin', cors(corsOptions), authorizeAdmin, adminRouter);
 app.use('/api/auth', cors(corsOptions), authRouter);
-app.use('/api/guest', cors(), guestRouter);
 app.use('/api', scannerRouter);
 app.use('/api/user', cors(corsOptions), authorizeUser, userRouter);
 

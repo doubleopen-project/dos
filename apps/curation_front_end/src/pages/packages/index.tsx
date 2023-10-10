@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 import PackageList from '@/components/PackageList';
-import { zodiosHooks } from '../../hooks/zodiosHooks';
+import { userHooks } from '../../hooks/zodiosHooks';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function PackageLibrary() {
 
-    const { data, isLoading, error } = zodiosHooks.useGet('/packages');
+    const { data, isLoading, error } = userHooks.useGet('/packages');
     if (isLoading) {
         return (
             <div>

@@ -11,10 +11,10 @@ import {
     TooltipContent
 } from "./ui/tooltip";
 import { ZodiosResponseByPath } from '@zodios/core';
-import { guestAPI } from 'validation-helpers';
+import { userAPI } from 'validation-helpers';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
 
-type DataType = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
+type DataType = ZodiosResponseByPath<typeof userAPI, 'post', '/file'>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 // Define type for component props
