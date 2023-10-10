@@ -6,10 +6,10 @@ import { authAPI, userAPI } from "validation-helpers";
 import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/';
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/";
 
-export const authZodios = new Zodios(baseUrl + 'auth/', authAPI);
+export const authZodios = new Zodios(baseUrl + "auth/", authAPI);
 export const authHooks = new ZodiosHooks("authApi", authZodios);
 
-export const userZodios = new Zodios(baseUrl + 'user/', userAPI);
+export const userZodios = new Zodios(baseUrl + "user/", userAPI);
 export const userHooks = new ZodiosHooks("userApi", userZodios);

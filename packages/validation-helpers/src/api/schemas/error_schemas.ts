@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { z } from 'zod';
+import { z } from "zod";
 
 //------------------- Error schema -------------------
 
 export const ErrorSchema = z.object({
-    message: z.string()
-})
+  message: z.string(),
+});
