@@ -72,8 +72,10 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
             {data?.licenseFindings[0]?.licenseFindingMatches && 
             <div className="flex-row p-2 mb-2 rounded-md bg-white shadow items-center">
-                <Label className="p-1 text-sm">Individual license matches</Label>
-                <ButtonGroup data={data.licenseFindings[0].licenseFindingMatches} />
+                <Label className="text-sm">Individual license matches</Label>
+                <div className='bg-slate-300 p-1 rounded-md w-full max-h-[20vh] overflow-y-auto shadow'>
+                    <ButtonGroup data={data.licenseFindings[0].licenseFindingMatches} />
+                </div>
             </div>}
 
             <div className="flex flex-1 justify-center items-center overflow-auto bg-gray-100">
