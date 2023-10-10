@@ -67,7 +67,7 @@ const ComboBox = ({ data, filterString }: ComboBoxProps) => {
                                 key={license.value}
                                 className="items-start text-left"
                                 onSelect={(currentValue) => {
-                                    console.log("Current value:", currentValue);
+                                    //console.log("Current value:", currentValue);
                                     setValue(currentValue === value ? null : currentValue);
                                     setOpen(false);
                                 }}
