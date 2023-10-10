@@ -28,10 +28,10 @@ export const PostScanResultsRes = z.object({
                 license: z.string(),
                 location: z.object({
                     path: z.string(),
-                    start_line: z.number(),
-                    end_line: z.number(),
+                    start_line: z.number().optional(),
+                    end_line: z.number().optional(),
                 }),
-                score: z.number(),
+                score: z.number().optional(),
             })),
             copyrights: z.array(z.object({
                 statement: z.string(),

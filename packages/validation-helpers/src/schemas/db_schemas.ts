@@ -122,11 +122,8 @@ const CreateLicenseConclusionSchema = z.object({
         concludedLicenseExpressionSPDX: z.string(),
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.string(),
-        reason: z.string(),
-        startLine: z.number(),
-        endLine: z.number(),
-        score: z.number(),
-        fileSha256: z.string()
+        fileSha256: z.string(),
+        userId: z.number()
     })
 })
 

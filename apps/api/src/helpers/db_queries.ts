@@ -1278,6 +1278,38 @@ export const findFileData = async (sha256: string): Promise<FileWithRelations | 
     return file;
 }
 
+export const findLicenseConclusionUserId = async (id: number): Promise<number | null> => {
+    let licenseConclusion: { userId: number } | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            licenseConclusion = await prisma.licenseConclusion.findUnique({
+                where: {
+                    id: id
+                },
+                select: {
+                    userId: true
+                }
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log('Error with trying to find LicenseConclusionUserId: ' + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) => setTimeout(resolve, retryInterval))
+                console.log("Retrying database query");
+            } else {
+                throw new Error('Error: Unable to perform query to find LicenseConclusionUserId')
+            }
+        }
+    }
+    return licenseConclusion ? licenseConclusion.userId : null;
+}
+
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
