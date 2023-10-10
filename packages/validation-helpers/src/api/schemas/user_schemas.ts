@@ -20,15 +20,6 @@ export const PostLicenseConclusionReq = z.object({
     comment: z.string({
         required_error: 'Comment is required'
     }),
-    reason: z.string({
-        required_error: 'Reason is required'
-    }),
-    startLine: z.number({
-        required_error: 'Start line is required'
-    }),
-    endLine: z.number({
-        required_error: 'End line is required'
-    }),
     fileSha256: z.string({
         required_error: 'File SHA256 is required'
     }),
@@ -41,13 +32,16 @@ export const PostLicenseConclusionRes = z.object({
 
 //--------------- PUT license conclusion ---------------
 export const PutLicenseConclusionReq = z.object({
-    concludedLicenseExpressionSPDX: z.string().optional(),
-    detectedLicenseExpressionSPDX: z.string().optional(),
-    comment: z.string().optional(),
-    reason: z.string().optional(),
-    startLine: z.number().optional(),
-    endLine: z.number().optional()
+    concludedLicenseExpressionSPDX: z.string(),
+    detectedLicenseExpressionSPDX: z.string(),
+    comment: z.string(),
 })
+.partial()
+.refine(
+    ({ concludedLicenseExpressionSPDX, detectedLicenseExpressionSPDX, comment }) => 
+        concludedLicenseExpressionSPDX !== undefined || detectedLicenseExpressionSPDX !== undefined || comment !== undefined,
+        { message: 'At least one field is required' }
+)
 
 export const PutLicenseConclusionReqPathParams = z.string({
     required_error: 'Id is required'

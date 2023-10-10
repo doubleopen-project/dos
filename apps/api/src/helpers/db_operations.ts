@@ -67,10 +67,10 @@ export const getScanResults = async (packageId: number, options: { fetchConclude
                         license: licenseConclusion.concludedLicenseExpressionSPDX,
                         location: {
                             path: filetree.path,
-                            start_line: licenseConclusion.startLine,
-                            end_line: licenseConclusion.endLine
+                            start_line: undefined,
+                            end_line: undefined
                         },
-                        score: licenseConclusion.score
+                        score: undefined
                     })
                 }
             } else if (filetree.file.licenseFindings.length > 0) {

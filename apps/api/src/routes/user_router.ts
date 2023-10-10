@@ -13,7 +13,7 @@ const userRouter = zodiosRouter(userAPI);
 userRouter.get('/user', async (req, res) => {
     try {
         const { user } = req;
-        
+
         if (!user) {
             res.status(401).send({ message: 'Unauthorized' });
         } else {
@@ -27,17 +27,15 @@ userRouter.get('/user', async (req, res) => {
 
 userRouter.post('/license-conclusion', async (req, res) => {
     try {
-        // TODO: add user id to the license conclusion
+        if (!req.user) throw new Error('User not found');
+
         const licenseConclusion = await dbQueries.createLicenseConclusion({
             data: {
                 concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
                 detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
-                reason: req.body.reason,
-                startLine: req.body.startLine,
-                endLine: req.body.endLine,
-                score: 100,
                 fileSha256: req.body.fileSha256,
+                userId: req.user.id
             }
         })
 
@@ -58,26 +56,33 @@ userRouter.post('/license-conclusion', async (req, res) => {
 
 userRouter.put('/license-conclusion/:id', async (req, res) => {
     try {
-        // TODO: make sure that the license conclusion belongs to the user
-        await dbQueries.updateLicenseConclusion(
-            parseInt(req.params.id),
-            {
-                concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-                reason: req.body.reason,
-                startLine: req.body.startLine,
-                endLine: req.body.endLine
-            }
-        )
+        if (!req.user) throw new Error('User not found');
 
-        res.status(200).json({ message: 'License conclusion updated' });
+        const licenseConclusionId = parseInt(req.params.id);
+        const licenseConclusionUserId = await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
+
+        if (!licenseConclusionUserId) res.status(404).json({ message: 'License conclusion to update not found' });
+        // Make sure that the license conclusion belongs to the user or the user is admin
+        if (req.user.role === 'ADMIN' || req.user.id === licenseConclusionUserId) {
+            await dbQueries.updateLicenseConclusion(
+                licenseConclusionId,
+                {
+                    concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
+                    detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
+                    comment: req.body.comment
+                }
+            )
+
+            res.status(200).json({ message: 'License conclusion updated' });
+        } else {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.log('Error: ', error);
 
         if (error.code === 'P2025') {
-            return res.status(400).json({ message: 'Bad request: License conclusion to update not found' });
+            return res.status(404).json({ message: 'License conclusion to update not found' });
         } else {
             res.status(500).json({ message: 'Internal server error' });
         }
@@ -86,16 +91,26 @@ userRouter.put('/license-conclusion/:id', async (req, res) => {
 
 userRouter.delete('/license-conclusion/:id', async (req, res) => {
     try {
-        // TODO: make sure that the license conclusion belongs to the user
-        await dbQueries.deleteLicenseConclusion(parseInt(req.params.id))
+        if (!req.user) throw new Error('User not found');
 
-        res.status(200).json({ message: 'License conclusion deleted' });
+        const licenseConclusionId = parseInt(req.params.id);
+        const licenseConclusionUserId = await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
+
+        if (!licenseConclusionUserId) res.status(404).json({ message: 'License conclusion to delete not found' });
+        // Make sure that the license conclusion belongs to the user or the user is admin
+        if (req.user.role === 'ADMIN' || req.user.id === licenseConclusionUserId) {
+            await dbQueries.deleteLicenseConclusion(licenseConclusionId)
+
+            res.status(200).json({ message: 'License conclusion deleted' });
+        } else {
+            res.status(401).json({ message: 'Unauthorized' });
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.log('Error: ', error);
 
         if (error.code === 'P2025') {
-            return res.status(400).json({ message: 'Bad request: License conclusion with the requested id does not exist' });
+            return res.status(404).json({ message: 'License conclusion with the requested id does not exist' });
         } else {
             res.status(500).json({ message: 'Internal server error' });
         }

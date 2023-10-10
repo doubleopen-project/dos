@@ -18,12 +18,17 @@ export const errors = makeErrors([
 	},
 	{
 		status: 403,
-		description: 'Token is invalid',
+		description: 'Forbidden',
 		schema: ErrorSchema
 	},
 	{
 		status: 401,
-		description: 'No token provided',
+		description: 'Unauthorized',
 		schema: ErrorSchema
-	}
+	},
+	{
+		status: 404,
+		description: 'Not found',
+		schema: ErrorSchema
+	},
 ]);

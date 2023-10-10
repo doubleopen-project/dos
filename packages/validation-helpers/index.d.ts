@@ -1488,51 +1488,36 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<{
         concludedLicenseExpressionSPDX: z.ZodString;
         detectedLicenseExpressionSPDX: z.ZodString;
         comment: z.ZodString;
-        reason: z.ZodString;
-        startLine: z.ZodNumber;
-        endLine: z.ZodNumber;
-        score: z.ZodNumber;
         fileSha256: z.ZodString;
+        userId: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
-        score: number;
         fileSha256: string;
-        startLine: number;
-        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
-        reason: string;
+        userId: number;
     }, {
-        score: number;
         fileSha256: string;
-        startLine: number;
-        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
-        reason: string;
+        userId: number;
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        score: number;
         fileSha256: string;
-        startLine: number;
-        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
-        reason: string;
+        userId: number;
     };
 }, {
     data: {
-        score: number;
         fileSha256: string;
-        startLine: number;
-        endLine: number;
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
-        reason: string;
+        userId: number;
     };
 }>;
 type CreateLicenseConclusionInput = z.infer<typeof CreateLicenseConclusionSchema>;
@@ -1756,7 +1741,7 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1766,7 +1751,17 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1831,7 +1826,7 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1841,7 +1836,17 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1894,7 +1899,7 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1904,7 +1909,17 @@ declare const adminAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1957,7 +1972,7 @@ declare const authAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -1967,7 +1982,17 @@ declare const authAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2009,7 +2034,7 @@ declare const authAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2019,7 +2044,17 @@ declare const authAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2132,7 +2167,7 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2142,7 +2177,17 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2199,7 +2244,7 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2209,7 +2254,17 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2377,7 +2432,7 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2387,7 +2442,17 @@ declare const guestAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2442,34 +2507,34 @@ declare const scannerAPI: [{
                 license: zod.ZodString;
                 location: zod.ZodObject<{
                     path: zod.ZodString;
-                    start_line: zod.ZodNumber;
-                    end_line: zod.ZodNumber;
+                    start_line: zod.ZodOptional<zod.ZodNumber>;
+                    end_line: zod.ZodOptional<zod.ZodNumber>;
                 }, "strip", zod.ZodTypeAny, {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 }, {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 }>;
-                score: zod.ZodNumber;
+                score: zod.ZodOptional<zod.ZodNumber>;
             }, "strip", zod.ZodTypeAny, {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }, {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }>, "many">;
             copyrights: zod.ZodArray<zod.ZodObject<{
                 statement: zod.ZodString;
@@ -2527,13 +2592,13 @@ declare const scannerAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -2551,13 +2616,13 @@ declare const scannerAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -2581,13 +2646,13 @@ declare const scannerAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -2611,13 +2676,13 @@ declare const scannerAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -2649,7 +2714,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2659,7 +2724,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2718,7 +2793,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2728,7 +2803,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2784,7 +2869,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2794,7 +2879,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2856,7 +2951,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2866,7 +2961,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2923,7 +3028,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -2933,7 +3038,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3450,7 +3565,7 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3460,7 +3575,17 @@ declare const scannerAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3505,7 +3630,7 @@ declare const userAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3515,7 +3640,17 @@ declare const userAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3535,26 +3670,17 @@ declare const userAPI: [{
             concludedLicenseExpressionSPDX: zod.ZodString;
             detectedLicenseExpressionSPDX: zod.ZodString;
             comment: zod.ZodString;
-            reason: zod.ZodString;
-            startLine: zod.ZodNumber;
-            endLine: zod.ZodNumber;
             fileSha256: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
             fileSha256: string;
-            startLine: number;
-            endLine: number;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
-            reason: string;
         }, {
             fileSha256: string;
-            startLine: number;
-            endLine: number;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
-            reason: string;
         }>;
     }];
     response: zod.ZodObject<{
@@ -3589,7 +3715,7 @@ declare const userAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3599,7 +3725,17 @@ declare const userAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3619,27 +3755,26 @@ declare const userAPI: [{
     }, {
         name: "body";
         type: "Body";
-        schema: zod.ZodObject<{
+        schema: zod.ZodEffects<zod.ZodObject<{
             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
             comment: zod.ZodOptional<zod.ZodString>;
-            reason: zod.ZodOptional<zod.ZodString>;
-            startLine: zod.ZodOptional<zod.ZodNumber>;
-            endLine: zod.ZodOptional<zod.ZodNumber>;
         }, "strip", zod.ZodTypeAny, {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
         }, {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
+        }>, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+        }, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
         }>;
     }];
     response: zod.ZodObject<{
@@ -3671,7 +3806,7 @@ declare const userAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3681,7 +3816,17 @@ declare const userAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3728,7 +3873,7 @@ declare const userAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3738,7 +3883,17 @@ declare const userAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -3793,34 +3948,34 @@ declare const dosAPI: [{
                 license: zod.ZodString;
                 location: zod.ZodObject<{
                     path: zod.ZodString;
-                    start_line: zod.ZodNumber;
-                    end_line: zod.ZodNumber;
+                    start_line: zod.ZodOptional<zod.ZodNumber>;
+                    end_line: zod.ZodOptional<zod.ZodNumber>;
                 }, "strip", zod.ZodTypeAny, {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 }, {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 }>;
-                score: zod.ZodNumber;
+                score: zod.ZodOptional<zod.ZodNumber>;
             }, "strip", zod.ZodTypeAny, {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }, {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }>, "many">;
             copyrights: zod.ZodArray<zod.ZodObject<{
                 statement: zod.ZodString;
@@ -3878,13 +4033,13 @@ declare const dosAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -3902,13 +4057,13 @@ declare const dosAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -3932,13 +4087,13 @@ declare const dosAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -3962,13 +4117,13 @@ declare const dosAPI: [{
                 statement: string;
             }[];
             licenses: {
-                score: number;
                 license: string;
                 location: {
                     path: string;
-                    start_line: number;
-                    end_line: number;
+                    start_line?: number | undefined;
+                    end_line?: number | undefined;
                 };
+                score?: number | undefined;
             }[];
             issues: {
                 message: string;
@@ -4000,7 +4155,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4010,7 +4165,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4069,7 +4234,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4079,7 +4244,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4135,7 +4310,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4145,7 +4320,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4207,7 +4392,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4217,7 +4402,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4274,7 +4469,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4284,7 +4479,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4801,7 +5006,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4811,7 +5016,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4854,7 +5069,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4864,7 +5079,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4884,26 +5109,17 @@ declare const dosAPI: [{
             concludedLicenseExpressionSPDX: zod.ZodString;
             detectedLicenseExpressionSPDX: zod.ZodString;
             comment: zod.ZodString;
-            reason: zod.ZodString;
-            startLine: zod.ZodNumber;
-            endLine: zod.ZodNumber;
             fileSha256: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
             fileSha256: string;
-            startLine: number;
-            endLine: number;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
-            reason: string;
         }, {
             fileSha256: string;
-            startLine: number;
-            endLine: number;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
-            reason: string;
         }>;
     }];
     response: zod.ZodObject<{
@@ -4938,7 +5154,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4948,7 +5164,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -4968,27 +5194,26 @@ declare const dosAPI: [{
     }, {
         name: "body";
         type: "Body";
-        schema: zod.ZodObject<{
+        schema: zod.ZodEffects<zod.ZodObject<{
             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
             comment: zod.ZodOptional<zod.ZodString>;
-            reason: zod.ZodOptional<zod.ZodString>;
-            startLine: zod.ZodOptional<zod.ZodNumber>;
-            endLine: zod.ZodOptional<zod.ZodNumber>;
         }, "strip", zod.ZodTypeAny, {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
         }, {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
-            reason?: string | undefined;
-            startLine?: number | undefined;
-            endLine?: number | undefined;
+        }>, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
+        }, {
+            concludedLicenseExpressionSPDX?: string | undefined;
+            detectedLicenseExpressionSPDX?: string | undefined;
+            comment?: string | undefined;
         }>;
     }];
     response: zod.ZodObject<{
@@ -5020,7 +5245,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5030,7 +5255,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5077,7 +5312,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5087,7 +5322,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5140,7 +5385,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5150,7 +5395,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5215,7 +5470,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5225,7 +5480,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5278,7 +5543,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5288,7 +5553,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5339,7 +5614,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5349,7 +5624,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5391,7 +5676,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5401,7 +5686,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5512,7 +5807,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5522,7 +5817,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5579,7 +5884,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5589,7 +5894,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5757,7 +6072,7 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 403;
-        description: "Token is invalid";
+        description: "Forbidden";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
@@ -5767,7 +6082,17 @@ declare const dosAPI: [{
         }>;
     }, {
         status: 401;
-        description: "No token provided";
+        description: "Unauthorized";
+        schema: zod.ZodObject<{
+            message: zod.ZodString;
+        }, "strip", zod.ZodTypeAny, {
+            message: string;
+        }, {
+            message: string;
+        }>;
+    }, {
+        status: 404;
+        description: "Not found";
         schema: zod.ZodObject<{
             message: zod.ZodString;
         }, "strip", zod.ZodTypeAny, {
