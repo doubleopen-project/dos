@@ -43,47 +43,45 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
     }, [data]);
 
     return (
-        <div className='bg-slate-300 p-1 rounded-md w-full shadow'>
-            <div className='flex flex-wrap'>
-                <Button 
-                    key="reset"
-                    className="p-1 m-1 text-xs h-fit"
-                    onClick={() => {
-                        setSelectedId(null);
-                        setLine(1);
-                    }}
-                >
-                    RESET
-                </Button>
-                {uniqueData.map((d) => (
-                    <TooltipProvider key={d.id}>
-                        <Tooltip delayDuration={400}>
-                            <TooltipTrigger asChild>
-                                <Button 
-                                    key={d.id}
-                                    className={`p-1 m-1 text-xs h-fit ${selectedId === d.id ? 
-                                        "bg-red-300 hover:bg-red-300" : 
-                                        "hover:bg-slate-200"}`}
-                                    variant="secondary"
-                                    onClick={() => {
-                                        setSelectedId(d.id);
-                                        setLine(d.startLine);
-                                    }}
-                                >
-                                    {d.startLine}: {d.licenseExpression ? d.licenseExpression : "null"}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent className="text-xs">
-                                <span>
-                                    Timestamp: {new Date(d.updatedAt).toISOString()}
-                                    <br />
-                                    Score: {d.score}
-                                </span>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                ))}
-            </div>
+        <div className='flex flex-wrap'>
+            <Button 
+                key="reset"
+                className="p-0.5 m-0.5 text-xs h-fit"
+                onClick={() => {
+                    setSelectedId(null);
+                    setLine(1);
+                }}
+            >
+                RESET
+            </Button>
+            {uniqueData.map((d) => (
+                <TooltipProvider key={d.id}>
+                    <Tooltip delayDuration={400}>
+                        <TooltipTrigger asChild>
+                            <Button 
+                                key={d.id}
+                                className={`p-0.5 m-0.5 text-xs h-fit ${selectedId === d.id ? 
+                                    "bg-red-300 hover:bg-red-300" : 
+                                    "hover:bg-slate-200"}`}
+                                variant="secondary"
+                                onClick={() => {
+                                    setSelectedId(d.id);
+                                    setLine(d.startLine);
+                                }}
+                            >
+                                {d.startLine}: {d.licenseExpression ? d.licenseExpression : "null"}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">
+                            <span>
+                                Timestamp: {new Date(d.updatedAt).toISOString()}
+                                <br />
+                                Score: {d.score}
+                            </span>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            ))}
         </div>
     )
 }
