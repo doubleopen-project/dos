@@ -20,6 +20,9 @@ export const PostLicenseConclusionReq = z.object({
   comment: z.string({
     required_error: "Comment is required",
   }),
+  contextPurl: z.string({
+    required_error: "Context purl is required",
+  }),
   fileSha256: z.string({
     required_error: "File SHA256 is required",
   }),
@@ -36,6 +39,7 @@ export const PutLicenseConclusionReq = z
     concludedLicenseExpressionSPDX: z.string(),
     detectedLicenseExpressionSPDX: z.string(),
     comment: z.string(),
+    contextPurl: z.string(),
   })
   .partial()
   .refine(
@@ -43,10 +47,12 @@ export const PutLicenseConclusionReq = z
       concludedLicenseExpressionSPDX,
       detectedLicenseExpressionSPDX,
       comment,
+      contextPurl,
     }) =>
       concludedLicenseExpressionSPDX !== undefined ||
       detectedLicenseExpressionSPDX !== undefined ||
-      comment !== undefined,
+      comment !== undefined ||
+      contextPurl !== undefined,
     { message: "At least one field is required" },
   );
 

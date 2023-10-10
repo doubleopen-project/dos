@@ -110,6 +110,7 @@ model LicenseConclusion {
   concludedLicenseExpressionSPDX String
   detectedLicenseExpressionSPDX  String
   comment                        String
+  contextPurl                    String
 
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
@@ -118,6 +119,7 @@ model LicenseConclusion {
   user   User @relation(fields: [userId], references: [id])
 
   @@index([fileSha256])
+  @@index([userId])
 }
 
 /// A copyright finding in a file.
@@ -191,9 +193,9 @@ model ScannerJob {
 
 /// A session for authentication.
 model Session {
-  sid       String   @id
-  expire    DateTime
-  sess      Json
+  sid    String   @id
+  expire DateTime
+  sess   Json
 }
 
 /// A user model for authentication.

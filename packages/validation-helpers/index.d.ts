@@ -530,7 +530,7 @@ declare const scannerAgentApi: [
             error: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -644,7 +644,7 @@ declare const scannerAgentApi: [
             error: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -714,7 +714,7 @@ declare const scannerAgentApi: [
             }[];
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -814,7 +814,7 @@ declare const scannerAgentApi: [
             error: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -826,7 +826,7 @@ declare const scannerAgentApi: [
         name: "id";
         type: "Path";
         schema: zod.ZodString;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -1496,7 +1496,7 @@ declare const scannerAgentApi: [
             error: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -1525,7 +1525,7 @@ declare const scannerAgentApi: [
             state: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -1625,9 +1625,9 @@ declare const scannerAgentApi: [
             error: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const DBScannerJobSchema: z.ZodObject<
@@ -1991,6 +1991,7 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<
         concludedLicenseExpressionSPDX: z.ZodString;
         detectedLicenseExpressionSPDX: z.ZodString;
         comment: z.ZodString;
+        contextPurl: z.ZodString;
         fileSha256: z.ZodString;
         userId: z.ZodNumber;
       },
@@ -2001,6 +2002,7 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
+        contextPurl: string;
         userId: number;
       },
       {
@@ -2008,6 +2010,7 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<
         concludedLicenseExpressionSPDX: string;
         detectedLicenseExpressionSPDX: string;
         comment: string;
+        contextPurl: string;
         userId: number;
       }
     >;
@@ -2020,6 +2023,7 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<
       concludedLicenseExpressionSPDX: string;
       detectedLicenseExpressionSPDX: string;
       comment: string;
+      contextPurl: string;
       userId: number;
     };
   },
@@ -2029,6 +2033,7 @@ declare const CreateLicenseConclusionSchema: z.ZodObject<
       concludedLicenseExpressionSPDX: string;
       detectedLicenseExpressionSPDX: string;
       comment: string;
+      contextPurl: string;
       userId: number;
     };
   }
@@ -2300,7 +2305,7 @@ declare const adminAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -2400,7 +2405,7 @@ declare const adminAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -2436,7 +2441,7 @@ declare const adminAPI: [
             token?: string | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -2536,7 +2541,7 @@ declare const adminAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -2560,7 +2565,7 @@ declare const adminAPI: [
             id: number;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -2660,9 +2665,9 @@ declare const adminAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const authAPI: [
@@ -2691,7 +2696,7 @@ declare const authAPI: [
             password: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
     errors: [
@@ -2779,7 +2784,7 @@ declare const authAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -2884,9 +2889,9 @@ declare const authAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const scannerAPI: [
@@ -2936,7 +2941,7 @@ declare const scannerAPI: [
               | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -3132,7 +3137,7 @@ declare const scannerAPI: [
                   source: string;
                 }[];
               }
-            >,
+            >
           ]
         >;
       },
@@ -3286,7 +3291,7 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -3310,7 +3315,7 @@ declare const scannerAPI: [
             key: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -3416,7 +3421,7 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -3443,7 +3448,7 @@ declare const scannerAPI: [
             zipFileKey: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -3543,7 +3548,7 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -3555,7 +3560,7 @@ declare const scannerAPI: [
         name: "id";
         type: "Path";
         schema: zod.ZodString;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -3676,7 +3681,7 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -3705,7 +3710,7 @@ declare const scannerAPI: [
             state: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -3805,7 +3810,7 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -4362,7 +4367,7 @@ declare const scannerAPI: [
             };
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -4462,9 +4467,9 @@ declare const scannerAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const userAPI: [
@@ -4571,7 +4576,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -4587,6 +4592,7 @@ declare const userAPI: [
             concludedLicenseExpressionSPDX: zod.ZodString;
             detectedLicenseExpressionSPDX: zod.ZodString;
             comment: zod.ZodString;
+            contextPurl: zod.ZodString;
             fileSha256: zod.ZodString;
           },
           "strip",
@@ -4596,15 +4602,17 @@ declare const userAPI: [
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
+            contextPurl: string;
           },
           {
             fileSha256: string;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
+            contextPurl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -4707,7 +4715,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -4729,6 +4737,7 @@ declare const userAPI: [
               concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
               detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
               comment: zod.ZodOptional<zod.ZodString>;
+              contextPurl: zod.ZodOptional<zod.ZodString>;
             },
             "strip",
             zod.ZodTypeAny,
@@ -4736,25 +4745,29 @@ declare const userAPI: [
               concludedLicenseExpressionSPDX?: string | undefined;
               detectedLicenseExpressionSPDX?: string | undefined;
               comment?: string | undefined;
+              contextPurl?: string | undefined;
             },
             {
               concludedLicenseExpressionSPDX?: string | undefined;
               detectedLicenseExpressionSPDX?: string | undefined;
               comment?: string | undefined;
+              contextPurl?: string | undefined;
             }
           >,
           {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            contextPurl?: string | undefined;
           },
           {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            contextPurl?: string | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -4854,7 +4867,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -4866,7 +4879,7 @@ declare const userAPI: [
         name: "id";
         type: "Path";
         schema: zod.ZodString;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -4966,7 +4979,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -4991,7 +5004,7 @@ declare const userAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -5172,7 +5185,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -5301,7 +5314,7 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -5330,7 +5343,7 @@ declare const userAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -5567,9 +5580,9 @@ declare const userAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const dosAPI: [
@@ -5619,7 +5632,7 @@ declare const dosAPI: [
               | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -5815,7 +5828,7 @@ declare const dosAPI: [
                   source: string;
                 }[];
               }
-            >,
+            >
           ]
         >;
       },
@@ -5969,7 +5982,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -5993,7 +6006,7 @@ declare const dosAPI: [
             key: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -6099,7 +6112,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -6126,7 +6139,7 @@ declare const dosAPI: [
             zipFileKey: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -6226,7 +6239,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -6238,7 +6251,7 @@ declare const dosAPI: [
         name: "id";
         type: "Path";
         schema: zod.ZodString;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -6359,7 +6372,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -6388,7 +6401,7 @@ declare const dosAPI: [
             state: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -6488,7 +6501,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7045,7 +7058,7 @@ declare const dosAPI: [
             };
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -7145,7 +7158,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7251,7 +7264,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7267,6 +7280,7 @@ declare const dosAPI: [
             concludedLicenseExpressionSPDX: zod.ZodString;
             detectedLicenseExpressionSPDX: zod.ZodString;
             comment: zod.ZodString;
+            contextPurl: zod.ZodString;
             fileSha256: zod.ZodString;
           },
           "strip",
@@ -7276,15 +7290,17 @@ declare const dosAPI: [
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
+            contextPurl: string;
           },
           {
             fileSha256: string;
             concludedLicenseExpressionSPDX: string;
             detectedLicenseExpressionSPDX: string;
             comment: string;
+            contextPurl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -7387,7 +7403,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7409,6 +7425,7 @@ declare const dosAPI: [
               concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
               detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
               comment: zod.ZodOptional<zod.ZodString>;
+              contextPurl: zod.ZodOptional<zod.ZodString>;
             },
             "strip",
             zod.ZodTypeAny,
@@ -7416,25 +7433,29 @@ declare const dosAPI: [
               concludedLicenseExpressionSPDX?: string | undefined;
               detectedLicenseExpressionSPDX?: string | undefined;
               comment?: string | undefined;
+              contextPurl?: string | undefined;
             },
             {
               concludedLicenseExpressionSPDX?: string | undefined;
               detectedLicenseExpressionSPDX?: string | undefined;
               comment?: string | undefined;
+              contextPurl?: string | undefined;
             }
           >,
           {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            contextPurl?: string | undefined;
           },
           {
             concludedLicenseExpressionSPDX?: string | undefined;
             detectedLicenseExpressionSPDX?: string | undefined;
             comment?: string | undefined;
+            contextPurl?: string | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -7534,7 +7555,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7546,7 +7567,7 @@ declare const dosAPI: [
         name: "id";
         type: "Path";
         schema: zod.ZodString;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -7646,7 +7667,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7671,7 +7692,7 @@ declare const dosAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -7852,7 +7873,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -7981,7 +8002,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8010,7 +8031,7 @@ declare const dosAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -8247,7 +8268,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8271,7 +8292,7 @@ declare const dosAPI: [
             purl: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -8371,7 +8392,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8407,7 +8428,7 @@ declare const dosAPI: [
             token?: string | undefined;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -8507,7 +8528,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8531,7 +8552,7 @@ declare const dosAPI: [
             id: number;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<
       {
@@ -8631,7 +8652,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8659,7 +8680,7 @@ declare const dosAPI: [
             password: string;
           }
         >;
-      },
+      }
     ];
     response: zod.ZodObject<{}, "strip", zod.ZodTypeAny, {}, {}>;
     errors: [
@@ -8747,7 +8768,7 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
   },
   {
@@ -8852,9 +8873,9 @@ declare const dosAPI: [
             message: string;
           }
         >;
-      },
+      }
     ];
-  },
+  }
 ];
 
 declare const FileTree: z.ZodObject<
