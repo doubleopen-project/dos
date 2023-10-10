@@ -35,6 +35,7 @@ userRouter.post("/license-conclusion", async (req, res) => {
         concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
         detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
         comment: req.body.comment,
+        contextPurl: req.body.contextPurl,
         fileSha256: req.body.fileSha256,
         userId: req.user.id,
       },
@@ -74,6 +75,7 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
         concludedLicenseExpressionSPDX: req.body.concludedLicenseExpressionSPDX,
         detectedLicenseExpressionSPDX: req.body.detectedLicenseExpressionSPDX,
         comment: req.body.comment,
+        contextPurl: req.body.contextPurl,
       });
 
       res.status(200).json({ message: "License conclusion updated" });
