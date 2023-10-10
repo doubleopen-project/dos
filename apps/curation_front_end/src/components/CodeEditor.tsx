@@ -2,12 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Editor, { useMonaco } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
 import { guestAPI } from 'validation-helpers';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styles from '../styles/CodeInspector.module.css';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
+import { useRouter } from 'next/router';
 
 type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
 
@@ -18,15 +19,8 @@ type CodeEditorProps = {
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
     const [line, setLine] = useQueryState('line', parseAsInteger.withDefault(1));
-    const editorRef = useRef(null);
-    const monacoRef = useRef(null);
-    const monaco = useMonaco();
-
-    useEffect(() => {
-        if (monaco) {
-          //console.log('here is the monaco instance:', monaco);
-        }
-      }, [monaco]);
+    const router = useRouter();
+    const { path } = router.query;
 
     function showLicenseFindingMatches(monaco: any, editor: any, licenseFindings: CodeEditorProps["licenseFindings"]) {
         const decorations: any[] = [];
@@ -46,25 +40,57 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                 decorations.push(decoration);
             });
         });
-        editor.deltaDecorations([], decorations);
-        
+        editor.deltaDecorations([], decorations); 
     }
 
     const handleEditorDidMount = (editor: any, monaco: any) => {
-        editorRef.current = editor;
-        monacoRef.current = monaco;
-
         // Show the decorations for all individual license matches
         showLicenseFindingMatches(monaco, editor, licenseFindings);
 
         // Move the editor to the specified line
         editor.revealLineInCenter(line);
+
+        // Syntax highlighting
+        if (typeof path === 'string') {
+            const fileType = path.split('.').pop();
+            const fileTypes: {[key: string]: string} = {
+                bat: 'bat',
+                c: 'c',
+                cpp: 'cpp',
+                css: 'css',
+                Dockerfile: 'dockerfile',
+                go: 'go',
+                html: 'html',
+                java: 'java',
+                js: 'javascript',
+                jsx: 'javascript',
+                json: 'json',
+                kt: 'kotlin',
+                md: 'markdown',
+                php: 'php',
+                py: 'python',
+                r: 'r',
+                rb: 'ruby',
+                rs: 'rust',
+                sh: 'shell',
+                sql: 'sql',
+                ts: 'typescript',
+                tsx: 'typescript',
+                txt: 'plaintext',
+                xml: 'xml',
+                yaml: 'yaml',
+                yml: 'yaml',
+            };
+            if (fileType && fileTypes[fileType]) {
+                //console.log("Editor language:", fileTypes[fileType]);
+                monaco.editor.setModelLanguage(editor.getModel(), fileTypes[fileType]);
+            }
+        }
     };
 
     return (
-        <Editor
-            language=''
-            key={contents+line} 
+        <Editor key={contents+line} 
+            language='plaintext'
             onMount={handleEditorDidMount}
             theme="vs-light"
             value={contents}
