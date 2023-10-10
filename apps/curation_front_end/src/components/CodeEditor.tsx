@@ -4,13 +4,13 @@
 
 import Editor from '@monaco-editor/react';
 import { ZodiosResponseByPath } from '@zodios/core';
-import { guestAPI } from 'validation-helpers';
+import { userAPI } from 'validation-helpers';
 import React from 'react';
 import styles from '../styles/CodeInspector.module.css';
 import { parseAsInteger, useQueryState } from 'next-usequerystate';
 import { useRouter } from 'next/router';
 
-type LicenseFindings = ZodiosResponseByPath<typeof guestAPI, 'post', '/file'>;
+type LicenseFindings = ZodiosResponseByPath<typeof userAPI, 'post', '/file'>;
 
 type CodeEditorProps = {
     contents: string;

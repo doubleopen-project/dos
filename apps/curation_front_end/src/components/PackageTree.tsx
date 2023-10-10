@@ -16,7 +16,7 @@ import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { parseAsString, useQueryState } from 'next-usequerystate';
 import { convertJsonToTree } from '@/helpers/convertJsonToTree';
-import { zodiosHooks } from '@/hooks/zodiosHooks';
+import { userHooks } from '@/hooks/zodiosHooks';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from './ui/label';
@@ -38,7 +38,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
 
-    const { data, isLoading, error } = zodiosHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, { enabled: !!purl });
+    const { data, isLoading, error } = userHooks.useImmutableQuery('/filetree', { purl: purl as string }, undefined, { enabled: !!purl });
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
