@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { TreeNode, LicenseFindings } from '../types';
+import { TreeNode, LicenseFindings } from "../types";
 
 export const extractUniqueLicenses = (treeNodes: TreeNode[]): Set<string> => {
   const uniqueLicenses = new Set<string>();
@@ -11,7 +11,8 @@ export const extractUniqueLicenses = (treeNodes: TreeNode[]): Set<string> => {
     for (const node of nodes) {
       if (node.file && node.file.licenseFindings) {
         for (const finding of node.file.licenseFindings) {
-          if (typeof finding.licenseExpressionSPDX === 'string') {  // Check if licenseExpressionSPDX is a string
+          if (typeof finding.licenseExpressionSPDX === "string") {
+            // Check if licenseExpressionSPDX is a string
             uniqueLicenses.add(finding.licenseExpressionSPDX);
           }
         }
@@ -23,6 +24,6 @@ export const extractUniqueLicenses = (treeNodes: TreeNode[]): Set<string> => {
   };
 
   traverse(treeNodes);
-  
+
   return uniqueLicenses;
 };

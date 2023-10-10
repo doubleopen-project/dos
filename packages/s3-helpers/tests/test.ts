@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import s3OperationsTestSuite from './suites/s3Operations.spec';
+import s3OperationsTestSuite from "./suites/s3Operations.spec";
 
-describe('Subject', function () {
-    describe('Testing router', s3OperationsTestSuite.bind(this));
+describe("Subject", function () {
+  describe("Testing router", s3OperationsTestSuite.bind(this));
 });

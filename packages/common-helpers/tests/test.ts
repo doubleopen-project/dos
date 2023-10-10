@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import compressionHelperTestSuite from './suites/compressionHelper.spec';
+import compressionHelperTestSuite from "./suites/compressionHelper.spec";
 
-describe('Subject', function () {
-    describe('common-helpers/compressionHelper', compressionHelperTestSuite.bind(this));
+describe("Subject", function () {
+  describe(
+    "common-helpers/compressionHelper",
+    compressionHelperTestSuite.bind(this),
+  );
 });

@@ -4,13 +4,13 @@
 
 import { defineConfig } from "tsup";
 
-const isProduction: boolean = process.env.NODE_ENV === 'production';
+const isProduction: boolean = process.env.NODE_ENV === "production";
 
 export default defineConfig({
-	clean: true,
-	dts: true,
-	entry: ["src/server.ts", "tests/test.ts"],
-	format: ["cjs", "esm"],
-	minify: isProduction,
-	sourcemap: true,
+  clean: true,
+  dts: true,
+  entry: ["src/server.ts", "tests/test.ts"],
+  format: ["cjs", "esm"],
+  minify: isProduction,
+  sourcemap: true,
 });
