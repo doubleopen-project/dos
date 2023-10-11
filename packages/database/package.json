@@ -1,28 +1,28 @@
 {
-  "name": "database",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./index.d.ts",
-  "files": [
-    "dist/**"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "copy-types": "(head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
-    "db:format": "prisma format",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:migrate:dev": "prisma migrate dev",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate"
-  },
-  "dependencies": {
-    "@prisma/client": "5.3.0"
-  },
-  "devDependencies": {
-    "prisma": "5.3.0",
-    "prisma-zod-generator": "0.8.13",
-    "tsup": "7.2.0",
-    "typescript": "5.2.2"
-  }
+    "name": "database",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./index.d.ts",
+    "files": [
+        "dist/**"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "copy-types": "(head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "db:format": "prisma format",
+        "db:migrate:deploy": "prisma migrate deploy",
+        "db:migrate:dev": "prisma migrate dev",
+        "db:generate": "prisma generate",
+        "db:push": "prisma db push --skip-generate"
+    },
+    "dependencies": {
+        "@prisma/client": "5.3.0"
+    },
+    "devDependencies": {
+        "prisma": "5.3.0",
+        "prisma-zod-generator": "0.8.13",
+        "tsup": "7.2.0",
+        "typescript": "5.2.2"
+    }
 }

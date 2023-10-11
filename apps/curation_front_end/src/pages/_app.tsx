@@ -9,11 +9,11 @@ import Sidebar from "../components/Sidebar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <TanstackProvider>
-      <Sidebar>
-        <Component {...pageProps} />
-      </Sidebar>
-    </TanstackProvider>
-  );
+    return (
+        <TanstackProvider>
+            <Sidebar>
+                <Component {...pageProps} />
+            </Sidebar>
+        </TanstackProvider>
+    );
 }

@@ -69,15 +69,15 @@ const longJson: string = `{
 }`;
 
 export default function suite(): void {
-  it("Compression & decompression of a small object should return original JSON string", function () {
-    const compressedObject = compress(shortJson);
-    const decompressedObject = decompress(compressedObject);
-    assert.strictEqual(decompressedObject, shortJson);
-  });
+    it("Compression & decompression of a small object should return original JSON string", function () {
+        const compressedObject = compress(shortJson);
+        const decompressedObject = decompress(compressedObject);
+        assert.strictEqual(decompressedObject, shortJson);
+    });
 
-  it("Compression & decompression of a large object should return original JSON string", function () {
-    const compressedObject = compress(longJson);
-    const decompressedObject = decompress(compressedObject);
-    assert.strictEqual(decompressedObject, longJson);
-  });
+    it("Compression & decompression of a large object should return original JSON string", function () {
+        const compressedObject = compress(longJson);
+        const decompressedObject = decompress(compressedObject);
+        assert.strictEqual(decompressedObject, longJson);
+    });
 }

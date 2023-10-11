@@ -5,25 +5,25 @@
 import { TreeNode, LicenseFindings } from "../types";
 
 export const extractUniqueLicenses = (treeNodes: TreeNode[]): Set<string> => {
-  const uniqueLicenses = new Set<string>();
+    const uniqueLicenses = new Set<string>();
 
-  const traverse = (nodes: TreeNode[]) => {
-    for (const node of nodes) {
-      if (node.file && node.file.licenseFindings) {
-        for (const finding of node.file.licenseFindings) {
-          if (typeof finding.licenseExpressionSPDX === "string") {
-            // Check if licenseExpressionSPDX is a string
-            uniqueLicenses.add(finding.licenseExpressionSPDX);
-          }
+    const traverse = (nodes: TreeNode[]) => {
+        for (const node of nodes) {
+            if (node.file && node.file.licenseFindings) {
+                for (const finding of node.file.licenseFindings) {
+                    if (typeof finding.licenseExpressionSPDX === "string") {
+                        // Check if licenseExpressionSPDX is a string
+                        uniqueLicenses.add(finding.licenseExpressionSPDX);
+                    }
+                }
+            }
+            if (node.children) {
+                traverse(node.children);
+            }
         }
-      }
-      if (node.children) {
-        traverse(node.children);
-      }
-    }
-  };
+    };
 
-  traverse(treeNodes);
+    traverse(treeNodes);
 
-  return uniqueLicenses;
+    return uniqueLicenses;
 };

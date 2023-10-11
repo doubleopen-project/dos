@@ -5,10 +5,10 @@
 import React, { useState, useMemo } from "react";
 import { Button } from "./ui/button";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipProvider,
-  TooltipContent,
+    Tooltip,
+    TooltipTrigger,
+    TooltipProvider,
+    TooltipContent,
 } from "./ui/tooltip";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
@@ -19,74 +19,79 @@ type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 // Define type for component props
 type ButtonGroupProps = {
-  data?: LicenseMatch[];
+    data?: LicenseMatch[];
 };
 
 const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [line, setLine] = useQueryState("line", parseAsInteger.withDefault(1));
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [line, setLine] = useQueryState(
+        "line",
+        parseAsInteger.withDefault(1),
+    );
 
-  // Sort and filter data by startLine and license, only when data changes
-  const uniqueData = useMemo(() => {
-    const seen = new Set();
-    const sortedAndFilteredData = [...data]
-      .sort((a, b) => a.startLine - b.startLine)
-      .filter((d) => {
-        const identifier = `${d.startLine}-${d.licenseExpression}`;
-        if (seen.has(identifier)) {
-          return false;
-        }
-        seen.add(identifier);
-        return true;
-      });
-    return sortedAndFilteredData;
-  }, [data]);
+    // Sort and filter data by startLine and license, only when data changes
+    const uniqueData = useMemo(() => {
+        const seen = new Set();
+        const sortedAndFilteredData = [...data]
+            .sort((a, b) => a.startLine - b.startLine)
+            .filter((d) => {
+                const identifier = `${d.startLine}-${d.licenseExpression}`;
+                if (seen.has(identifier)) {
+                    return false;
+                }
+                seen.add(identifier);
+                return true;
+            });
+        return sortedAndFilteredData;
+    }, [data]);
 
-  return (
-    <div className="flex flex-wrap">
-      <Button
-        key="reset"
-        className="p-0.5 m-0.5 text-xs h-fit"
-        onClick={() => {
-          setSelectedId(null);
-          setLine(1);
-        }}
-      >
-        RESET
-      </Button>
-      {uniqueData.map((d) => (
-        <TooltipProvider key={d.id}>
-          <Tooltip delayDuration={400}>
-            <TooltipTrigger asChild>
-              <Button
-                key={d.id}
-                className={`p-0.5 m-0.5 text-xs h-fit ${
-                  selectedId === d.id
-                    ? "bg-red-300 hover:bg-red-300"
-                    : "hover:bg-slate-200"
-                }`}
-                variant="secondary"
+    return (
+        <div className="flex flex-wrap">
+            <Button
+                key="reset"
+                className="p-0.5 m-0.5 text-xs h-fit"
                 onClick={() => {
-                  setSelectedId(d.id);
-                  setLine(d.startLine);
+                    setSelectedId(null);
+                    setLine(1);
                 }}
-              >
-                {d.startLine}:{" "}
-                {d.licenseExpression ? d.licenseExpression : "null"}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="text-xs">
-              <span>
-                Timestamp: {new Date(d.updatedAt).toISOString()}
-                <br />
-                Score: {d.score}
-              </span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ))}
-    </div>
-  );
+            >
+                RESET
+            </Button>
+            {uniqueData.map((d) => (
+                <TooltipProvider key={d.id}>
+                    <Tooltip delayDuration={400}>
+                        <TooltipTrigger asChild>
+                            <Button
+                                key={d.id}
+                                className={`p-0.5 m-0.5 text-xs h-fit ${
+                                    selectedId === d.id
+                                        ? "bg-red-300 hover:bg-red-300"
+                                        : "hover:bg-slate-200"
+                                }`}
+                                variant="secondary"
+                                onClick={() => {
+                                    setSelectedId(d.id);
+                                    setLine(d.startLine);
+                                }}
+                            >
+                                {d.startLine}:{" "}
+                                {d.licenseExpression
+                                    ? d.licenseExpression
+                                    : "null"}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">
+                            <span>
+                                Timestamp: {new Date(d.updatedAt).toISOString()}
+                                <br />
+                                Score: {d.score}
+                            </span>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            ))}
+        </div>
+    );
 };
 
 export default ButtonGroup;

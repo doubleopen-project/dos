@@ -9,8 +9,8 @@ import { scannerAPI } from "./apis/scanner";
 import { userAPI } from "./apis/user";
 
 export const dosAPI = mergeApis({
-  "/admin": adminAPI,
-  "/auth": authAPI,
-  "": scannerAPI,
-  "/user": userAPI,
+    "/admin": adminAPI,
+    "/auth": authAPI,
+    "": scannerAPI,
+    "/user": userAPI,
 });

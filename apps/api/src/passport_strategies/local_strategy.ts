@@ -9,39 +9,41 @@ import crypto from "crypto";
 const LocalStrategy = passportLocal.Strategy;
 
 export const localStrategy = new LocalStrategy(async function verify(
-  username,
-  password,
-  done,
+    username,
+    password,
+    done,
 ) {
-  try {
-    const user = await dbQueries.findUserByUsername(username);
-    if (!user) {
-      return done(null, false, { message: "Incorrect username or password" });
+    try {
+        const user = await dbQueries.findUserByUsername(username);
+        if (!user) {
+            return done(null, false, {
+                message: "Incorrect username or password",
+            });
+        }
+
+        crypto.pbkdf2(
+            password,
+            user.salt,
+            310000,
+            32,
+            "sha256",
+            (err, derivedKey) => {
+                if (err) {
+                    console.log("Error: ", err);
+                    return done(err);
+                }
+                if (!crypto.timingSafeEqual(derivedKey, user.hashedPassword)) {
+                    return done(null, false, {
+                        message: "Incorrect username or password",
+                    });
+                }
+                console.log("User authenticated");
+
+                return done(null, user);
+            },
+        );
+    } catch (error) {
+        console.log("Error: ", error);
+        return done(error);
     }
-
-    crypto.pbkdf2(
-      password,
-      user.salt,
-      310000,
-      32,
-      "sha256",
-      (err, derivedKey) => {
-        if (err) {
-          console.log("Error: ", err);
-          return done(err);
-        }
-        if (!crypto.timingSafeEqual(derivedKey, user.hashedPassword)) {
-          return done(null, false, {
-            message: "Incorrect username or password",
-          });
-        }
-        console.log("User authenticated");
-
-        return done(null, user);
-      },
-    );
-  } catch (error) {
-    console.log("Error: ", error);
-    return done(error);
-  }
 });
