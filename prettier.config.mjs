@@ -5,6 +5,8 @@
 /**
  * @type {import('prettier').Config & import("@ianvs/prettier-plugin-sort-imports").PluginConfig}
  */
-const config = {};
+const config = {
+    tabWidth: 4,
+};
 
 export default config;
