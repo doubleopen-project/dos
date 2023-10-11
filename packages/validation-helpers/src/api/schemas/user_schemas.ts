@@ -152,4 +152,18 @@ export const PostFileRes = z.object({
             endLine: z.number(),
         }),
     ),
+    licenseConclusions: z.array(
+        z.object({
+            id: z.number(),
+            createdAt: z.coerce.date(),
+            updatedAt: z.coerce.date(),
+            detectedLicenseExpressionSPDX: z.string(),
+            concludedLicenseExpressionSPDX: z.string(),
+            comment: z.string(),
+            contextPurl: z.string(),
+            user: z.object({
+                username: z.string(),
+            }),
+        }),
+    ),
 });
