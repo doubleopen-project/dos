@@ -18,7 +18,7 @@ export default function PackageAndFile() {
 
     return (
         <div className="bg-gray-200 h-screen">
-            <CurationUI purl={purl} path={path} sha256={sha256} />
+            <CurationUI purl={purl} path={path} />
         </div>
     );
 }
