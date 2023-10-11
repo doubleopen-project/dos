@@ -9,7 +9,7 @@
     ],
     "scripts": {
         "build": "tsup",
-        "copy-types": "(head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "copy-types": "(head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts && prettier --write index.d.ts",
         "db:format": "prisma format",
         "db:migrate:deploy": "prisma migrate deploy",
         "db:migrate:dev": "prisma migrate dev",
