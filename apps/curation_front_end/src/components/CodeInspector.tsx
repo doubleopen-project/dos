@@ -13,6 +13,7 @@ import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import ButtonGroup from "./ButtonGroup";
+import HandleCuration from "./HandleCuration";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -113,6 +114,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
       </div>
 
       <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
+        <HandleCuration />
         <div className="p-2 m-1 rounded-md bg-white shadow flex items-center text-sm">
           <Input
             className="bg-gray-200 p-2 rounded-lg w-full"
