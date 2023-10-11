@@ -171,11 +171,14 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
             </div>
 
-      <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
-        <ComboBoxPackage data={uniqueLicenses} filterString={"licenseFilter"} />
-      </div>
-    </div>
-  );
+            <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
+                <ComboBoxPackage
+                    data={uniqueLicenses}
+                    filterString={"licenseFilter"}
+                />
+            </div>
+        </div>
+    );
 };
 
 type NodeProps = NodeRendererProps<any> & {
