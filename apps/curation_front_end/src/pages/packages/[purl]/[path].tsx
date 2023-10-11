@@ -16,9 +16,9 @@ export default function PackageAndFile() {
     path = path?.toString();
     sha256 = sha256?.toString();
 
-    return (
-        <div className="bg-gray-200 h-screen">
-            <CurationUI purl={purl} path={path} sha256={sha256} />
-        </div>
-    );
+  return (
+    <div className="bg-gray-200 h-screen">
+      <CurationUI purl={purl} path={path} />
+    </div>
+  );
 }

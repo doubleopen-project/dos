@@ -1,67 +1,69 @@
 {
-    "name": "dos-monorepo",
-    "version": "0.0.0",
-    "license": "MIT",
-    "workspaces": [
-        "packages/*",
-        "apps/*"
-    ],
-    "scripts": {
-        "build": "turbo run build",
-        "build:api": "turbo run build --filter=api --no-daemon",
-        "build:curation": "turbo run build --filter=curation_front_end --no-daemon",
-        "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
-        "build:worker": "turbo run build --filter=scanner-agent --no-daemon",
-        "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
-        "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
-        "clever-logs-api": "turbo run clever-logs --filter=api --no-daemon",
-        "clever-logs-sa": "turbo run clever-logs --filter=scanner-agent --no-daemon",
-        "copy-types": "turbo run copy-types",
-        "db:format": "turbo run db:format",
-        "db:generate": "turbo run db:generate",
-        "db:migrate:dev": "prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
-        "db:migrate:deploy": "prisma migrate deploy --schema ./packages/database/prisma/schema.prisma",
-        "db:push": "turbo run db:push",
-        "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
-        "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
-        "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf package-lock.json && npx rimraf node_modules",
-        "clean-build": "npm run clean-dist && turbo run build --no-cache --force",
-        "clean-dist": "npm exec --workspaces -- npx rimraf dist",
-        "clean-install": "npm run clean && npm install",
-        "clean-turbo": "npm exec --workspaces -- npx rimraf .turbo",
-        "clean-up": "npm run clean-turbo && npm run clean-dist && npm run clean",
-        "dev": "turbo run dev --no-cache --continue --no-daemon --concurrency=12",
-        "dev:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
-        "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
-        "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
-        "lint": "turbo run lint",
-        "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
-        "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
-        "start:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
-        "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
-        "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent",
-        "test": "turbo run test --concurrency=1",
-        "test:api": "turbo run test --filter=api",
-        "test:scanner_agent": "turbo run test --filter=scanner-agent"
-    },
-    "devDependencies": {
-        "prettier": "3.0.3",
-        "rimraf": "5.0.1",
-        "turbo": "1.10.12"
-    },
-    "engines": {
-        "node": "18.15.0",
-        "npm": "9.5.0"
-    },
-    "packageManager": "npm@9.5.0",
-    "overrides": {
-        "formidable": "1.2.6"
-    },
-    "dependencies": {
-        "@monaco-editor/react": "^4.5.2",
-        "@tanstack/react-table": "^8.10.3",
-        "next-usequerystate": "^1.8.1",
-        "react-arborist": "^3.2.0",
-        "react-icons": "^4.11.0"
-    }
+  "name": "dos-monorepo",
+  "version": "0.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "build:api": "turbo run build --filter=api --no-daemon",
+    "build:curation": "turbo run build --filter=curation_front_end --no-daemon",
+    "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
+    "build:worker": "turbo run build --filter=scanner-agent --no-daemon",
+    "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
+    "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
+    "clever-logs-api": "turbo run clever-logs --filter=api --no-daemon",
+    "clever-logs-sa": "turbo run clever-logs --filter=scanner-agent --no-daemon",
+    "copy-types": "turbo run copy-types",
+    "db:format": "turbo run db:format",
+    "db:generate": "turbo run db:generate",
+    "db:migrate:dev": "prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
+    "db:migrate:deploy": "prisma migrate deploy --schema ./packages/database/prisma/schema.prisma",
+    "db:push": "turbo run db:push",
+    "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
+    "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
+    "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf package-lock.json && npx rimraf node_modules",
+    "clean-build": "npm run clean-dist && turbo run build --no-cache --force",
+    "clean-dist": "npm exec --workspaces -- npx rimraf dist",
+    "clean-install": "npm run clean && npm install",
+    "clean-turbo": "npm exec --workspaces -- npx rimraf .turbo",
+    "clean-up": "npm run clean-turbo && npm run clean-dist && npm run clean",
+    "dev": "turbo run dev --no-cache --continue --no-daemon --concurrency=12",
+    "dev:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
+    "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
+    "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
+    "lint": "turbo run lint",
+    "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
+    "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
+    "start:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
+    "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
+    "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent",
+    "test": "turbo run test --concurrency=1",
+    "test:api": "turbo run test --filter=api",
+    "test:scanner_agent": "turbo run test --filter=scanner-agent"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.7",
+    "prettier": "3.0.3",
+    "rimraf": "5.0.1",
+    "turbo": "1.10.12"
+  },
+  "engines": {
+    "node": "18.15.0",
+    "npm": "9.5.0"
+  },
+  "packageManager": "npm@9.5.0",
+  "overrides": {
+    "formidable": "1.2.6"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.5.2",
+    "@tanstack/react-table": "^8.10.3",
+    "js-yaml": "^4.1.0",
+    "next-usequerystate": "^1.8.1",
+    "react-arborist": "^3.2.0",
+    "react-icons": "^4.11.0"
+  }
 }
