@@ -90,6 +90,11 @@ export const FileTree = z.object({
                 licenseExpressionSPDX: z.string(),
             }),
         ),
+        licenseConclusions: z.array(
+            z.object({
+                concludedLicenseExpressionSPDX: z.string(),
+            }),
+        ),
     }),
 });
 
