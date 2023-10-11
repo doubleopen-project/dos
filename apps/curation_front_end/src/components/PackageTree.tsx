@@ -43,7 +43,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
   const { data, isLoading, error } = userHooks.useImmutableQuery(
     "/filetree",
     { purl: purl as string },
-    undefined,
+    { withCredentials: true },
     { enabled: !!purl },
   );
 

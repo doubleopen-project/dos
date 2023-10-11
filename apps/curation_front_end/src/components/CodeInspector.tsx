@@ -28,7 +28,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
   );
   const { data, isLoading, error } = userHooks.useGetFileData(
     { purl: purl as string, path: path as string },
-    undefined,
+    { withCredentials: true },
     { enabled: !!path && !!purl },
   );
   const fileUrl = data?.downloadUrl;
