@@ -24,6 +24,7 @@
         "db:generate": "turbo run db:generate",
         "db:migrate:dev": "prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
         "db:migrate:deploy": "prisma migrate deploy --schema ./packages/database/prisma/schema.prisma",
+        "db:migrate:reset": "dotenv -- turbo run db:migrate:reset",
         "db:push": "turbo run db:push",
         "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
         "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
@@ -55,7 +56,8 @@
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
         "prettier": "3.1.0",
         "rimraf": "5.0.5",
-        "turbo": "1.10.16"
+        "turbo": "1.10.16",
+        "dotenv-cli": "^7.3.0"
     },
     "engines": {
         "node": "18.15.0",

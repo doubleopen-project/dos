@@ -73,6 +73,9 @@
         },
         "db:migrate:deploy": {},
         "db:migrate:dev": {},
+        "db:migrate:reset": {
+            "cache": false
+        },
         "db:push": {
             "cache": false
         },
