@@ -53,10 +53,8 @@ export const PostUserRes = z.object({
 
 //------------------- DELETE user -------------------
 
-export const DeleteUserReq = z.object({
-    id: z.number({
-        required_error: "Id is required",
-    }),
+export const DeleteUserReqParamId = z.number({
+    required_error: "Id is required",
 });
 
 export const DeleteUserRes = z.object({

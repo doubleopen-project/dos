@@ -2576,25 +2576,13 @@ declare const adminAPI: [
     },
     {
         method: "delete";
-        path: "/user";
+        path: "/user/:id";
         description: "Delete user";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        id: zod.ZodNumber;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        id: number;
-                    },
-                    {
-                        id: number;
-                    }
-                >;
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
             },
         ];
         response: zod.ZodObject<
@@ -8891,25 +8879,13 @@ declare const dosAPI: [
     },
     {
         method: "delete";
-        path: "/admin/user";
+        path: "/admin/user/:id";
         description: "Delete user";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        id: zod.ZodNumber;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        id: number;
-                    },
-                    {
-                        id: number;
-                    }
-                >;
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
             },
         ];
         response: zod.ZodObject<

@@ -116,7 +116,7 @@ model LicenseConclusion {
   file       File   @relation(fields: [fileSha256], references: [sha256])
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([fileSha256])
   @@index([userId])

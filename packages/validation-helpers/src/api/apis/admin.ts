@@ -37,13 +37,13 @@ export const adminAPI = makeApi([
     },
     {
         method: "delete",
-        path: "/user",
+        path: "/user/:id",
         description: "Delete user",
         parameters: [
             {
-                name: "body",
-                type: "Body",
-                schema: schemas.DeleteUserReq,
+                name: "id",
+                type: "Path",
+                schema: schemas.DeleteUserReqParamId,
             },
         ],
         response: schemas.DeleteUserRes,
