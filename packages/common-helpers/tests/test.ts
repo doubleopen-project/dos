@@ -5,8 +5,8 @@
 import compressionHelperTestSuite from "./suites/compressionHelper.spec";
 
 describe("Subject", function () {
-  describe(
-    "common-helpers/compressionHelper",
-    compressionHelperTestSuite.bind(this),
-  );
+    describe(
+        "common-helpers/compressionHelper",
+        compressionHelperTestSuite.bind(this),
+    );
 });

@@ -5,5 +5,5 @@
 import s3OperationsTestSuite from "./suites/s3Operations.spec";
 
 describe("Subject", function () {
-  describe("Testing router", s3OperationsTestSuite.bind(this));
+    describe("Testing router", s3OperationsTestSuite.bind(this));
 });

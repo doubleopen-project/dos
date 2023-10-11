@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "lib": ["ES2021"],
-    "downlevelIteration": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "types": ["@types/node", "@types/chai", "@types/mocha"]
-  },
-  "exclude": ["node_modules"],
-  "extends": "tsconfig/base.json",
-  "include": ["src", "tests", "tsup.config.ts"]
+    "compilerOptions": {
+        "lib": ["ES2021"],
+        "downlevelIteration": true,
+        "outDir": "./dist",
+        "rootDir": "./",
+        "types": ["@types/node", "@types/chai", "@types/mocha"]
+    },
+    "exclude": ["node_modules"],
+    "extends": "tsconfig/base.json",
+    "include": ["src", "tests", "tsup.config.ts"]
 }

@@ -5,29 +5,29 @@
 name: Build Docker image and push to Docker Hub
 
 on:
-  push:
-    branches:
-      - main
-      - worker-deployment
+    push:
+        branches:
+            - main
+            - worker-deployment
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                  password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        continue-on-error: false
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v4
+              continue-on-error: false
+              with:
+                  context: .
+                  push: true
+                  tags: ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest

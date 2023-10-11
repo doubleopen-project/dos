@@ -5,5 +5,5 @@
 import routerTestSuite from "./suites/router.spec";
 
 describe("Running Scanner Agent tests", function () {
-  describe("Testing router", routerTestSuite.bind(this));
+    describe("Testing router", routerTestSuite.bind(this));
 });

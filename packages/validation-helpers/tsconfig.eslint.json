@@ -1,8 +1,8 @@
 {
-  "compilerOptions": {
-    "types": ["@types/node"],
-    "noEmit": true,
-    "allowJs": true
-  },
-  "include": [".eslintrc.js"]
+    "compilerOptions": {
+        "types": ["@types/node"],
+        "noEmit": true,
+        "allowJs": true
+    },
+    "include": [".eslintrc.js"]
 }
