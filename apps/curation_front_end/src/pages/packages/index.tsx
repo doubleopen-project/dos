@@ -7,7 +7,9 @@ import { userHooks } from "../../hooks/zodiosHooks";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function PackageLibrary() {
-  const { data, isLoading, error } = userHooks.useGet("/packages", { withCredentials: true });
+  const { data, isLoading, error } = userHooks.useGet("/packages", {
+    withCredentials: true,
+  });
   if (isLoading) {
     return <div>Loading package list...</div>;
   }
