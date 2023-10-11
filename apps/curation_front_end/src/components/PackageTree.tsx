@@ -22,7 +22,7 @@ import Link from "next/link";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
-import ComboBox from "./ComboBox";
+import ComboBoxPackage from "./ComboBoxPackage";
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -171,14 +171,11 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
             </div>
 
-            <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
-                <ComboBox
-                    data={uniqueLicenses}
-                    filterString={"licenseFilter"}
-                />
-            </div>
-        </div>
-    );
+      <div className="p-2 mt-2 rounded-md bg-white shadow flex items-center text-sm">
+        <ComboBoxPackage data={uniqueLicenses} filterString={"licenseFilter"} />
+      </div>
+    </div>
+  );
 };
 
 type NodeProps = NodeRendererProps<any> & {
