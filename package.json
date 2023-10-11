@@ -35,6 +35,7 @@
         "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
         "lint": "turbo run lint",
+        "prettier": "prettier --write .",
         "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
@@ -45,6 +46,7 @@
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
     },
     "devDependencies": {
+        "@types/js-yaml": "^4.0.7",
         "prettier": "3.0.3",
         "rimraf": "5.0.1",
         "turbo": "1.10.12"
@@ -60,6 +62,7 @@
     "dependencies": {
         "@monaco-editor/react": "^4.5.2",
         "@tanstack/react-table": "^8.10.3",
+        "js-yaml": "^4.1.0",
         "next-usequerystate": "^1.8.1",
         "react-arborist": "^3.2.0",
         "react-icons": "^4.11.0"

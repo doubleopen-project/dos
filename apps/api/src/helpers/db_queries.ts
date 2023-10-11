@@ -792,10 +792,22 @@ export const findFileTreeByHashAndPackageId = async (
 };
 
 export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
-    include: {
+    select: {
+        path: true;
+        packageId: true;
+        fileSha256: true;
         file: {
-            include: {
-                licenseFindings: true;
+            select: {
+                licenseFindings: {
+                    select: {
+                        licenseExpressionSPDX: true;
+                    };
+                };
+                licenseConclusions: {
+                    select: {
+                        concludedLicenseExpressionSPDX: true;
+                    };
+                };
             };
         };
     };
@@ -810,10 +822,22 @@ export const findFileTreesByPackagePurl = async (
                 purl: purl,
             },
         },
-        include: {
+        select: {
+            path: true,
+            packageId: true,
+            fileSha256: true,
             file: {
-                include: {
-                    licenseFindings: true,
+                select: {
+                    licenseFindings: {
+                        select: {
+                            licenseExpressionSPDX: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            concludedLicenseExpressionSPDX: true,
+                        },
+                    },
                 },
             },
         },
@@ -1341,37 +1365,6 @@ export const findScannedPackages = async (): Promise<
     return scannedPackages;
 };
 
-export type FileWithRelations = Prisma.FileGetPayload<{
-    select: {
-        licenseFindings: {
-            select: {
-                id: true;
-                updatedAt: true;
-                licenseExpressionSPDX: true;
-                licenseFindingMatches: {
-                    select: {
-                        id: true;
-                        updatedAt: true;
-                        licenseExpression: true;
-                        startLine: true;
-                        endLine: true;
-                        score: true;
-                    };
-                };
-            };
-        };
-        copyrightFindings: {
-            select: {
-                id: true;
-                updatedAt: true;
-                copyright: true;
-                startLine: true;
-                endLine: true;
-            };
-        };
-    };
-}>;
-
 export const findFileSha256 = async (
     purl: string,
     path: string,
@@ -1423,6 +1416,53 @@ export const findFileSha256 = async (
     return fileSha256;
 };
 
+export type FileWithRelations = Prisma.FileGetPayload<{
+    select: {
+        licenseFindings: {
+            select: {
+                id: true;
+                updatedAt: true;
+                licenseExpressionSPDX: true;
+                licenseFindingMatches: {
+                    select: {
+                        id: true;
+                        updatedAt: true;
+                        licenseExpression: true;
+                        startLine: true;
+                        endLine: true;
+                        score: true;
+                    };
+                };
+            };
+        };
+        copyrightFindings: {
+            select: {
+                id: true;
+                updatedAt: true;
+                copyright: true;
+                startLine: true;
+                endLine: true;
+            };
+        };
+        licenseConclusions: {
+            select: {
+                id: true;
+                createdAt: true;
+                updatedAt: true;
+                detectedLicenseExpressionSPDX: true;
+                concludedLicenseExpressionSPDX: true;
+                comment: true;
+                contextPurl: true;
+                user: {
+                    select: {
+                        username: true;
+                    };
+                };
+            };
+        };
+    };
+}>;
+
 export const findFileData = async (
     sha256: string,
 ): Promise<FileWithRelations | null> => {
@@ -1463,6 +1503,22 @@ export const findFileData = async (
                             copyright: true,
                             startLine: true,
                             endLine: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            detectedLicenseExpressionSPDX: true,
+                            concludedLicenseExpressionSPDX: true,
+                            comment: true,
+                            contextPurl: true,
+                            user: {
+                                select: {
+                                    username: true,
+                                },
+                            },
                         },
                     },
                 },

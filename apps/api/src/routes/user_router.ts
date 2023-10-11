@@ -164,6 +164,7 @@ userRouter.post("/file", async (req, res) => {
                 downloadUrl: presignedGetUrl,
                 licenseFindings: fileData.licenseFindings,
                 copyrightFindings: fileData.copyrightFindings,
+                licenseConclusions: fileData.licenseConclusions,
             });
         } else {
             res.status(400).json({
@@ -195,23 +196,7 @@ userRouter.post("/filetree", async (req, res) => {
 
         if (filetrees) {
             res.status(200).json({
-                filetrees: filetrees.map((filetree) => {
-                    return {
-                        path: filetree.path,
-                        packageId: filetree.packageId,
-                        fileSha256: filetree.fileSha256,
-                        file: {
-                            licenseFindings: filetree.file.licenseFindings.map(
-                                (licenseFinding) => {
-                                    return {
-                                        licenseExpressionSPDX:
-                                            licenseFinding.licenseExpressionSPDX,
-                                    };
-                                },
-                            ),
-                        },
-                    };
-                }),
+                filetrees: filetrees,
             });
         }
     } catch (error) {
