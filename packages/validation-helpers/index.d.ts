@@ -5114,6 +5114,22 @@ declare const userAPI: [
                                         >,
                                         "many"
                                     >;
+                                    licenseConclusions: zod.ZodArray<
+                                        zod.ZodObject<
+                                            {
+                                                concludedLicenseExpressionSPDX: zod.ZodString;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                concludedLicenseExpressionSPDX: string;
+                                            },
+                                            {
+                                                concludedLicenseExpressionSPDX: string;
+                                            }
+                                        >,
+                                        "many"
+                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
@@ -5121,10 +5137,16 @@ declare const userAPI: [
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
+                                    licenseConclusions: {
+                                        concludedLicenseExpressionSPDX: string;
+                                    }[];
                                 },
                                 {
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
+                                    }[];
+                                    licenseConclusions: {
+                                        concludedLicenseExpressionSPDX: string;
                                     }[];
                                 }
                             >;
@@ -5139,6 +5161,9 @@ declare const userAPI: [
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
+                                licenseConclusions: {
+                                    concludedLicenseExpressionSPDX: string;
+                                }[];
                             };
                         },
                         {
@@ -5148,6 +5173,9 @@ declare const userAPI: [
                             file: {
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
+                                }[];
+                                licenseConclusions: {
+                                    concludedLicenseExpressionSPDX: string;
                                 }[];
                             };
                         }
@@ -5166,6 +5194,9 @@ declare const userAPI: [
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
+                        }[];
                     };
                 }[];
             },
@@ -5177,6 +5208,9 @@ declare const userAPI: [
                     file: {
                         licenseFindings: {
                             licenseExpressionSPDX: string;
+                        }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -5597,14 +5631,6 @@ declare const userAPI: [
                         licenseExpression: string | null;
                     }[];
                 }[];
-                downloadUrl: string;
-                copyrightFindings: {
-                    id: number;
-                    copyright: string;
-                    updatedAt: Date;
-                    startLine: number;
-                    endLine: number;
-                }[];
                 licenseConclusions: {
                     id: number;
                     createdAt: Date;
@@ -5616,6 +5642,14 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
+                }[];
+                downloadUrl: string;
+                copyrightFindings: {
+                    id: number;
+                    copyright: string;
+                    updatedAt: Date;
+                    startLine: number;
+                    endLine: number;
                 }[];
             },
             {
@@ -5632,14 +5666,6 @@ declare const userAPI: [
                         licenseExpression: string | null;
                     }[];
                 }[];
-                downloadUrl: string;
-                copyrightFindings: {
-                    id: number;
-                    copyright: string;
-                    updatedAt: Date;
-                    startLine: number;
-                    endLine: number;
-                }[];
                 licenseConclusions: {
                     id: number;
                     createdAt: Date;
@@ -5651,6 +5677,14 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
+                }[];
+                downloadUrl: string;
+                copyrightFindings: {
+                    id: number;
+                    copyright: string;
+                    updatedAt: Date;
+                    startLine: number;
+                    endLine: number;
                 }[];
             }
         >;
@@ -7931,6 +7965,22 @@ declare const dosAPI: [
                                         >,
                                         "many"
                                     >;
+                                    licenseConclusions: zod.ZodArray<
+                                        zod.ZodObject<
+                                            {
+                                                concludedLicenseExpressionSPDX: zod.ZodString;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                concludedLicenseExpressionSPDX: string;
+                                            },
+                                            {
+                                                concludedLicenseExpressionSPDX: string;
+                                            }
+                                        >,
+                                        "many"
+                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
@@ -7938,10 +7988,16 @@ declare const dosAPI: [
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
+                                    licenseConclusions: {
+                                        concludedLicenseExpressionSPDX: string;
+                                    }[];
                                 },
                                 {
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
+                                    }[];
+                                    licenseConclusions: {
+                                        concludedLicenseExpressionSPDX: string;
                                     }[];
                                 }
                             >;
@@ -7956,6 +8012,9 @@ declare const dosAPI: [
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
+                                licenseConclusions: {
+                                    concludedLicenseExpressionSPDX: string;
+                                }[];
                             };
                         },
                         {
@@ -7965,6 +8024,9 @@ declare const dosAPI: [
                             file: {
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
+                                }[];
+                                licenseConclusions: {
+                                    concludedLicenseExpressionSPDX: string;
                                 }[];
                             };
                         }
@@ -7983,6 +8045,9 @@ declare const dosAPI: [
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
+                        }[];
                     };
                 }[];
             },
@@ -7994,6 +8059,9 @@ declare const dosAPI: [
                     file: {
                         licenseFindings: {
                             licenseExpressionSPDX: string;
+                        }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -8414,14 +8482,6 @@ declare const dosAPI: [
                         licenseExpression: string | null;
                     }[];
                 }[];
-                downloadUrl: string;
-                copyrightFindings: {
-                    id: number;
-                    copyright: string;
-                    updatedAt: Date;
-                    startLine: number;
-                    endLine: number;
-                }[];
                 licenseConclusions: {
                     id: number;
                     createdAt: Date;
@@ -8433,6 +8493,14 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
+                }[];
+                downloadUrl: string;
+                copyrightFindings: {
+                    id: number;
+                    copyright: string;
+                    updatedAt: Date;
+                    startLine: number;
+                    endLine: number;
                 }[];
             },
             {
@@ -8449,14 +8517,6 @@ declare const dosAPI: [
                         licenseExpression: string | null;
                     }[];
                 }[];
-                downloadUrl: string;
-                copyrightFindings: {
-                    id: number;
-                    copyright: string;
-                    updatedAt: Date;
-                    startLine: number;
-                    endLine: number;
-                }[];
                 licenseConclusions: {
                     id: number;
                     createdAt: Date;
@@ -8468,6 +8528,14 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
+                }[];
+                downloadUrl: string;
+                copyrightFindings: {
+                    id: number;
+                    copyright: string;
+                    updatedAt: Date;
+                    startLine: number;
+                    endLine: number;
                 }[];
             }
         >;
@@ -9191,6 +9259,22 @@ declare const FileTree: z.ZodObject<
                     >,
                     "many"
                 >;
+                licenseConclusions: z.ZodArray<
+                    z.ZodObject<
+                        {
+                            concludedLicenseExpressionSPDX: z.ZodString;
+                        },
+                        "strip",
+                        z.ZodTypeAny,
+                        {
+                            concludedLicenseExpressionSPDX: string;
+                        },
+                        {
+                            concludedLicenseExpressionSPDX: string;
+                        }
+                    >,
+                    "many"
+                >;
             },
             "strip",
             z.ZodTypeAny,
@@ -9198,10 +9282,16 @@ declare const FileTree: z.ZodObject<
                 licenseFindings: {
                     licenseExpressionSPDX: string;
                 }[];
+                licenseConclusions: {
+                    concludedLicenseExpressionSPDX: string;
+                }[];
             },
             {
                 licenseFindings: {
                     licenseExpressionSPDX: string;
+                }[];
+                licenseConclusions: {
+                    concludedLicenseExpressionSPDX: string;
                 }[];
             }
         >;
@@ -9216,6 +9306,9 @@ declare const FileTree: z.ZodObject<
             licenseFindings: {
                 licenseExpressionSPDX: string;
             }[];
+            licenseConclusions: {
+                concludedLicenseExpressionSPDX: string;
+            }[];
         };
     },
     {
@@ -9225,6 +9318,9 @@ declare const FileTree: z.ZodObject<
         file: {
             licenseFindings: {
                 licenseExpressionSPDX: string;
+            }[];
+            licenseConclusions: {
+                concludedLicenseExpressionSPDX: string;
             }[];
         };
     }
@@ -9256,6 +9352,22 @@ declare const PostFileTreeRes: z.ZodObject<
                                 >,
                                 "many"
                             >;
+                            licenseConclusions: z.ZodArray<
+                                z.ZodObject<
+                                    {
+                                        concludedLicenseExpressionSPDX: z.ZodString;
+                                    },
+                                    "strip",
+                                    z.ZodTypeAny,
+                                    {
+                                        concludedLicenseExpressionSPDX: string;
+                                    },
+                                    {
+                                        concludedLicenseExpressionSPDX: string;
+                                    }
+                                >,
+                                "many"
+                            >;
                         },
                         "strip",
                         z.ZodTypeAny,
@@ -9263,10 +9375,16 @@ declare const PostFileTreeRes: z.ZodObject<
                             licenseFindings: {
                                 licenseExpressionSPDX: string;
                             }[];
+                            licenseConclusions: {
+                                concludedLicenseExpressionSPDX: string;
+                            }[];
                         },
                         {
                             licenseFindings: {
                                 licenseExpressionSPDX: string;
+                            }[];
+                            licenseConclusions: {
+                                concludedLicenseExpressionSPDX: string;
                             }[];
                         }
                     >;
@@ -9281,6 +9399,9 @@ declare const PostFileTreeRes: z.ZodObject<
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
+                        }[];
                     };
                 },
                 {
@@ -9290,6 +9411,9 @@ declare const PostFileTreeRes: z.ZodObject<
                     file: {
                         licenseFindings: {
                             licenseExpressionSPDX: string;
+                        }[];
+                        licenseConclusions: {
+                            concludedLicenseExpressionSPDX: string;
                         }[];
                     };
                 }
@@ -9308,6 +9432,9 @@ declare const PostFileTreeRes: z.ZodObject<
                 licenseFindings: {
                     licenseExpressionSPDX: string;
                 }[];
+                licenseConclusions: {
+                    concludedLicenseExpressionSPDX: string;
+                }[];
             };
         }[];
     },
@@ -9319,6 +9446,9 @@ declare const PostFileTreeRes: z.ZodObject<
             file: {
                 licenseFindings: {
                     licenseExpressionSPDX: string;
+                }[];
+                licenseConclusions: {
+                    concludedLicenseExpressionSPDX: string;
                 }[];
             };
         }[];

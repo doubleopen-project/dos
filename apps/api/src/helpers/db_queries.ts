@@ -792,10 +792,22 @@ export const findFileTreeByHashAndPackageId = async (
 };
 
 export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
-    include: {
+    select: {
+        path: true;
+        packageId: true;
+        fileSha256: true;
         file: {
-            include: {
-                licenseFindings: true;
+            select: {
+                licenseFindings: {
+                    select: {
+                        licenseExpressionSPDX: true;
+                    };
+                };
+                licenseConclusions: {
+                    select: {
+                        concludedLicenseExpressionSPDX: true;
+                    };
+                };
             };
         };
     };
@@ -810,10 +822,22 @@ export const findFileTreesByPackagePurl = async (
                 purl: purl,
             },
         },
-        include: {
+        select: {
+            path: true,
+            packageId: true,
+            fileSha256: true,
             file: {
-                include: {
-                    licenseFindings: true,
+                select: {
+                    licenseFindings: {
+                        select: {
+                            licenseExpressionSPDX: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            concludedLicenseExpressionSPDX: true,
+                        },
+                    },
                 },
             },
         },
