@@ -3817,6 +3817,44 @@ declare const userAPI: [{
             startLine: number;
             endLine: number;
         }>, "many">;
+        licenseConclusions: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            createdAt: zod.ZodDate;
+            updatedAt: zod.ZodDate;
+            detectedLicenseExpressionSPDX: zod.ZodString;
+            concludedLicenseExpressionSPDX: zod.ZodString;
+            comment: zod.ZodString;
+            contextPurl: zod.ZodString;
+            user: zod.ZodObject<{
+                username: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                username: string;
+            }, {
+                username: string;
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }, {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }>, "many">;
     }, "strip", zod.ZodTypeAny, {
         licenseFindings: {
             id: number;
@@ -3839,6 +3877,18 @@ declare const userAPI: [{
             startLine: number;
             endLine: number;
         }[];
+        licenseConclusions: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }[];
     }, {
         licenseFindings: {
             id: number;
@@ -3860,6 +3910,18 @@ declare const userAPI: [{
             updatedAt: Date;
             startLine: number;
             endLine: number;
+        }[];
+        licenseConclusions: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
         }[];
     }>;
     errors: [{
@@ -5660,6 +5722,44 @@ declare const dosAPI: [{
             startLine: number;
             endLine: number;
         }>, "many">;
+        licenseConclusions: zod.ZodArray<zod.ZodObject<{
+            id: zod.ZodNumber;
+            createdAt: zod.ZodDate;
+            updatedAt: zod.ZodDate;
+            detectedLicenseExpressionSPDX: zod.ZodString;
+            concludedLicenseExpressionSPDX: zod.ZodString;
+            comment: zod.ZodString;
+            contextPurl: zod.ZodString;
+            user: zod.ZodObject<{
+                username: zod.ZodString;
+            }, "strip", zod.ZodTypeAny, {
+                username: string;
+            }, {
+                username: string;
+            }>;
+        }, "strip", zod.ZodTypeAny, {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }, {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }>, "many">;
     }, "strip", zod.ZodTypeAny, {
         licenseFindings: {
             id: number;
@@ -5682,6 +5782,18 @@ declare const dosAPI: [{
             startLine: number;
             endLine: number;
         }[];
+        licenseConclusions: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
+        }[];
     }, {
         licenseFindings: {
             id: number;
@@ -5703,6 +5815,18 @@ declare const dosAPI: [{
             updatedAt: Date;
             startLine: number;
             endLine: number;
+        }[];
+        licenseConclusions: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            concludedLicenseExpressionSPDX: string;
+            detectedLicenseExpressionSPDX: string;
+            comment: string;
+            contextPurl: string;
+            user: {
+                username: string;
+            };
         }[];
     }>;
     errors: [{
