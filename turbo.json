@@ -56,6 +56,9 @@
                 "validation-helpers:build"
             ]
         },
+        "scanner-worker:build": {
+            "dependsOn": ["s3-helpers:build", "common-helpers:build"]
+        },
         "build": {
             "dependsOn": ["^build"],
             "outputs": [".next/**", "!.next/cache/**"]

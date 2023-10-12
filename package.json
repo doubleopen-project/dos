@@ -11,7 +11,7 @@
         "build:api": "turbo run build --filter=api --no-daemon",
         "build:curation": "turbo run build --filter=curation_front_end --no-daemon",
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
-        "build:worker": "turbo run build --filter=scanner-agent --no-daemon",
+        "build:scanner_worker": "turbo run build --filter=scanner-worker --no-daemon",
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
         "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
         "clever-logs-api": "turbo run clever-logs --filter=api --no-daemon",
@@ -40,7 +40,7 @@
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "start:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
-        "start:scanner_worker": "turbo run worker --no-cache --continue --no-daemon --filter=scanner-agent",
+        "start:scanner_worker": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-worker",
         "test": "turbo run test --concurrency=1",
         "test:api": "turbo run test --filter=api",
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
