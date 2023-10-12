@@ -161,6 +161,7 @@ userRouter.post("/file", async (req, res) => {
 
         if (fileData) {
             res.status(200).json({
+                sha256: sha256,
                 downloadUrl: presignedGetUrl,
                 licenseFindings: fileData.licenseFindings,
                 copyrightFindings: fileData.copyrightFindings,

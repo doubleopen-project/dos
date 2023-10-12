@@ -5451,6 +5451,7 @@ declare const userAPI: [
         ];
         response: zod.ZodObject<
             {
+                sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
                 licenseFindings: zod.ZodArray<
                     zod.ZodObject<
@@ -5606,6 +5607,7 @@ declare const userAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -5641,6 +5643,7 @@ declare const userAPI: [
                 }[];
             },
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -8302,6 +8305,7 @@ declare const dosAPI: [
         ];
         response: zod.ZodObject<
             {
+                sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
                 licenseFindings: zod.ZodArray<
                     zod.ZodObject<
@@ -8457,6 +8461,7 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -8492,6 +8497,7 @@ declare const dosAPI: [
                 }[];
             },
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
