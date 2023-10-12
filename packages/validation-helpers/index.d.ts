@@ -5425,32 +5425,48 @@ declare const userAPI: [
         method: "post";
         path: "/file";
         alias: "GetFileData";
-        description: "Get file download url and findings";
+        description: "Get file download url, findings and conclusions. If sha256 is not provided, it will be searched by purl and path.";
         immutable: true;
         parameters: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
+                schema: zod.ZodEffects<
+                    zod.ZodObject<
+                        {
+                            purl: zod.ZodOptional<zod.ZodString>;
+                            path: zod.ZodOptional<zod.ZodString>;
+                            sha256: zod.ZodOptional<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            purl?: string | undefined;
+                            path?: string | undefined;
+                            sha256?: string | undefined;
+                        },
+                        {
+                            purl?: string | undefined;
+                            path?: string | undefined;
+                            sha256?: string | undefined;
+                        }
+                    >,
                     {
-                        purl: zod.ZodString;
-                        path: zod.ZodString;
+                        purl?: string | undefined;
+                        path?: string | undefined;
+                        sha256?: string | undefined;
                     },
-                    "strip",
-                    zod.ZodTypeAny,
                     {
-                        path: string;
-                        purl: string;
-                    },
-                    {
-                        path: string;
-                        purl: string;
+                        purl?: string | undefined;
+                        path?: string | undefined;
+                        sha256?: string | undefined;
                     }
                 >;
             },
         ];
         response: zod.ZodObject<
             {
+                sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
                 licenseFindings: zod.ZodArray<
                     zod.ZodObject<
@@ -5606,6 +5622,7 @@ declare const userAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -5641,6 +5658,7 @@ declare const userAPI: [
                 }[];
             },
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -8276,32 +8294,48 @@ declare const dosAPI: [
         method: "post";
         path: "/user/file";
         alias: "GetFileData";
-        description: "Get file download url and findings";
+        description: "Get file download url, findings and conclusions. If sha256 is not provided, it will be searched by purl and path.";
         immutable: true;
         parameters: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
+                schema: zod.ZodEffects<
+                    zod.ZodObject<
+                        {
+                            purl: zod.ZodOptional<zod.ZodString>;
+                            path: zod.ZodOptional<zod.ZodString>;
+                            sha256: zod.ZodOptional<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            purl?: string | undefined;
+                            path?: string | undefined;
+                            sha256?: string | undefined;
+                        },
+                        {
+                            purl?: string | undefined;
+                            path?: string | undefined;
+                            sha256?: string | undefined;
+                        }
+                    >,
                     {
-                        purl: zod.ZodString;
-                        path: zod.ZodString;
+                        purl?: string | undefined;
+                        path?: string | undefined;
+                        sha256?: string | undefined;
                     },
-                    "strip",
-                    zod.ZodTypeAny,
                     {
-                        path: string;
-                        purl: string;
-                    },
-                    {
-                        path: string;
-                        purl: string;
+                        purl?: string | undefined;
+                        path?: string | undefined;
+                        sha256?: string | undefined;
                     }
                 >;
             },
         ];
         response: zod.ZodObject<
             {
+                sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
                 licenseFindings: zod.ZodArray<
                     zod.ZodObject<
@@ -8457,6 +8491,7 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -8492,6 +8527,7 @@ declare const dosAPI: [
                 }[];
             },
             {
+                sha256: string;
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
