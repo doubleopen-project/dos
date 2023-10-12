@@ -4,14 +4,12 @@
 
 import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import CodeEditor from "./CodeEditor";
-import { Label } from "./ui/label";
-import { Badge } from "./ui/badge";
-import { Input } from "./ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import ButtonGroup from "./ButtonGroup";
 import HandleCuration from "./HandleCuration";
 
@@ -48,7 +46,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow">
+            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow-lg">
                 <Label className="font-bold">File: </Label>
                 {path ? (
                     <Badge className="rounded-md">{path}</Badge>
@@ -57,7 +55,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
 
-            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow items-center">
+            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow-lg items-center">
                 {data?.licenseFindings[0] ? (
                     <>
                         <Label className="p-1 text-sm">
@@ -85,7 +83,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
 
             {data?.licenseFindings[0]?.licenseFindingMatches && (
-                <div className="flex-row p-2 mb-2 rounded-md bg-white shadow items-center">
+                <div className="flex-row p-2 mb-2 rounded-md bg-white shadow-lg items-center">
                     <Label className="text-sm">
                         Individual license matches
                     </Label>
@@ -121,18 +119,8 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
 
-            <div className="p-2 mt-2 rounded-md bg-white shadow flex-row text-sm">
-                <HandleCuration />
-                <div className="p-2 m-1 rounded-md bg-white shadow flex items-center text-sm">
-                    <Input
-                        className="bg-gray-200 p-2 rounded-lg w-full"
-                        type="text"
-                        placeholder="CONCLUDED LICENSE"
-                    />
-                    <Button className="bg-violet-300 text-xs hover:bg-gray-400 p-2 rounded-lg ml-2">
-                        Add curation
-                    </Button>
-                </div>
+            <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
+                <HandleCuration licenseConclusions={data?.licenseConclusions} />
             </div>
         </div>
     );

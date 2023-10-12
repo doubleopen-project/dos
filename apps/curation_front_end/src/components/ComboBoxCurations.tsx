@@ -20,20 +20,25 @@ import {
 } from "@/components/ui/popover";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { userAPI } from "validation-helpers";
 
-type ComboBoxProps = {
-    data: Set<string>;
+type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type LicenseConclusions = DataType["licenseConclusions"][0];
+
+type ComboBoxCurationsProps = {
+    data?: LicenseConclusions[];
     filterString: string;
     selectText?: string;
     fractionalWidth?: number;
 };
 
-const ComboBox = ({
+const ComboBoxCurations = ({
     data,
     filterString,
     selectText,
     fractionalWidth = 0.75,
-}: ComboBoxProps) => {
+}: ComboBoxCurationsProps) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
@@ -49,12 +54,6 @@ const ComboBox = ({
             setValue(null);
         };
     }, []);
-
-    // Map data to the format required by the Command component
-    const dataAsArray = Array.from(data).map((d) => ({
-        value: d.toLowerCase(),
-        label: d,
-    }));
 
     useEffect(() => {
         if (buttonRef.current) {
@@ -76,11 +75,12 @@ const ComboBox = ({
                     <span className="text-xs">
                         {router.isReady
                             ? value
-                                ? dataAsArray.find((d) => d.value === value)
-                                      ?.label
+                                ? data?.find(
+                                      (d) =>
+                                          d.concludedLicenseExpressionSPDX ===
+                                          value,
+                                  )?.concludedLicenseExpressionSPDX
                                 : selectText
-                                ? selectText
-                                : "Select..."
                             : null}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -88,18 +88,23 @@ const ComboBox = ({
             </PopoverTrigger>
             <PopoverContent className="p-0" style={{ width: listWidth }}>
                 <Command>
-                    <CommandInput placeholder="Search license..." />
-                    <CommandEmpty>No license found.</CommandEmpty>
+                    <CommandInput placeholder="Search curation..." />
+                    <CommandEmpty>No curations found.</CommandEmpty>
                     <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
-                        {dataAsArray.map((d, index) => (
+                        {data?.map((d) => (
                             <CommandItem
-                                key={`${d.value}-${index}`} // Combining value with index
+                                key={d.id}
                                 className="items-start text-left"
-                                onSelect={(currentValue) => {
+                                onSelect={() => {
+                                    console.log(
+                                        "OnSelect concludedLicenseExpressionSPDX:",
+                                        d.concludedLicenseExpressionSPDX,
+                                    );
                                     setValue(
-                                        currentValue === value
+                                        d.concludedLicenseExpressionSPDX ===
+                                            value
                                             ? null
-                                            : currentValue,
+                                            : d.concludedLicenseExpressionSPDX,
                                     );
                                     setOpen(false);
                                 }}
@@ -107,12 +112,15 @@ const ComboBox = ({
                                 <Check
                                     className={cn(
                                         "mr-2 h-4 w-4",
-                                        value === d.value
+                                        value ===
+                                            d.concludedLicenseExpressionSPDX
                                             ? "opacity-100"
                                             : "opacity-0",
                                     )}
                                 />
-                                <span className="text-xs">{d.label}</span>
+                                <span className="text-xs">
+                                    {d.concludedLicenseExpressionSPDX}
+                                </span>
                             </CommandItem>
                         ))}
                     </CommandGroup>
@@ -122,4 +130,4 @@ const ComboBox = ({
     );
 };
 
-export default ComboBox;
+export default ComboBoxCurations;
