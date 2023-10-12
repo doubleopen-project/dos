@@ -90,16 +90,12 @@ const ComboBoxCurations = ({
                 <Command>
                     <CommandInput placeholder="Search curation..." />
                     <CommandEmpty>No curations found.</CommandEmpty>
-                    <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
+                    <CommandGroup className="max-h-[70vh] min-h-[1px] w-full overflow-y-auto">
                         {data?.map((d) => (
                             <CommandItem
                                 key={d.id}
-                                className="items-start text-left"
+                                className="items-start text-left w-full"
                                 onSelect={() => {
-                                    console.log(
-                                        "OnSelect concludedLicenseExpressionSPDX:",
-                                        d.concludedLicenseExpressionSPDX,
-                                    );
                                     setValue(
                                         d.concludedLicenseExpressionSPDX ===
                                             value
@@ -118,8 +114,29 @@ const ComboBoxCurations = ({
                                             : "opacity-0",
                                     )}
                                 />
-                                <span className="text-xs">
-                                    {d.concludedLicenseExpressionSPDX}
+                                <span className="text-xs flex flex-col">
+                                    <span className="font-semibold">
+                                        {d.concludedLicenseExpressionSPDX}
+                                    </span>
+                                    <span className="text-smaller flex justify-between">
+                                        <span>
+                                            {
+                                                new Date(d.updatedAt)
+                                                    .toISOString()
+                                                    .split("T")[0]
+                                            }
+                                        </span>
+                                        <span>{d.user.username}</span>
+                                    </span>
+                                    <span className="text-smaller">
+                                        {d.detectedLicenseExpressionSPDX}
+                                    </span>
+                                    <span className="text-smaller">
+                                        {d.contextPurl}
+                                    </span>
+                                    <span className="text-smaller italic">
+                                        {d.comment}
+                                    </span>
                                 </span>
                             </CommandItem>
                         ))}

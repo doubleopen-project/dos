@@ -15,6 +15,7 @@ import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import ComboBoxCurations from "./ComboBoxCurations";
 import { parseAsString, useQueryState } from "next-usequerystate";
+import SPDXCuration from "./SPDXCuration";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusions = DataType["licenseConclusions"][0];
@@ -65,7 +66,7 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
         <div className=" flex flex-col w-full">
             <Label className="font-bold mb-2">Curation:</Label>
 
-            <div className="p-2 mb-2 rounded-md bg-slate-300 flex items-center justify-between">
+            <div className="p-2 mb-1 rounded-md bg-slate-300 flex items-center justify-between">
                 <RadioGroup
                     defaultValue="choose-existing"
                     value={curationOption}
@@ -109,7 +110,7 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
                 <div className="mb-1">
                     <ComboBox
                         data={data}
-                        filterString={"curatedLicense"}
+                        filterString={"curation"}
                         selectText="Select license..."
                         fractionalWidth={0.75}
                     />
@@ -118,11 +119,10 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
 
             {curationOption === "choose-write-SPDX" && (
                 <div className="mb-1">
-                    <Input
-                        className="p-2 rounded-lg w-full text-xs"
-                        type="text"
-                        placeholder="Write an SPDX expression..."
-                    />
+                    <SPDXCuration
+                        filterString={"curation"}
+                        selectText={"Write your SPDX expression here..."}
+                    ></SPDXCuration>
                 </div>
             )}
 
