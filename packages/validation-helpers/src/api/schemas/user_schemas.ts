@@ -130,6 +130,7 @@ export const PostFileReq = z.object({
 });
 
 export const PostFileRes = z.object({
+    sha256: z.string(),
     downloadUrl: z.string(),
     licenseFindings: z.array(
         z.object({
