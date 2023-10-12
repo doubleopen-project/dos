@@ -120,16 +120,21 @@ export type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
 //------------------- POST file -------------------
 
-export const PostFileReq = z.object({
-    purl: z.string({
-        required_error: "Purl is required",
-    }),
-    path: z.string({
-        required_error: "Path is required",
-    }),
-});
+export const PostFileReq = z
+    .object({
+        purl: z.string(),
+        path: z.string(),
+        sha256: z.string(),
+    })
+    .partial()
+    .refine(
+        ({ purl, path, sha256 }) =>
+            (purl !== undefined && path !== undefined) || sha256 !== undefined,
+        { message: "Either purl and path or sha256 is required" },
+    );
 
 export const PostFileRes = z.object({
+    sha256: z.string(),
     downloadUrl: z.string(),
     licenseFindings: z.array(
         z.object({

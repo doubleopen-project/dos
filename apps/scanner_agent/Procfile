@@ -1,1 +1,0 @@
-web: cd apps/scanner_agent && npm start

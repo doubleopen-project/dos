@@ -61,6 +61,26 @@ adminRouter.post("/user", async (req, res) => {
     }
 });
 
+// Delete user by id
+adminRouter.delete("/user/:id", async (req, res) => {
+    try {
+        const deletedUser = await dbQueries.deleteUser(req.params.id);
+
+        if (deletedUser) res.status(200).json({ message: "User deleted" });
+        else res.status(400).json({ message: "User to delete not found" });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.log("Error: ", error);
+        if (error.code === "P2025") {
+            return res.status(404).json({
+                message: "User to delete not found",
+            });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
 // Delete scan results for a specified package purl
 adminRouter.delete("/scan-results", async (req, res) => {
     // TODO: this endpoint should only be used by specific users

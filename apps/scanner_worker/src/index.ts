@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2023 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
@@ -117,7 +117,7 @@ const start = (): void => {
 
         // Try to download the files from S3 and check if it was successful
         // Use concurrency limit to avoid overloading the S3 service
-        const concurrentDownloads = [];
+        const concurrentDownloads: Promise<boolean>[] = [];
         for (const file of job.data.files) {
             const downloadPromise = downloadFile(
                 SPACES_BUCKET,

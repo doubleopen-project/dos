@@ -1709,6 +1709,14 @@ export const deleteLicenseConclusion = async (
     });
 };
 
+export const deleteUser = async (id: number): Promise<User | null> => {
+    return await prisma.user.delete({
+        where: {
+            id: id,
+        },
+    });
+};
+
 // ------------------------------ Count --------------------------------
 
 export const countFileTreesByPackageId = async (
