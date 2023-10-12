@@ -143,11 +143,19 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
 
 userRouter.post("/file", async (req, res) => {
     try {
-        const sha256 = await dbQueries.findFileSha256(
-            req.body.purl,
-            req.body.path,
-        );
-        console.log("sha256: ", sha256);
+        let sha256 = null;
+
+        if (req.body.sha256) sha256 = req.body.sha256;
+        else if (req.body.purl && req.body.path) {
+            sha256 = await dbQueries.findFileSha256(
+                req.body.purl,
+                req.body.path,
+            );
+        }
+
+        if (!sha256) throw new Error("sha256 not found");
+
+        console.log("Searching data for file sha256: ", sha256);
 
         const fileData = await dbQueries.findFileData(sha256);
         const presignedGetUrl = await s3Helpers.getPresignedGetUrl(
