@@ -88,7 +88,8 @@ export const userAPI = makeApi([
         method: "post",
         path: "/file",
         alias: "GetFileData",
-        description: "Get file download url and findings",
+        description:
+            "Get file download url, findings and conclusions. If sha256 is not provided, it will be searched by purl and path.",
         immutable: true,
         parameters: [
             {
