@@ -90,7 +90,7 @@ const ComboBox = ({
                 <Command>
                     <CommandInput placeholder="Search license..." />
                     <CommandEmpty>No license found.</CommandEmpty>
-                    <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
+                    <CommandGroup className="max-h-[70vh] min-h-[1px] w-full overflow-y-auto">
                         {dataAsArray.map((d, index) => (
                             <CommandItem
                                 key={`${d.value}-${index}`} // Combining value with index
