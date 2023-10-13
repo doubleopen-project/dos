@@ -15,12 +15,12 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
 import CurationSPDX from "./CurationSPDX";
+import { userHooks } from "@/hooks/zodiosHooks";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
-type LicenseConclusions = DataType["licenseConclusions"][0];
 
 type Props = {
-    licenseConclusions?: LicenseConclusions[] | undefined;
+    fileData?: DataType;
 };
 
 const fetchAndConvertYAML = async (): Promise<any> => {
@@ -42,7 +42,7 @@ const fetchAndConvertYAML = async (): Promise<any> => {
     }
 };
 
-const Curation = ({ licenseConclusions }: Props) => {
+const Curation = ({ fileData }: Props) => {
     const [curationOption, setCurationOption] = useQueryState(
         "curationOption",
         parseAsString.withDefault("choose-existing"),
@@ -97,7 +97,7 @@ const Curation = ({ licenseConclusions }: Props) => {
             {curationOption === "choose-existing" && (
                 <div className="mb-1">
                     <CurationDB
-                        data={licenseConclusions}
+                        data={fileData}
                         filterString={"curation"}
                         selectText="Select curation..."
                         fractionalWidth={0.75}
@@ -132,5 +132,30 @@ const Curation = ({ licenseConclusions }: Props) => {
         </div>
     );
 };
+
+function addCuration(
+    fileData: DataType,
+    contextPurl: string,
+    spdx: string,
+    comment: string,
+) {
+    const { data, isLoading, error } = userHooks.useImmutableQuery(
+        "/license-conclusion",
+        {
+            fileSha256: fileData.sha256,
+            detectedLicenseExpressionSPDX:
+                fileData.licenseFindings[0].licenseExpressionSPDX,
+            concludedLicenseExpressionSPDX: spdx,
+            comment: comment,
+            contextPurl: contextPurl,
+        },
+    );
+
+    if (data) {
+        console.log("Curation added:", data);
+    } else {
+        console.log("Error adding curation:", error);
+    }
+}
 
 export default Curation;

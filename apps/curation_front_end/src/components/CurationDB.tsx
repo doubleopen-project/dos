@@ -25,10 +25,9 @@ import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
-type LicenseConclusions = DataType["licenseConclusions"][0];
 
 type Props = {
-    data?: LicenseConclusions[];
+    data?: DataType;
     filterString: string;
     selectText?: string;
     fractionalWidth?: number;
@@ -76,7 +75,7 @@ const CurationDB = ({
                     <span className="text-xs">
                         {router.isReady
                             ? value
-                                ? data?.find(
+                                ? data?.licenseConclusions.find(
                                       (d) => d.id === parseInt(value, 10),
                                   )?.concludedLicenseExpressionSPDX
                                 : selectText
@@ -90,7 +89,7 @@ const CurationDB = ({
                     <CommandInput placeholder="Search curation..." />
                     <CommandEmpty>No curations found.</CommandEmpty>
                     <CommandGroup className="max-h-[70vh] min-h-[1px] overflow-y-auto">
-                        {data?.map((d) => (
+                        {data?.licenseConclusions.map((d) => (
                             <CommandItem
                                 key={d.id}
                                 className="items-start text-left"
