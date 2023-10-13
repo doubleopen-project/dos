@@ -5,22 +5,21 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as yaml from "js-yaml";
-import ComboBox from "./ComboBox";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
-import ComboBoxCurations from "./ComboBoxCurations";
 import { parseAsString, useQueryState } from "next-usequerystate";
-import SPDXCuration from "./SPDXCuration";
+import CurationDB from "./CurationDB";
+import CurationLicense from "./CurationLicense";
+import CurationSPDX from "./CurationSPDX";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusions = DataType["licenseConclusions"][0];
 
-type HandleCurationProps = {
+type Props = {
     licenseConclusions?: LicenseConclusions[] | undefined;
 };
 
@@ -43,7 +42,7 @@ const fetchAndConvertYAML = async (): Promise<any> => {
     }
 };
 
-const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
+const Curation = ({ licenseConclusions }: Props) => {
     const [curationOption, setCurationOption] = useQueryState(
         "curationOption",
         parseAsString.withDefault("choose-existing"),
@@ -97,7 +96,7 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
 
             {curationOption === "choose-existing" && (
                 <div className="mb-1">
-                    <ComboBoxCurations
+                    <CurationDB
                         data={licenseConclusions}
                         filterString={"curation"}
                         selectText="Select curation..."
@@ -108,7 +107,7 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
 
             {curationOption === "choose-from-list" && (
                 <div className="mb-1">
-                    <ComboBox
+                    <CurationLicense
                         data={data}
                         filterString={"curation"}
                         selectText="Select license..."
@@ -119,10 +118,10 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
 
             {curationOption === "choose-write-SPDX" && (
                 <div className="mb-1">
-                    <SPDXCuration
+                    <CurationSPDX
                         filterString={"curation"}
                         selectText={"Write your SPDX expression here..."}
-                    ></SPDXCuration>
+                    />
                 </div>
             )}
 
@@ -134,4 +133,4 @@ const HandleCuration = ({ licenseConclusions }: HandleCurationProps) => {
     );
 };
 
-export default HandleCuration;
+export default Curation;

@@ -21,19 +21,19 @@ import {
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 
-type ComboBoxProps = {
+type Props = {
     data: Set<string>;
     filterString: string;
     selectText?: string;
     fractionalWidth?: number;
 };
 
-const ComboBox = ({
+const CurationLicense = ({
     data,
     filterString,
     selectText,
     fractionalWidth = 0.75,
-}: ComboBoxProps) => {
+}: Props) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
@@ -122,4 +122,4 @@ const ComboBox = ({
     );
 };
 
-export default ComboBox;
+export default CurationLicense;
