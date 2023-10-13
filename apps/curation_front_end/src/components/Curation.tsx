@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosBodyByPath, ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import CurationDB from "./CurationDB";
@@ -18,6 +18,11 @@ import CurationSPDX from "./CurationSPDX";
 import { userHooks } from "@/hooks/zodiosHooks";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type LicenseConclusionPostData = ZodiosBodyByPath<
+    typeof userAPI,
+    "post",
+    "/license-conclusion"
+>;
 
 type Props = {
     fileData?: DataType;
@@ -42,11 +47,21 @@ const fetchAndConvertYAML = async (): Promise<any> => {
     }
 };
 
+const {
+    data,
+    isLoading,
+    error,
+    mutate: addLicenseConclusion,
+} = userHooks.useMutation("post", "/license-conclusion", {
+    withCredentials: true,
+});
+
 const Curation = ({ fileData }: Props) => {
     const [curationOption, setCurationOption] = useQueryState(
         "curationOption",
         parseAsString.withDefault("choose-existing"),
     );
+
     // Fetch the license classifications from Github
     const { data, isLoading, error } = useQuery({
         queryKey: ["license-classifications"],
@@ -56,6 +71,12 @@ const Curation = ({ fileData }: Props) => {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error</div>;
+
+    const submitCuration = (
+        licenseConclusionData: LicenseConclusionPostData,
+    ) => {
+        addLicenseConclusion(licenseConclusionData);
+    };
 
     const handleRadioChange = (e: string) => {
         setCurationOption(e);
@@ -132,30 +153,5 @@ const Curation = ({ fileData }: Props) => {
         </div>
     );
 };
-
-function addCuration(
-    fileData: DataType,
-    contextPurl: string,
-    spdx: string,
-    comment: string,
-) {
-    const { data, isLoading, error } = userHooks.useImmutableQuery(
-        "/license-conclusion",
-        {
-            fileSha256: fileData.sha256,
-            detectedLicenseExpressionSPDX:
-                fileData.licenseFindings[0].licenseExpressionSPDX,
-            concludedLicenseExpressionSPDX: spdx,
-            comment: comment,
-            contextPurl: contextPurl,
-        },
-    );
-
-    if (data) {
-        console.log("Curation added:", data);
-    } else {
-        console.log("Error adding curation:", error);
-    }
-}
 
 export default Curation;
