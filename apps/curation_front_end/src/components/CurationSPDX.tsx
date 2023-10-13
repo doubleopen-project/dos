@@ -6,12 +6,12 @@ import React, { useEffect } from "react";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { Input } from "@/components/ui/input";
 
-type SPDXCurationProps = {
+type Props = {
     filterString: string;
     selectText?: string;
 };
 
-const SPDXCuration = ({ filterString, selectText }: SPDXCurationProps) => {
+const CurationSPDX = ({ filterString, selectText }: Props) => {
     const [value, setValue] = useQueryState(
         filterString,
         parseAsString.withDefault(""),
@@ -42,4 +42,4 @@ const SPDXCuration = ({ filterString, selectText }: SPDXCurationProps) => {
     );
 };
 
-export default SPDXCuration;
+export default CurationSPDX;

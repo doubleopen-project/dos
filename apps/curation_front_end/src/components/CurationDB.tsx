@@ -26,19 +26,19 @@ import { userAPI } from "validation-helpers";
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusions = DataType["licenseConclusions"][0];
 
-type ComboBoxCurationsProps = {
+type Props = {
     data?: LicenseConclusions[];
     filterString: string;
     selectText?: string;
     fractionalWidth?: number;
 };
 
-const ComboBoxCurations = ({
+const CurationDB = ({
     data,
     filterString,
     selectText,
     fractionalWidth = 0.75,
-}: ComboBoxCurationsProps) => {
+}: Props) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
@@ -143,4 +143,4 @@ const ComboBoxCurations = ({
     );
 };
 
-export default ComboBoxCurations;
+export default CurationDB;
