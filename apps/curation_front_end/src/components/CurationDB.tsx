@@ -18,6 +18,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { RiDeleteBin6Line as Delete } from "react-icons/ri";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { ZodiosResponseByPath } from "@zodios/core";
@@ -88,7 +89,7 @@ const CurationDB = ({
                 <Command>
                     <CommandInput placeholder="Search curation..." />
                     <CommandEmpty>No curations found.</CommandEmpty>
-                    <CommandGroup className="max-h-[70vh] min-h-[1px] w-full overflow-y-auto">
+                    <CommandGroup className="max-h-[70vh] min-h-[1px] overflow-y-auto">
                         {data?.map((d) => (
                             <CommandItem
                                 key={d.id}
@@ -110,30 +111,52 @@ const CurationDB = ({
                                             : "opacity-0",
                                     )}
                                 />
-                                <span className="text-xs flex flex-col">
-                                    <span className="font-semibold">
-                                        {d.concludedLicenseExpressionSPDX}
-                                    </span>
-                                    <span className="text-smaller flex justify-between">
+                                <div className="text-xs flex flex-col w-full border-r-slate-700 ml-2">
+                                    <span className="flex justify-between mb-2">
                                         <span>
-                                            {
-                                                new Date(d.updatedAt)
-                                                    .toISOString()
-                                                    .split("T")[0]
-                                            }
+                                            <span className="mr-1">
+                                                Curated:
+                                            </span>
+                                            <span className="font-bold bg-green-200 p-1 rounded-sm">
+                                                {
+                                                    d.concludedLicenseExpressionSPDX
+                                                }
+                                            </span>
                                         </span>
-                                        <span>{d.user.username}</span>
+                                        <span className="">
+                                            <span className="mr-1">
+                                                {
+                                                    new Date(d.updatedAt)
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                }
+                                            </span>
+                                            <span className="font-bold bg-orange-200 p-1 rounded-sm">
+                                                {d.user.username}
+                                            </span>
+                                        </span>
                                     </span>
                                     <span className="text-smaller">
-                                        {d.detectedLicenseExpressionSPDX}
+                                        <span className="mr-1">Detected:</span>
+                                        <span>
+                                            {d.detectedLicenseExpressionSPDX}
+                                        </span>
                                     </span>
                                     <span className="text-smaller">
+                                        <span className="mr-1">
+                                            Context PURL:
+                                        </span>
                                         {d.contextPurl}
                                     </span>
                                     <span className="text-smaller italic">
                                         {d.comment}
                                     </span>
-                                </span>
+                                </div>
+                                <div className="p-0 ml-2">
+                                    <Button key={d.id} className="px-2">
+                                        <Delete></Delete>
+                                    </Button>
+                                </div>
                             </CommandItem>
                         ))}
                     </CommandGroup>
