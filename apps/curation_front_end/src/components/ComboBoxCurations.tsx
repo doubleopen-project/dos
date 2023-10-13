@@ -76,9 +76,7 @@ const ComboBoxCurations = ({
                         {router.isReady
                             ? value
                                 ? data?.find(
-                                      (d) =>
-                                          d.concludedLicenseExpressionSPDX ===
-                                          value,
+                                      (d) => d.id === parseInt(value, 10),
                                   )?.concludedLicenseExpressionSPDX
                                 : selectText
                             : null}
@@ -94,13 +92,12 @@ const ComboBoxCurations = ({
                         {data?.map((d) => (
                             <CommandItem
                                 key={d.id}
-                                className="items-start text-left w-full"
+                                className="items-start text-left"
                                 onSelect={() => {
                                     setValue(
-                                        d.concludedLicenseExpressionSPDX ===
-                                            value
+                                        d.id === parseInt(value, 10)
                                             ? null
-                                            : d.concludedLicenseExpressionSPDX,
+                                            : d.id.toString(),
                                     );
                                     setOpen(false);
                                 }}
@@ -108,8 +105,7 @@ const ComboBoxCurations = ({
                                 <Check
                                     className={cn(
                                         "mr-2 h-4 w-4",
-                                        value ===
-                                            d.concludedLicenseExpressionSPDX
+                                        value === d.id.toString()
                                             ? "opacity-100"
                                             : "opacity-0",
                                     )}
