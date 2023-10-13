@@ -2310,6 +2310,32 @@ declare const loginFormSchema: z.ZodObject<
     }
 >;
 type LoginFormType = z.infer<typeof loginFormSchema>;
+declare const curationFormSchema: z.ZodObject<
+    {
+        fileSha256: z.ZodString;
+        detectedLicenseExpressionSPDX: z.ZodOptional<z.ZodString>;
+        concludedLicenseExpressionSPDX: z.ZodString;
+        comment: z.ZodOptional<z.ZodString>;
+        contextPurl: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        fileSha256: string;
+        concludedLicenseExpressionSPDX: string;
+        contextPurl: string;
+        detectedLicenseExpressionSPDX?: string | undefined;
+        comment?: string | undefined;
+    },
+    {
+        fileSha256: string;
+        concludedLicenseExpressionSPDX: string;
+        contextPurl: string;
+        detectedLicenseExpressionSPDX?: string | undefined;
+        comment?: string | undefined;
+    }
+>;
+type CurationFormType = z.infer<typeof curationFormSchema>;
 
 declare const adminAPI: [
     {
@@ -9516,6 +9542,7 @@ export {
     CreatePackageInput,
     CreateScanIssueInput,
     CreateScannerJobInput,
+    CurationFormType,
     DBFileSchema,
     DBScannerJobSchema,
     DBScannerJobType,
@@ -9530,6 +9557,7 @@ export {
     UpdateScannerJobInput,
     adminAPI,
     authAPI,
+    curationFormSchema,
     dosAPI,
     loginFormSchema,
     scannerAPI,
