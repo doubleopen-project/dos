@@ -28,15 +28,17 @@ type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
 type Props = {
     data?: DataType;
+    concludedLicenseExpressionSPDX: string;
+    setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
     filterString: string;
-    selectText?: string;
     fractionalWidth?: number;
 };
 
 const CurationDB = ({
     data,
+    concludedLicenseExpressionSPDX,
+    setConcludedLicenseExpressionSPDX,
     filterString,
-    selectText,
     fractionalWidth = 0.75,
 }: Props) => {
     const [open, setOpen] = useState(false);
@@ -62,6 +64,16 @@ const CurationDB = ({
         }
     }, [buttonRef.current?.offsetWidth]); // Re-run effect if the button's size changes
 
+    // Update parent state when a curation is selected
+    const handleSelect = (d: {
+        id: number;
+        concludedLicenseExpressionSPDX: string | null;
+    }) => {
+        setValue(d.id === parseInt(value, 10) ? null : d.id.toString());
+        setConcludedLicenseExpressionSPDX(d.concludedLicenseExpressionSPDX); // Update parent state
+        setOpen(false);
+    };
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -78,7 +90,7 @@ const CurationDB = ({
                                 ? data?.licenseConclusions.find(
                                       (d) => d.id === parseInt(value, 10),
                                   )?.concludedLicenseExpressionSPDX
-                                : selectText
+                                : "Select curation from DB..."
                             : null}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -93,14 +105,7 @@ const CurationDB = ({
                             <CommandItem
                                 key={d.id}
                                 className="items-start text-left"
-                                onSelect={() => {
-                                    setValue(
-                                        d.id === parseInt(value, 10)
-                                            ? null
-                                            : d.id.toString(),
-                                    );
-                                    setOpen(false);
-                                }}
+                                onSelect={() => handleSelect(d)}
                             >
                                 <Check
                                     className={cn(

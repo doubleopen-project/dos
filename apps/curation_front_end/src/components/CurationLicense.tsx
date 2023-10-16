@@ -24,14 +24,12 @@ import { useRouter } from "next/router";
 type Props = {
     data: Set<string>;
     filterString: string;
-    selectText?: string;
     fractionalWidth?: number;
 };
 
 const CurationLicense = ({
     data,
     filterString,
-    selectText,
     fractionalWidth = 0.75,
 }: Props) => {
     const [open, setOpen] = useState(false);
@@ -78,9 +76,7 @@ const CurationLicense = ({
                             ? value
                                 ? dataAsArray.find((d) => d.value === value)
                                       ?.label
-                                : selectText
-                                ? selectText
-                                : "Select..."
+                                : "Select license..."
                             : null}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

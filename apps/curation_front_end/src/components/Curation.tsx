@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as yaml from "js-yaml";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
 import CurationSPDX from "./CurationSPDX";
-import { userHooks } from "@/hooks/zodiosHooks";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusionPostData = ZodiosBodyByPath<
@@ -25,6 +24,7 @@ type LicenseConclusionPostData = ZodiosBodyByPath<
 >;
 
 type Props = {
+    purl: string;
     fileData?: DataType;
 };
 
@@ -46,7 +46,7 @@ const fetchAndConvertYAML = async (): Promise<any> => {
         );
     }
 };
-
+/*
 const {
     data,
     isLoading,
@@ -55,12 +55,28 @@ const {
 } = userHooks.useMutation("post", "/license-conclusion", {
     withCredentials: true,
 });
-
-const Curation = ({ fileData }: Props) => {
+*/
+const Curation = ({ purl, fileData }: Props) => {
     const [curationOption, setCurationOption] = useQueryState(
         "curationOption",
         parseAsString.withDefault("choose-existing"),
     );
+    const [curation, setCuration] = useState<LicenseConclusionPostData>({
+        concludedLicenseExpressionSPDX: "",
+        detectedLicenseExpressionSPDX:
+            fileData?.licenseConclusions[0]?.detectedLicenseExpressionSPDX ??
+            "",
+        comment: "",
+        contextPurl: purl,
+        fileSha256: fileData?.sha256 ?? "",
+    });
+
+    const setConcludedLicenseExpressionSPDX = (newSPDX: string | null) => {
+        setCuration({
+            ...curation,
+            concludedLicenseExpressionSPDX: newSPDX || "",
+        });
+    };
 
     // Fetch the license classifications from Github
     const { data, isLoading, error } = useQuery({
@@ -71,19 +87,19 @@ const Curation = ({ fileData }: Props) => {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error</div>;
-
+    /*
     const submitCuration = (
         licenseConclusionData: LicenseConclusionPostData,
     ) => {
         addLicenseConclusion(licenseConclusionData);
     };
-
+*/
     const handleRadioChange = (e: string) => {
         setCurationOption(e);
     };
 
     return (
-        <div className=" flex flex-col w-full">
+        <div className="flex flex-col w-full">
             <Label className="font-bold mb-2">Curation:</Label>
 
             <div className="p-2 mb-1 rounded-md bg-slate-300 flex items-center justify-between">
@@ -119,8 +135,13 @@ const Curation = ({ fileData }: Props) => {
                 <div className="mb-1">
                     <CurationDB
                         data={fileData}
+                        concludedLicenseExpressionSPDX={
+                            curation.concludedLicenseExpressionSPDX
+                        }
+                        setConcludedLicenseExpressionSPDX={
+                            setConcludedLicenseExpressionSPDX
+                        }
                         filterString={"curation"}
-                        selectText="Select curation..."
                         fractionalWidth={0.75}
                     />
                 </div>
@@ -131,7 +152,6 @@ const Curation = ({ fileData }: Props) => {
                     <CurationLicense
                         data={data}
                         filterString={"curation"}
-                        selectText="Select license..."
                         fractionalWidth={0.75}
                     />
                 </div>
@@ -140,8 +160,12 @@ const Curation = ({ fileData }: Props) => {
             {curationOption === "choose-write-SPDX" && (
                 <div className="mb-1">
                     <CurationSPDX
-                        filterString={"curation"}
-                        selectText={"Write your SPDX expression here..."}
+                        concludedLicenseExpressionSPDX={
+                            curation.concludedLicenseExpressionSPDX
+                        }
+                        setConcludedLicenseExpressionSPDX={
+                            setConcludedLicenseExpressionSPDX
+                        }
                     />
                 </div>
             )}
