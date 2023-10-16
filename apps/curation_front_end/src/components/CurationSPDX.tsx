@@ -7,27 +7,19 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-    filterString: string;
-    selectText?: string;
+    concludedLicenseExpressionSPDX: string;
+    setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
 };
 
-const CurationSPDX = ({ filterString, selectText }: Props) => {
-    const [value, setValue] = useQueryState(
-        filterString,
-        parseAsString.withDefault(""),
-    );
-
-    // Clean up the URL when component unmounted
-    useEffect(() => {
-        return () => {
-            setValue(null);
-        };
-    }, []);
-
+const CurationSPDX = ({
+    concludedLicenseExpressionSPDX,
+    setConcludedLicenseExpressionSPDX,
+}: Props) => {
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.value);
-        if (event.target.value === "") {
-            setValue(null);
+        const newValue = event.target.value;
+        setConcludedLicenseExpressionSPDX(newValue);
+        if (newValue === "") {
+            setConcludedLicenseExpressionSPDX(null);
         }
     };
 
@@ -35,8 +27,8 @@ const CurationSPDX = ({ filterString, selectText }: Props) => {
         <Input
             className="rounded-lg w-full text-xs"
             type="text"
-            placeholder={selectText}
-            value={value}
+            placeholder="Write your SPDX expression here..."
+            value={concludedLicenseExpressionSPDX}
             onChange={handleInput}
         />
     );
