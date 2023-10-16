@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import * as yaml from "js-yaml";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -15,6 +13,7 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
 import CurationSPDX from "./CurationSPDX";
+import { userHooks } from "@/hooks/zodiosHooks";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusionPostData = ZodiosBodyByPath<
@@ -28,34 +27,6 @@ type Props = {
     fileData?: DataType;
 };
 
-const fetchAndConvertYAML = async (): Promise<any> => {
-    const response = await fetch(
-        "https://raw.githubusercontent.com/doubleopen-project/policy-configuration/main/license-classifications.yml",
-    );
-    if (response.ok) {
-        const yamlText = await response.text();
-        const jsonData = yaml.load(yamlText) as {
-            categorizations: { id: string }[];
-        };
-        const ids = jsonData.categorizations.map((item) => item.id);
-        const sortedIds = ids.sort((a, b) => a.localeCompare(b));
-        return sortedIds;
-    } else {
-        throw new Error(
-            `Failed to fetch YAML file: ${response.status} ${response.statusText}`,
-        );
-    }
-};
-/*
-const {
-    data,
-    isLoading,
-    error,
-    mutate: addLicenseConclusion,
-} = userHooks.useMutation("post", "/license-conclusion", {
-    withCredentials: true,
-});
-*/
 const Curation = ({ purl, fileData }: Props) => {
     const [curationOption, setCurationOption] = useQueryState(
         "curationOption",
@@ -71,6 +42,10 @@ const Curation = ({ purl, fileData }: Props) => {
         fileSha256: fileData?.sha256 ?? "",
     });
 
+    useEffect(() => {
+        console.log("Curation state has changed:", curation);
+    }, [curation]);
+
     const setConcludedLicenseExpressionSPDX = (newSPDX: string | null) => {
         setCuration({
             ...curation,
@@ -78,22 +53,21 @@ const Curation = ({ purl, fileData }: Props) => {
         });
     };
 
-    // Fetch the license classifications from Github
-    const { data, isLoading, error } = useQuery({
-        queryKey: ["license-classifications"],
-        queryFn: fetchAndConvertYAML,
-        staleTime: 60 * 60 * 1000, // 1 hour
-    });
+    const { mutate: addLicenseConclusion } = userHooks.useMutation(
+        "post",
+        "/license-conclusion",
+        {
+            withCredentials: true,
+        },
+    );
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error</div>;
-    /*
     const submitCuration = (
         licenseConclusionData: LicenseConclusionPostData,
     ) => {
-        addLicenseConclusion(licenseConclusionData);
+        console.log("Submitting curation:", licenseConclusionData);
+        //addLicenseConclusion(licenseConclusionData);
     };
-*/
+
     const handleRadioChange = (e: string) => {
         setCurationOption(e);
     };
@@ -128,7 +102,12 @@ const Curation = ({ purl, fileData }: Props) => {
                         </Label>
                     </div>
                 </RadioGroup>
-                <Button className="text-xs p-1 rounded-lg">Add curation</Button>
+                <Button
+                    className="text-xs p-1 rounded-lg"
+                    onClick={() => submitCuration(curation)}
+                >
+                    Add curation
+                </Button>
             </div>
 
             {curationOption === "choose-existing" && (
@@ -141,7 +120,6 @@ const Curation = ({ purl, fileData }: Props) => {
                         setConcludedLicenseExpressionSPDX={
                             setConcludedLicenseExpressionSPDX
                         }
-                        filterString={"curation"}
                         fractionalWidth={0.75}
                     />
                 </div>
@@ -150,8 +128,12 @@ const Curation = ({ purl, fileData }: Props) => {
             {curationOption === "choose-from-list" && (
                 <div className="mb-1">
                     <CurationLicense
-                        data={data}
-                        filterString={"curation"}
+                        concludedLicenseExpressionSPDX={
+                            curation.concludedLicenseExpressionSPDX
+                        }
+                        setConcludedLicenseExpressionSPDX={
+                            setConcludedLicenseExpressionSPDX
+                        }
                         fractionalWidth={0.75}
                     />
                 </div>
