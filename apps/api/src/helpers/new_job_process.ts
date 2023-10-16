@@ -109,7 +109,9 @@ export const processPackageAndSendToScanner = async (
                     id: packageId,
                     data: { scanStatus: "failed" },
                 });
-                dbQueries.updateScannerJob(scannerJobId, { state: "failed" });
+                dbQueries.updateScannerJob(scannerJobId, {
+                    state: "failed",
+                });
                 throw new Error(
                     "Error: Uploading files to object storage failed",
                 );
@@ -145,6 +147,7 @@ export const processPackageAndSendToScanner = async (
 
                 await dbQueries.updateScannerJob(scannerJobId, {
                     state: "queued",
+                    fileCount: filesToBeScanned.length,
                     timeout:
                         parseInt(process.env.DEFAULT_TIMEOUT as string) || 120,
                 });

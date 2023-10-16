@@ -7,7 +7,6 @@ import * as dbQueries from "../helpers/db_queries";
 // @ts-ignore: has no exported member 'ScannerJob'
 import { ScannerJob } from "database";
 import { ScannerJobResultSchema } from "validation-helpers";
-import { formatDateString } from "./date_helpers";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
 
 // ------------------------- Database operations -------------------------
@@ -305,18 +304,7 @@ export const saveJobResults = async (
         //console.log('Editing ScannerJob');
         const scannerJob = await dbQueries.updateScannerJob(jobId, {
             state: "savingResults",
-            scannerName: result.headers[0].tool_name,
-            scannerVersion: result.headers[0].tool_version,
-            scannerConfig: scannerConfig,
-            duration: result.headers[0].duration,
-            scanStartTS: new Date(
-                formatDateString(result.headers[0].start_timestamp),
-            ),
-            scanEndTS: new Date(
-                formatDateString(result.headers[0].end_timestamp),
-            ),
-            spdxLicenseListVersion:
-                result.headers[0].extra_data.spdx_license_list_version,
+            scanDuration: result.headers[0].duration,
         });
 
         scannerConfig = "--timeout " + scannerJob.timeout + " " + scannerConfig;
