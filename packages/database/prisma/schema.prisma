@@ -94,7 +94,7 @@ model LicenseFindingMatch {
   startLine         Int
   endLine           Int
   score             Float
-  licenseExpression String?
+  licenseExpression String
 
   licenseFindingId Int
   licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id], onDelete: Cascade)
