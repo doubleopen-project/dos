@@ -11,7 +11,7 @@ import CodeEditor from "./CodeEditor";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import ButtonGroup from "./ButtonGroup";
-import Curation from "./Curation";
+import CurationForm from "./CurationForm";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -120,7 +120,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
 
             <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
-                {/* <Curation purl={purl} fileData={data} /> */}
+                <CurationForm purl={purl} fileData={data} />
             </div>
         </div>
     );
