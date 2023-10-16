@@ -120,7 +120,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
 
             <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
-                <Curation purl={purl} fileData={data} />
+                {/* <Curation purl={purl} fileData={data} /> */}
             </div>
         </div>
     );
