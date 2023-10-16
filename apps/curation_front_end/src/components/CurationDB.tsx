@@ -19,7 +19,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { RiDeleteBin6Line as Delete } from "react-icons/ri";
-import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
@@ -30,7 +29,6 @@ type Props = {
     data?: DataType;
     concludedLicenseExpressionSPDX: string;
     setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
-    filterString: string;
     fractionalWidth?: number;
 };
 
@@ -38,24 +36,13 @@ const CurationDB = ({
     data,
     concludedLicenseExpressionSPDX,
     setConcludedLicenseExpressionSPDX,
-    filterString,
     fractionalWidth = 0.75,
 }: Props) => {
     const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(concludedLicenseExpressionSPDX);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
-    const [value, setValue] = useQueryState(
-        filterString,
-        parseAsString.withDefault(""),
-    );
     const router = useRouter();
-
-    // Clean up the URL when component unmounted
-    useEffect(() => {
-        return () => {
-            setValue(null);
-        };
-    }, []);
 
     useEffect(() => {
         if (buttonRef.current) {
@@ -67,9 +54,9 @@ const CurationDB = ({
     // Update parent state when a curation is selected
     const handleSelect = (d: {
         id: number;
-        concludedLicenseExpressionSPDX: string | null;
+        concludedLicenseExpressionSPDX: string;
     }) => {
-        setValue(d.id === parseInt(value, 10) ? null : d.id.toString());
+        setValue(d.id === parseInt(value || "", 10) ? "" : d.id.toString());
         setConcludedLicenseExpressionSPDX(d.concludedLicenseExpressionSPDX); // Update parent state
         setOpen(false);
     };
@@ -84,7 +71,7 @@ const CurationDB = ({
                     aria-expanded={open}
                     className="w-full h-fit justify-between"
                 >
-                    <span className="text-xs">
+                    <div className="text-xs">
                         {router.isReady
                             ? value
                                 ? data?.licenseConclusions.find(
@@ -92,7 +79,7 @@ const CurationDB = ({
                                   )?.concludedLicenseExpressionSPDX
                                 : "Select curation from DB..."
                             : null}
-                    </span>
+                    </div>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
