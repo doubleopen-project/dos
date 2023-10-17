@@ -17,7 +17,7 @@ type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
-    purl: string;
+    purl: string | undefined;
     path: string | undefined;
 };
 
@@ -124,17 +124,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
         </div>
     );
-};
-
-const getLicenseMatch = (
-    data: DataType,
-    index: number,
-): LicenseMatch | null => {
-    let matches = data?.licenseFindings[0]?.licenseFindingMatches || [];
-    if (matches.length === 0 || index < 0 || index >= matches.length) {
-        return null;
-    }
-    return matches[index];
 };
 
 export default CodeInspector;
