@@ -27,7 +27,7 @@ type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
 type Props = {
     data?: DataType;
-    concludedLicenseExpressionSPDX: string;
+    concludedLicenseExpressionSPDX: string | undefined;
     setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
     fractionalWidth?: number;
 };

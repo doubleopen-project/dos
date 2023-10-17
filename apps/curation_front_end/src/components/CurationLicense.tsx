@@ -23,7 +23,7 @@ import {
 import { useRouter } from "next/router";
 
 type Props = {
-    concludedLicenseExpressionSPDX: string;
+    concludedLicenseExpressionSPDX: string | undefined;
     setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
     fractionalWidth?: number;
 };
@@ -55,9 +55,7 @@ const CurationLicense = ({
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
-    const [value, setValue] = useState<string | null>(
-        concludedLicenseExpressionSPDX,
-    );
+    const [value, setValue] = useState(concludedLicenseExpressionSPDX);
     const router = useRouter();
 
     useEffect(() => {
@@ -116,7 +114,7 @@ const CurationLicense = ({
                                 onSelect={(currentValue) => {
                                     if (currentValue === value) {
                                         // Unselect the current value
-                                        setValue(null);
+                                        setValue("");
                                         setConcludedLicenseExpressionSPDX(null);
                                     } else {
                                         const selectedData = dataAsArray.find(
