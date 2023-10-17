@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import CurationSPDX from "./CurationSPDX";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
+import { userHooks } from "@/hooks/zodiosHooks";
 
 const curationFormSchema = z.object({
     fileSha256: z.string(),
@@ -62,6 +63,14 @@ const CurationForm = ({ purl, fileData }: Props) => {
         defaultValues,
     });
 
+    const { mutate: addLicenseConclusion } = userHooks.useMutation(
+        "post",
+        "/license-conclusion",
+        {
+            withCredentials: true,
+        },
+    );
+
     function onSubmit(data: CurationFormType) {
         // Create an array of fields with values
         const fieldsWithValue = [
@@ -83,6 +92,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                 )
             ) {
                 console.log("Submitting curation:", data);
+                addLicenseConclusion(data as LicenseConclusionPostData);
             } else {
                 console.log("Curation cancelled.");
                 return;
