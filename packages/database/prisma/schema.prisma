@@ -39,13 +39,17 @@ model File {
 
 /// A package consisting of its source code files.
 model Package {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  purl       String
-  name       String
-  version    String
-  scanStatus String
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  purl          String   @unique @default(dbgenerated())
+  type          String
+  name          String
+  namespace     String?
+  version       String
+  qualifiers    String?
+  subpath       String?
+  scanStatus    String
 
   fileTrees   FileTree[]
   scannerJobs ScannerJob[]

@@ -292,9 +292,11 @@ export const saveJobResults = async (
         // Save result locally for debugging
         //fs.writeFileSync('/tmp/' + jobId + '.json', JSON.stringify(result));
 
-        if (result.headers.length > 1) {
-            throw "Error: More than one header in result. What to do now???";
-        }
+        if (result.headers.length > 1)
+            throw new Error(
+                "Error: More than one header in result. What to do now???",
+            );
+
         console.log(jobId + ": Saving results to database");
         console.time(jobId + ": Saving results to database took");
 
@@ -343,13 +345,7 @@ export const saveJobResults = async (
                                 },
                             });
                         } else {
-                            // Delete old findings
-                            await dbQueries.deleteLicenseFindingsByFileHashes([
-                                file.sha256,
-                            ]);
-                            await dbQueries.deleteCopyrightFindingsByFileHashes(
-                                [file.sha256],
-                            );
+                            // Delete old scan issues
                             await dbQueries.deleteScanIssuesByFileHashes([
                                 file.sha256,
                             ]);
@@ -392,12 +388,12 @@ export const saveJobResults = async (
                             !file.detected_license_expression_spdx &&
                             file.license_detections.length > 0
                         ) {
-                            throw (
+                            throw new Error(
                                 "Error: File " +
-                                file.sha256 +
-                                " " +
-                                file.path +
-                                " has license_detections but no detected_license_expression_spdx"
+                                    file.sha256 +
+                                    " " +
+                                    file.path +
+                                    " has license_detections but no detected_license_expression_spdx",
                             );
                         }
 
@@ -511,6 +507,7 @@ export const saveJobResults = async (
                         await dbQueries.updateScannerJob(newScannerJob.id, {
                             state: "queued",
                             timeout: newTimeout,
+                            fileCount: newJobFilesList.length,
                         });
                     }
                 }

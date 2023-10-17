@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
+import { PackageURL } from "packageurl-js";
 import { scannerAPI } from "validation-helpers";
 import * as s3Helpers from "s3-helpers";
 import * as dbQueries from "../helpers/db_queries";
@@ -111,14 +112,41 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
         let packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
 
         if (!packageId) {
+            const parsedPurl = PackageURL.fromString(req.body.purl);
+
+            if (!parsedPurl.version) throw new Error("Check package url");
+
+            let qualifiers = undefined;
+
+            if (parsedPurl.qualifiers) {
+                for (const [key, value] of Object.entries(
+                    parsedPurl.qualifiers,
+                )) {
+                    if (qualifiers) {
+                        qualifiers += "&" + key + "=" + value;
+                    } else {
+                        qualifiers = key + "=" + value;
+                    }
+                }
+            }
+
             const jobPackage = await dbQueries.createPackage({
-                data: {
-                    purl: req.body.purl,
-                    name: "placeHolder",
-                    version: "placeholder",
-                    scanStatus: "pending",
-                },
+                type: parsedPurl.type,
+                namespace: parsedPurl.namespace,
+                name: parsedPurl.name,
+                version: parsedPurl.version,
+                qualifiers: qualifiers,
+                subpath: parsedPurl.subpath,
+                scanStatus: "pending",
             });
+
+            if (jobPackage.purl !== req.body.purl) {
+                dbQueries.deletePackage(jobPackage.id);
+                throw new Error(
+                    "Purl generated from the package data is invalid",
+                );
+            }
+
             packageId = jobPackage.id;
         }
 
