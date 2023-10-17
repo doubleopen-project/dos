@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import * as yaml from "js-yaml";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,43 +20,43 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 
-type ComboBoxProps = {
-    data: Set<string>;
-    filterString: string;
-    selectText?: string;
+type Props = {
+    concludedLicenseExpressionSPDX: string | undefined;
+    setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
     fractionalWidth?: number;
 };
 
-const ComboBox = ({
-    data,
-    filterString,
-    selectText,
+const fetchAndConvertYAML = async (): Promise<any> => {
+    const response = await fetch(
+        "https://raw.githubusercontent.com/doubleopen-project/policy-configuration/main/license-classifications.yml",
+    );
+    if (response.ok) {
+        const yamlText = await response.text();
+        const jsonData = yaml.load(yamlText) as {
+            categorizations: { id: string }[];
+        };
+        const ids = jsonData.categorizations.map((item) => item.id);
+        const sortedIds = ids.sort((a, b) => a.localeCompare(b));
+        return sortedIds;
+    } else {
+        throw new Error(
+            `Failed to fetch YAML file: ${response.status} ${response.statusText}`,
+        );
+    }
+};
+
+const CurationLicense = ({
+    concludedLicenseExpressionSPDX,
+    setConcludedLicenseExpressionSPDX,
     fractionalWidth = 0.75,
-}: ComboBoxProps) => {
+}: Props) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
-    const [value, setValue] = useQueryState(
-        filterString,
-        parseAsString.withDefault(""),
-    );
+    const [value, setValue] = useState(concludedLicenseExpressionSPDX);
     const router = useRouter();
-
-    // Clean up the URL when component unmounted
-    useEffect(() => {
-        return () => {
-            setValue(null);
-        };
-    }, []);
-
-    // Map data to the format required by the Command component
-    const dataAsArray = Array.from(data).map((d) => ({
-        value: d.toLowerCase(),
-        label: d,
-    }));
 
     useEffect(() => {
         if (buttonRef.current) {
@@ -62,6 +64,22 @@ const ComboBox = ({
             setListWidth(width * fractionalWidth);
         }
     }, [buttonRef.current?.offsetWidth]); // Re-run effect if the button's size changes
+
+    // Fetch the license classifications from Github
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["license-classifications"],
+        queryFn: fetchAndConvertYAML,
+        staleTime: 60 * 60 * 1000, // 1 hour
+    });
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error</div>;
+
+    // Map data to the format required by the Command component
+    const dataAsArray = Array.from(data as Set<string>).map((d) => ({
+        value: d.toLowerCase(),
+        label: d,
+    }));
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -73,16 +91,14 @@ const ComboBox = ({
                     aria-expanded={open}
                     className="w-full h-fit justify-between"
                 >
-                    <span className="text-xs">
+                    <div className="text-xs">
                         {router.isReady
                             ? value
                                 ? dataAsArray.find((d) => d.value === value)
                                       ?.label
-                                : selectText
-                                ? selectText
-                                : "Select..."
+                                : "Select license..."
                             : null}
-                    </span>
+                    </div>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -96,11 +112,23 @@ const ComboBox = ({
                                 key={`${d.value}-${index}`} // Combining value with index
                                 className="items-start text-left"
                                 onSelect={(currentValue) => {
-                                    setValue(
-                                        currentValue === value
-                                            ? null
-                                            : currentValue,
-                                    );
+                                    if (currentValue === value) {
+                                        // Unselect the current value
+                                        setValue("");
+                                        setConcludedLicenseExpressionSPDX("");
+                                    } else {
+                                        const selectedData = dataAsArray.find(
+                                            (d) => d.value === currentValue,
+                                        );
+                                        const newLabel = selectedData
+                                            ? selectedData.label
+                                            : null;
+
+                                        setValue(currentValue); // Update component state
+                                        setConcludedLicenseExpressionSPDX(
+                                            newLabel,
+                                        ); // Update parent state
+                                    }
                                     setOpen(false);
                                 }}
                             >
@@ -112,7 +140,7 @@ const ComboBox = ({
                                             : "opacity-0",
                                     )}
                                 />
-                                <span className="text-xs">{d.label}</span>
+                                <div className="text-xs">{d.label}</div>
                             </CommandItem>
                         ))}
                     </CommandGroup>
@@ -122,4 +150,4 @@ const ComboBox = ({
     );
 };
 
-export default ComboBox;
+export default CurationLicense;

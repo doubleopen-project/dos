@@ -11,7 +11,7 @@ import CodeEditor from "./CodeEditor";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import ButtonGroup from "./ButtonGroup";
-import HandleCuration from "./HandleCuration";
+import CurationForm from "./CurationForm";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -118,23 +118,13 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     </div>
                 )}
             </div>
-
-            <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
-                <HandleCuration licenseConclusions={data?.licenseConclusions} />
-            </div>
+            {data && purl && (
+                <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
+                    <CurationForm purl={purl} fileData={data} />
+                </div>
+            )}
         </div>
     );
-};
-
-const getLicenseMatch = (
-    data: DataType,
-    index: number,
-): LicenseMatch | null => {
-    let matches = data?.licenseFindings[0]?.licenseFindingMatches || [];
-    if (matches.length === 0 || index < 0 || index >= matches.length) {
-        return null;
-    }
-    return matches[index];
 };
 
 export default CodeInspector;
