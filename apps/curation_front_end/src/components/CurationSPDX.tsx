@@ -6,14 +6,13 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-    value: string;
+    value: string | undefined;
     setValue: (newSPDX: string) => void;
 };
 
 const CurationSPDX = ({ value, setValue }: Props) => {
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
-        console.log("SPDX input:", event.target.value);
     };
 
     return (

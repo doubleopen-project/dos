@@ -10,13 +10,3 @@ export const loginFormSchema = z.object({
 });
 
 export type LoginFormType = z.infer<typeof loginFormSchema>;
-
-export const curationFormSchema = z.object({
-    fileSha256: z.string(),
-    detectedLicenseExpressionSPDX: z.string().optional(),
-    concludedLicenseExpressionSPDX: z.string(),
-    comment: z.string().optional(),
-    contextPurl: z.string(),
-});
-
-export type CurationFormType = z.infer<typeof curationFormSchema>;
