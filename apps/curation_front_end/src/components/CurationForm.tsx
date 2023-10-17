@@ -16,9 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ZodiosBodyByPath, ZodiosResponseByPath } from "@zodios/core";
-import { toast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import CurationSPDX from "./CurationSPDX";
 import CurationDB from "./CurationDB";
@@ -72,24 +70,30 @@ const CurationForm = ({ purl, fileData }: Props) => {
             data.concludedLicenseList,
         ].filter((field) => field !== undefined && field !== "");
 
-        console.log("Data", JSON.stringify(data, null, 2));
-        console.log("Fields with value:", fieldsWithValue);
-
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
             data.concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
-            alert(JSON.stringify(data, null, 2));
-        }
-        // If none of the fields has a value, alert
-        else if (fieldsWithValue.length === 0) {
+            if (
+                window.confirm(
+                    `Do you want to add a license conclusion to this file:\n${JSON.stringify(
+                        data.concludedLicenseExpressionSPDX,
+                        null,
+                        2,
+                    )}`,
+                )
+            ) {
+                console.log("Submitting curation:", data);
+            } else {
+                console.log("Curation cancelled.");
+                return;
+            }
+        } else if (fieldsWithValue.length === 0) {
             alert(
-                "None of the fields (concludedLicenseSPDX, concludedLicenseDB, concludedLicenseList) are specified.",
+                "No license conclusion (SPDX expression, from DB, from a license list) are specified. Please specify exactly one.",
             );
-        }
-        // If more than one field has a value, alert
-        else {
+        } else {
             alert(
-                "More than one of the fields (concludedLicenseSPDX, concludedLicenseDB, concludedLicenseList) are specified.",
+                "More than one license conclusion specified. Please specify exactly one.",
             );
         }
     }

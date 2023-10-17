@@ -56,8 +56,15 @@ const CurationDB = ({
         id: number;
         concludedLicenseExpressionSPDX: string;
     }) => {
-        setValue(d.id === parseInt(value || "", 10) ? "" : d.id.toString());
-        setConcludedLicenseExpressionSPDX(d.concludedLicenseExpressionSPDX); // Update parent state
+        if (d.id === parseInt(value || "", 10)) {
+            // If the same item is clicked again, reset the state
+            setValue("");
+            setConcludedLicenseExpressionSPDX("");
+        } else {
+            // Otherwise, update the state with the selected item
+            setValue(d.id.toString());
+            setConcludedLicenseExpressionSPDX(d.concludedLicenseExpressionSPDX);
+        }
         setOpen(false);
     };
 
