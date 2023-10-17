@@ -34,26 +34,24 @@ type LicenseConclusionPostData = ZodiosBodyByPath<
 
 type Props = {
     purl: string | undefined;
-    fileData?: DataType;
+    fileData: DataType;
 };
 
 const CurationForm = ({ purl, fileData }: Props) => {
     const defaultValues: Partial<CurationFormType> = {
+        concludedLicenseExpressionSPDX: "",
         detectedLicenseExpressionSPDX:
             fileData?.licenseConclusions[0]?.detectedLicenseExpressionSPDX ??
             "",
         contextPurl: purl,
         fileSha256: fileData?.sha256,
+        comment: "",
     };
     const form = useForm<CurationFormType>({
         resolver: zodResolver(curationFormSchema),
         defaultValues,
     });
 
-    useEffect(() => {
-        console.log("CurationForm state has changed:", form.getValues());
-    }, [form.getValues()]);
-    console.log("CurationForm defaultValues:", defaultValues);
     function onSubmit(data: CurationFormType) {
         console.log(JSON.stringify(data, null, 2));
         toast({
