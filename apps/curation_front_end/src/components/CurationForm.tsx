@@ -52,8 +52,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
     const defaultValues: Partial<CurationFormType> = {
         concludedLicenseExpressionSPDX: "",
         detectedLicenseExpressionSPDX:
-            fileData?.licenseConclusions[0]?.detectedLicenseExpressionSPDX ??
-            "",
+            fileData?.licenseFindings[0]?.licenseExpressionSPDX ?? "",
         contextPurl: purl,
         fileSha256: fileData?.sha256,
         comment: "",
@@ -91,10 +90,8 @@ const CurationForm = ({ purl, fileData }: Props) => {
                     )}`,
                 )
             ) {
-                console.log("Submitting curation:", data);
                 addLicenseConclusion(data as LicenseConclusionPostData);
             } else {
-                console.log("Curation cancelled.");
                 return;
             }
         } else if (fieldsWithValue.length === 0) {
