@@ -142,12 +142,8 @@ const Curation = ({ purl, fileData }: Props) => {
             {curationOption === "choose-write-SPDX" && (
                 <div className="mb-1">
                     <CurationSPDX
-                        concludedLicenseExpressionSPDX={
-                            curation.concludedLicenseExpressionSPDX
-                        }
-                        setConcludedLicenseExpressionSPDX={
-                            setConcludedLicenseExpressionSPDX
-                        }
+                        value={curation.concludedLicenseExpressionSPDX}
+                        setValue={setConcludedLicenseExpressionSPDX}
                     />
                 </div>
             )}

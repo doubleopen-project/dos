@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -15,13 +15,15 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ZodiosBodyByPath, ZodiosResponseByPath } from "@zodios/core";
 import { toast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import CurationSPDX from "./CurationSPDX";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseConclusionPostData = ZodiosBodyByPath<
@@ -31,25 +33,29 @@ type LicenseConclusionPostData = ZodiosBodyByPath<
 >;
 
 type Props = {
-    purl: string;
+    purl: string | undefined;
     fileData?: DataType;
 };
 
 const CurationForm = ({ purl, fileData }: Props) => {
+    const defaultValues: Partial<CurationFormType> = {
+        detectedLicenseExpressionSPDX:
+            fileData?.licenseConclusions[0]?.detectedLicenseExpressionSPDX ??
+            "",
+        contextPurl: purl,
+        fileSha256: fileData?.sha256,
+    };
     const form = useForm<CurationFormType>({
         resolver: zodResolver(curationFormSchema),
-        defaultValues: {
-            concludedLicenseExpressionSPDX: "",
-            detectedLicenseExpressionSPDX:
-                fileData?.licenseConclusions[0].detectedLicenseExpressionSPDX ??
-                "",
-            comment: "",
-            contextPurl: purl,
-            fileSha256: fileData?.sha256,
-        },
+        defaultValues,
     });
 
+    useEffect(() => {
+        console.log("CurationForm state has changed:", form.getValues());
+    }, [form.getValues()]);
+    console.log("CurationForm defaultValues:", defaultValues);
     function onSubmit(data: CurationFormType) {
+        console.log(JSON.stringify(data, null, 2));
         toast({
             title: "You submitted the following values:",
             description: (
@@ -68,8 +74,44 @@ const CurationForm = ({ purl, fileData }: Props) => {
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
+                    className="space-y-2"
                 >
+                    <FormField
+                        control={form.control}
+                        name="concludedLicenseExpressionSPDX"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    {/*
+                                    <CurationSPDX
+                                        value={field.value}
+                                        setValue={field.onChange}
+                                    />
+                                    */}
+                                    <Input
+                                        placeholder="SPDX expression..."
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="comment"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Comment on your curation..."
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <Button type="submit">Submit curation</Button>
                 </form>
             </Form>

@@ -6,20 +6,14 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-    concludedLicenseExpressionSPDX: string;
-    setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
+    value: string;
+    setValue: (newSPDX: string) => void;
 };
 
-const CurationSPDX = ({
-    concludedLicenseExpressionSPDX,
-    setConcludedLicenseExpressionSPDX,
-}: Props) => {
+const CurationSPDX = ({ value, setValue }: Props) => {
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value;
-        setConcludedLicenseExpressionSPDX(newValue);
-        if (newValue === "") {
-            setConcludedLicenseExpressionSPDX(null);
-        }
+        setValue(event.target.value);
+        console.log("SPDX input:", event.target.value);
     };
 
     return (
@@ -27,7 +21,7 @@ const CurationSPDX = ({
             className="rounded-lg w-full text-xs"
             type="text"
             placeholder="Write your SPDX expression here..."
-            value={concludedLicenseExpressionSPDX}
+            value={value}
             onChange={handleInput}
         />
     );
