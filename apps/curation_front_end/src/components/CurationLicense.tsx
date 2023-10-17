@@ -115,7 +115,7 @@ const CurationLicense = ({
                                     if (currentValue === value) {
                                         // Unselect the current value
                                         setValue("");
-                                        setConcludedLicenseExpressionSPDX(null);
+                                        setConcludedLicenseExpressionSPDX("");
                                     } else {
                                         const selectedData = dataAsArray.find(
                                             (d) => d.value === currentValue,
