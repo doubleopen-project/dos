@@ -4650,6 +4650,149 @@ declare const userAPI: [
         ];
     },
     {
+        method: "put";
+        path: "/user";
+        description: "Update user data (for users to update their own data)";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    string,
+                                    string
+                                >,
+                                string,
+                                string
+                            >
+                        >;
+                        password: zod.ZodOptional<
+                            zod.ZodEffects<zod.ZodString, string, string>
+                        >;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username?: string | undefined;
+                        password?: string | undefined;
+                    },
+                    {
+                        username?: string | undefined;
+                        password?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "post";
         path: "/license-conclusion";
         description: "Add a new license conclusion";
@@ -7428,6 +7571,149 @@ declare const dosAPI: [
             },
             {
                 username: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "put";
+        path: "/user/user";
+        description: "Update user data (for users to update their own data)";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    string,
+                                    string
+                                >,
+                                string,
+                                string
+                            >
+                        >;
+                        password: zod.ZodOptional<
+                            zod.ZodEffects<zod.ZodString, string, string>
+                        >;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username?: string | undefined;
+                        password?: string | undefined;
+                    },
+                    {
+                        username?: string | undefined;
+                        password?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
             }
         >;
         errors: [

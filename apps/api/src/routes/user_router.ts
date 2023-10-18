@@ -6,6 +6,8 @@ import { zodiosRouter } from "@zodios/express";
 import { userAPI } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import * as s3Helpers from "s3-helpers";
+import { hashPassword } from "../helpers/password_helper";
+import { Prisma } from "database";
 
 const userRouter = zodiosRouter(userAPI);
 
@@ -23,6 +25,46 @@ userRouter.get("/user", async (req, res) => {
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).send({ message: "Internal server error" });
+    }
+});
+
+userRouter.put("/user", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new Error("User not found");
+
+        if (!req.body.username && !req.body.password)
+            throw new Error("At least one field is required");
+
+        let pw: { hashedPassword: Buffer; salt: Buffer } | null = null;
+
+        if (req.body.password) {
+            pw = await hashPassword(req.body.password);
+
+            await dbQueries.updateUser(user.id, {
+                username: req.body.username,
+                hashedPassword: pw.hashedPassword,
+                salt: pw.salt,
+            });
+        } else {
+            await dbQueries.updateUser(user.id, {
+                username: req.body.username,
+            });
+        }
+        res.status(200).send({ message: "User updated" });
+    } catch (error) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            return res.status(400).json({ message: "Username already exists" });
+        } else if (error instanceof Error) {
+            return res.status(400).json({ message: error.message });
+        } else {
+            console.log("Error: ", error);
+            res.status(500).send({ message: "Internal server error" });
+        }
     }
 });
 
@@ -89,11 +131,13 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
         } else {
             res.status(401).json({ message: "Unauthorized" });
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
         console.log("Error: ", error);
 
-        if (error.code === "P2025") {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
             return res
                 .status(404)
                 .json({ message: "License conclusion to update not found" });
@@ -126,11 +170,13 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
         } else {
             res.status(401).json({ message: "Unauthorized" });
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
         console.log("Error: ", error);
 
-        if (error.code === "P2025") {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
             return res.status(404).json({
                 message:
                     "License conclusion with the requested id does not exist",
