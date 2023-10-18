@@ -20,7 +20,10 @@ userRouter.get("/user", async (req, res) => {
         if (!user) {
             res.status(401).send({ message: "Unauthorized" });
         } else {
-            res.status(200).send({ username: user.username });
+            res.status(200).send({
+                username: user.username,
+                role: user.role,
+            });
         }
     } catch (error) {
         console.log("Error: ", error);

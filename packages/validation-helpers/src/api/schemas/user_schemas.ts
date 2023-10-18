@@ -7,6 +7,7 @@ import { passwordStrength } from "check-password-strength";
 
 export const GetUserRes = z.object({
     username: z.string(),
+    role: z.string(),
 });
 
 //------------------ PUT user -------------------
