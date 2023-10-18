@@ -6,6 +6,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { RiDeleteBin6Line as Delete } from "react-icons/ri";
 import { userHooks } from "@/hooks/zodiosHooks";
+import { Loader2 } from "lucide-react";
 
 type Props = {
     id: number;
@@ -15,6 +16,7 @@ type Props = {
 const CurationDeleteButton = ({ id, data }: Props) => {
     const {
         mutate: deleteLicenseConclusion,
+        isLoading,
         error,
         isSuccess,
     } = userHooks.useDelete("/license-conclusion/:id", {
@@ -24,10 +26,17 @@ const CurationDeleteButton = ({ id, data }: Props) => {
         },
     });
 
-    if (isSuccess) {
-        alert("Curation deleted.");
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <Loader2 className="mr-2 h-10 w-10 animate-spin" />
+            </div>
+        );
+    } else if (isSuccess) {
+        // TODO: fix a bug where this alert is shown twice every time I remove a curation
+        alert("Curation deleted successfully.");
     } else if (error) {
-        alert("Failed to delete curation: " + error.message);
+        alert("Something went wrong. Please try again.");
     }
 
     const handleDelete = () => {

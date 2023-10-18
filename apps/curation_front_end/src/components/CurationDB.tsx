@@ -18,7 +18,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { RiDeleteBin6Line as Delete } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
@@ -171,14 +170,14 @@ const CurationDB = ({
                                     className="items-start text-left"
                                 >
                                     {username === d.user.username && (
-                                        <div className="p-0 ml-2">
+                                        <>
                                             <CurationDeleteButton
                                                 id={d.id}
                                                 data={
                                                     d.concludedLicenseExpressionSPDX
                                                 }
                                             />
-                                        </div>
+                                        </>
                                     )}
                                 </CommandItem>
                             </div>
