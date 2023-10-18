@@ -2310,6 +2310,34 @@ declare const loginFormSchema: z.ZodObject<
     }
 >;
 type LoginFormType = z.infer<typeof loginFormSchema>;
+declare const userDataFormSchema: z.ZodObject<
+    {
+        username: z.ZodString;
+        email: z.ZodOptional<z.ZodString>;
+        firstName: z.ZodOptional<z.ZodString>;
+        lastName: z.ZodOptional<z.ZodString>;
+        password: z.ZodOptional<z.ZodString>;
+        passwordConfirm: z.ZodOptional<z.ZodString>;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        username: string;
+        email?: string | undefined;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        password?: string | undefined;
+        passwordConfirm?: string | undefined;
+    },
+    {
+        username: string;
+        email?: string | undefined;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        password?: string | undefined;
+        passwordConfirm?: string | undefined;
+    }
+>;
 
 declare const adminAPI: [
     {
@@ -4551,14 +4579,17 @@ declare const userAPI: [
         response: zod.ZodObject<
             {
                 username: zod.ZodString;
+                role: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 username: string;
+                role: string;
             },
             {
                 username: string;
+                role: string;
             }
         >;
         errors: [
@@ -7563,14 +7594,17 @@ declare const dosAPI: [
         response: zod.ZodObject<
             {
                 username: zod.ZodString;
+                role: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 username: string;
+                role: string;
             },
             {
                 username: string;
+                role: string;
             }
         >;
         errors: [
@@ -9534,6 +9568,32 @@ declare const dosAPI: [
     },
 ];
 
+declare const PutUserReq: z.ZodObject<
+    {
+        username: z.ZodOptional<
+            z.ZodEffects<
+                z.ZodEffects<
+                    z.ZodEffects<z.ZodString, string, string>,
+                    string,
+                    string
+                >,
+                string,
+                string
+            >
+        >;
+        password: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        username?: string | undefined;
+        password?: string | undefined;
+    },
+    {
+        username?: string | undefined;
+        password?: string | undefined;
+    }
+>;
 declare const FileTree: z.ZodObject<
     {
         path: z.ZodString;
@@ -9809,6 +9869,7 @@ export {
     GetPackagesResType,
     LoginFormType,
     PostFileTreeResType,
+    PutUserReq,
     ScannerJobOnlyIdOutput,
     ScannerJobResultSchema,
     UpdateFileInput,
@@ -9821,4 +9882,5 @@ export {
     scannerAPI,
     scannerAgentApi,
     userAPI,
+    userDataFormSchema,
 };
