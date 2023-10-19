@@ -21,7 +21,8 @@ import { Textarea } from "@/components/ui/textarea";
 import CurationSPDX from "./CurationSPDX";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { userHooks, userZodios } from "@/hooks/zodiosHooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 const curationFormSchema = z.object({
     fileSha256: z.string(),
@@ -62,11 +63,18 @@ const CurationForm = ({ purl, fileData }: Props) => {
         defaultValues,
     });
 
+    const key = userHooks.getKeyByPath("post", "/file");
+    const queryClient = useQueryClient();
     const { mutate: addLicenseConclusion } = userHooks.useMutation(
         "post",
         "/license-conclusion",
         {
             withCredentials: true,
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(key);
+            },
         },
     );
 

@@ -14,17 +14,23 @@ type Props = {
 };
 
 const CurationDeleteButton = ({ id, data }: Props) => {
-    const {
-        mutate: deleteLicenseConclusion,
-        isLoading,
-        error,
-        isSuccess,
-    } = userHooks.useDelete("/license-conclusion/:id", {
-        withCredentials: true,
-        params: {
-            id: id.toString(),
+    const { mutate: deleteLicenseConclusion, isLoading } = userHooks.useDelete(
+        "/license-conclusion/:id",
+        {
+            withCredentials: true,
+            params: {
+                id: id.toString(),
+            },
         },
-    });
+        {
+            onSuccess: (data) => {
+                alert("Curation deleted successfully.");
+            },
+            onError: () => {
+                alert("Something went wrong. Please try again.");
+            },
+        },
+    );
 
     if (isLoading) {
         return (
@@ -32,11 +38,6 @@ const CurationDeleteButton = ({ id, data }: Props) => {
                 <Loader2 className="mr-2 h-10 w-10 animate-spin" />
             </div>
         );
-    } else if (isSuccess) {
-        // TODO: fix a bug where this alert is shown twice every time I remove a curation
-        alert("Curation deleted successfully.");
-    } else if (error) {
-        alert("Something went wrong. Please try again.");
     }
 
     const handleDelete = () => {
