@@ -10,7 +10,7 @@ import { ZodError } from "zod";
 import axios from "axios";
 import { ZodiosError } from "@zodios/core";
 import { userDataFormSchema } from "validation-helpers";
-import { Pencil, Check, Loader2 } from "lucide-react";
+import { Pencil, Check, Loader2, Info } from "lucide-react";
 import {
     Form,
     FormControl,
@@ -19,6 +19,12 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -211,7 +217,24 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         name="password"
                         render={({ field }) => (
                             <FormItem className="!mt-4">
-                                <FormLabel>New password</FormLabel>
+                                <div className="flex flex-row">
+                                    <FormLabel>New password</FormLabel>
+                                    {editMode && (<TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger className="ml-1"><Info size={"15px"} /></TooltipTrigger>
+                                            <TooltipContent side="right">
+                                                Password should have:
+                                                <ul className="list-disc list-inside">
+                                                    <li>at least 8 characters</li>
+                                                    <li>at least one uppercase letter</li>
+                                                    <li>at least one lowercase letter</li>
+                                                    <li>at least one number</li>
+                                                    <li>at least one special character</li>
+                                                </ul>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>)}
+                                </div>
                                 {passwordError && (
                                     <div
                                         className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm relative"
