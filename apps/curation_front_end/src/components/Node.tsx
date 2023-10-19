@@ -18,28 +18,26 @@ type NodeProps = NodeRendererProps<any> & {
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
     const { isLeaf, isClosed, data } = node;
-    const { hasLicenseFindings, name, path } = data;
+    const { hasLicenseFindings, hasLicenseConclusions, name, path } = data;
     const boldStyle = { strokeWidth: 0.5 };
+    let color = "black";
     let icon;
+    let isBold = false;
+
+    if (hasLicenseConclusions) {
+        color = "green";
+        isBold = true;
+    } else if (hasLicenseFindings) {
+        color = "red";
+        isBold = true;
+    }
 
     if (isLeaf) {
-        icon = hasLicenseFindings ? (
-            <FileText color="red" style={boldStyle} />
-        ) : (
-            <FileText />
-        );
+        icon = <FileText color={color} style={isBold && boldStyle} />;
     } else if (isClosed) {
-        icon = hasLicenseFindings ? (
-            <FolderClosed color="red" style={boldStyle} />
-        ) : (
-            <FolderClosed />
-        );
+        icon = <FolderClosed color={color} style={isBold && boldStyle} />;
     } else {
-        icon = hasLicenseFindings ? (
-            <FolderOpen color="red" style={boldStyle} />
-        ) : (
-            <FolderOpen />
-        );
+        icon = <FolderOpen color={color} style={isBold && boldStyle} />;
     }
 
     return (
