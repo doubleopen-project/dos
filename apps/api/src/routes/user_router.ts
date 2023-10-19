@@ -51,9 +51,13 @@ userRouter.put("/user", async (req, res) => {
                 salt: pw.salt,
             });
         } else {
-            await dbQueries.updateUser(user.id, {
-                username: req.body.username,
-            });
+            if (req.body.username !== user.username) {
+                await dbQueries.updateUser(user.id, {
+                    username: req.body.username,
+                });
+            } else {
+                throw new Error("Nothing to update");
+            }
         }
         res.status(200).send({ message: "User updated" });
     } catch (error) {
@@ -61,9 +65,11 @@ userRouter.put("/user", async (req, res) => {
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2002"
         ) {
-            return res.status(400).json({ message: "Username already exists" });
+            return res
+                .status(400)
+                .json({ message: "Username already exists", path: "username" });
         } else if (error instanceof Error) {
-            return res.status(400).json({ message: error.message });
+            return res.status(400).json({ message: error.message, path: null });
         } else {
             console.log("Error: ", error);
             res.status(500).send({ message: "Internal server error" });
@@ -88,16 +94,10 @@ userRouter.post("/license-conclusion", async (req, res) => {
             },
         });
 
-        if (licenseConclusion) {
-            res.status(200).json({
-                licenseConclusionId: licenseConclusion.id,
-                message: "License conclusion created",
-            });
-        } else {
-            res.status(400).json({
-                message: "Bad request: License conclusion could not be created",
-            });
-        }
+        res.status(200).json({
+            licenseConclusionId: licenseConclusion.id,
+            message: "License conclusion created",
+        });
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).json({ message: "Internal server error" });

@@ -9,3 +9,8 @@ import { z } from "zod";
 export const ErrorSchema = z.object({
     message: z.string(),
 });
+
+export const BadRequestErrorSchema = z.object({
+    message: z.string(),
+    path: z.nullable(z.string()).optional(),
+});

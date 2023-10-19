@@ -3,23 +3,25 @@
 // SPDX-License-Identifier: MIT
 
 import { useUser } from "@/hooks/useUser";
-import UserData from "@/components/UserData";
+import UserDataForm from "@/components/UserDataForm";
+import { Loader2 } from "lucide-react";
 
 export default function Profile() {
     const user = useUser({ redirectTo: "/login", redirectIfFound: false });
 
     return (
-        <div className="bg-gray-200 h-screen flex justify-center items-center">
-            <div className="w-full bg-white rounded-md h-full p-20 m-20">
-                <h1 className="text-2xl font-semibold leading-none tracking-tight">Profile</h1>
-                {user && (
-                    <UserData
-                        username={user?.username}
-                        role={user?.role}
-                    />
-                )
-                }
+        <div className="bg-gray-200 h-screen flex justify-center items-center p-2">
+            <div className="w-full bg-white rounded-md h-full p-20 m-1">
+                <h1 className="text-3xl font-semibold leading-none tracking-tight">
+                    Profile
+                </h1>
+                {user && <UserDataForm user={user} />}
+                {!user && (
+                    <div className="flex justify-center items-center h-full">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                    </div>
+                )}
             </div>
-        </div >
-    )
+        </div>
+    );
 }

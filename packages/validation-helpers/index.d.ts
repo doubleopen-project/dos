@@ -2317,7 +2317,8 @@ declare const userDataFormSchema: z.ZodObject<
         firstName: z.ZodOptional<z.ZodString>;
         lastName: z.ZodOptional<z.ZodString>;
         password: z.ZodOptional<z.ZodString>;
-        passwordConfirm: z.ZodOptional<z.ZodString>;
+        confirmPassword: z.ZodOptional<z.ZodString>;
+        role: z.ZodOptional<z.ZodString>;
     },
     "strip",
     z.ZodTypeAny,
@@ -2327,7 +2328,8 @@ declare const userDataFormSchema: z.ZodObject<
         firstName?: string | undefined;
         lastName?: string | undefined;
         password?: string | undefined;
-        passwordConfirm?: string | undefined;
+        confirmPassword?: string | undefined;
+        role?: string | undefined;
     },
     {
         username: string;
@@ -2335,7 +2337,8 @@ declare const userDataFormSchema: z.ZodObject<
         firstName?: string | undefined;
         lastName?: string | undefined;
         password?: string | undefined;
-        passwordConfirm?: string | undefined;
+        confirmPassword?: string | undefined;
+        role?: string | undefined;
     }
 >;
 
@@ -2400,14 +2403,17 @@ declare const adminAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -2538,14 +2544,17 @@ declare const adminAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -2650,14 +2659,17 @@ declare const adminAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -2769,14 +2781,17 @@ declare const authAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -2874,14 +2889,17 @@ declare const authAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -3284,14 +3302,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -3414,14 +3435,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -3541,14 +3565,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -3674,14 +3701,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -3803,14 +3833,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -4504,14 +4537,17 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -4616,14 +4652,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -4759,14 +4798,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -4898,14 +4940,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -5050,14 +5095,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -5162,14 +5210,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -5402,14 +5453,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -5531,14 +5585,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -5892,14 +5949,17 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -6302,14 +6362,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -6432,14 +6495,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -6559,14 +6625,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -6692,14 +6761,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -6821,14 +6893,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -7522,14 +7597,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -7631,14 +7709,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -7774,14 +7855,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -7913,14 +7997,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -8065,14 +8152,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -8177,14 +8267,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -8417,14 +8510,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -8546,14 +8642,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -8907,14 +9006,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -9031,14 +9133,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -9169,14 +9274,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -9281,14 +9389,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -9397,14 +9508,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
@@ -9502,14 +9616,17 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         message: string;
+                        path?: string | null | undefined;
                     },
                     {
                         message: string;
+                        path?: string | null | undefined;
                     }
                 >;
             },
