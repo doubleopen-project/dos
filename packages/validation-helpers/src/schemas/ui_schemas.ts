@@ -17,5 +17,6 @@ export const userDataFormSchema = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     password: z.string().optional(),
-    passwordConfirm: z.string().optional(),
+    confirmPassword: z.string().optional(),
+    role: z.string().optional(),
 });

@@ -78,7 +78,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
                                     <div className="flex">
-                                        <RiUser3Fill className="mr-1" size="2.5rem" />
+                                        <RiUser3Fill
+                                            className="mr-1"
+                                            size="2.5rem"
+                                        />
                                         <Input
                                             placeholder="username"
                                             {...field}
@@ -96,15 +99,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
                         render={({ field }) => (
                             <FormItem className="!mt-4">
                                 <FormLabel>Password</FormLabel>
-                                <FormControl><div className="flex">
-                                    <RiLockPasswordFill className="mr-1" size="2.5rem" />
-                                    <Input
-                                        placeholder="********"
-                                        type="password"
-                                        {...field}
-                                        required
-                                    />
-                                </div>
+                                <FormControl>
+                                    <div className="flex">
+                                        <RiLockPasswordFill
+                                            className="mr-1"
+                                            size="2.5rem"
+                                        />
+                                        <Input
+                                            placeholder="********"
+                                            type="password"
+                                            {...field}
+                                            required
+                                        />
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
