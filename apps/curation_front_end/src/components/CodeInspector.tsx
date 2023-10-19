@@ -59,15 +59,17 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 {data?.licenseFindings[0] ? (
                     <>
                         <Label className="p-1 text-sm">
-                            Detected SPDX license expression for the whole file
+                            Detected (ScanCode 32.x) SPDX
                         </Label>
                         <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
                             {data.licenseFindings.map((license) => (
                                 <span key={license.id}>
                                     <>
-                                        {new Date(
-                                            license.updatedAt,
-                                        ).toISOString()}
+                                        {
+                                            new Date(license.updatedAt)
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
                                         : {license.licenseExpressionSPDX}
                                         <br />
                                     </>

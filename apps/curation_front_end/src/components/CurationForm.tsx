@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import CurationSPDX from "./CurationSPDX";
 import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
-import { userHooks, userZodios } from "@/hooks/zodiosHooks";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
 
 const curationFormSchema = z.object({
@@ -177,22 +177,29 @@ const CurationForm = ({ purl, fileData }: Props) => {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="comment"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="Comment on your curation..."
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type="submit">Submit curation</Button>
+                    <div className="flex justify-between">
+                        <FormField
+                            control={form.control}
+                            name="comment"
+                            render={({ field }) => (
+                                <FormItem className="flex-1 mr-2">
+                                    <FormControl>
+                                        <Textarea
+                                            className="text-xs"
+                                            placeholder="Comment on your curation..."
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="flex items-center">
+                            <Button type="submit" className="text-left text-xs">
+                                Submit
+                            </Button>
+                        </div>
+                    </div>
                 </form>
             </Form>
         </div>
