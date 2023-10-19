@@ -3,12 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useRef, useEffect } from "react";
-import { Tree, NodeRendererProps } from "react-arborist";
-import {
-    BsFileText as FileText,
-    BsFolder as FolderClosed,
-    BsFolder2Open as FolderOpen,
-} from "react-icons/bs";
+import { Tree } from "react-arborist";
 import { Button } from "./ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -18,11 +13,11 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import ComboBoxPackage from "./ComboBoxPackage";
+import Node from "./Node";
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -111,7 +106,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 <Badge className="rounded-md">{purl}</Badge>
             </div>
 
-            <div className="p-1 mb-2 rounded-md bg-slate-100 shadow flex items-center text-sm">
+            <div className="p-1 mb-2 rounded-md bg-slate-100 shadow-lg flex items-center text-sm">
                 <Input
                     className="bg-gray-200 p-2 rounded-lg w-full text-xs"
                     type="text"
@@ -139,6 +134,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
                 {data && (
                     <Tree
+                        className="bg-slate-100"
                         data={treeData}
                         openByDefault={false}
                         searchTerm={treeFilter}
@@ -181,69 +177,5 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
         </div>
     );
 };
-
-type NodeProps = NodeRendererProps<any> & {
-    purl: string | undefined;
-    licenseFilter: string | null;
-};
-
-function Node({ node, style, purl, licenseFilter }: NodeProps) {
-    const { isLeaf, isClosed, data } = node;
-    const { hasLicenseFindings, name, path } = data;
-    const boldStyle = { strokeWidth: 0.5 };
-    let icon;
-
-    if (isLeaf) {
-        icon = hasLicenseFindings ? (
-            <FileText color="red" style={boldStyle} />
-        ) : (
-            <FileText />
-        );
-    } else if (isClosed) {
-        icon = hasLicenseFindings ? (
-            <FolderClosed color="red" style={boldStyle} />
-        ) : (
-            <FolderClosed />
-        );
-    } else {
-        icon = hasLicenseFindings ? (
-            <FolderOpen color="red" style={boldStyle} />
-        ) : (
-            <FolderOpen />
-        );
-    }
-
-    return (
-        <div
-            className="flex items-center cursor-pointer"
-            style={style}
-            onClick={() => {
-                if (!isLeaf) {
-                    node.toggle();
-                }
-            }}
-        >
-            <span className="flex items-center">{icon}</span>
-            <span className="ml-1 font-mono text-xs">
-                {isLeaf ? (
-                    <Link
-                        href={{
-                            pathname: `/packages/${encodeURIComponent(
-                                purl || "",
-                            )}/${encodeURIComponent(path || "")}`,
-                            query: licenseFilter
-                                ? { licenseFilter: `${licenseFilter}` }
-                                : {},
-                        }}
-                    >
-                        {name}
-                    </Link>
-                ) : (
-                    name
-                )}
-            </span>
-        </div>
-    );
-}
 
 export default PackageTree;
