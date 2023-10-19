@@ -115,11 +115,11 @@ const CurationForm = ({ purl, fileData }: Props) => {
 
     return (
         <div className="flex flex-col w-full">
-            <Label className="font-bold mb-2">Curation:</Label>
+            <Label className="font-bold mb-1">Curation:</Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-2"
+                    className="space-y-1"
                 >
                     <FormField
                         control={form.control}
@@ -182,7 +182,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                             control={form.control}
                             name="comment"
                             render={({ field }) => (
-                                <FormItem className="flex-1 mr-2">
+                                <FormItem className="flex-1 mr-1">
                                     <FormControl>
                                         <Textarea
                                             className="text-xs"

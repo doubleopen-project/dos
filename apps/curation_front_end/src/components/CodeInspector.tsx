@@ -46,7 +46,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow-lg">
+            <div className="flex-row p-1 mb-2 rounded-md bg-slate-100 shadow-lg items-center">
                 <Label className="font-bold">File: </Label>
                 {path ? (
                     <Badge className="rounded-md">{path}</Badge>
@@ -55,45 +55,58 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
 
-            <div className="flex-row p-1 mb-2 rounded-md bg-white shadow-lg items-center">
-                {data?.licenseFindings[0] ? (
-                    <>
-                        <Label className="p-1 text-sm">
-                            Detected (ScanCode 32.x) SPDX
-                        </Label>
-                        <p className="p-1 m-1 rounded-md bg-slate-300 shadow items-center text-xs">
-                            {data.licenseFindings.map((license) => (
-                                <span key={license.id}>
-                                    <>
-                                        {
-                                            new Date(license.updatedAt)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        : {license.licenseExpressionSPDX}
-                                        <br />
-                                    </>
-                                </span>
-                            ))}
-                        </p>
-                    </>
-                ) : (
-                    <Label className="p-1 text-sm">
-                        No license found from this file
-                    </Label>
-                )}
-            </div>
+            {data?.licenseFindings[0] && (
+                <div className="flex-row p-1 mb-2 rounded-md bg-slate-100 shadow-lg items-center">
+                    <Label className="font-semibold">Detected SPDX</Label>
+                    <p className="p-1 rounded-md bg-slate-300 shadow text-xs">
+                        {data.licenseFindings.map((license) => (
+                            <span key={license.id}>
+                                <>
+                                    {
+                                        new Date(license.updatedAt)
+                                            .toISOString()
+                                            .split("T")[0]
+                                    }
+                                    : {license.licenseExpressionSPDX}
+                                    <br />
+                                </>
+                            </span>
+                        ))}
+                    </p>
+                </div>
+            )}
 
             {data?.licenseFindings[0]?.licenseFindingMatches && (
-                <div className="flex-row p-2 mb-2 rounded-md bg-white shadow-lg items-center">
-                    <Label className="text-sm">
+                <div className="flex-row p-1 mb-2 rounded-md bg-slate-100 shadow-lg items-center">
+                    <Label className="font-semibold">
                         Individual license matches
                     </Label>
-                    <div className="bg-slate-300 p-1 rounded-md w-full max-h-[20vh] overflow-y-auto shadow">
+                    <div className="bg-slate-300 p-1 rounded-md w-full max-h-[8vh] overflow-y-auto shadow">
                         <ButtonGroup
                             data={data.licenseFindings[0].licenseFindingMatches}
                         />
                     </div>
+                </div>
+            )}
+
+            {data?.licenseConclusions[0] && (
+                <div className="flex-row p-1 mb-2 rounded-md bg-slate-100 shadow-lg items-center">
+                    <Label className="font-semibold">Curations</Label>
+                    <p className="p-1 rounded-md bg-slate-300 shadow text-xs">
+                        {data.licenseConclusions.map((license) => (
+                            <span key={license.id}>
+                                <>
+                                    {
+                                        new Date(license.updatedAt)
+                                            .toISOString()
+                                            .split("T")[0]
+                                    }
+                                    : {license.concludedLicenseExpressionSPDX}
+                                    <br />
+                                </>
+                            </span>
+                        ))}
+                    </p>
                 </div>
             )}
 
@@ -121,7 +134,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
             {data && purl && (
-                <div className="p-2 mt-2 rounded-md bg-white shadow-lg flex-row text-sm">
+                <div className="p-1 mt-2 rounded-md bg-slate-100 shadow-lg flex-row text-sm">
                     <CurationForm purl={purl} fileData={data} />
                 </div>
             )}
