@@ -16,6 +16,20 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "put",
+        path: "/user",
+        description: "Update user data (for users to update their own data)",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PutUserReq,
+            },
+        ],
+        response: schemas.PutUserRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/license-conclusion",
         description: "Add a new license conclusion",

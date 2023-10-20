@@ -638,6 +638,52 @@ export const updateLicenseConclusion = async (
     return licenseConclusion;
 };
 
+export const updateUser = async (
+    id: number,
+    input: Prisma.UserUpdateInput,
+): Promise<User> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval =
+        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let user: User | null = null;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            user = await prisma.user.update({
+                where: {
+                    id: id,
+                },
+                data: input,
+            });
+            querySuccess = true;
+        } catch (error) {
+            // if error contains Unique constraint failed on the fields: (`username`)
+            // then the username is already taken
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === "P2002"
+            )
+                throw error;
+
+            console.log("Error with trying to update User: " + error);
+            if (retries > 0) {
+                retries--;
+                await new Promise((resolve) =>
+                    setTimeout(resolve, retryInterval),
+                );
+                console.log("Retrying database query");
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    if (!user) throw new Error("Error: Unable to update User");
+
+    return user;
+};
+
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {

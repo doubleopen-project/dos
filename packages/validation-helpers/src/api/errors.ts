@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { makeErrors } from "@zodios/core";
-import { ErrorSchema } from "./schemas/error_schemas";
+import { ErrorSchema, BadRequestErrorSchema } from "./schemas/error_schemas";
 
 export const errors = makeErrors([
     {
@@ -14,7 +14,7 @@ export const errors = makeErrors([
     {
         status: 400,
         description: "Bad request",
-        schema: ErrorSchema,
+        schema: BadRequestErrorSchema,
     },
     {
         status: 403,
