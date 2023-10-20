@@ -41,6 +41,7 @@
     "pipeline": {
         "api:build": {
             "dependsOn": [
+                "db:generate",
                 "s3-helpers:build",
                 "common-helpers:build",
                 "validation-helpers:build"
@@ -74,12 +75,17 @@
         "db:push": {
             "cache": false
         },
+        "dev:api": {
+            "dependsOn": ["^db:generate"]
+        },
         "dev": {
             "dependsOn": ["^build", "^db:generate"],
             "cache": false,
             "persistent": true
         },
-        "lint": {},
+        "lint": {
+            "cache": false
+        },
         "start": {},
         "test": {
             "cache": false,
