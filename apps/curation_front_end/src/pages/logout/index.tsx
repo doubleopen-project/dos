@@ -35,15 +35,15 @@ export default function Logout() {
                 </div>
             )}
             {error && (
-                <div className="flex justify-center items-center h-full ">
-                    <h1 className="text-lg w-72  rounded-md h-min p-10">
+                <div className="flex justify-center items-center h-full">
+                    <h1 className="text-lg w-72 rounded-md h-min p-10 border shadow-lg">
                         Error
                     </h1>
                 </div>
             )}
             {isSuccess && (
-                <div className="flex justify-center items-center h-full ">
-                    <div className="text-lg w-72  rounded-md h-min p-10">
+                <div className="flex justify-center items-center h-full">
+                    <div className="text-lg w-72  rounded-md h-min p-10 border shadow-lg">
                         <p>Logged out successfully.</p>
                         <p>Redirecting in {counter} seconds.</p>
                     </div>
