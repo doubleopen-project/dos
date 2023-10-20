@@ -10,8 +10,8 @@ export default function Profile() {
     const user = useUser({ redirectTo: "/login", redirectIfFound: false });
 
     return (
-        <div className="bg-gray-200 h-screen flex justify-center items-center p-2">
-            <div className="w-full bg-white rounded-md h-full p-20 m-1">
+        <div className="h-screen flex justify-center items-center p-2">
+            <div className="w-full rounded-md h-full p-20 m-1 border shadow-lg">
                 <h1 className="text-3xl font-semibold leading-none tracking-tight">
                     Profile
                 </h1>
