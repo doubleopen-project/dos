@@ -101,21 +101,21 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-row p-1 mb-2 rounded-md bg-slate-100 shadow-lg">
+            <div className="flex-row p-1 mb-2 rounded-md border shadow-lg">
                 <Label className="font-bold">Package: </Label>
                 <Badge className="rounded-md">{purl}</Badge>
             </div>
 
-            <div className="p-1 mb-2 rounded-md bg-slate-100 shadow-lg flex items-center text-sm">
+            <div className="p-1 mb-2 rounded-md border shadow-lg flex items-center text-sm">
                 <Input
-                    className="bg-gray-200 p-2 rounded-lg w-full text-xs"
+                    className="p-1 rounded-md w-full text-xs"
                     type="text"
                     placeholder="Filter"
                     value={treeFilter}
                     onChange={handleTreeFilter}
                 />
                 <Button
-                    className="text-xs hover:bg-gray-400 p-2 rounded-lg ml-2"
+                    className="text-xs p-1 rounded-md ml-2"
                     onClick={handleExpand}
                     variant={"outline"}
                 >
@@ -123,10 +123,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 </Button>
             </div>
 
-            <div
-                className="flex-1 pl-1 overflow-auto bg-gray-100"
-                ref={treeRef}
-            >
+            <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
                     <div className="flex justify-center items-center h-full">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
@@ -134,7 +131,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
                 {data && (
                     <Tree
-                        className="bg-slate-100"
+                        className=""
                         data={treeData}
                         openByDefault={false}
                         searchTerm={treeFilter}
@@ -168,7 +165,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
             </div>
 
-            <div className="p-1 mt-2 rounded-md bg-slate-100 shadow-lg flex items-center text-sm">
+            <div className="p-1 mt-2 rounded-md shadow-lg border flex items-center text-sm">
                 <ComboBoxPackage
                     data={uniqueLicenses}
                     filterString={"licenseFilter"}
