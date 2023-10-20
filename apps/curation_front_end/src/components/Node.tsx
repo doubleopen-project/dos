@@ -17,12 +17,17 @@ type NodeProps = NodeRendererProps<any> & {
 };
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
-    const { isLeaf, isClosed, data } = node;
+    const { isLeaf, isClosed, isSelected, data } = node;
     const { hasLicenseFindings, hasLicenseConclusions, name, path } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color = "black";
     let icon;
     let isBold = false;
+    let selectedClassName;
+
+    if (isSelected) {
+        selectedClassName = "bg-gray-300 rounded-sm";
+    }
 
     if (hasLicenseConclusions) {
         color = "green";
@@ -63,10 +68,10 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
                                 : {},
                         }}
                     >
-                        {name}
+                        <div className={selectedClassName}>{name}</div>
                     </Link>
                 ) : (
-                    name
+                    <div className={selectedClassName}>{name}</div>
                 )}
             </span>
         </div>
