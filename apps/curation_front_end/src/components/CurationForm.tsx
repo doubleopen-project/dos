@@ -195,7 +195,11 @@ const CurationForm = ({ purl, fileData }: Props) => {
                             )}
                         />
                         <div className="flex items-center">
-                            <Button type="submit" className="text-left text-xs">
+                            <Button
+                                type="submit"
+                                className="text-left text-xs"
+                                variant={"outline"}
+                            >
                                 Submit
                             </Button>
                         </div>

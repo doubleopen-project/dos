@@ -58,7 +58,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             {data?.licenseFindings[0] && (
                 <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
                     <Label className="font-semibold">Detected SPDX</Label>
-                    <p className="p-1 rounded-md shadow-lg border text-xs">
+                    <p className="p-1 rounded-md border text-xs">
                         {data.licenseFindings.map((license) => (
                             <span key={license.id}>
                                 <>
@@ -81,7 +81,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     <Label className="font-semibold">
                         Individual license matches
                     </Label>
-                    <div className="p-1 rounded-md shadow-lg border w-full max-h-[8vh] overflow-y-auto">
+                    <div className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto">
                         <ButtonGroup
                             data={data.licenseFindings[0].licenseFindingMatches}
                         />
@@ -92,7 +92,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             {data?.licenseConclusions[0] && (
                 <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
                     <Label className="font-semibold">Curations</Label>
-                    <p className="p-1 rounded-md shadow-lg border text-xs">
+                    <p className="p-1 rounded-md border text-xs">
                         {data.licenseConclusions.map((license) => (
                             <span key={license.id}>
                                 <>
