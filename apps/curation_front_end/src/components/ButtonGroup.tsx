@@ -66,7 +66,7 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
                                 className={`p-0.5 m-0.5 text-xs h-fit ${
                                     selectedId === d.id
                                         ? "bg-red-300 hover:bg-red-300"
-                                        : "hover:bg-slate-200"
+                                        : "hover:bg-gray-400"
                                 }`}
                                 variant="secondary"
                                 onClick={() => {

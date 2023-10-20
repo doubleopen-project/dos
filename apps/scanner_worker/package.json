@@ -1,0 +1,21 @@
+{
+    "name": "scanner-worker",
+    "version": "0.0.0",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsup --format cjs",
+        "dev": "tsup src/index.ts --format cjs --watch --onSuccess \"node dist/index.js\"",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "bull": "4.11.3",
+        "common-helpers": "*",
+        "path": "0.12.7",
+        "s3-helpers": "*",
+        "throng": "5.0.0"
+    },
+    "devDependencies": {
+        "@types/throng": "5.0.5"
+    }
+}

@@ -9,6 +9,7 @@ on:
         branches:
             - main
             - worker-deployment
+            - do-216-separate-scanner-agent-and-worker-to-different-apps
 
 jobs:
     build:

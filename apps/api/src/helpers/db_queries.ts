@@ -58,18 +58,20 @@ export const createScannerJob = async (
 };
 
 export const createPackage = async (
-    input: dbZodSchemas.CreatePackageInput,
+    input: Prisma.PackageCreateInput,
 ): Promise<Package> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
     let packageObj: Package | null = null;
+    let querySuccess = false;
 
-    while (!packageObj && retries > 0) {
+    while (!querySuccess && retries > 0) {
         try {
             packageObj = await prisma.package.create({
-                data: input.data,
+                data: input,
             });
+            querySuccess = true;
         } catch (error) {
             console.log("Error creating Package: " + error);
             retries--;
@@ -1061,7 +1063,7 @@ export const findPackageIdByPurl = async (
     while (!querySuccess && retries > 0) {
         try {
             packageId = await prisma.package
-                .findFirst({
+                .findUnique({
                     where: {
                         purl: purl,
                     },
@@ -1757,6 +1759,14 @@ export const deleteLicenseConclusion = async (
 
 export const deleteUser = async (id: number): Promise<User | null> => {
     return await prisma.user.delete({
+        where: {
+            id: id,
+        },
+    });
+};
+
+export const deletePackage = async (id: number): Promise<Package | null> => {
+    return await prisma.package.delete({
         where: {
             id: id,
         },

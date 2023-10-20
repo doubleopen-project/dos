@@ -39,13 +39,17 @@ model File {
 
 /// A package consisting of its source code files.
 model Package {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  purl       String
-  name       String
-  version    String
-  scanStatus String
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  purl          String   @unique @default(dbgenerated())
+  type          String
+  name          String
+  namespace     String?
+  version       String
+  qualifiers    String?
+  subpath       String?
+  scanStatus    String
 
   fileTrees   FileTree[]
   scannerJobs ScannerJob[]
@@ -94,7 +98,7 @@ model LicenseFindingMatch {
   startLine         Int
   endLine           Int
   score             Float
-  licenseExpression String?
+  licenseExpression String
 
   licenseFindingId Int
   licenseFinding   LicenseFinding @relation(fields: [licenseFindingId], references: [id], onDelete: Cascade)
@@ -172,18 +176,13 @@ model ScanIssue {
 
 /// A scanner job.
 model ScannerJob {
-  id                     String    @id @default(uuid())
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
-  state                  String
-  scannerName            String?
-  scannerVersion         String?
-  scannerConfig          String?
-  timeout                Int       @default(120)
-  duration               Float?
-  scanStartTS            DateTime?
-  scanEndTS              DateTime?
-  spdxLicenseListVersion String?
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  state        String
+  timeout      Int?
+  fileCount    Int?
+  scanDuration Float?
 
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])

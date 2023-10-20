@@ -8,12 +8,18 @@ export type TreeNode = {
     path?: string;
     fileSha256?: string;
     hasLicenseFindings: boolean;
+    hasLicenseConclusions: boolean;
     file?: {
         licenseFindings: LicenseFindings[];
+        licenseConclusions: LicenseConclusions[];
     };
     children?: TreeNode[];
 };
 
 export type LicenseFindings = {
     licenseExpressionSPDX?: string;
+};
+
+export type LicenseConclusions = {
+    concludedLicenseExpressionSPDX?: string;
 };

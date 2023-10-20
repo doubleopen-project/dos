@@ -29,9 +29,13 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                     path: isLastPart ? fileTree.path : undefined,
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
                     hasLicenseFindings: false,
+                    hasLicenseConclusions: false,
                     file: {
                         licenseFindings: isLastPart
                             ? fileTree.file.licenseFindings
+                            : [],
+                        licenseConclusions: isLastPart
+                            ? fileTree.file.licenseConclusions
                             : [],
                     },
                 };
@@ -41,8 +45,12 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                     newNode.hasLicenseFindings = true;
                 }
 
-                id++;
+                // If this is a leaf node and there are any license conclusions, mark the node
+                if (isLastPart && fileTree.file.licenseConclusions.length > 0) {
+                    newNode.hasLicenseConclusions = true;
+                }
 
+                id++;
                 if (!isLastPart) {
                     newNode.children = [];
                 }
@@ -54,18 +62,33 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                 map[fullPath].file?.licenseFindings?.push(
                     ...fileTree.file.licenseFindings,
                 );
+                map[fullPath].file?.licenseConclusions?.push(
+                    ...fileTree.file.licenseConclusions,
+                );
+
                 if (fileTree.file.licenseFindings.length > 0) {
                     map[fullPath].hasLicenseFindings = true;
                 }
+                if (fileTree.file.licenseConclusions.length > 0) {
+                    map[fullPath].hasLicenseConclusions = true;
+                }
             }
 
-            // Propagate the hasLicenseFindings flag to ancestor directories
-            if (fileTree.file.licenseFindings.length > 0) {
+            // Propagate the hasLicenseFindings and hasLicenseConclusions flags to ancestor directories
+            if (
+                fileTree.file.licenseFindings.length > 0 ||
+                fileTree.file.licenseConclusions.length > 0
+            ) {
                 let ancestorPath = "";
                 for (let j = 0; j <= i; j++) {
                     ancestorPath += (j > 0 ? "/" : "") + pathParts[j];
                     if (map[ancestorPath]) {
-                        map[ancestorPath].hasLicenseFindings = true;
+                        if (fileTree.file.licenseFindings.length > 0) {
+                            map[ancestorPath].hasLicenseFindings = true;
+                        }
+                        if (fileTree.file.licenseConclusions.length > 0) {
+                            map[ancestorPath].hasLicenseConclusions = true; // Propagate flag to ancestors
+                        }
                     }
                 }
             }
