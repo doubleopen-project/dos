@@ -17,10 +17,10 @@
         "db:push": "prisma db push --skip-generate"
     },
     "dependencies": {
-        "@prisma/client": "5.3.0"
+        "@prisma/client": "5.4.2"
     },
     "devDependencies": {
-        "prisma": "5.3.0",
+        "prisma": "5.4.2",
         "prisma-zod-generator": "0.8.13",
         "tsup": "7.2.0",
         "typescript": "5.2.2"
