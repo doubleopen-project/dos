@@ -6,10 +6,9 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { ZodError } from "zod";
+import z, { ZodError } from "zod";
 import axios from "axios";
 import { ZodiosError } from "@zodios/core";
-import { userDataFormSchema } from "validation-helpers";
 import { Pencil, Check, Loader2, Info } from "lucide-react";
 import {
     Form,
@@ -25,9 +24,15 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
+const userDataFormSchema = z.object({
+    username: z.string(),
+    password: z.string().optional(),
+    confirmPassword: z.string().optional(),
+    role: z.string().optional(),
+});
 
 type PutUserDataType = {
     username: string | undefined;

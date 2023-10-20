@@ -2293,55 +2293,6 @@ declare const CreateFileTreeSchema: z.ZodObject<
 >;
 type CreateFileTreeInput = z.infer<typeof CreateFileTreeSchema>;
 
-declare const loginFormSchema: z.ZodObject<
-    {
-        username: z.ZodString;
-        password: z.ZodString;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        username: string;
-        password: string;
-    },
-    {
-        username: string;
-        password: string;
-    }
->;
-type LoginFormType = z.infer<typeof loginFormSchema>;
-declare const userDataFormSchema: z.ZodObject<
-    {
-        username: z.ZodString;
-        email: z.ZodOptional<z.ZodString>;
-        firstName: z.ZodOptional<z.ZodString>;
-        lastName: z.ZodOptional<z.ZodString>;
-        password: z.ZodOptional<z.ZodString>;
-        confirmPassword: z.ZodOptional<z.ZodString>;
-        role: z.ZodOptional<z.ZodString>;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        username: string;
-        email?: string | undefined;
-        firstName?: string | undefined;
-        lastName?: string | undefined;
-        password?: string | undefined;
-        confirmPassword?: string | undefined;
-        role?: string | undefined;
-    },
-    {
-        username: string;
-        email?: string | undefined;
-        firstName?: string | undefined;
-        lastName?: string | undefined;
-        password?: string | undefined;
-        confirmPassword?: string | undefined;
-        role?: string | undefined;
-    }
->;
-
 declare const adminAPI: [
     {
         method: "delete";
@@ -9984,7 +9935,6 @@ export {
     DBScannerJobType,
     FileTreeType,
     GetPackagesResType,
-    LoginFormType,
     PostFileTreeResType,
     PutUserReq,
     ScannerJobOnlyIdOutput,
@@ -9995,9 +9945,7 @@ export {
     adminAPI,
     authAPI,
     dosAPI,
-    loginFormSchema,
     scannerAPI,
     scannerAgentApi,
     userAPI,
-    userDataFormSchema,
 };
