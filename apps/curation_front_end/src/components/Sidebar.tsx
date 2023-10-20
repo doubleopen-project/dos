@@ -4,8 +4,14 @@
 
 import React from "react";
 import Link from "next/link";
-import { GrInspect, GrCatalog, GrLogout } from "react-icons/gr";
-import { AiOutlineHome, AiOutlineUser, AiOutlineProfile } from "react-icons/ai";
+import {
+    GrInspect,
+    GrCatalog,
+    GrLogout,
+    GrUserSettings,
+    GrLogin,
+} from "react-icons/gr";
+import { AiOutlineHome } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import { ModeToggle } from "./ModeToggle";
@@ -53,7 +59,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                                 className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
                                 title="Login"
                             >
-                                <AiOutlineUser size={20} />
+                                <GrLogin size={20} />
                             </div>
                         </Link>
                     )}
@@ -63,7 +69,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                                 className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
                                 title="Profile"
                             >
-                                <AiOutlineProfile size={20} />
+                                <GrUserSettings size={20} />
                             </div>
                         </Link>
                     )}
