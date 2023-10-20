@@ -24,7 +24,7 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -118,28 +118,33 @@ const UserDataForm = ({ user }: UserDataProps) => {
     if (error) {
         if (error instanceof ZodiosError) {
             if (error.cause instanceof ZodError) {
+                let tempUserError: string | null = null;
+                let tempPasswordError: string | null = null;
                 for (const issue of error.cause.issues) {
                     for (const path of issue.path) {
                         if (path === "username") {
-                            if (usernameError === null) {
-                                setUsernameError(issue.message);
+                            if (tempUserError === null) {
+                                tempUserError = issue.message;
                             }
                         }
                         if (path === "password") {
-                            if (passwordError === null) {
-                                setPasswordError(issue.message);
+                            if (tempPasswordError === null) {
+                                tempPasswordError = issue.message;
                             }
                         }
                     }
                 }
+                if (tempUserError && !usernameError)
+                    setUsernameError(tempUserError);
+                if (tempPasswordError && !passwordError)
+                    setPasswordError(tempPasswordError);
             }
         } else if (axios.isAxiosError(error)) {
             if (error.response?.data?.path === "username") {
-                if (usernameError === null) {
+                if (!usernameError)
                     setUsernameError(error.response?.data?.message);
-                }
             } else if (error.response?.data?.message && !otherError) {
-                setOtherError(error.response?.data?.message);
+                if (!otherError) setOtherError(error.response?.data?.message);
             }
         } else {
             if (!otherError) setOtherError(error.message);
@@ -219,21 +224,39 @@ const UserDataForm = ({ user }: UserDataProps) => {
                             <FormItem className="!mt-4">
                                 <div className="flex flex-row">
                                     <FormLabel>New password</FormLabel>
-                                    {editMode && (<TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger className="ml-1"><Info size={"15px"} /></TooltipTrigger>
-                                            <TooltipContent side="right">
-                                                Password should have:
-                                                <ul className="list-disc list-inside">
-                                                    <li>at least 8 characters</li>
-                                                    <li>at least one uppercase letter</li>
-                                                    <li>at least one lowercase letter</li>
-                                                    <li>at least one number</li>
-                                                    <li>at least one special character</li>
-                                                </ul>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>)}
+                                    {editMode && (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger className="ml-1">
+                                                    <Info size={"15px"} />
+                                                </TooltipTrigger>
+                                                <TooltipContent side="right">
+                                                    Password should have:
+                                                    <ul className="list-disc list-inside">
+                                                        <li>
+                                                            at least 8
+                                                            characters
+                                                        </li>
+                                                        <li>
+                                                            at least one
+                                                            uppercase letter
+                                                        </li>
+                                                        <li>
+                                                            at least one
+                                                            lowercase letter
+                                                        </li>
+                                                        <li>
+                                                            at least one number
+                                                        </li>
+                                                        <li>
+                                                            at least one special
+                                                            character
+                                                        </li>
+                                                    </ul>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
                                 </div>
                                 {passwordError && (
                                     <div
@@ -296,10 +319,18 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         </div>
                     )}
                     {isLoading && (
-                        <Button className="grow" type="submit" disabled>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button>
+                        <div className="flex flex-row">
+                            <Button className="grow" type="submit" disabled>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Please wait
+                            </Button>
+                            <Button
+                                className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                disabled
+                            >
+                                Discard changes
+                            </Button>
+                        </div>
                     )}
                     {!isLoading && editMode && !isSuccess && (
                         <div className="flex flex-row">
@@ -315,9 +346,17 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         </div>
                     )}
                     {isSuccess && (
-                        <Button className="grow" type="submit">
-                            <Check />
-                        </Button>
+                        <div className="flex flex-row">
+                            <Button className="grow !opacity-100" disabled>
+                                <Check />
+                            </Button>
+                            <Button
+                                className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                disabled
+                            >
+                                Discard changes
+                            </Button>
+                        </div>
                     )}
                 </form>
             </Form>
