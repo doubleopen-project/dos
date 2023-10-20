@@ -63,7 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     const errVisibilityClass = errMsg ? "visible" : "hidden";
 
     return (
-        <div className="w-72 bg-white rounded-md h-min">
+        <div className="w-72 rounded-md border shadow-lg h-min">
             <Form {...form}>
                 <div
                     className={
