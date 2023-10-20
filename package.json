@@ -46,10 +46,9 @@
         "test:scanner_agent": "turbo run test --filter=scanner-agent"
     },
     "devDependencies": {
-        "@types/js-yaml": "^4.0.7",
         "prettier": "3.0.3",
-        "rimraf": "5.0.1",
-        "turbo": "1.10.12"
+        "rimraf": "5.0.5",
+        "turbo": "1.10.16"
     },
     "engines": {
         "node": "18.15.0",
@@ -58,14 +57,5 @@
     "packageManager": "npm@9.5.0",
     "overrides": {
         "formidable": "1.2.6"
-    },
-    "dependencies": {
-        "@monaco-editor/react": "^4.5.2",
-        "@tanstack/react-table": "^8.10.3",
-        "js-yaml": "^4.1.0",
-        "next-themes": "^0.2.1",
-        "next-usequerystate": "^1.8.1",
-        "react-arborist": "^3.2.0",
-        "react-icons": "^4.11.0"
     }
 }

@@ -9,13 +9,13 @@
         "start": "node dist/index.js"
     },
     "dependencies": {
-        "bull": "4.11.3",
+        "bull": "4.11.4",
         "common-helpers": "*",
-        "path": "0.12.7",
         "s3-helpers": "*",
         "throng": "5.0.0"
     },
     "devDependencies": {
-        "@types/throng": "5.0.5"
+        "@types/node": "20.8.7",
+        "@types/throng": "5.0.6"
     }
 }
