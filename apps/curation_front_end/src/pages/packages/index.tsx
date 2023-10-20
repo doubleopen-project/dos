@@ -22,8 +22,8 @@ export default function PackageLibrary() {
     }));
 
     return (
-        <div className="flex flex-col p-2 bg-gray-200 h-screen">
-            <div className="flex-none m-1 rounded-md bg-white shadow">
+        <div className="flex flex-col p-2 h-screen">
+            <div className="flex-none m-1 rounded-md shadow">
                 <Card>
                     <CardHeader>
                         <CardTitle>Package Library</CardTitle>
@@ -48,7 +48,7 @@ export default function PackageLibrary() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="flex-1 p-4 m-1 border bg-white shadow rounded-lg overflow-auto">
+            <div className="flex-1 p-4 m-1 border shadow rounded-lg overflow-auto">
                 <PackageList data={{ packages }} />
             </div>
         </div>
