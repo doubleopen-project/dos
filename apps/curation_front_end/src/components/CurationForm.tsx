@@ -25,14 +25,10 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
 
 const curationFormSchema = z.object({
-    fileSha256: z.string(),
-    detectedLicenseExpressionSPDX: z.string().optional(),
-    concludedLicenseExpressionSPDX: z.string(),
-    concludedLicenseSPDX: z.string().optional(),
-    concludedLicenseDB: z.string().optional(),
-    concludedLicenseList: z.string().optional(),
-    comment: z.string().optional(),
-    contextPurl: z.string(),
+    concludedLicenseSPDX: z.string(),
+    concludedLicenseDB: z.string(),
+    concludedLicenseList: z.string(),
+    comment: z.string(),
 });
 
 type CurationFormType = z.infer<typeof curationFormSchema>;
@@ -45,19 +41,18 @@ type LicenseConclusionPostData = ZodiosBodyByPath<
 >;
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     fileData: DataType;
 };
 
 const CurationForm = ({ purl, fileData }: Props) => {
-    const defaultValues: Partial<CurationFormType> = {
-        concludedLicenseExpressionSPDX: "",
-        detectedLicenseExpressionSPDX:
-            fileData?.licenseFindings[0]?.licenseExpressionSPDX ?? "",
-        contextPurl: purl,
-        fileSha256: fileData?.sha256,
+    const defaultValues: CurationFormType = {
+        concludedLicenseSPDX: "",
+        concludedLicenseDB: "",
+        concludedLicenseList: "",
         comment: "",
     };
+
     const form = useForm<CurationFormType>({
         resolver: zodResolver(curationFormSchema),
         defaultValues,
@@ -80,6 +75,8 @@ const CurationForm = ({ purl, fileData }: Props) => {
 
     function onSubmit(data: CurationFormType) {
         // Create an array of fields with values
+        console.log(data);
+
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
             data.concludedLicenseDB,
@@ -88,17 +85,32 @@ const CurationForm = ({ purl, fileData }: Props) => {
 
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
-            data.concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
+            const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
             if (
                 window.confirm(
-                    `Do you want to add a license conclusion to this file:\n${JSON.stringify(
-                        data.concludedLicenseExpressionSPDX,
+                    `Do you want to add a license conclusion\n${JSON.stringify(
+                        concludedLicenseExpressionSPDX,
+                        null,
+                        2,
+                    )}to this file\n${JSON.stringify(
+                        fileData.sha256,
                         null,
                         2,
                     )}`,
                 )
             ) {
-                addLicenseConclusion(data as LicenseConclusionPostData);
+                addLicenseConclusion({
+                    fileSha256: fileData.sha256,
+                    concludedLicenseExpressionSPDX:
+                        concludedLicenseExpressionSPDX,
+                    detectedLicenseExpressionSPDX:
+                        fileData.licenseFindings[0]?.licenseExpressionSPDX ??
+                        "",
+                    comment: data.comment ?? "",
+                    contextPurl: purl,
+                });
+
+                //addLicenseConclusion(data as LicenseConclusionPostData);
             } else {
                 return;
             }
