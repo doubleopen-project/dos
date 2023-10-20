@@ -40,7 +40,7 @@ export default function Login() {
     }
 
     return (
-        <div className="bg-gray-200 h-screen flex justify-center items-center">
+        <div className="h-screen flex justify-center items-center">
             <LoginForm
                 onSubmit={submitForm}
                 errMsg={

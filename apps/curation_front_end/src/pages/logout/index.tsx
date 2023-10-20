@@ -26,24 +26,24 @@ export default function Logout() {
     }, [counter, router, isSuccess]);
 
     return (
-        <div className="bg-gray-200 h-screen">
+        <div className="h-screen">
             {isLoading && (
-                <div className="flex justify-center items-center h-full bg-gray-200">
-                    <div className="text-lg w-72 bg-white rounded-md h-min p-10 flex justify-center">
+                <div className="flex justify-center items-center h-full ">
+                    <div className="text-lg w-72  rounded-md h-min p-10 flex justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 </div>
             )}
             {error && (
-                <div className="flex justify-center items-center h-full bg-gray-200">
-                    <h1 className="text-lg w-72 bg-white rounded-md h-min p-10">
+                <div className="flex justify-center items-center h-full ">
+                    <h1 className="text-lg w-72  rounded-md h-min p-10">
                         Error
                     </h1>
                 </div>
             )}
             {isSuccess && (
-                <div className="flex justify-center items-center h-full bg-gray-200">
-                    <div className="text-lg w-72 bg-white rounded-md h-min p-10">
+                <div className="flex justify-center items-center h-full ">
+                    <div className="text-lg w-72  rounded-md h-min p-10">
                         <p>Logged out successfully.</p>
                         <p>Redirecting in {counter} seconds.</p>
                     </div>
