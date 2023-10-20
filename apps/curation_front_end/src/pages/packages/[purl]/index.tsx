@@ -15,7 +15,7 @@ export default function Package() {
     purl = purl?.toString().replace(/\/@/g, "/%40");
 
     return (
-        <div className="bg-gray-200 h-screen">
+        <div className="h-screen">
             <CurationUI purl={purl} path={undefined} />
         </div>
     );
