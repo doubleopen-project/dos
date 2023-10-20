@@ -45,21 +45,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         },
     });
 
-    let loginButton = (
-        <Button className="grow" type="submit">
-            Login
-        </Button>
-    );
-
-    if (isLoading) {
-        loginButton = (
-            <Button className="grow" type="submit" disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-            </Button>
-        );
-    }
-
     const errVisibilityClass = errMsg ? "visible" : "hidden";
 
     return (
@@ -124,7 +109,26 @@ const LoginForm: React.FC<LoginFormProps> = ({
                             </FormItem>
                         )}
                     />
-                    {loginButton}
+                    {isLoading && (
+                        <Button
+                            className="grow"
+                            type="submit"
+                            variant={"outline"}
+                            disabled
+                        >
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                        </Button>
+                    )}
+                    {!isLoading && (
+                        <Button
+                            className="grow"
+                            type="submit"
+                            variant={"outline"}
+                        >
+                            Login
+                        </Button>
+                    )}
                 </form>
             </Form>
         </div>

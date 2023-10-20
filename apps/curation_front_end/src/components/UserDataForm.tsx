@@ -161,6 +161,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
             {editMode && (
                 <Button
                     className="bg-gray-200 mx-4 mt-8 p-2 rounded-lg border border-violet-950 ml-auto"
+                    variant={"outline"}
                     disabled
                 >
                     <Pencil />
@@ -169,7 +170,8 @@ const UserDataForm = ({ user }: UserDataProps) => {
 
             {!editMode && (
                 <Button
-                    className="hover:bg-gray-400 mx-4 mt-8 p-2 rounded-lg ml-auto"
+                    className="mx-4 mt-8 p-2 rounded-lg ml-auto"
+                    variant={"outline"}
                     onClick={() => setEditMode(true)}
                 >
                     <Pencil />
@@ -179,6 +181,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
+                    onReset={onDiscard}
                     onChange={onInputChange}
                     className="space-y-8 p-4 flex flex-col"
                 >
@@ -325,12 +328,18 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     )}
                     {isLoading && (
                         <div className="flex flex-row">
-                            <Button className="grow" type="submit" disabled>
+                            <Button
+                                className="grow"
+                                type="submit"
+                                variant={"outline"}
+                                disabled
+                            >
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Please wait
                             </Button>
                             <Button
                                 className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                type="reset"
                                 disabled
                             >
                                 Discard changes
@@ -339,12 +348,17 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     )}
                     {!isLoading && editMode && !isSuccess && (
                         <div className="flex flex-row">
-                            <Button className="flex-1 mr-1" type="submit">
+                            <Button
+                                className="flex-1 mr-1"
+                                type="submit"
+                                variant={"outline"}
+                            >
                                 Save changes
                             </Button>
                             <Button
-                                className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
-                                onClick={onDiscard}
+                                className="flex-1 border ml-1"
+                                variant={"destructive"}
+                                type="reset"
                             >
                                 Discard changes
                             </Button>
@@ -352,11 +366,16 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     )}
                     {isSuccess && (
                         <div className="flex flex-row">
-                            <Button className="grow !opacity-100" disabled>
+                            <Button
+                                className="grow !opacity-100"
+                                variant={"outline"}
+                                disabled
+                            >
                                 <Check />
                             </Button>
                             <Button
                                 className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                type="reset"
                                 disabled
                             >
                                 Discard changes
