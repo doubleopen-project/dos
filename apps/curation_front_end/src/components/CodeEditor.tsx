@@ -9,6 +9,7 @@ import React from "react";
 import styles from "../styles/CodeInspector.module.css";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
 
 type LicenseFindings = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
@@ -24,6 +25,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
     );
     const router = useRouter();
     const { path } = router.query;
+    const { theme } = useTheme();
 
     const handleEditorDidMount: OnMount = (editor, monaco) => {
         // Show the decorations for all individual license matches
@@ -97,7 +99,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
             key={contents + line}
             language="plaintext"
             onMount={handleEditorDidMount}
-            theme="vs-light"
+            theme={theme === "dark" ? "vs-dark" : "vs-light"}
             value={contents}
             options={{
                 fontFamily: "Source Code Pro",
