@@ -6,7 +6,6 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
-import { loginFormSchema, LoginFormType } from "validation-helpers";
 import {
     Form,
     FormControl,
@@ -18,6 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
+import z from "zod";
+
+const loginFormSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+});
+
+type LoginFormType = z.infer<typeof loginFormSchema>;
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
