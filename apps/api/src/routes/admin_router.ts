@@ -7,6 +7,7 @@ import { adminAPI } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import * as dbOperations from "../helpers/db_operations";
 import crypto from "crypto";
+import { Prisma } from "database";
 
 const adminRouter = zodiosRouter(adminAPI);
 
@@ -68,10 +69,12 @@ adminRouter.delete("/user/:id", async (req, res) => {
 
         if (deletedUser) res.status(200).json({ message: "User deleted" });
         else res.status(400).json({ message: "User to delete not found" });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
         console.log("Error: ", error);
-        if (error.code === "P2025") {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
             return res.status(404).json({
                 message: "User to delete not found",
             });

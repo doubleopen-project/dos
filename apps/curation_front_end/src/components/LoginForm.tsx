@@ -6,7 +6,6 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
-import { loginFormSchema, LoginFormType } from "validation-helpers";
 import {
     Form,
     FormControl,
@@ -15,8 +14,17 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { PasswordInput, UsernameInput } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
+import z from "zod";
+
+const loginFormSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+});
+
+type LoginFormType = z.infer<typeof loginFormSchema>;
 
 interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
@@ -76,11 +84,17 @@ const LoginForm: React.FC<LoginFormProps> = ({
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                    <UsernameInput
-                                        placeholder="username"
-                                        {...field}
-                                        required
-                                    />
+                                    <div className="flex">
+                                        <RiUser3Fill
+                                            className="mr-1"
+                                            size="2.5rem"
+                                        />
+                                        <Input
+                                            placeholder="username"
+                                            {...field}
+                                            required
+                                        />
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -93,12 +107,18 @@ const LoginForm: React.FC<LoginFormProps> = ({
                             <FormItem className="!mt-4">
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <PasswordInput
-                                        placeholder="********"
-                                        type="password"
-                                        {...field}
-                                        required
-                                    />
+                                    <div className="flex">
+                                        <RiLockPasswordFill
+                                            className="mr-1"
+                                            size="2.5rem"
+                                        />
+                                        <Input
+                                            placeholder="********"
+                                            type="password"
+                                            {...field}
+                                            required
+                                        />
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
