@@ -119,13 +119,13 @@ const CurationDB = ({
                                                 : "opacity-0",
                                         )}
                                     />
-                                    <div className="text-xs flex flex-col w-full border-r-slate-700 ml-2">
+                                    <div className="text-xs flex flex-col w-full ml-2">
                                         <span className="flex justify-between mb-2">
                                             <span>
                                                 <span className="mr-1">
                                                     Curated:
                                                 </span>
-                                                <span className="font-bold bg-green-200 p-1 rounded-sm">
+                                                <span className="font-bold bg-green-400 p-1 rounded-sm">
                                                     {
                                                         d.concludedLicenseExpressionSPDX
                                                     }
@@ -139,7 +139,7 @@ const CurationDB = ({
                                                             .split("T")[0]
                                                     }
                                                 </span>
-                                                <span className="font-bold bg-orange-200 p-1 rounded-sm">
+                                                <span className="font-bold bg-orange-400 p-1 rounded-sm">
                                                     {d.user.username}
                                                 </span>
                                             </span>
