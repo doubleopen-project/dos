@@ -20,7 +20,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
     const { isLeaf, isClosed, isSelected, data } = node;
     const { hasLicenseFindings, hasLicenseConclusions, name, path } = data;
     const boldStyle = { strokeWidth: 0.5 };
-    let color = "black";
+    let color;
     let icon;
     let isBold = false;
     let selectedClassName;
