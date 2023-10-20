@@ -8,6 +8,7 @@ import { GrInspect, GrCatalog, GrLogout } from "react-icons/gr";
 import { AiOutlineHome, AiOutlineUser, AiOutlineProfile } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
+import { ModeToggle } from "./ModeToggle";
 
 interface SidebarProps {
     children: React.ReactNode;
@@ -18,7 +19,7 @@ const Sidebar = ({ children }: SidebarProps) => {
     const user = useUser({});
     return (
         <div className="flex">
-            <div className="fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between">
+            <div className="fixed w-20 h-screen p-4  border-r-[1px] flex flex-col justify-between">
                 <div className="flex flex-col items-center">
                     <Link href="/">
                         <div
@@ -76,6 +77,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                             </div>
                         </Link>
                     )}
+                    <ModeToggle />
                 </div>
             </div>
             <main className="ml-20 w-full">{children}</main>
