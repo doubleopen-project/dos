@@ -4,11 +4,16 @@
     "module": "./dist/index.mjs",
     "types": "./index.d.ts",
     "scripts": {
-        "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts && prettier --write index.d.ts"
+        "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts && prettier --write index.d.ts",
+        "clever-cfe-prebuild": "tsup"
     },
     "dependencies": {
         "@zodios/express": "10.6.0",
         "check-password-strength": "2.0.7",
         "zod": "3.22.4"
+    },
+    "devDependencies": {
+        "prettier": "3.0.3",
+        "tsup": "7.2.0"
     }
 }
