@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "build": "next build",
+        "clever-cfe-prebuild": "npm i --also-dev next",
         "clever-logs": "clever logs",
         "dev": "next dev",
         "lint": "next lint",
@@ -21,9 +22,11 @@
         "@radix-ui/react-toast": "1.1.5",
         "@radix-ui/react-tooltip": "1.0.7",
         "@tanstack/react-query": "4.35.3",
+        "@tanstack/react-query-devtools": "4.35.3",
         "@tanstack/react-table": "8.10.3",
         "@zodios/core": "10.9.6",
         "@zodios/react": "10.4.5",
+        "autoprefixer": "10.4.16",
         "axios": "1.5.1",
         "class-variance-authority": "0.7.0",
         "clsx": "2.0.0",
@@ -41,10 +44,8 @@
         "zod": "3.22.4"
     },
     "devDependencies": {
-        "@tanstack/react-query-devtools": "4.35.3",
         "@types/js-yaml": "4.0.8",
         "@types/react": "18.2.30",
-        "autoprefixer": "10.4.16",
         "eslint-config-custom": "*",
         "next": "13.5.6",
         "tailwindcss": "3.3.3",
