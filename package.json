@@ -15,6 +15,7 @@
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
         "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
         "clever-logs-api": "turbo run clever-logs --filter=api --no-daemon",
+        "clever-logs-cfe": "turbo run clever-logs --filter=curation_front_end --no-daemon",
         "clever-logs-sa": "turbo run clever-logs --filter=scanner-agent --no-daemon",
         "copy-types": "turbo run copy-types",
         "db:format": "turbo run db:format",
