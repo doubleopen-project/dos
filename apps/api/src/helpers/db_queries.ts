@@ -1371,47 +1371,67 @@ export const findUserByUsername = async (
     return user;
 };
 
-export const findScannedPackages = async (): Promise<
-    { purl: string; updatedAt: Date }[]
-> => {
-    let scannedPackages: { purl: string; updatedAt: Date }[] = [];
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
-    let querySuccess = false;
+type findScannedPackagesOutput = Prisma.PackageGetPayload<{
+    select: {
+        purl: true;
+        updatedAt: true;
+        name: true;
+        version: true;
+        type: true;
+        namespace: true;
+        qualifiers: true;
+        subpath: true;
+    };
+}>[];
 
-    while (!querySuccess && retries > 0) {
-        try {
-            scannedPackages = await prisma.package.findMany({
-                where: {
-                    scanStatus: "scanned",
-                },
-                select: {
-                    purl: true,
-                    updatedAt: true,
-                },
-                orderBy: {
-                    purl: "asc",
-                },
-            });
-            querySuccess = true;
-        } catch (error) {
-            console.log("Error with trying to find ScannedPackages: " + error);
-            retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
+export const findScannedPackages =
+    async (): Promise<findScannedPackagesOutput> => {
+        let scannedPackages: findScannedPackagesOutput = [];
+        let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+        const retryInterval =
+            parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+        let querySuccess = false;
+
+        while (!querySuccess && retries > 0) {
+            try {
+                scannedPackages = await prisma.package.findMany({
+                    where: {
+                        scanStatus: "scanned",
+                    },
+                    select: {
+                        purl: true,
+                        updatedAt: true,
+                        name: true,
+                        version: true,
+                        type: true,
+                        namespace: true,
+                        qualifiers: true,
+                        subpath: true,
+                    },
+                    orderBy: {
+                        purl: "asc",
+                    },
+                });
+                querySuccess = true;
+            } catch (error) {
+                console.log(
+                    "Error with trying to find ScannedPackages: " + error,
                 );
-                console.log("Retrying database query");
-            } else {
-                throw new Error(
-                    "Error: Unable to perform query to find ScannedPackages",
-                );
+                retries--;
+                if (retries > 0) {
+                    await new Promise((resolve) =>
+                        setTimeout(resolve, retryInterval),
+                    );
+                    console.log("Retrying database query");
+                } else {
+                    throw new Error(
+                        "Error: Unable to perform query to find ScannedPackages",
+                    );
+                }
             }
         }
-    }
-    return scannedPackages;
-};
+        return scannedPackages;
+    };
 
 export const findFileSha256 = async (
     purl: string,
