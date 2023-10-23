@@ -3,12 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import type { GetPackagesResType } from "validation-helpers";
 import { columns } from "@/components/datatable/columns";
 import { DataTable } from "./datatable/data-table";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { userAPI } from "validation-helpers";
 
 type PackageListProps = {
-    data: GetPackagesResType;
+    data: ZodiosResponseByPath<typeof userAPI, "get", "/packages">;
 };
 
 const PackageList = ({ data }: PackageListProps) => {

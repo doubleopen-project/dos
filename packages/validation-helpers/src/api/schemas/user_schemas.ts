@@ -152,11 +152,15 @@ export const GetPackagesRes = z.object({
         z.object({
             purl: z.string(),
             updatedAt: z.coerce.date(),
+            name: z.string(),
+            version: z.string(),
+            type: z.string(),
+            namespace: z.nullable(z.string()),
+            qualifiers: z.nullable(z.string()),
+            subpath: z.nullable(z.string()),
         }),
     ),
 });
-
-export type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
 //------------------- POST file -------------------
 

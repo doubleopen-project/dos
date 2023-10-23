@@ -5482,16 +5482,34 @@ declare const userAPI: [
                         {
                             purl: zod.ZodString;
                             updatedAt: zod.ZodDate;
+                            name: zod.ZodString;
+                            version: zod.ZodString;
+                            type: zod.ZodString;
+                            namespace: zod.ZodNullable<zod.ZodString>;
+                            qualifiers: zod.ZodNullable<zod.ZodString>;
+                            subpath: zod.ZodNullable<zod.ZodString>;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
+                            type: string;
+                            name: string;
                             updatedAt: Date;
                             purl: string;
+                            version: string;
+                            namespace: string | null;
+                            qualifiers: string | null;
+                            subpath: string | null;
                         },
                         {
+                            type: string;
+                            name: string;
                             updatedAt: Date;
                             purl: string;
+                            version: string;
+                            namespace: string | null;
+                            qualifiers: string | null;
+                            subpath: string | null;
                         }
                     >,
                     "many"
@@ -5501,14 +5519,26 @@ declare const userAPI: [
             zod.ZodTypeAny,
             {
                 packages: {
+                    type: string;
+                    name: string;
                     updatedAt: Date;
                     purl: string;
+                    version: string;
+                    namespace: string | null;
+                    qualifiers: string | null;
+                    subpath: string | null;
                 }[];
             },
             {
                 packages: {
+                    type: string;
+                    name: string;
                     updatedAt: Date;
                     purl: string;
+                    version: string;
+                    namespace: string | null;
+                    qualifiers: string | null;
+                    subpath: string | null;
                 }[];
             }
         >;
@@ -8539,16 +8569,34 @@ declare const dosAPI: [
                         {
                             purl: zod.ZodString;
                             updatedAt: zod.ZodDate;
+                            name: zod.ZodString;
+                            version: zod.ZodString;
+                            type: zod.ZodString;
+                            namespace: zod.ZodNullable<zod.ZodString>;
+                            qualifiers: zod.ZodNullable<zod.ZodString>;
+                            subpath: zod.ZodNullable<zod.ZodString>;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
+                            type: string;
+                            name: string;
                             updatedAt: Date;
                             purl: string;
+                            version: string;
+                            namespace: string | null;
+                            qualifiers: string | null;
+                            subpath: string | null;
                         },
                         {
+                            type: string;
+                            name: string;
                             updatedAt: Date;
                             purl: string;
+                            version: string;
+                            namespace: string | null;
+                            qualifiers: string | null;
+                            subpath: string | null;
                         }
                     >,
                     "many"
@@ -8558,14 +8606,26 @@ declare const dosAPI: [
             zod.ZodTypeAny,
             {
                 packages: {
+                    type: string;
+                    name: string;
                     updatedAt: Date;
                     purl: string;
+                    version: string;
+                    namespace: string | null;
+                    qualifiers: string | null;
+                    subpath: string | null;
                 }[];
             },
             {
                 packages: {
+                    type: string;
+                    name: string;
                     updatedAt: Date;
                     purl: string;
+                    version: string;
+                    namespace: string | null;
+                    qualifiers: string | null;
+                    subpath: string | null;
                 }[];
             }
         >;
@@ -9881,44 +9941,6 @@ declare const PostFileTreeRes: z.ZodObject<
     }
 >;
 type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
-declare const GetPackagesRes: z.ZodObject<
-    {
-        packages: z.ZodArray<
-            z.ZodObject<
-                {
-                    purl: z.ZodString;
-                    updatedAt: z.ZodDate;
-                },
-                "strip",
-                z.ZodTypeAny,
-                {
-                    updatedAt: Date;
-                    purl: string;
-                },
-                {
-                    updatedAt: Date;
-                    purl: string;
-                }
-            >,
-            "many"
-        >;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        packages: {
-            updatedAt: Date;
-            purl: string;
-        }[];
-    },
-    {
-        packages: {
-            updatedAt: Date;
-            purl: string;
-        }[];
-    }
->;
-type GetPackagesResType = z.infer<typeof GetPackagesRes>;
 
 export {
     CreateCopyrightFindingInput,
@@ -9934,7 +9956,6 @@ export {
     DBScannerJobSchema,
     DBScannerJobType,
     FileTreeType,
-    GetPackagesResType,
     PostFileTreeResType,
     PutUserReq,
     ScannerJobOnlyIdOutput,

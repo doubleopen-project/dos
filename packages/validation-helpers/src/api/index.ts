@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { makeApi, mergeApis } from "@zodios/core";
+import { mergeApis } from "@zodios/core";
 import { adminAPI } from "./apis/admin";
 import { authAPI } from "./apis/auth";
 import { scannerAPI } from "./apis/scanner";

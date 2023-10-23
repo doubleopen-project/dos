@@ -12,6 +12,5 @@ export { dosAPI } from "./api";
 export type {
     FileTreeType,
     PostFileTreeResType,
-    GetPackagesResType,
     PutUserReq,
 } from "./api/schemas/user_schemas";
