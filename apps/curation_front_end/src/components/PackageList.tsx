@@ -18,6 +18,8 @@ const PackageList = ({ data }: PackageListProps) => {
             <DataTable
                 columns={columns}
                 data={data.packages.map((pkg) => ({
+                    name: pkg.name,
+                    version: pkg.version,
                     purl: pkg.purl,
                     updatedAt: pkg.updatedAt,
                 }))}
