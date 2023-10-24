@@ -78,6 +78,38 @@ export const columns: ColumnDef<Package>[] = [
         },
     },
     {
+        accessorKey: "type",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    <Label className="font-bold">Type</Label>
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
+        accessorKey: "namespace",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    <Label className="font-bold">Namespace</Label>
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
+    {
         accessorKey: "purl",
         header: ({ column }) => {
             return (
@@ -92,17 +124,6 @@ export const columns: ColumnDef<Package>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => (
-            <div className="hover:text-blue-400">
-                <Link
-                    href={`/packages/${encodeURIComponent(
-                        row.getValue("purl"),
-                    )}`}
-                >
-                    {row.getValue("purl")}
-                </Link>
-            </div>
-        ),
     },
     {
         accessorKey: "updatedAt",
