@@ -33,18 +33,14 @@ export default function PackageLibrary() {
                         </p>
                         <p className="text-sm">
                             This is a list of all packages that are currently in
-                            the Package Library.
-                        </p>
-                        <p className="text-sm">
-                            You can search for packages by name.
-                        </p>
-                        <p className="text-sm">
-                            Clicking a package will take you to the curation UI.
+                            the Package Library. You can search for packages by
+                            name. Clicking a package name will take you to the
+                            curation UI.
                         </p>
                     </CardContent>
                 </Card>
             </div>
-            <div className="flex-1 p-4 m-1 border shadow rounded-lg overflow-auto">
+            <div className="flex-1 py-1 m-1 border shadow rounded-lg overflow-auto">
                 <PackageList data={{ packages }} />
             </div>
         </div>

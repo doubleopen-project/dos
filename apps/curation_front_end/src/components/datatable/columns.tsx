@@ -36,11 +36,12 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Name</Label>
+                    <Label className="font-bold cursor-pointer">Name</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
@@ -77,11 +78,12 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Version</Label>
+                    <Label className="font-bold cursor-pointer">Version</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
@@ -99,11 +101,12 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Type</Label>
+                    <Label className="font-bold cursor-pointer">Type</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
@@ -121,11 +124,14 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Namespace</Label>
+                    <Label className="font-bold cursor-pointer">
+                        Namespace
+                    </Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
@@ -143,11 +149,12 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Purl</Label>
+                    <Label className="font-bold cursor-pointer">Purl</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
@@ -165,11 +172,12 @@ export const columns: ColumnDef<Package>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="px-0"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    <Label className="font-bold">Last updated</Label>
+                    <Label className="font-bold cursor-pointer">Updated</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
