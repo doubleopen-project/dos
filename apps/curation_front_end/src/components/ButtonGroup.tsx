@@ -9,7 +9,7 @@ import {
     TooltipTrigger,
     TooltipProvider,
     TooltipContent,
-} from "./ui/tooltip";
+} from "@/components/ui/tooltip";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { parseAsInteger, useQueryState } from "next-usequerystate";

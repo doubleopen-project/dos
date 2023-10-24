@@ -7,6 +7,13 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { Label } from "../ui/label";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipProvider,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -28,21 +35,29 @@ export const columns: ColumnDef<Package>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Name
+                    <Label className="font-bold">Name</Label>
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
         cell: ({ row }) => (
-            <div className="hover:text-blue-400">
-                <Link
-                    href={`/packages/${encodeURIComponent(
-                        row.getValue("purl"),
-                    )}`}
-                >
-                    {row.getValue("name")}
-                </Link>
-            </div>
+            <TooltipProvider>
+                <Tooltip delayDuration={400}>
+                    <TooltipTrigger asChild>
+                        <Link
+                            className="hover:text-blue-400"
+                            href={`/packages/${encodeURIComponent(
+                                row.getValue("purl"),
+                            )}`}
+                        >
+                            {row.getValue("name")}
+                        </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <div className="text-sm">{row.getValue("purl")}</div>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         ),
     },
     {
@@ -55,7 +70,7 @@ export const columns: ColumnDef<Package>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Version
+                    <Label className="font-bold">Version</Label>
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
@@ -71,7 +86,7 @@ export const columns: ColumnDef<Package>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Package URL
+                    <Label className="font-bold">Purl</Label>
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
@@ -98,19 +113,19 @@ export const columns: ColumnDef<Package>[] = [
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
                 >
-                    Last Updated
+                    <Label className="font-bold">Last updated</Label>
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
         cell: ({ row }) => (
-            <div>
+            <>
                 {
                     new Date(row.getValue("updatedAt"))
                         .toISOString()
                         .split("T")[0]
                 }
-            </div>
+            </>
         ),
     },
 ];
