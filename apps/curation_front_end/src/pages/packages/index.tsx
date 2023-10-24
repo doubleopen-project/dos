@@ -15,11 +15,7 @@ export default function PackageLibrary() {
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
-
-    const packages = data.packages.map((pkg) => ({
-        ...pkg,
-        updatedAt: new Date(pkg.updatedAt),
-    }));
+    const packages = data.packages;
 
     return (
         <div className="flex flex-col p-2 h-screen">
