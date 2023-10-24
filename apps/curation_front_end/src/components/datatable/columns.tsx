@@ -11,11 +11,56 @@ import { ArrowUpDown } from "lucide-react";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Package = {
+    name: string;
+    version: string;
     purl: string;
     updatedAt: Date;
 };
 
 export const columns: ColumnDef<Package>[] = [
+    {
+        accessorKey: "name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => (
+            <div className="hover:text-blue-400">
+                <Link
+                    href={`/packages/${encodeURIComponent(
+                        row.getValue("purl"),
+                    )}`}
+                >
+                    {row.getValue("name")}
+                </Link>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "version",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Version
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+    },
     {
         accessorKey: "purl",
         header: ({ column }) => {
@@ -58,5 +103,14 @@ export const columns: ColumnDef<Package>[] = [
                 </Button>
             );
         },
+        cell: ({ row }) => (
+            <div>
+                {
+                    new Date(row.getValue("updatedAt"))
+                        .toISOString()
+                        .split("T")[0]
+                }
+            </div>
+        ),
     },
 ];
