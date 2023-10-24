@@ -55,7 +55,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center justify-between py-4">
+            <div className="flex items-center justify-between py-2">
                 <Input
                     placeholder="Search packages by name"
                     value={
