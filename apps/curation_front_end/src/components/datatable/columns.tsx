@@ -6,7 +6,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import {
+    ChevronDownIcon,
+    ChevronUpIcon,
+    ChevronsUpDownIcon,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
     Tooltip,
@@ -37,7 +41,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Name</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
@@ -72,7 +82,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Version</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
@@ -88,7 +104,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Type</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
@@ -104,7 +126,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Namespace</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
@@ -120,7 +148,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Purl</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
@@ -136,7 +170,13 @@ export const columns: ColumnDef<Package>[] = [
                     }
                 >
                     <Label className="font-bold">Last updated</Label>
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === "desc" ? (
+                        <ChevronDownIcon className="ml-2 h-4 w-4" />
+                    ) : column.getIsSorted() === "asc" ? (
+                        <ChevronUpIcon className="ml-2 h-4 w-4" />
+                    ) : (
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                    )}
                 </Button>
             );
         },
