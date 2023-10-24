@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useMemo } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Tooltip,
     TooltipTrigger,

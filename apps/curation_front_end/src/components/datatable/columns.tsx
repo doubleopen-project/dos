@@ -5,24 +5,25 @@
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import {
     Tooltip,
     TooltipTrigger,
     TooltipProvider,
     TooltipContent,
 } from "@/components/ui/tooltip";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { userAPI } from "validation-helpers";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Package = {
-    name: string;
-    version: string;
-    purl: string;
-    updatedAt: Date;
-};
+// Get the table column datatype from the query response
+// Note: for reusing the component, this needs to be changed
+export type Package = ZodiosResponseByPath<
+    typeof userAPI,
+    "get",
+    "/packages"
+>["packages"][0];
 
 export const columns: ColumnDef<Package>[] = [
     {
