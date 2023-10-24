@@ -9,6 +9,7 @@ import {
     SortingState,
     flexRender,
     getCoreRowModel,
+    getPaginationRowModel,
     getFilteredRowModel,
     getSortedRowModel,
     useReactTable,
@@ -22,6 +23,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -47,11 +50,12 @@ export function DataTable<TData, TValue>({
             sorting,
             columnFilters,
         },
+        getPaginationRowModel: getPaginationRowModel(),
     });
 
     return (
         <div>
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Search packages by name"
                     value={
@@ -65,6 +69,24 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+                <div className="flex items-center space-x-2 py-4">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ChevronLeftIcon className="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ChevronRightIcon className="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
             <div className="rounded-md border">
                 <Table>
