@@ -15,15 +15,7 @@ type PackageListProps = {
 const PackageList = ({ data }: PackageListProps) => {
     return (
         <div className="container mx-auto py-10">
-            <DataTable
-                columns={columns}
-                data={data.packages.map((pkg) => ({
-                    name: pkg.name,
-                    version: pkg.version,
-                    purl: pkg.purl,
-                    updatedAt: pkg.updatedAt,
-                }))}
-            />
+            <DataTable columns={columns} data={data.packages} />
         </div>
     );
 };
