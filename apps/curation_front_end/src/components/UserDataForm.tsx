@@ -2,14 +2,25 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { userHooks } from "@/hooks/zodiosHooks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-import z, { ZodError } from "zod";
+
 import axios from "axios";
+import z, { ZodError } from "zod";
+import { useForm } from "react-hook-form";
 import { ZodiosError } from "@zodios/core";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil, Check, Loader2, Info } from "lucide-react";
+
+import { userHooks } from "@/hooks/zodiosHooks";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
     Form,
     FormControl,
@@ -18,14 +29,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const userDataFormSchema = z.object({
     username: z.string(),
@@ -64,8 +67,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
         isSuccess,
         reset,
         mutate: updateUser,
-    } = userHooks.useMutation("put", "/user", {
-        params: { id: true },
+    } = userHooks.usePut("/user", {
         withCredentials: true,
     });
 
@@ -160,7 +162,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
         <div className="flex flex-col">
             {editMode && (
                 <Button
-                    className="bg-gray-200 mx-4 mt-8 p-2 rounded-lg border border-violet-950 ml-auto"
+                    className="p-2 mx-4 mt-8 ml-auto bg-gray-200 border rounded-lg border-violet-950"
                     variant={"outline"}
                     disabled
                 >
@@ -170,7 +172,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
 
             {!editMode && (
                 <Button
-                    className="mx-4 mt-8 p-2 rounded-lg ml-auto"
+                    className="p-2 mx-4 mt-8 ml-auto rounded-lg"
                     variant={"outline"}
                     onClick={() => setEditMode(true)}
                 >
@@ -183,7 +185,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     onReset={onDiscard}
                     onChange={onInputChange}
-                    className="space-y-8 p-4 flex flex-col"
+                    className="flex flex-col p-4 space-y-8"
                 >
                     <FormField
                         control={form.control}
@@ -193,7 +195,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 <FormLabel>Username</FormLabel>
                                 {usernameError && (
                                     <div
-                                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm relative"
+                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
                                         role="alert"
                                     >
                                         <span className="block sm:inline">
@@ -268,7 +270,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 </div>
                                 {passwordError && (
                                     <div
-                                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm relative"
+                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
                                         role="alert"
                                     >
                                         <span className="block sm:inline">
@@ -296,7 +298,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 <FormLabel>Confirm new password</FormLabel>
                                 {confirmPasswordError && (
                                     <div
-                                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm relative"
+                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
                                         role="alert"
                                     >
                                         <span className="block sm:inline">
@@ -318,7 +320,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     />
                     {otherError && !usernameError && !passwordError && (
                         <div
-                            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm relative"
+                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
                             role="alert"
                         >
                             <span className="block sm:inline">
@@ -334,11 +336,11 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 variant={"outline"}
                                 disabled
                             >
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                 Please wait
                             </Button>
                             <Button
-                                className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
                                 type="reset"
                                 disabled
                             >
@@ -356,7 +358,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 Save changes
                             </Button>
                             <Button
-                                className="flex-1 border ml-1"
+                                className="flex-1 ml-1 border"
                                 variant={"destructive"}
                                 type="reset"
                             >
@@ -374,7 +376,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 <Check />
                             </Button>
                             <Button
-                                className="flex-1 border bg-gray-400 hover:bg-gray-400 ml-1"
+                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
                                 type="reset"
                                 disabled
                             >
