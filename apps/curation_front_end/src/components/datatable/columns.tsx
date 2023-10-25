@@ -59,14 +59,14 @@ export const columns: ColumnDef<Package>[] = [
                         <Link
                             className="hover:text-blue-400"
                             href={`/packages/${encodeURIComponent(
-                                row.getValue("purl"),
+                                row.original.purl,
                             )}`}
                         >
                             {row.getValue("name")}
                         </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <div className="text-sm">{row.getValue("purl")}</div>
+                        <div className="text-sm">{row.original.purl}</div>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -132,29 +132,6 @@ export const columns: ColumnDef<Package>[] = [
                     <Label className="font-bold cursor-pointer">
                         Namespace
                     </Label>
-                    {column.getIsSorted() === "desc" ? (
-                        <ChevronDownIcon className="ml-2 h-4 w-4" />
-                    ) : column.getIsSorted() === "asc" ? (
-                        <ChevronUpIcon className="ml-2 h-4 w-4" />
-                    ) : (
-                        <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
-            );
-        },
-    },
-    {
-        accessorKey: "purl",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    className="px-0"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    <Label className="font-bold cursor-pointer">Purl</Label>
                     {column.getIsSorted() === "desc" ? (
                         <ChevronDownIcon className="ml-2 h-4 w-4" />
                     ) : column.getIsSorted() === "asc" ? (
