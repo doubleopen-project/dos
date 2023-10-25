@@ -8,6 +8,7 @@ import * as dbQueries from "../helpers/db_queries";
 import * as s3Helpers from "s3-helpers";
 import { hashPassword } from "../helpers/password_helper";
 import { Prisma } from "database";
+import crypto from "crypto";
 
 const userRouter = zodiosRouter(userAPI);
 
@@ -74,6 +75,24 @@ userRouter.put("/user", async (req, res) => {
             console.log("Error: ", error);
             res.status(500).send({ message: "Internal server error" });
         }
+    }
+});
+
+userRouter.put("/token", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new Error("User not found");
+
+        const token = crypto.randomBytes(16).toString("hex");
+
+        // Update user token
+        await dbQueries.updateUser(user.id, { token: token });
+
+        res.status(200).json({ token: token });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 

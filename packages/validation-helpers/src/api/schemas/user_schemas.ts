@@ -221,3 +221,9 @@ export const PostFileRes = z.object({
         }),
     ),
 });
+
+//------------------ PUT token -------------------
+
+export const PutTokenRes = z.object({
+    token: z.string(),
+});
