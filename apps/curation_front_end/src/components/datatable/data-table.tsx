@@ -23,8 +23,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -59,34 +58,17 @@ export function DataTable<TData, TValue>({
                 <Input
                     placeholder="Search packages by name"
                     value={
-                        (table.getColumn("purl")?.getFilterValue() as string) ??
+                        (table.getColumn("name")?.getFilterValue() as string) ??
                         ""
                     }
                     onChange={(event) =>
                         table
-                            .getColumn("purl")
+                            .getColumn("name")
                             ?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
-                <div className="flex items-center space-x-2 py-4">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        <ChevronLeftIcon className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        <ChevronRightIcon className="h-4 w-4" />
-                    </Button>
-                </div>
+                <DataTablePagination table={table} />
             </div>
             <div className="rounded-md border">
                 <Table>
