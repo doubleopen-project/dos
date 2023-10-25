@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: MIT
 import { NextFunction, Request, Response } from "express";
 import { findUser } from "./db_queries";
+import NodeCache from "node-cache";
+
+const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
 
 export const authenticateORTToken = async (
     req: Request,
@@ -14,8 +17,14 @@ export const authenticateORTToken = async (
 
     if (token == null) return res.status(401).json({ message: "Unauthorized" });
 
-    if (token === process.env.ORT_TOKEN || (await findUser(token))) next();
-    else return res.status(403).json({ message: "Forbidden" });
+    // Cache is used for (GET) job-state requests
+    const useCache = req.originalUrl.split("/")[2] === "job-state";
+
+    if (useCache && cache.has(token)) next();
+    else if (await findUser(token)) {
+        cache.set(token, true);
+        next();
+    } else return res.status(403).json({ message: "Forbidden" });
 };
 
 export const authenticateSAToken = (
