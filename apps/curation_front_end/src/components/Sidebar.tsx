@@ -3,7 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { AiOutlineHome } from "react-icons/ai";
 import {
     GrInspect,
     GrCatalog,
@@ -11,10 +14,10 @@ import {
     GrUserSettings,
     GrLogin,
 } from "react-icons/gr";
-import { AiOutlineHome } from "react-icons/ai";
-import { useRouter } from "next/router";
+
 import { useUser } from "@/hooks/useUser";
-import { ModeToggle } from "./ModeToggle";
+
+import { ModeToggle } from "@/components/ModeToggle";
 
 interface SidebarProps {
     children: React.ReactNode;
@@ -29,7 +32,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                 <div className="flex flex-col items-center">
                     <Link href="/">
                         <div
-                            className="bg-purple-800 hover:bg-purple-400 text-white p-3 rounded-lg inline-block"
+                            className="inline-block p-3 text-white bg-purple-800 rounded-lg hover:bg-purple-400"
                             title="Home"
                         >
                             <AiOutlineHome size={20} />
@@ -38,7 +41,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     <span className="border-b-[1px] border-gray-200 w-full p-2"></span>
                     <Link href="/packages">
                         <div
-                            className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
+                            className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
                             title="Package Library"
                         >
                             <GrCatalog size={20} />
@@ -46,7 +49,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     </Link>
                     <Link href="/curation">
                         <div
-                            className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
+                            className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
                             title="Package Curations"
                         >
                             <GrInspect size={20} />
@@ -56,7 +59,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     {!user && (
                         <Link href="/login">
                             <div
-                                className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
+                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
                                 title="Login"
                             >
                                 <GrLogin size={20} />
@@ -64,10 +67,10 @@ const Sidebar = ({ children }: SidebarProps) => {
                         </Link>
                     )}
                     {router.pathname !== "/logout" && user && (
-                        <Link href="/profile">
+                        <Link href="/settings">
                             <div
-                                className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
-                                title="Profile"
+                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                title="Settings"
                             >
                                 <GrUserSettings size={20} />
                             </div>
@@ -76,7 +79,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     {router.pathname !== "/logout" && user && (
                         <Link href="/logout">
                             <div
-                                className="bg-gray-200 hover:bg-gray-400 my-4 p-3 rounded-lg inline-block"
+                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
                                 title="Logout"
                             >
                                 <GrLogout size={20} />
@@ -86,7 +89,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     <ModeToggle />
                 </div>
             </div>
-            <main className="ml-20 w-full">{children}</main>
+            <main className="w-full ml-20">{children}</main>
         </div>
     );
 };
