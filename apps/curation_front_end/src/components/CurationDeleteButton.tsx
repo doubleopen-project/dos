@@ -19,7 +19,7 @@ const CurationDeleteButton = ({ id, data }: Props) => {
         {
             withCredentials: true,
             params: {
-                id: id.toString(),
+                id: id,
             },
         },
         {
@@ -34,8 +34,8 @@ const CurationDeleteButton = ({ id, data }: Props) => {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-full">
-                <Loader2 className="mr-2 h-10 w-10 animate-spin" />
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="w-10 h-10 mr-2 animate-spin" />
             </div>
         );
     }

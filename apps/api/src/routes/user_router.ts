@@ -127,7 +127,7 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
 
-        const licenseConclusionId = parseInt(req.params.id);
+        const licenseConclusionId = req.params.id;
         const licenseConclusionUserId =
             await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
 
@@ -173,7 +173,7 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
 
-        const licenseConclusionId = parseInt(req.params.id);
+        const licenseConclusionId = req.params.id;
         const licenseConclusionUserId =
             await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
 
