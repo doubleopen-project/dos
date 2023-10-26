@@ -1650,6 +1650,69 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
+type PackageConfiguration = {
+    licenseConclusions: {
+        path: string;
+        detectedLicenseExpressionSPDX: string;
+        concludedLicenseExpressionSPDX: string;
+        comment: string;
+    }[];
+    pathExclusions: {
+        pattern: string;
+        reason: string;
+        comment: string;
+    }[];
+};
+
+export const getPackageConfiguration = async (
+    purl: string,
+): Promise<PackageConfiguration> => {
+    // TODO: Add path exclusions
+
+    const filetrees = await prisma.fileTree.findMany({
+        where: {
+            package: {
+                purl: purl,
+            },
+        },
+        select: {
+            path: true,
+            file: {
+                select: {
+                    licenseConclusions: {
+                        select: {
+                            detectedLicenseExpressionSPDX: true,
+                            concludedLicenseExpressionSPDX: true,
+                            comment: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    const licenseConclusions = [];
+
+    for (const filetree of filetrees) {
+        for (const licenseConclusion of filetree.file.licenseConclusions) {
+            licenseConclusions.push({
+                path: filetree.path,
+                detectedLicenseExpressionSPDX:
+                    licenseConclusion.detectedLicenseExpressionSPDX,
+                concludedLicenseExpressionSPDX:
+                    licenseConclusion.concludedLicenseExpressionSPDX,
+                comment: licenseConclusion.comment,
+            });
+        }
+    }
+
+    const packageConfiguration = {
+        licenseConclusions: licenseConclusions,
+        pathExclusions: [],
+    };
+    return packageConfiguration;
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
