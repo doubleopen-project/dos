@@ -118,7 +118,7 @@ export const PostPathExclusionReq = z.object({
     reason: z.string({
         required_error: "Reason is required",
     }),
-    comment: z.string(),
+    comment: z.nullable(z.string()).optional(),
 });
 
 export const PostPathExclusionRes = z.object({

@@ -4907,21 +4907,23 @@ declare const userAPI: [
                         purl: zod.ZodString;
                         pattern: zod.ZodString;
                         reason: zod.ZodString;
-                        comment: zod.ZodString;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         purl: string;
-                        comment: string;
                         pattern: string;
                         reason: string;
+                        comment?: string | null | undefined;
                     },
                     {
                         purl: string;
-                        comment: string;
                         pattern: string;
                         reason: string;
+                        comment?: string | null | undefined;
                     }
                 >;
             },
@@ -8549,21 +8551,23 @@ declare const dosAPI: [
                         purl: zod.ZodString;
                         pattern: zod.ZodString;
                         reason: zod.ZodString;
-                        comment: zod.ZodString;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         purl: string;
-                        comment: string;
                         pattern: string;
                         reason: string;
+                        comment?: string | null | undefined;
                     },
                     {
                         purl: string;
-                        comment: string;
                         pattern: string;
                         reason: string;
+                        comment?: string | null | undefined;
                     }
                 >;
             },

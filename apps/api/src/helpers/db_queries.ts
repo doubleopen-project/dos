@@ -17,6 +17,7 @@ import {
     Prisma,
     User,
     LicenseConclusion,
+    PathExclusion,
 } from "database";
 const prisma: PrismaClient = new PrismaClient();
 
@@ -371,6 +372,18 @@ export const createUser = async (
     }
 
     return user;
+};
+
+export const createPathExclusion = async (input: {
+    pattern: string;
+    reason: string;
+    comment: string | null;
+    packageId: number;
+    userId: number;
+}): Promise<PathExclusion> => {
+    return await prisma.pathExclusion.create({
+        data: input,
+    });
 };
 
 // Create file if it doesn't exist, otherwise return existing file
@@ -1679,6 +1692,46 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
+export const findPathExclusionUserId = async (
+    id: number,
+): Promise<number | null> => {
+    let pathExclusion: { userId: number } | null = null;
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval =
+        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.findUnique({
+                where: {
+                    id: id,
+                },
+                select: {
+                    userId: true,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find PathExclusion userId: " + error,
+            );
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, retryInterval),
+                );
+                console.log("Retrying database query");
+            } else {
+                throw new Error(
+                    "Error: Unable to perform query to find PathExclusion userId",
+                );
+            }
+        }
+    }
+    return pathExclusion ? pathExclusion.userId : null;
+};
+
 type PackageConfiguration = {
     licenseConclusions: {
         path: string;
@@ -1879,6 +1932,16 @@ export const deleteUser = async (id: number): Promise<User | null> => {
 
 export const deletePackage = async (id: number): Promise<Package | null> => {
     return await prisma.package.delete({
+        where: {
+            id: id,
+        },
+    });
+};
+
+export const deletePathExclusion = async (
+    id: number,
+): Promise<PathExclusion> => {
+    return await prisma.pathExclusion.delete({
         where: {
             id: id,
         },
