@@ -104,7 +104,7 @@ userRouter.post("/license-conclusion", async (req, res) => {
             concludedLicenseExpressionSPDX:
                 req.body.concludedLicenseExpressionSPDX,
             detectedLicenseExpressionSPDX:
-                req.body.detectedLicenseExpressionSPDX,
+                req.body.detectedLicenseExpressionSPDX || null,
             comment: req.body.comment,
             contextPurl: req.body.contextPurl,
             fileSha256: req.body.fileSha256,

@@ -2714,7 +2714,7 @@ declare const scannerAPI: [
                     zod.ZodObject<
                         {
                             path: zod.ZodString;
-                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             comment: zod.ZodString;
                         },
@@ -2722,13 +2722,13 @@ declare const scannerAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                         },
                         {
                             path: string;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                         }
@@ -2763,7 +2763,7 @@ declare const scannerAPI: [
             {
                 licenseConclusions: {
                     path: string;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                 }[];
@@ -2776,7 +2776,7 @@ declare const scannerAPI: [
             {
                 licenseConclusions: {
                     path: string;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                 }[];
@@ -4493,7 +4493,9 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         concludedLicenseExpressionSPDX: zod.ZodString;
-                        detectedLicenseExpressionSPDX: zod.ZodString;
+                        detectedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                         comment: zod.ZodString;
                         contextPurl: zod.ZodString;
                         fileSha256: zod.ZodString;
@@ -4501,18 +4503,24 @@ declare const userAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        detectedLicenseExpressionSPDX: string;
                         concludedLicenseExpressionSPDX: string;
                         comment: string;
                         contextPurl: string;
                         fileSha256: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
                     },
                     {
-                        detectedLicenseExpressionSPDX: string;
                         concludedLicenseExpressionSPDX: string;
                         comment: string;
                         contextPurl: string;
                         fileSha256: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
                     }
                 >;
             },
@@ -5705,7 +5713,7 @@ declare const userAPI: [
                             id: zod.ZodNumber;
                             createdAt: zod.ZodDate;
                             updatedAt: zod.ZodDate;
-                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             comment: zod.ZodString;
                             contextPurl: zod.ZodString;
@@ -5727,7 +5735,7 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                             contextPurl: string;
@@ -5739,7 +5747,7 @@ declare const userAPI: [
                         },
                         {
                             id: number;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                             contextPurl: string;
@@ -5759,7 +5767,7 @@ declare const userAPI: [
                 sha256: string;
                 licenseConclusions: {
                     id: number;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                     contextPurl: string;
@@ -5795,7 +5803,7 @@ declare const userAPI: [
                 sha256: string;
                 licenseConclusions: {
                     id: number;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                     contextPurl: string;
@@ -6361,7 +6369,7 @@ declare const dosAPI: [
                     zod.ZodObject<
                         {
                             path: zod.ZodString;
-                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             comment: zod.ZodString;
                         },
@@ -6369,13 +6377,13 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                         },
                         {
                             path: string;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                         }
@@ -6410,7 +6418,7 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     path: string;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                 }[];
@@ -6423,7 +6431,7 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     path: string;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                 }[];
@@ -8137,7 +8145,9 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         concludedLicenseExpressionSPDX: zod.ZodString;
-                        detectedLicenseExpressionSPDX: zod.ZodString;
+                        detectedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                         comment: zod.ZodString;
                         contextPurl: zod.ZodString;
                         fileSha256: zod.ZodString;
@@ -8145,18 +8155,24 @@ declare const dosAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        detectedLicenseExpressionSPDX: string;
                         concludedLicenseExpressionSPDX: string;
                         comment: string;
                         contextPurl: string;
                         fileSha256: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
                     },
                     {
-                        detectedLicenseExpressionSPDX: string;
                         concludedLicenseExpressionSPDX: string;
                         comment: string;
                         contextPurl: string;
                         fileSha256: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
                     }
                 >;
             },
@@ -9349,7 +9365,7 @@ declare const dosAPI: [
                             id: zod.ZodNumber;
                             createdAt: zod.ZodDate;
                             updatedAt: zod.ZodDate;
-                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             comment: zod.ZodString;
                             contextPurl: zod.ZodString;
@@ -9371,7 +9387,7 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                             contextPurl: string;
@@ -9383,7 +9399,7 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
-                            detectedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string;
                             contextPurl: string;
@@ -9403,7 +9419,7 @@ declare const dosAPI: [
                 sha256: string;
                 licenseConclusions: {
                     id: number;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                     contextPurl: string;
@@ -9439,7 +9455,7 @@ declare const dosAPI: [
                 sha256: string;
                 licenseConclusions: {
                     id: number;
-                    detectedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string;
                     contextPurl: string;

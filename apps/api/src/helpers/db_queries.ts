@@ -235,7 +235,7 @@ export const createLicenseFindingMatch = async (input: {
 
 export const createLicenseConclusion = async (input: {
     concludedLicenseExpressionSPDX: string;
-    detectedLicenseExpressionSPDX: string;
+    detectedLicenseExpressionSPDX: string | null;
     comment: string;
     contextPurl: string;
     fileSha256: string;
@@ -1735,7 +1735,7 @@ export const findPathExclusionUserId = async (
 type PackageConfiguration = {
     licenseConclusions: {
         path: string;
-        detectedLicenseExpressionSPDX: string;
+        detectedLicenseExpressionSPDX: string | null;
         concludedLicenseExpressionSPDX: string;
         comment: string;
     }[];

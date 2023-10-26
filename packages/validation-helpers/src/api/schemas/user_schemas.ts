@@ -51,21 +51,31 @@ export const PutUserRes = z.object({
 //-------------- POST license conclusion --------------
 
 export const PostLicenseConclusionReq = z.object({
-    concludedLicenseExpressionSPDX: z.string({
-        required_error: "Concluded license expression is required",
-    }),
-    detectedLicenseExpressionSPDX: z.string({
-        required_error: "Detected license expression is required",
-    }),
-    comment: z.string({
-        required_error: "Comment is required",
-    }),
-    contextPurl: z.string({
-        required_error: "Context purl is required",
-    }),
-    fileSha256: z.string({
-        required_error: "File SHA256 is required",
-    }),
+    concludedLicenseExpressionSPDX: z
+        .string({
+            required_error: "Concluded license expression is required",
+        })
+        .trim()
+        .min(1, "Concluded license expression (SPDX) cannot be empty"),
+    detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
+    comment: z
+        .string({
+            required_error: "Comment is required",
+        })
+        .trim()
+        .min(1, "Comment cannot be empty"),
+    contextPurl: z
+        .string({
+            required_error: "Context purl is required",
+        })
+        .trim()
+        .min(1, "Context purl cannot be empty"),
+    fileSha256: z
+        .string({
+            required_error: "File SHA256 is required",
+        })
+        .trim()
+        .min(1, "File SHA256 cannot be empty"),
 });
 
 export const PostLicenseConclusionRes = z.object({
@@ -230,7 +240,7 @@ export const PostFileRes = z.object({
             id: z.number(),
             createdAt: z.coerce.date(),
             updatedAt: z.coerce.date(),
-            detectedLicenseExpressionSPDX: z.string(),
+            detectedLicenseExpressionSPDX: z.nullable(z.string()),
             concludedLicenseExpressionSPDX: z.string(),
             comment: z.string(),
             contextPurl: z.string(),
