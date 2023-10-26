@@ -2740,17 +2740,17 @@ declare const scannerAPI: [
                         {
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
-                            comment: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            comment: string;
+                            comment: string | null;
                             pattern: string;
                             reason: string;
                         },
                         {
-                            comment: string;
+                            comment: string | null;
                             pattern: string;
                             reason: string;
                         }
@@ -2768,7 +2768,7 @@ declare const scannerAPI: [
                     comment: string;
                 }[];
                 pathExclusions: {
-                    comment: string;
+                    comment: string | null;
                     pattern: string;
                     reason: string;
                 }[];
@@ -2781,7 +2781,7 @@ declare const scannerAPI: [
                     comment: string;
                 }[];
                 pathExclusions: {
-                    comment: string;
+                    comment: string | null;
                     pattern: string;
                     reason: string;
                 }[];
@@ -6395,17 +6395,17 @@ declare const dosAPI: [
                         {
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
-                            comment: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            comment: string;
+                            comment: string | null;
                             pattern: string;
                             reason: string;
                         },
                         {
-                            comment: string;
+                            comment: string | null;
                             pattern: string;
                             reason: string;
                         }
@@ -6423,7 +6423,7 @@ declare const dosAPI: [
                     comment: string;
                 }[];
                 pathExclusions: {
-                    comment: string;
+                    comment: string | null;
                     pattern: string;
                     reason: string;
                 }[];
@@ -6436,7 +6436,7 @@ declare const dosAPI: [
                     comment: string;
                 }[];
                 pathExclusions: {
-                    comment: string;
+                    comment: string | null;
                     pattern: string;
                     reason: string;
                 }[];

@@ -14,6 +14,7 @@ import {
 } from "../helpers/auth_helpers";
 import { processPackageAndSendToScanner } from "../helpers/new_job_process";
 import { stateMap } from "../helpers/state_helpers";
+import { Prisma } from "database";
 
 const scannerRouter = zodiosRouter(scannerAPI);
 
@@ -53,12 +54,21 @@ scannerRouter.post(
             );
 
             const packageConfiguration =
-                await dbQueries.getPackageConfiguration(req.body.purl);
+                await dbOperations.getPackageConfiguration(req.body.purl);
 
             res.status(200).json(packageConfiguration);
         } catch (error) {
             console.log("Error: ", error);
-            res.status(500).json({ message: "Internal server error" });
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === "P2025"
+            ) {
+                return res.status(404).json({
+                    message: "Unable to find results for the requested package",
+                });
+            } else if (error instanceof Error)
+                res.status(404).json({ message: error.message });
+            else res.status(500).json({ message: "Internal server error" });
         }
     },
 );

@@ -80,7 +80,7 @@ export const PostPackageConfigurationRes = z.object({
         z.object({
             pattern: z.string(),
             reason: z.string(),
-            comment: z.string(),
+            comment: z.nullable(z.string()),
         }),
     ),
 });

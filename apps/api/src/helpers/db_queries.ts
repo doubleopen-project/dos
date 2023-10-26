@@ -1181,6 +1181,63 @@ export const findPackageIdsByPurl = async (
     return packageIds;
 };
 
+type PackageWithRelations = Prisma.PackageGetPayload<{
+    select: {
+        id: true;
+        pathExclusions: {
+            select: {
+                pattern: true;
+                reason: true;
+                comment: true;
+            };
+        };
+    };
+}>;
+
+export const findPackageWithPathExclusionsByPurl = async (
+    purl: string,
+): Promise<PackageWithRelations> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval =
+        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+    let packageObj: PackageWithRelations | null = null;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            packageObj = await prisma.package.findUnique({
+                where: {
+                    purl: purl,
+                },
+                select: {
+                    id: true,
+                    pathExclusions: {
+                        select: {
+                            pattern: true,
+                            reason: true,
+                            comment: true,
+                        },
+                    },
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find Package: " + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, retryInterval),
+                );
+                console.log("Retrying database query");
+            }
+        }
+    }
+
+    if (!packageObj) throw new Error("Error: Unable to find Package");
+
+    return packageObj;
+};
+
 export const getPackageScanResults = async (packageId: number) => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
@@ -1732,46 +1789,63 @@ export const findPathExclusionUserId = async (
     return pathExclusion ? pathExclusion.userId : null;
 };
 
-type PackageConfiguration = {
-    licenseConclusions: {
+export const findLicenseConclusionsByPackageId = async (
+    id: number,
+): Promise<
+    {
         path: string;
         detectedLicenseExpressionSPDX: string | null;
         concludedLicenseExpressionSPDX: string;
         comment: string;
-    }[];
-    pathExclusions: {
-        pattern: string;
-        reason: string;
-        comment: string;
-    }[];
-};
+    }[]
+> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval =
+        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+    let filetrees = null;
 
-export const getPackageConfiguration = async (
-    purl: string,
-): Promise<PackageConfiguration> => {
-    // TODO: Add path exclusions
-
-    const filetrees = await prisma.fileTree.findMany({
-        where: {
-            package: {
-                purl: purl,
-            },
-        },
-        select: {
-            path: true,
-            file: {
+    while (!querySuccess && retries > 0) {
+        try {
+            filetrees = await prisma.fileTree.findMany({
+                where: {
+                    package: {
+                        id: id,
+                    },
+                },
                 select: {
-                    licenseConclusions: {
+                    path: true,
+                    file: {
                         select: {
-                            detectedLicenseExpressionSPDX: true,
-                            concludedLicenseExpressionSPDX: true,
-                            comment: true,
+                            licenseConclusions: {
+                                select: {
+                                    detectedLicenseExpressionSPDX: true,
+                                    concludedLicenseExpressionSPDX: true,
+                                    comment: true,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        },
-    });
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, retryInterval),
+                );
+                console.log("Retrying database query");
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    if (!filetrees) throw new Error("Error: Unable to find LicenseConclusions");
 
     const licenseConclusions = [];
 
@@ -1788,11 +1862,7 @@ export const getPackageConfiguration = async (
         }
     }
 
-    const packageConfiguration = {
-        licenseConclusions: licenseConclusions,
-        pathExclusions: [],
-    };
-    return packageConfiguration;
+    return licenseConclusions;
 };
 
 // ------------------------------ Delete ------------------------------
