@@ -632,3 +632,35 @@ export const findFilesToBeScanned = async (
     }
     return filesToBeScanned;
 };
+
+type PackageConfiguration = {
+    licenseConclusions: {
+        path: string;
+        detectedLicenseExpressionSPDX: string | null;
+        concludedLicenseExpressionSPDX: string;
+        comment: string;
+    }[];
+    pathExclusions: {
+        pattern: string;
+        reason: string;
+        comment: string | null;
+    }[];
+};
+
+export const getPackageConfiguration = async (
+    purl: string,
+): Promise<PackageConfiguration> => {
+    const packageWithPathExclusions =
+        await dbQueries.findPackageWithPathExclusionsByPurl(purl);
+
+    if (!packageWithPathExclusions) throw new Error("Package not found");
+
+    const licenseConclusions =
+        await dbQueries.findLicenseConclusionsByPackageId(
+            packageWithPathExclusions.id,
+        );
+    return {
+        licenseConclusions: licenseConclusions,
+        pathExclusions: packageWithPathExclusions.pathExclusions,
+    };
+};

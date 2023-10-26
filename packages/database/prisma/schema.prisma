@@ -51,9 +51,9 @@ model Package {
   subpath    String?
   scanStatus String
 
-  fileTrees     FileTree[]
-  scannerJobs   ScannerJob[]
-  PathExclusion PathExclusion[]
+  fileTrees      FileTree[]
+  scannerJobs    ScannerJob[]
+  pathExclusions PathExclusion[]
 }
 
 /// File in the context of a package.
