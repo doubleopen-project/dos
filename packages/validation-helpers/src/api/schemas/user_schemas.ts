@@ -96,20 +96,39 @@ export const PutLicenseConclusionReq = z
         { message: "At least one field is required" },
     );
 
-export const PutLicenseConclusionReqPathParams = z.string({
-    required_error: "Id is required",
-});
-
 export const PutLicenseConclusionRes = z.object({
     message: z.string(),
 });
 
 //------------- DELETE license conclusion -------------
-export const DeleteLicenseConclusionReqPathParams = z.string({
-    required_error: "Id is required",
-});
 
 export const DeleteLicenseConclusionRes = z.object({
+    message: z.string(),
+});
+
+//------------------ POST path exclusion --------------
+
+export const PostPathExclusionReq = z.object({
+    purl: z.string({
+        required_error: "Purl is required",
+    }),
+    pattern: z.string({
+        required_error: "Pattern is required",
+    }),
+    reason: z.string({
+        required_error: "Reason is required",
+    }),
+    comment: z.string(),
+});
+
+export const PostPathExclusionRes = z.object({
+    pathExclusionId: z.number(),
+    message: z.string(),
+});
+
+//------------- DELETE path exclusion -------------
+
+export const DeletePathExclusionRes = z.object({
     message: z.string(),
 });
 
@@ -226,4 +245,10 @@ export const PostFileRes = z.object({
 
 export const PutTokenRes = z.object({
     token: z.string(),
+});
+
+//------------------ General path params -------------------
+
+export const PathParamIdInteger = z.number({
+    required_error: "Id is required",
 });

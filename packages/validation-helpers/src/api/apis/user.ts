@@ -59,7 +59,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PutLicenseConclusionReqPathParams,
+                schema: schemas.PathParamIdInteger,
             },
             {
                 name: "body",
@@ -78,10 +78,38 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.DeleteLicenseConclusionReqPathParams,
+                schema: schemas.PathParamIdInteger,
             },
         ],
         response: schemas.DeleteLicenseConclusionRes,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/path-exclusion",
+        description: "Add a new path exclusion",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostPathExclusionReq,
+            },
+        ],
+        response: schemas.PostPathExclusionRes,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/path-exclusion/:id",
+        description: "Delete a path exclusion",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.PathParamIdInteger,
+            },
+        ],
+        response: schemas.DeletePathExclusionRes,
         errors,
     },
     {
