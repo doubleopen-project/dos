@@ -101,16 +101,14 @@ userRouter.post("/license-conclusion", async (req, res) => {
         if (!req.user) throw new Error("User not found");
 
         const licenseConclusion = await dbQueries.createLicenseConclusion({
-            data: {
-                concludedLicenseExpressionSPDX:
-                    req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX:
-                    req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-                contextPurl: req.body.contextPurl,
-                fileSha256: req.body.fileSha256,
-                userId: req.user.id,
-            },
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX,
+            comment: req.body.comment,
+            contextPurl: req.body.contextPurl,
+            fileSha256: req.body.fileSha256,
+            userId: req.user.id,
         });
 
         res.status(200).json({

@@ -19,15 +19,15 @@ import {
     LicenseConclusion,
 } from "database";
 const prisma: PrismaClient = new PrismaClient();
-import * as dbZodSchemas from "validation-helpers";
 
 // ------------------------- Database queries -------------------------
 
 // ------------------------------ Create ------------------------------
 
-export const createScannerJob = async (
-    input: dbZodSchemas.CreateScannerJobInput,
-): Promise<ScannerJob> => {
+export const createScannerJob = async (input: {
+    state: string;
+    packageId: number;
+}): Promise<ScannerJob> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -36,7 +36,7 @@ export const createScannerJob = async (
     while (!scannerJob && retries > 0) {
         try {
             scannerJob = await prisma.scannerJob.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating ScannerJob: " + error);
@@ -92,7 +92,7 @@ export const createPackage = async (
 };
 
 export const createFile = async (
-    input: dbZodSchemas.CreateFileInput,
+    input: Prisma.FileCreateInput,
 ): Promise<File> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
@@ -102,7 +102,7 @@ export const createFile = async (
     while (!file && retries > 0) {
         try {
             file = await prisma.file.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating File: " + error);
@@ -123,8 +123,14 @@ export const createFile = async (
     return file;
 };
 
+type CreateFileTreeType = {
+    path: string;
+    packageId: number;
+    fileSha256: string;
+};
+
 export const createFileTree = async (
-    input: dbZodSchemas.CreateFileTreeInput,
+    input: CreateFileTreeType,
 ): Promise<FileTree> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
@@ -134,7 +140,7 @@ export const createFileTree = async (
     while (!fileTree && retries > 0) {
         try {
             fileTree = await prisma.fileTree.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating FileTree: " + error);
@@ -155,9 +161,12 @@ export const createFileTree = async (
     return fileTree;
 };
 
-export const createLicenseFinding = async (
-    input: dbZodSchemas.CreateLicenseFindingInput,
-): Promise<LicenseFinding> => {
+export const createLicenseFinding = async (input: {
+    licenseExpressionSPDX: string;
+    scanner: string;
+    scannerConfig: string;
+    fileSha256: string;
+}): Promise<LicenseFinding> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -166,7 +175,7 @@ export const createLicenseFinding = async (
     while (!licenseFinding && retries > 0) {
         try {
             licenseFinding = await prisma.licenseFinding.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating LicenseFinding: " + error);
@@ -187,9 +196,13 @@ export const createLicenseFinding = async (
     return licenseFinding;
 };
 
-export const createLicenseFindingMatch = async (
-    input: dbZodSchemas.CreateLicenseFindingMatchInput,
-): Promise<LicenseFindingMatch> => {
+export const createLicenseFindingMatch = async (input: {
+    licenseExpression: string;
+    startLine: number;
+    endLine: number;
+    score: number;
+    licenseFindingId: number;
+}): Promise<LicenseFindingMatch> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -198,7 +211,7 @@ export const createLicenseFindingMatch = async (
     while (!licenseFindingMatch && retries > 0) {
         try {
             licenseFindingMatch = await prisma.licenseFindingMatch.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating LicenseFindingMatch: " + error);
@@ -219,9 +232,14 @@ export const createLicenseFindingMatch = async (
     return licenseFindingMatch;
 };
 
-export const createLicenseConclusion = async (
-    input: dbZodSchemas.CreateLicenseConclusionInput,
-): Promise<LicenseConclusion> => {
+export const createLicenseConclusion = async (input: {
+    concludedLicenseExpressionSPDX: string;
+    detectedLicenseExpressionSPDX: string;
+    comment: string;
+    contextPurl: string;
+    fileSha256: string;
+    userId: number;
+}): Promise<LicenseConclusion> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -230,7 +248,7 @@ export const createLicenseConclusion = async (
     while (!licenseConclusion && retries > 0) {
         try {
             licenseConclusion = await prisma.licenseConclusion.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating LicenseConclusion: " + error);
@@ -250,9 +268,14 @@ export const createLicenseConclusion = async (
     return licenseConclusion;
 };
 
-export const createCopyrightFinding = async (
-    input: dbZodSchemas.CreateCopyrightFindingInput,
-): Promise<CopyrightFinding> => {
+export const createCopyrightFinding = async (input: {
+    copyright: string;
+    startLine: number;
+    endLine: number;
+    scanner: string;
+    scannerConfig: string;
+    fileSha256: string;
+}): Promise<CopyrightFinding> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -261,7 +284,7 @@ export const createCopyrightFinding = async (
     while (!copyrightFinding && retries > 0) {
         try {
             copyrightFinding = await prisma.copyrightFinding.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating CopyrightFinding: " + error);
@@ -282,9 +305,13 @@ export const createCopyrightFinding = async (
     return copyrightFinding;
 };
 
-export const createScanIssue = async (
-    input: dbZodSchemas.CreateScanIssueInput,
-): Promise<ScanIssue> => {
+export const createScanIssue = async (input: {
+    severity: string;
+    message: string;
+    scanner: string;
+    scannerConfig: string;
+    fileSha256: string;
+}): Promise<ScanIssue> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -293,7 +320,7 @@ export const createScanIssue = async (
     while (!scanIssue && retries > 0) {
         try {
             scanIssue = await prisma.scanIssue.create({
-                data: input.data,
+                data: input,
             });
         } catch (error) {
             console.log("Error creating ScanIssue: " + error);
@@ -348,9 +375,9 @@ export const createUser = async (
 
 // Create file if it doesn't exist, otherwise return existing file
 export const createFileIfNotExists = async (
-    input: dbZodSchemas.CreateFileInput,
+    input: Prisma.FileCreateInput,
 ): Promise<File> => {
-    let file: File | null = await findFileByHash(input.data.sha256);
+    let file: File | null = await findFileByHash(input.sha256);
 
     if (!file) {
         file = await createFile(input);
@@ -361,7 +388,7 @@ export const createFileIfNotExists = async (
 
 // Create file tree if it doesn't exist, otherwise return existing file tree
 export const createFileTreeIfNotExists = async (
-    input: dbZodSchemas.CreateFileTreeInput,
+    input: CreateFileTreeType,
 ): Promise<FileTree> => {
     let fileTree = await findFileTree(input);
 
@@ -450,9 +477,10 @@ export const updateScannerJobsStatesByPackageIds = async (
     return batchUpdate;
 };
 
-export const updateFile = async (
-    input: dbZodSchemas.UpdateFileInput,
-): Promise<File> => {
+export const updateFile = async (input: {
+    id: number;
+    data: Prisma.FileUpdateInput;
+}): Promise<File> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -525,9 +553,10 @@ export const updateManyFilesStatuses = async (
     return batchUpdate;
 };
 
-export const updatePackage = async (
-    input: dbZodSchemas.UpdatePackageInput,
-): Promise<Package> => {
+export const updatePackage = async (input: {
+    id: number;
+    data: Prisma.PackageUpdateInput;
+}): Promise<Package> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -764,7 +793,7 @@ export const findFileHashesByPackageIds = async (
 };
 
 export const findFileTree = async (
-    input: dbZodSchemas.CreateFileTreeInput,
+    input: CreateFileTreeType,
 ): Promise<FileTree | null> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
@@ -776,9 +805,9 @@ export const findFileTree = async (
         try {
             fileTree = await prisma.fileTree.findFirst({
                 where: {
-                    fileSha256: input.data.fileSha256,
-                    packageId: input.data.packageId,
-                    path: input.data.path,
+                    fileSha256: input.fileSha256,
+                    packageId: input.packageId,
+                    path: input.path,
                 },
             });
             querySuccess = true;
@@ -1190,7 +1219,7 @@ export const getPackageScanResults = async (packageId: number) => {
 // Find the id of the most recent scanner job with package id
 export const findMostRecentScannerJobByPackageId = async (
     packageId: number,
-): Promise<dbZodSchemas.ScannerJobOnlyIdOutput | null> => {
+): Promise<{ id: string } | null> => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
         parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
