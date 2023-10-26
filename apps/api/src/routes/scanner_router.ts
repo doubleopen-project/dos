@@ -39,6 +39,30 @@ scannerRouter.post("/scan-results", authenticateORTToken, async (req, res) => {
     }
 });
 
+// Get package configuration for package with purl
+scannerRouter.post(
+    "/package-configuration",
+    authenticateORTToken,
+    async (req, res) => {
+        try {
+            // TODO: Return results based on user access rights and choices
+
+            console.log(
+                "Searching for configuration for package with purl: " +
+                    req.body.purl,
+            );
+
+            const packageConfiguration =
+                await dbQueries.getPackageConfiguration(req.body.purl);
+
+            res.status(200).json(packageConfiguration);
+        } catch (error) {
+            console.log("Error: ", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    },
+);
+
 // Request presigned upload url for a file
 scannerRouter.post("/upload-url", authenticateORTToken, async (req, res) => {
     try {

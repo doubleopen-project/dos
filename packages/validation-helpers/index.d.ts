@@ -3322,6 +3322,199 @@ declare const scannerAPI: [
     },
     {
         method: "post";
+        path: "/package-configuration";
+        description: "Get package configuration for specified purl";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        purl: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        purl: string;
+                    },
+                    {
+                        purl: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseConclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            path: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            comment: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            path: string;
+                            concludedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string;
+                            comment: string;
+                        },
+                        {
+                            path: string;
+                            concludedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string;
+                            comment: string;
+                        }
+                    >,
+                    "many"
+                >;
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            comment: string;
+                            pattern: string;
+                            reason: string;
+                        },
+                        {
+                            comment: string;
+                            pattern: string;
+                            reason: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseConclusions: {
+                    path: string;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                }[];
+                pathExclusions: {
+                    comment: string;
+                    pattern: string;
+                    reason: string;
+                }[];
+            },
+            {
+                licenseConclusions: {
+                    path: string;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                }[];
+                pathExclusions: {
+                    comment: string;
+                    pattern: string;
+                    reason: string;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
         path: "/upload-url";
         description: "Get presigned upload URL for S3 object storage with specified object key";
         parameters: [
@@ -5406,19 +5599,19 @@ declare const userAPI: [
                                 "strip",
                                 zod.ZodTypeAny,
                                 {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
                                     licenseConclusions: {
                                         concludedLicenseExpressionSPDX: string;
+                                    }[];
+                                    licenseFindings: {
+                                        licenseExpressionSPDX: string;
                                     }[];
                                 },
                                 {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
                                     licenseConclusions: {
                                         concludedLicenseExpressionSPDX: string;
+                                    }[];
+                                    licenseFindings: {
+                                        licenseExpressionSPDX: string;
                                     }[];
                                 }
                             >;
@@ -5430,11 +5623,11 @@ declare const userAPI: [
                             packageId: number;
                             fileSha256: string;
                             file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
+                                }[];
+                                licenseFindings: {
+                                    licenseExpressionSPDX: string;
                                 }[];
                             };
                         },
@@ -5443,11 +5636,11 @@ declare const userAPI: [
                             packageId: number;
                             fileSha256: string;
                             file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
+                                }[];
+                                licenseFindings: {
+                                    licenseExpressionSPDX: string;
                                 }[];
                             };
                         }
@@ -5463,11 +5656,11 @@ declare const userAPI: [
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -5478,11 +5671,11 @@ declare const userAPI: [
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -5943,6 +6136,18 @@ declare const userAPI: [
             zod.ZodTypeAny,
             {
                 sha256: string;
+                licenseConclusions: {
+                    id: number;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                    contextPurl: string;
+                    user: {
+                        username: string;
+                    };
+                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -5955,18 +6160,6 @@ declare const userAPI: [
                         endLine: number;
                         licenseExpression: string | null;
                     }[];
-                }[];
-                licenseConclusions: {
-                    id: number;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    concludedLicenseExpressionSPDX: string;
-                    detectedLicenseExpressionSPDX: string;
-                    comment: string;
-                    contextPurl: string;
-                    user: {
-                        username: string;
-                    };
                 }[];
                 downloadUrl: string;
                 copyrightFindings: {
@@ -5979,6 +6172,18 @@ declare const userAPI: [
             },
             {
                 sha256: string;
+                licenseConclusions: {
+                    id: number;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                    contextPurl: string;
+                    user: {
+                        username: string;
+                    };
+                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -5991,18 +6196,6 @@ declare const userAPI: [
                         endLine: number;
                         licenseExpression: string | null;
                     }[];
-                }[];
-                licenseConclusions: {
-                    id: number;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    concludedLicenseExpressionSPDX: string;
-                    detectedLicenseExpressionSPDX: string;
-                    comment: string;
-                    contextPurl: string;
-                    user: {
-                        username: string;
-                    };
                 }[];
                 downloadUrl: string;
                 copyrightFindings: {
@@ -6425,6 +6618,199 @@ declare const dosAPI: [
                         source: string;
                     }[];
                 } | null;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/package-configuration";
+        description: "Get package configuration for specified purl";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        purl: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        purl: string;
+                    },
+                    {
+                        purl: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseConclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            path: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodString;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            comment: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            path: string;
+                            concludedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string;
+                            comment: string;
+                        },
+                        {
+                            path: string;
+                            concludedLicenseExpressionSPDX: string;
+                            detectedLicenseExpressionSPDX: string;
+                            comment: string;
+                        }
+                    >,
+                    "many"
+                >;
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            comment: string;
+                            pattern: string;
+                            reason: string;
+                        },
+                        {
+                            comment: string;
+                            pattern: string;
+                            reason: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseConclusions: {
+                    path: string;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                }[];
+                pathExclusions: {
+                    comment: string;
+                    pattern: string;
+                    reason: string;
+                }[];
+            },
+            {
+                licenseConclusions: {
+                    path: string;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                }[];
+                pathExclusions: {
+                    comment: string;
+                    pattern: string;
+                    reason: string;
+                }[];
             }
         >;
         errors: [
@@ -8601,19 +8987,19 @@ declare const dosAPI: [
                                 "strip",
                                 zod.ZodTypeAny,
                                 {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
                                     licenseConclusions: {
                                         concludedLicenseExpressionSPDX: string;
+                                    }[];
+                                    licenseFindings: {
+                                        licenseExpressionSPDX: string;
                                     }[];
                                 },
                                 {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
                                     licenseConclusions: {
                                         concludedLicenseExpressionSPDX: string;
+                                    }[];
+                                    licenseFindings: {
+                                        licenseExpressionSPDX: string;
                                     }[];
                                 }
                             >;
@@ -8625,11 +9011,11 @@ declare const dosAPI: [
                             packageId: number;
                             fileSha256: string;
                             file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
+                                }[];
+                                licenseFindings: {
+                                    licenseExpressionSPDX: string;
                                 }[];
                             };
                         },
@@ -8638,11 +9024,11 @@ declare const dosAPI: [
                             packageId: number;
                             fileSha256: string;
                             file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
+                                }[];
+                                licenseFindings: {
+                                    licenseExpressionSPDX: string;
                                 }[];
                             };
                         }
@@ -8658,11 +9044,11 @@ declare const dosAPI: [
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -8673,11 +9059,11 @@ declare const dosAPI: [
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 }[];
@@ -9138,6 +9524,18 @@ declare const dosAPI: [
             zod.ZodTypeAny,
             {
                 sha256: string;
+                licenseConclusions: {
+                    id: number;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                    contextPurl: string;
+                    user: {
+                        username: string;
+                    };
+                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -9150,18 +9548,6 @@ declare const dosAPI: [
                         endLine: number;
                         licenseExpression: string | null;
                     }[];
-                }[];
-                licenseConclusions: {
-                    id: number;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    concludedLicenseExpressionSPDX: string;
-                    detectedLicenseExpressionSPDX: string;
-                    comment: string;
-                    contextPurl: string;
-                    user: {
-                        username: string;
-                    };
                 }[];
                 downloadUrl: string;
                 copyrightFindings: {
@@ -9174,6 +9560,18 @@ declare const dosAPI: [
             },
             {
                 sha256: string;
+                licenseConclusions: {
+                    id: number;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    concludedLicenseExpressionSPDX: string;
+                    detectedLicenseExpressionSPDX: string;
+                    comment: string;
+                    contextPurl: string;
+                    user: {
+                        username: string;
+                    };
+                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -9186,18 +9584,6 @@ declare const dosAPI: [
                         endLine: number;
                         licenseExpression: string | null;
                     }[];
-                }[];
-                licenseConclusions: {
-                    id: number;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    concludedLicenseExpressionSPDX: string;
-                    detectedLicenseExpressionSPDX: string;
-                    comment: string;
-                    contextPurl: string;
-                    user: {
-                        username: string;
-                    };
                 }[];
                 downloadUrl: string;
                 copyrightFindings: {
@@ -9981,19 +10367,19 @@ declare const FileTree: z.ZodObject<
             "strip",
             z.ZodTypeAny,
             {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
+                }[];
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
                 }[];
             },
             {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
+                }[];
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
                 }[];
             }
         >;
@@ -10005,11 +10391,11 @@ declare const FileTree: z.ZodObject<
         packageId: number;
         fileSha256: string;
         file: {
-            licenseFindings: {
-                licenseExpressionSPDX: string;
-            }[];
             licenseConclusions: {
                 concludedLicenseExpressionSPDX: string;
+            }[];
+            licenseFindings: {
+                licenseExpressionSPDX: string;
             }[];
         };
     },
@@ -10018,11 +10404,11 @@ declare const FileTree: z.ZodObject<
         packageId: number;
         fileSha256: string;
         file: {
-            licenseFindings: {
-                licenseExpressionSPDX: string;
-            }[];
             licenseConclusions: {
                 concludedLicenseExpressionSPDX: string;
+            }[];
+            licenseFindings: {
+                licenseExpressionSPDX: string;
             }[];
         };
     }
@@ -10074,19 +10460,19 @@ declare const PostFileTreeRes: z.ZodObject<
                         "strip",
                         z.ZodTypeAny,
                         {
-                            licenseFindings: {
-                                licenseExpressionSPDX: string;
-                            }[];
                             licenseConclusions: {
                                 concludedLicenseExpressionSPDX: string;
+                            }[];
+                            licenseFindings: {
+                                licenseExpressionSPDX: string;
                             }[];
                         },
                         {
-                            licenseFindings: {
-                                licenseExpressionSPDX: string;
-                            }[];
                             licenseConclusions: {
                                 concludedLicenseExpressionSPDX: string;
+                            }[];
+                            licenseFindings: {
+                                licenseExpressionSPDX: string;
                             }[];
                         }
                     >;
@@ -10098,11 +10484,11 @@ declare const PostFileTreeRes: z.ZodObject<
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 },
@@ -10111,11 +10497,11 @@ declare const PostFileTreeRes: z.ZodObject<
                     packageId: number;
                     fileSha256: string;
                     file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
+                        }[];
+                        licenseFindings: {
+                            licenseExpressionSPDX: string;
                         }[];
                     };
                 }
@@ -10131,11 +10517,11 @@ declare const PostFileTreeRes: z.ZodObject<
             packageId: number;
             fileSha256: string;
             file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
+                }[];
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
                 }[];
             };
         }[];
@@ -10146,11 +10532,11 @@ declare const PostFileTreeRes: z.ZodObject<
             packageId: number;
             fileSha256: string;
             file: {
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
+                }[];
+                licenseFindings: {
+                    licenseExpressionSPDX: string;
                 }[];
             };
         }[];

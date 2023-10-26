@@ -59,6 +59,32 @@ export const PostScanResultsRes = z.object({
     ]),
 });
 
+//---------------- POST package-configuration ----------------
+
+export const PostPackageConfigurationReq = z.object({
+    purl: z.string({
+        required_error: "Purl is required",
+    }),
+});
+
+export const PostPackageConfigurationRes = z.object({
+    licenseConclusions: z.array(
+        z.object({
+            path: z.string(),
+            detectedLicenseExpressionSPDX: z.string(),
+            concludedLicenseExpressionSPDX: z.string(),
+            comment: z.string(),
+        }),
+    ),
+    pathExclusions: z.array(
+        z.object({
+            pattern: z.string(),
+            reason: z.string(),
+            comment: z.string(),
+        }),
+    ),
+});
+
 //---------------- POST upload-url ----------------
 
 export const PostUploadUrlReq = z.object({

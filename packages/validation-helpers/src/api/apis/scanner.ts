@@ -23,6 +23,20 @@ export const scannerAPI = makeApi([
     },
     {
         method: "post",
+        path: "/package-configuration",
+        description: "Get package configuration for specified purl",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostPackageConfigurationReq,
+            },
+        ],
+        response: schemas.PostPackageConfigurationRes,
+        errors,
+    },
+    {
+        method: "post",
         path: "/upload-url",
         description:
             "Get presigned upload URL for S3 object storage with specified object key",
