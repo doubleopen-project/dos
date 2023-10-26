@@ -3,10 +3,11 @@
 // SPDX-License-Identifier: MIT
 
 import { useRouter } from "next/router";
-import { LoginFormType } from "validation-helpers";
-import LoginForm from "@/components/LoginForm";
+
 import { useUser } from "@/hooks/useUser";
 import { authHooks } from "@/hooks/zodiosHooks";
+
+import LoginForm from "@/components/LoginForm";
 
 const getErrorString = (errorCode: number) => {
     switch (errorCode) {
@@ -15,6 +16,11 @@ const getErrorString = (errorCode: number) => {
         default:
             return "Something went wrong. Please try again.";
     }
+};
+
+type LoginFormType = {
+    username: string;
+    password: string;
 };
 
 export default function Login() {
@@ -40,7 +46,7 @@ export default function Login() {
     }
 
     return (
-        <div className="h-screen flex justify-center items-center">
+        <div className="flex items-center justify-center h-screen">
             <LoginForm
                 onSubmit={submitForm}
                 errMsg={
