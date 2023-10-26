@@ -51,8 +51,9 @@ model Package {
   subpath    String?
   scanStatus String
 
-  fileTrees   FileTree[]
-  scannerJobs ScannerJob[]
+  fileTrees     FileTree[]
+  scannerJobs   ScannerJob[]
+  PathExclusion PathExclusion[]
 }
 
 /// File in the context of a package.
@@ -174,6 +175,25 @@ model ScanIssue {
   @@index([fileSha256])
 }
 
+/// A path exclusion
+model PathExclusion {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pattern   String
+  reason    String
+  comment   String?
+
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([packageId])
+  @@index([userId])
+}
+
 /// A scanner job.
 model ScannerJob {
   id           String   @id @default(uuid())
@@ -210,6 +230,7 @@ model User {
   subscription   Subscription? @default(SILVER)
 
   licenseConclusions LicenseConclusion[]
+  PathExclusion      PathExclusion[]
 }
 
 enum Role {
