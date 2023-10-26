@@ -203,10 +203,8 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
             console.log("Adding a new ScannerJob to the database");
 
             const newScannerJob = await dbQueries.createScannerJob({
-                data: {
-                    state: "created",
-                    packageId: packageId,
-                },
+                state: "created",
+                packageId: packageId,
             });
 
             processPackageAndSendToScanner(

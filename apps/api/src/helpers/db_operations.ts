@@ -339,10 +339,8 @@ export const saveJobResults = async (
 
                         if (!dbFile) {
                             dbFile = await dbQueries.createFile({
-                                data: {
-                                    sha256: file.sha256,
-                                    scanStatus: "notStarted",
-                                },
+                                sha256: file.sha256,
+                                scanStatus: "notStarted",
                             });
                         } else {
                             // Delete old scan issues
@@ -352,35 +350,29 @@ export const saveJobResults = async (
                         }
 
                         await dbQueries.createFileTreeIfNotExists({
-                            data: {
-                                path: file.path,
-                                fileSha256: file.sha256,
-                                packageId: scannerJob.packageId,
-                            },
+                            path: file.path,
+                            fileSha256: file.sha256,
+                            packageId: scannerJob.packageId,
                         });
 
                         if (file.detected_license_expression_spdx) {
                             const finding =
                                 await dbQueries.createLicenseFinding({
-                                    data: {
-                                        scanner: scanner,
-                                        scannerConfig: scannerConfig,
-                                        licenseExpressionSPDX:
-                                            file.detected_license_expression_spdx,
-                                        fileSha256: file.sha256,
-                                    },
+                                    scanner: scanner,
+                                    scannerConfig: scannerConfig,
+                                    licenseExpressionSPDX:
+                                        file.detected_license_expression_spdx,
+                                    fileSha256: file.sha256,
                                 });
                             for (const license of file.license_detections) {
                                 for (const match of license.matches) {
                                     await dbQueries.createLicenseFindingMatch({
-                                        data: {
-                                            startLine: match.start_line,
-                                            endLine: match.end_line,
-                                            score: match.score,
-                                            licenseFindingId: finding.id,
-                                            licenseExpression:
-                                                match.license_expression,
-                                        },
+                                        startLine: match.start_line,
+                                        endLine: match.end_line,
+                                        score: match.score,
+                                        licenseFindingId: finding.id,
+                                        licenseExpression:
+                                            match.license_expression,
                                     });
                                 }
                             }
@@ -399,26 +391,22 @@ export const saveJobResults = async (
 
                         for (const copyright of file.copyrights) {
                             await dbQueries.createCopyrightFinding({
-                                data: {
-                                    startLine: copyright.start_line,
-                                    endLine: copyright.end_line,
-                                    copyright: copyright.copyright,
-                                    scanner: scanner,
-                                    scannerConfig: scannerConfig,
-                                    fileSha256: file.sha256,
-                                },
+                                startLine: copyright.start_line,
+                                endLine: copyright.end_line,
+                                copyright: copyright.copyright,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256,
                             });
                         }
 
                         for (const scanError of file.scan_errors) {
                             await dbQueries.createScanIssue({
-                                data: {
-                                    severity: "ERROR",
-                                    message: scanError,
-                                    scanner: scanner,
-                                    scannerConfig: scannerConfig,
-                                    fileSha256: file.sha256,
-                                },
+                                severity: "ERROR",
+                                message: scanError,
+                                scanner: scanner,
+                                scannerConfig: scannerConfig,
+                                fileSha256: file.sha256,
                             });
 
                             const timeoutErrorRegex =
@@ -474,10 +462,8 @@ export const saveJobResults = async (
                     (parseInt(process.env.TIMEOUT_MAX as string) || 3600)
                 ) {
                     const newScannerJob = await dbQueries.createScannerJob({
-                        data: {
-                            state: "created",
-                            packageId: scannerJob.packageId,
-                        },
+                        state: "created",
+                        packageId: scannerJob.packageId,
                     });
 
                     console.log(
@@ -597,20 +583,16 @@ export const findFilesToBeScanned = async (
                 if (!file) {
                     // Create new File
                     file = await dbQueries.createFile({
-                        data: {
-                            sha256: hash,
-                            scanStatus: "notStarted",
-                        },
+                        sha256: hash,
+                        scanStatus: "notStarted",
                     });
                 }
                 // Create FileTrees for file
                 for (const path of paths) {
                     await dbQueries.createFileTreeIfNotExists({
-                        data: {
-                            path: path,
-                            fileSha256: hash,
-                            packageId: packageId,
-                        },
+                        path: path,
+                        fileSha256: hash,
+                        packageId: packageId,
                     });
                 }
                 // Push file to be scanned if scanStatus is 'notStarted' or 'failed', with the first path
@@ -622,11 +604,9 @@ export const findFilesToBeScanned = async (
                 }
             } else if (file) {
                 await dbQueries.createFileTreeIfNotExists({
-                    data: {
-                        path: paths[0],
-                        fileSha256: hash,
-                        packageId: packageId,
-                    },
+                    path: paths[0],
+                    fileSha256: hash,
+                    packageId: packageId,
                 });
 
                 if (

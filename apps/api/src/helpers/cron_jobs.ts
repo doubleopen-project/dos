@@ -31,11 +31,8 @@ export const rescanFilesWithTimeoutIssues = async () => {
                         (parseInt(process.env.TIMEOUT_MAX as string) || 3600)
                     ) {
                         const newScannerJob = await dbQueries.createScannerJob({
-                            data: {
-                                state: "created",
-                                packageId:
-                                    scanIssue.file.filetrees[0].packageId,
-                            },
+                            state: "created",
+                            packageId: scanIssue.file.filetrees[0].packageId,
                         });
                         console.log(
                             newScannerJob.id +
