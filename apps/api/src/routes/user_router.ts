@@ -130,9 +130,8 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
             await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
 
         if (!licenseConclusionUserId)
-            res.status(404).json({
-                message: "License conclusion to update not found",
-            });
+            throw new Error("License conclusion to update not found");
+
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
             req.user.role === "ADMIN" ||
@@ -161,6 +160,8 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
             return res
                 .status(404)
                 .json({ message: "License conclusion to update not found" });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
         } else {
             res.status(500).json({ message: "Internal server error" });
         }
@@ -176,9 +177,8 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
             await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
 
         if (!licenseConclusionUserId)
-            res.status(404).json({
-                message: "License conclusion to delete not found",
-            });
+            throw new Error("License conclusion to delete not found");
+
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
             req.user.role === "ADMIN" ||
@@ -201,6 +201,72 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
                 message:
                     "License conclusion with the requested id does not exist",
             });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
+userRouter.post("/path-exclusion", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new Error("User not found");
+
+        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+
+        if (!packageId) throw new Error("Package not found");
+
+        const pathExclusion = await dbQueries.createPathExclusion({
+            pattern: req.body.pattern,
+            reason: req.body.reason,
+            comment: req.body.comment || null,
+            packageId: packageId,
+            userId: user.id,
+        });
+
+        res.status(200).json({
+            pathExclusionId: pathExclusion.id,
+            message: "Path exclusion created",
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.delete("/path-exclusion/:id", async (req, res) => {
+    try {
+        if (!req.user) throw new Error("User not found");
+        const pathExclusionId = req.params.id;
+
+        const pathExclusionUserId =
+            await dbQueries.findPathExclusionUserId(pathExclusionId);
+
+        if (!pathExclusionUserId)
+            throw new Error("Path exclusion to delete not found");
+
+        // Make sure that the path exclusion belongs to the user or the user is admin
+        if (req.user.role === "ADMIN" || req.user.id === pathExclusionUserId) {
+            await dbQueries.deletePathExclusion(pathExclusionId);
+
+            res.status(200).json({ message: "Path exclusion deleted" });
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Path exclusion with the requested id does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
         } else {
             res.status(500).json({ message: "Internal server error" });
         }
