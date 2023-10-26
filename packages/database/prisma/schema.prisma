@@ -113,7 +113,7 @@ model LicenseConclusion {
   createdAt                      DateTime @default(now())
   updatedAt                      DateTime @updatedAt
   concludedLicenseExpressionSPDX String
-  detectedLicenseExpressionSPDX  String
+  detectedLicenseExpressionSPDX  String?
   comment                        String
   contextPurl                    String
 
