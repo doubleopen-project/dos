@@ -4,6 +4,7 @@
 
 import { z } from "zod";
 import { passwordStrength } from "check-password-strength";
+import isGlob from "is-glob";
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -119,15 +120,27 @@ export const DeleteLicenseConclusionRes = z.object({
 //------------------ POST path exclusion --------------
 
 export const PostPathExclusionReq = z.object({
-    purl: z.string({
-        required_error: "Purl is required",
-    }),
-    pattern: z.string({
-        required_error: "Pattern is required",
-    }),
-    reason: z.string({
-        required_error: "Reason is required",
-    }),
+    purl: z
+        .string({
+            required_error: "Purl is required",
+        })
+        .trim()
+        .min(1, "Purl cannot be empty"),
+    pattern: z
+        .string({
+            required_error: "Pattern is required",
+        })
+        .trim()
+        .min(1, "Pattern cannot be empty")
+        .refine((pattern) => isGlob(pattern), {
+            message: "Pattern should be a glob",
+        }),
+    reason: z
+        .string({
+            required_error: "Reason is required",
+        })
+        .trim()
+        .min(1, "Reason cannot be empty"),
     comment: z.nullable(z.string()).optional(),
 });
 

@@ -10,9 +10,11 @@
     "dependencies": {
         "@zodios/express": "10.6.0",
         "check-password-strength": "2.0.7",
+        "is-glob": "4.0.3",
         "zod": "3.22.4"
     },
     "devDependencies": {
+        "@types/is-glob": "^4.0.3",
         "prettier": "3.0.3",
         "tsup": "7.2.0"
     }
