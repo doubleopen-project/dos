@@ -10,6 +10,17 @@ import {
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuCheckboxItem,
+    ContextMenuRadioItem,
+    ContextMenuRadioGroup,
+    ContextMenuLabel,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Label } from "@/components/ui/label";
 
 type NodeProps = NodeRendererProps<any> & {
     purl: string | undefined;
@@ -17,7 +28,7 @@ type NodeProps = NodeRendererProps<any> & {
 };
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
-    const { isLeaf, isClosed, isSelected, data } = node;
+    const { isLeaf, isInternal, isClosed, isSelected, data } = node;
     const { hasLicenseFindings, hasLicenseConclusions, name, path } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
@@ -46,35 +57,61 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
     }
 
     return (
-        <div
-            className="flex items-center cursor-pointer"
-            style={style}
-            onClick={() => {
-                if (!isLeaf) {
-                    node.toggle();
-                }
-            }}
-        >
-            <span className="flex items-center">{icon}</span>
-            <span className="ml-1 font-mono text-xs">
-                {isLeaf ? (
-                    <Link
-                        href={{
-                            pathname: `/packages/${encodeURIComponent(
-                                purl || "",
-                            )}/${encodeURIComponent(path || "")}`,
-                            query: licenseFilter
-                                ? { licenseFilter: `${licenseFilter}` }
-                                : {},
-                        }}
-                    >
-                        <div className={selectedClassName}>{name}</div>
-                    </Link>
-                ) : (
-                    <div className={selectedClassName}>{name}</div>
+        <ContextMenu>
+            <ContextMenuTrigger>
+                <div
+                    className="flex items-center cursor-pointer"
+                    style={style}
+                    onClick={() => {
+                        if (!isLeaf) {
+                            node.toggle();
+                        }
+                    }}
+                >
+                    <span className="flex items-center">{icon}</span>
+                    <span className="ml-1 font-mono text-xs">
+                        {isLeaf ? (
+                            <Link
+                                href={{
+                                    pathname: `/packages/${encodeURIComponent(
+                                        purl || "",
+                                    )}/${encodeURIComponent(path || "")}`,
+                                    query: licenseFilter
+                                        ? { licenseFilter: `${licenseFilter}` }
+                                        : {},
+                                }}
+                            >
+                                <div className={selectedClassName}>{name}</div>
+                            </Link>
+                        ) : (
+                            <div className={selectedClassName}>{name}</div>
+                        )}
+                    </span>
+                </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+                {!isLeaf && (
+                    <ContextMenuRadioGroup value="exclude_dir">
+                        <ContextMenuRadioItem value="exclude_dir">
+                            Exclude this directory
+                        </ContextMenuRadioItem>
+                        <ContextMenuRadioItem value="exclude_all_subdirs">
+                            Exclude this & all subdirectories
+                        </ContextMenuRadioItem>
+                    </ContextMenuRadioGroup>
                 )}
-            </span>
-        </div>
+                {isLeaf && (
+                    <ContextMenuRadioGroup value="exclude_file">
+                        <ContextMenuRadioItem value="exclude_file">
+                            Exclude this file
+                        </ContextMenuRadioItem>
+                        <ContextMenuRadioItem value="exclude_similar_files">
+                            Exclude all files with the same extension
+                        </ContextMenuRadioItem>
+                    </ContextMenuRadioGroup>
+                )}
+            </ContextMenuContent>
+        </ContextMenu>
     );
 };
 
