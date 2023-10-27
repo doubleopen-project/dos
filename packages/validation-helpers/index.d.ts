@@ -4914,7 +4914,7 @@ declare const userAPI: [
                     {
                         purl: zod.ZodString;
                         pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        reason: zod.ZodString;
+                        reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;
@@ -8566,7 +8566,7 @@ declare const dosAPI: [
                     {
                         purl: zod.ZodString;
                         pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        reason: zod.ZodString;
+                        reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;

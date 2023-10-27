@@ -118,6 +118,17 @@ export const DeleteLicenseConclusionRes = z.object({
 });
 
 //------------------ POST path exclusion --------------
+const validReasons = [
+    "BUILD_TOOL_OF",
+    "DATA_FILE_OF",
+    "DOCUMENTATION_OF",
+    "EXAMPLE_OF",
+    "OPTIONAL_COMPONENT_OF",
+    "OTHER",
+    "PROVIDED_BY",
+    "TEST_OF",
+    "TEST_TOOL_OF",
+];
 
 export const PostPathExclusionReq = z.object({
     purl: z
@@ -140,7 +151,12 @@ export const PostPathExclusionReq = z.object({
             required_error: "Reason is required",
         })
         .trim()
-        .min(1, "Reason cannot be empty"),
+        .min(1, "Reason cannot be empty")
+        .refine((reason) => validReasons.includes(reason), {
+            message:
+                "Reason is invalid. Accepted values are: " +
+                validReasons.join(", "),
+        }),
     comment: z.nullable(z.string()).optional(),
 });
 
