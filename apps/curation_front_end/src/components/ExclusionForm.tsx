@@ -27,18 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import isGlob from "is-glob";
-
-const validReasons = [
-    "BUILD_TOOL_OF",
-    "DATA_FILE_OF",
-    "DOCUMENTATION_OF",
-    "EXAMPLE_OF",
-    "OPTIONAL_COMPONENT_OF",
-    "OTHER",
-    "PROVIDED_BY",
-    "TEST_OF",
-    "TEST_TOOL_OF",
-];
+import { validReasons } from "validation-helpers";
 
 const exclusionFormSchema = z.object({
     pattern: z
@@ -105,7 +94,7 @@ const ExclusionForm = ({ purl }: Props) => {
 
     return (
         <div className="flex flex-col w-full">
-            <Label className="font-bold mb-1">Add path exclusion</Label>
+            <Label className="mb-1 font-bold">Add path exclusion</Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -182,7 +171,7 @@ const ExclusionForm = ({ purl }: Props) => {
                         <Button
                             variant="outline"
                             type="submit"
-                            className="text-xs p-1 rounded-md mt-2"
+                            className="p-1 mt-2 text-xs rounded-md"
                         >
                             Add path exclusion
                         </Button>

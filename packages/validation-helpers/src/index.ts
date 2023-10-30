@@ -8,6 +8,7 @@ export { authAPI } from "./api/apis/auth";
 export { scannerAPI } from "./api/apis/scanner";
 export { userAPI } from "./api/apis/user";
 export { dosAPI } from "./api";
+export { validReasons } from "./api/schemas/user_schemas";
 export type {
     FileTreeType,
     PostFileTreeResType,
