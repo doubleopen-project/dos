@@ -15,7 +15,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ZodiosBodyByPath, ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByPath } from "@zodios/core";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import CurationSPDX from "./CurationSPDX";
@@ -34,11 +34,6 @@ const curationFormSchema = z.object({
 type CurationFormType = z.infer<typeof curationFormSchema>;
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
-type LicenseConclusionPostData = ZodiosBodyByPath<
-    typeof userAPI,
-    "post",
-    "/license-conclusion"
->;
 
 type Props = {
     purl: string;

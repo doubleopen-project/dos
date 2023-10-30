@@ -18,6 +18,14 @@ import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import ComboBoxPackage from "./ComboBoxPackage";
 import Node from "./Node";
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import ExclusionForm from "./ExclusionForm";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 type PackageTreeProps = {
     purl: string | undefined;
@@ -165,11 +173,42 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                 )}
             </div>
 
-            <div className="p-1 mt-2 rounded-md shadow-lg border flex items-center text-sm">
+            <div className="p-1 mt-2 rounded-md shadow-lg border flex flex-col items-center text-sm">
                 <ComboBoxPackage
                     data={uniqueLicenses}
                     filterString={"licenseFilter"}
                 />
+                <div className="pt-1 rounded-md flex text-sm justify-end">
+                    <Button
+                        variant="outline"
+                        className="text-xs p-1 rounded-md"
+                    >
+                        List path exclusions
+                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="text-xs p-1 rounded-md ml-2"
+                            >
+                                Add path exclusion
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <ExclusionForm purl={purl} />
+                            <DialogFooter className="flex justify-end">
+                                <DialogClose asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="text-xs p-1 rounded-md"
+                                    >
+                                        Close
+                                    </Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
         </div>
     );
