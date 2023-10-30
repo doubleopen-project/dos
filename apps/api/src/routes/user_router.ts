@@ -273,6 +273,38 @@ userRouter.delete("/path-exclusion/:id", async (req, res) => {
     }
 });
 
+userRouter.post("/path-exclusions", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new Error("User not found");
+
+        const pathExclusions = await dbQueries.getPathExclusionsByPackagePurl(
+            req.body.purl,
+        );
+
+        if (!pathExclusions) throw new Error("Package not found");
+
+        res.status(200).json({
+            pathExclusions: pathExclusions,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with the requested purl does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
 userRouter.post("/file", async (req, res) => {
     try {
         let sha256 = null;
