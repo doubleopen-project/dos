@@ -5160,6 +5160,172 @@ declare const userAPI: [
     },
     {
         method: "post";
+        path: "/path-exclusions";
+        description: "Get path exclusions for specified purl";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        purl: zod.ZodEffects<zod.ZodString, string, string>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        purl: string;
+                    },
+                    {
+                        purl: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                        },
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                }[];
+            },
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
         path: "/filetree";
         alias: "GetFileTree";
         description: "Get file tree for specified purl";
@@ -5652,8 +5818,8 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            licenseExpressionSPDX: string;
                             updatedAt: Date;
+                            licenseExpressionSPDX: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
@@ -5665,8 +5831,8 @@ declare const userAPI: [
                         },
                         {
                             id: number;
-                            licenseExpressionSPDX: string;
                             updatedAt: Date;
+                            licenseExpressionSPDX: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
@@ -5779,8 +5945,8 @@ declare const userAPI: [
                 }[];
                 licenseFindings: {
                     id: number;
-                    licenseExpressionSPDX: string;
                     updatedAt: Date;
+                    licenseExpressionSPDX: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
@@ -5815,8 +5981,8 @@ declare const userAPI: [
                 }[];
                 licenseFindings: {
                     id: number;
-                    licenseExpressionSPDX: string;
                     updatedAt: Date;
+                    licenseExpressionSPDX: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
@@ -8812,6 +8978,172 @@ declare const dosAPI: [
     },
     {
         method: "post";
+        path: "/user/path-exclusions";
+        description: "Get path exclusions for specified purl";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        purl: zod.ZodEffects<zod.ZodString, string, string>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        purl: string;
+                    },
+                    {
+                        purl: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                        },
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                }[];
+            },
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
         path: "/user/filetree";
         alias: "GetFileTree";
         description: "Get file tree for specified purl";
@@ -9304,8 +9636,8 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            licenseExpressionSPDX: string;
                             updatedAt: Date;
+                            licenseExpressionSPDX: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
@@ -9317,8 +9649,8 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
-                            licenseExpressionSPDX: string;
                             updatedAt: Date;
+                            licenseExpressionSPDX: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
@@ -9431,8 +9763,8 @@ declare const dosAPI: [
                 }[];
                 licenseFindings: {
                     id: number;
-                    licenseExpressionSPDX: string;
                     updatedAt: Date;
+                    licenseExpressionSPDX: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
@@ -9467,8 +9799,8 @@ declare const dosAPI: [
                 }[];
                 licenseFindings: {
                     id: number;
-                    licenseExpressionSPDX: string;
                     updatedAt: Date;
+                    licenseExpressionSPDX: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;

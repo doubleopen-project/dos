@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { passwordStrength } from "check-password-strength";
 import isGlob from "is-glob";
+import { PackageURL } from "packageurl-js";
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -169,6 +170,43 @@ export const PostPathExclusionRes = z.object({
 
 export const DeletePathExclusionRes = z.object({
     message: z.string(),
+});
+
+//------------------ POST path-exclusions -------------------
+
+export const PostPathExclusionsReq = z.object({
+    purl: z
+        .string({
+            required_error: "Purl is required",
+        })
+        .trim()
+        .min(1, "Purl cannot be empty")
+        .refine(
+            (purl) => {
+                try {
+                    PackageURL.fromString(purl);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            },
+            { message: "Purl is not valid" },
+        ),
+});
+
+export const PostPathExclusionsRes = z.object({
+    pathExclusions: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            pattern: z.string(),
+            reason: z.string(),
+            comment: z.nullable(z.string()),
+            user: z.object({
+                username: z.string(),
+            }),
+        }),
+    ),
 });
 
 //------------------ POST filetree -------------------

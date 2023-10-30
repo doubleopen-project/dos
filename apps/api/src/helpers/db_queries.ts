@@ -1238,6 +1238,68 @@ export const findPackageWithPathExclusionsByPurl = async (
     return packageObj;
 };
 
+export const getPathExclusionsByPackagePurl = async (
+    purl: string,
+): Promise<
+    | {
+          id: number;
+          updatedAt: Date;
+          pattern: string;
+          reason: string;
+          comment: string | null;
+          user: {
+              username: string;
+          };
+      }[]
+    | null
+> => {
+    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
+    const retryInterval =
+        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let querySuccess = false;
+    let packageObj = null;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            packageObj = await prisma.package.findUnique({
+                where: {
+                    purl: purl,
+                },
+                select: {
+                    pathExclusions: {
+                        select: {
+                            id: true,
+                            updatedAt: true,
+                            pattern: true,
+                            reason: true,
+                            comment: true,
+                            user: {
+                                select: {
+                                    username: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find Package: " + error);
+            retries--;
+            if (retries > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, retryInterval),
+                );
+                console.log("Retrying database query");
+            }
+        }
+    }
+
+    if (!packageObj) throw new Error("Error: Unable to find Package");
+
+    return packageObj.pathExclusions;
+};
+
 export const getPackageScanResults = async (packageId: number) => {
     let retries = parseInt(process.env.DB_RETRIES as string) || 5;
     const retryInterval =
