@@ -15,15 +15,6 @@ import TokenDialog from "@/components/TokenDialog";
 import UserDataForm from "@/components/UserDataForm";
 import { Separator } from "@/components/ui/separator";
 
-const settingItems = [
-    {
-        title: "Profile",
-    },
-    {
-        title: "Tokens",
-    },
-];
-
 export default function Settings() {
     const user = useUser({ redirectTo: "/login", redirectIfFound: false });
 
@@ -43,9 +34,7 @@ export default function Settings() {
     return (
         <div className="flex items-center justify-center h-screen p-2">
             <div className="w-full h-full p-20 m-1 border rounded-md shadow-lg">
-                <h1 className="pb-2 text-3xl font-semibold leading-none tracking-tight">
-                    Settings
-                </h1>
+                <h1 className="pb-2">Settings</h1>
                 <Separator />
                 <div className="flex flex-col pt-4 space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
                     <aside className="-mx-4 lg:w-1/5">
@@ -73,9 +62,7 @@ export default function Settings() {
                                 profileVisibility ? "visible" : "hidden",
                             )}
                         >
-                            <h2 className="text-2xl font-semibold leading-none tracking-tight">
-                                Profile
-                            </h2>
+                            <h2>Profile</h2>
                             {user && <UserDataForm user={user} />}
                             {!user && (
                                 <div className="flex items-center justify-center h-full">
@@ -89,9 +76,7 @@ export default function Settings() {
                                 tokensVisibility ? "visible" : "hidden",
                             )}
                         >
-                            <h2 className="pb-5 text-2xl font-semibold leading-none tracking-tights">
-                                Tokens
-                            </h2>
+                            <h2 className="pb-5">Tokens</h2>
                             <p className="pt-4">
                                 Here you can create a token you will need for
                                 running ORT with DOS Scanner, or to use the
