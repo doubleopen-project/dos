@@ -114,6 +114,20 @@ export const userAPI = makeApi([
     },
     {
         method: "post",
+        path: "/path-exclusions",
+        description: "Get path exclusions for specified purl",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostPathExclusionsReq,
+            },
+        ],
+        response: schemas.PostPathExclusionsRes,
+        errors,
+    },
+    {
+        method: "post",
         path: "/filetree",
         alias: "GetFileTree",
         description: "Get file tree for specified purl",
