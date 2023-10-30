@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
-import { ScannerJobResultSchema } from "../../schemas/scanner_agent_schemas";
+import { ScannerJobResultSchema } from "../../scanner_agent/schemas";
 
 //---------------- POST scan-results ----------------
 

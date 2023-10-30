@@ -2,13 +2,16 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useRouter } from "next/router";
 import { useEffect } from "react";
+
+import { useRouter } from "next/router";
+
 import { userHooks } from "@/hooks/zodiosHooks";
 
 interface UseUserOptions {
     redirectTo?: string;
     redirectIfFound?: boolean;
+    admin?: boolean;
 }
 
 export const useUser = (options: UseUserOptions) => {
@@ -26,6 +29,7 @@ export const useUser = (options: UseUserOptions) => {
         : null;
     const finished = Boolean(data);
     const hasUser = Boolean(user);
+    const isAdmin = user?.role === "ADMIN";
 
     useEffect(() => {
         if (!options.redirectTo || !finished) return;
@@ -33,11 +37,13 @@ export const useUser = (options: UseUserOptions) => {
             // If redirectTo is set, redirect if the user was not found.
             (options.redirectTo && !options.redirectIfFound && !hasUser) ||
             // If redirectIfFound is also set, redirect if the user was found
-            (options.redirectIfFound && hasUser && !error)
+            (options.redirectIfFound && hasUser && !error) ||
+            // If admin is set, redirect if the user is not an admin
+            (options.admin && !isAdmin)
         ) {
             router.push(options.redirectTo);
         }
-    }, [options, finished, hasUser, error, router]);
+    }, [options, finished, hasUser, error, router, isAdmin]);
 
     return error ? null : user;
 };

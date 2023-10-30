@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
-export { ScannerJobResultSchema } from "./schemas/scanner_agent_schemas";
+export { ScannerJobResultSchema } from "./scanner_agent/schemas";
 import * as zod from "zod";
 import { z } from "zod";
 
@@ -1796,8 +1796,16 @@ declare const adminAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        username: zod.ZodString;
-                        password: zod.ZodString;
+                        username: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
+                        password: zod.ZodEffects<zod.ZodString, string, string>;
                         role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
                         subscription: zod.ZodOptional<
                             zod.ZodEnum<["SILVER", "GOLD"]>
@@ -5191,6 +5199,19 @@ declare const userAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -5200,6 +5221,9 @@ declare const userAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         },
                         {
                             id: number;
@@ -5207,6 +5231,9 @@ declare const userAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         }
                     >,
                     "many"
@@ -5221,6 +5248,9 @@ declare const userAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             },
             {
@@ -5230,6 +5260,9 @@ declare const userAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             }
         >;
@@ -5906,10 +5939,10 @@ declare const userAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         },
                         {
                             id: number;
@@ -5918,10 +5951,10 @@ declare const userAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         }
                     >,
                     "many"
@@ -5938,10 +5971,10 @@ declare const userAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -5974,10 +6007,10 @@ declare const userAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -9009,6 +9042,19 @@ declare const dosAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -9018,6 +9064,9 @@ declare const dosAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         },
                         {
                             id: number;
@@ -9025,6 +9074,9 @@ declare const dosAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         }
                     >,
                     "many"
@@ -9039,6 +9091,9 @@ declare const dosAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             },
             {
@@ -9048,6 +9103,9 @@ declare const dosAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             }
         >;
@@ -9724,10 +9782,10 @@ declare const dosAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         },
                         {
                             id: number;
@@ -9736,10 +9794,10 @@ declare const dosAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         }
                     >,
                     "many"
@@ -9756,10 +9814,10 @@ declare const dosAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -9792,10 +9850,10 @@ declare const dosAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -10048,8 +10106,16 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        username: zod.ZodString;
-                        password: zod.ZodString;
+                        username: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
+                        password: zod.ZodEffects<zod.ZodString, string, string>;
                         role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
                         subscription: zod.ZodOptional<
                             zod.ZodEnum<["SILVER", "GOLD"]>
@@ -10770,6 +10836,17 @@ declare const PostFileTreeRes: z.ZodObject<
 >;
 type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
 
+declare const getUsernameSchema: (
+    required: boolean,
+) => z.ZodEffects<
+    z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, string, string>,
+    string,
+    string
+>;
+declare const getPasswordSchema: (
+    required: boolean,
+) => z.ZodEffects<z.ZodString, string, string>;
+
 export {
     FileTreeType,
     PostFileTreeResType,
@@ -10778,6 +10855,8 @@ export {
     adminAPI,
     authAPI,
     dosAPI,
+    getPasswordSchema,
+    getUsernameSchema,
     scannerAPI,
     scannerAgentApi,
     userAPI,
