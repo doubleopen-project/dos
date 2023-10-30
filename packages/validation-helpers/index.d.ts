@@ -10217,6 +10217,7 @@ declare const PutUserReq: z.ZodObject<
         password?: string | undefined;
     }
 >;
+declare const validReasons: string[];
 declare const FileTree: z.ZodObject<
     {
         path: z.ZodString;
@@ -10448,4 +10449,5 @@ export {
     scannerAPI,
     scannerAgentApi,
     userAPI,
+    validReasons,
 };

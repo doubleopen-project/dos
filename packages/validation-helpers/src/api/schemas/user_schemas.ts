@@ -118,7 +118,7 @@ export const DeleteLicenseConclusionRes = z.object({
 });
 
 //------------------ POST path exclusion --------------
-const validReasons = [
+export const validReasons = [
     "BUILD_TOOL_OF",
     "DATA_FILE_OF",
     "DOCUMENTATION_OF",
