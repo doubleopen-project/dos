@@ -3,23 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
-
-//------------------ POST register -------------------
-
-export const PostRegisterReq = z.object({
-    username: z.string({
-        required_error: "Username is required",
-    }),
-    password: z.string({
-        required_error: "Password is required",
-    }),
-    role: z.enum(["ADMIN", "USER"]).optional(),
-    subscription: z.enum(["SILVER", "GOLD"]).optional(),
-});
-
-export const PostRegisterRes = z.object({
-    message: z.string(),
-});
+import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
 
 //---------------- DELETE scan-results ----------------
 
@@ -36,12 +20,8 @@ export const DeleteScanResultsRes = z.object({
 //-------------------- POST user --------------------
 
 export const PostUserReq = z.object({
-    username: z.string({
-        required_error: "Username is required",
-    }),
-    password: z.string({
-        required_error: "Password is required",
-    }),
+    username: getUsernameSchema(true),
+    password: getPasswordSchema(true),
     role: z.enum(["ADMIN", "USER"]).optional(),
     subscription: z.enum(["SILVER", "GOLD"]).optional(),
     token: z.string().optional(),

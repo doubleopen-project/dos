@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
-import { passwordStrength } from "check-password-strength";
 import isGlob from "is-glob";
 import { PackageURL } from "packageurl-js";
+import { getUsernameSchema, getPasswordSchema } from "./common_schemas";
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -16,33 +16,8 @@ export const GetUserRes = z.object({
 
 export const PutUserReq = z
     .object({
-        username: z
-            .string()
-            .trim()
-            .min(1, "Username cannot be empty")
-            .max(20, "Username cannot be longer than 20 characters")
-            .refine((username) => !username.includes(" "), {
-                message: "Username cannot contain spaces",
-            })
-            .refine((username) => username.match(/^[a-z0-9]+$/i), {
-                message:
-                    "Username must be alphanumeric ie. contain only letters and numbers",
-            })
-            .refine(
-                (username) =>
-                    username.toLowerCase() !== "admin" &&
-                    username.toLowerCase() !== "root",
-                {
-                    message: "The chosen username is not allowed",
-                },
-            ),
-        password: z
-            .string()
-            .trim()
-            .min(8, "Password has to be at least 8 characters long")
-            .refine((password) => passwordStrength(password).id > 1, {
-                message: "Password is too weak",
-            }),
+        username: getUsernameSchema(false),
+        password: getPasswordSchema(false),
     })
     .partial();
 
@@ -60,12 +35,7 @@ export const PostLicenseConclusionReq = z.object({
         .trim()
         .min(1, "Concluded license expression (SPDX) cannot be empty"),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
-    comment: z
-        .string({
-            required_error: "Comment is required",
-        })
-        .trim()
-        .min(1, "Comment cannot be empty"),
+    comment: z.string(),
     contextPurl: z
         .string({
             required_error: "Context purl is required",

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { makeApi, makeErrors } from "@zodios/core";
-import * as schemas from "./schemas/scanner_agent_schemas";
+import * as schemas from "./schemas";
 
 const errors = makeErrors([
     {
