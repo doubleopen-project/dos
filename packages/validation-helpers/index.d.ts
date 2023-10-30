@@ -5191,6 +5191,19 @@ declare const userAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -5200,6 +5213,9 @@ declare const userAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         },
                         {
                             id: number;
@@ -5207,6 +5223,9 @@ declare const userAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         }
                     >,
                     "many"
@@ -5221,6 +5240,9 @@ declare const userAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             },
             {
@@ -5230,6 +5252,9 @@ declare const userAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             }
         >;
@@ -5906,10 +5931,10 @@ declare const userAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         },
                         {
                             id: number;
@@ -5918,10 +5943,10 @@ declare const userAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         }
                     >,
                     "many"
@@ -5938,10 +5963,10 @@ declare const userAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -5974,10 +5999,10 @@ declare const userAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -9009,6 +9034,19 @@ declare const dosAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -9018,6 +9056,9 @@ declare const dosAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         },
                         {
                             id: number;
@@ -9025,6 +9066,9 @@ declare const dosAPI: [
                             pattern: string;
                             reason: string;
                             updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
                         }
                     >,
                     "many"
@@ -9039,6 +9083,9 @@ declare const dosAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             },
             {
@@ -9048,6 +9095,9 @@ declare const dosAPI: [
                     pattern: string;
                     reason: string;
                     updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
                 }[];
             }
         >;
@@ -9724,10 +9774,10 @@ declare const dosAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         },
                         {
                             id: number;
@@ -9736,10 +9786,10 @@ declare const dosAPI: [
                             comment: string;
                             contextPurl: string;
                             updatedAt: Date;
-                            createdAt: Date;
                             user: {
                                 username: string;
                             };
+                            createdAt: Date;
                         }
                     >,
                     "many"
@@ -9756,10 +9806,10 @@ declare const dosAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;
@@ -9792,10 +9842,10 @@ declare const dosAPI: [
                     comment: string;
                     contextPurl: string;
                     updatedAt: Date;
-                    createdAt: Date;
                     user: {
                         username: string;
                     };
+                    createdAt: Date;
                 }[];
                 licenseFindings: {
                     id: number;

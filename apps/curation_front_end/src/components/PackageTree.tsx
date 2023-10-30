@@ -24,7 +24,13 @@ import {
     DialogContent,
     DialogFooter,
 } from "@/components/ui/dialog";
-import ExclusionForm from "./ExclusionForm";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
+import ExclusionForm from "@/components/ExclusionForm";
+import ExclusionList from "@/components/ExclusionList";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 type PackageTreeProps = {
@@ -179,12 +185,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                     filterString={"licenseFilter"}
                 />
                 <div className="pt-1 rounded-md flex text-sm justify-end">
-                    <Button
-                        variant="outline"
-                        className="text-xs p-1 rounded-md"
-                    >
-                        List path exclusions
-                    </Button>
+                    <ExclusionList purl={purl} />
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button

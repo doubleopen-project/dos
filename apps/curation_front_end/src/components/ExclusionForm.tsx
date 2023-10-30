@@ -58,7 +58,7 @@ const ExclusionForm = ({ purl }: Props) => {
         defaultValues,
     });
 
-    const key = userHooks.getKeyByPath("post", "/path-exclusion");
+    const key = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.useMutation(
         "post",
