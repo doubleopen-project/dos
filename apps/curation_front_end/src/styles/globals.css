@@ -76,7 +76,16 @@
     * {
         @apply border-border;
     }
+
     body {
         @apply bg-background text-foreground;
+    }
+
+    h1 {
+        @apply text-3xl font-semibold leading-none tracking-tight;
+    }
+
+    h2 {
+        @apply text-2xl font-semibold leading-none tracking-tight;
     }
 }
