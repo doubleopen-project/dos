@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
-import CurationDeleteButton from "./CurationDeleteButton";
+import QueryDeleteButton from "@/components/QueryDeleteButton";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
@@ -48,7 +48,8 @@ const CurationDB = ({
     // Get user from useUser hook, to decide what DB rights the user has for curations
     let user = undefined;
     user = useUser({});
-    const username = user ? user.username : "Guest";
+    const userName = user ? user.username : "Guest";
+    const userRole = user ? user.role : "";
 
     useEffect(() => {
         if (buttonRef.current) {
@@ -169,12 +170,16 @@ const CurationDB = ({
                                     key={`delete-${d.id}`}
                                     className="items-start text-left"
                                 >
-                                    {username === d.user.username && (
+                                    {(userName === d.user.username ||
+                                        userRole === "ADMIN") && (
                                         <>
-                                            <CurationDeleteButton
+                                            <QueryDeleteButton
                                                 id={d.id}
                                                 data={
                                                     d.concludedLicenseExpressionSPDX
+                                                }
+                                                deleteQuery={
+                                                    "/license-conclusion/:id"
                                                 }
                                             />
                                         </>

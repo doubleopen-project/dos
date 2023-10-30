@@ -11,11 +11,12 @@ import { Loader2 } from "lucide-react";
 type Props = {
     id: number;
     data: string;
+    deleteQuery: "/path-exclusion/:id" | "/license-conclusion/:id";
 };
 
-const CurationDeleteButton = ({ id, data }: Props) => {
-    const { mutate: deleteLicenseConclusion, isLoading } = userHooks.useDelete(
-        "/license-conclusion/:id",
+const QueryDeleteButton = ({ id, data, deleteQuery }: Props) => {
+    const { mutate: deleteItem, isLoading } = userHooks.useDelete(
+        deleteQuery,
         {
             withCredentials: true,
             params: {
@@ -24,7 +25,7 @@ const CurationDeleteButton = ({ id, data }: Props) => {
         },
         {
             onSuccess: (data) => {
-                alert("Curation deleted successfully.");
+                alert("Item deleted successfully.");
             },
             onError: () => {
                 alert("Something went wrong. Please try again.");
@@ -41,20 +42,21 @@ const CurationDeleteButton = ({ id, data }: Props) => {
     }
 
     const handleDelete = () => {
-        if (
-            confirm(
-                `Are you sure you want to delete curation ${data} from this file?`,
-            )
-        ) {
-            deleteLicenseConclusion(undefined);
+        if (confirm(`Are you sure you want to delete item ${data}?`)) {
+            deleteItem(undefined);
         }
     };
 
     return (
-        <Button key={id} className="px-2" onClick={() => handleDelete()}>
+        <Button
+            variant="outline"
+            key={id}
+            className="px-2"
+            onClick={() => handleDelete()}
+        >
             <Delete></Delete>
         </Button>
     );
 };
 
-export default CurationDeleteButton;
+export default QueryDeleteButton;
