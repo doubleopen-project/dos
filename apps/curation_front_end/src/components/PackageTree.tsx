@@ -24,14 +24,15 @@ import {
     DialogContent,
     DialogFooter,
 } from "@/components/ui/dialog";
-import ExclusionForm from "./ExclusionForm";
+import ExclusionForm from "@/components/ExclusionForm";
+import ExclusionList from "@/components/ExclusionList";
 import { DialogClose } from "@radix-ui/react-dialog";
 
-type PackageTreeProps = {
+type Props = {
     purl: string | undefined;
 };
 
-const PackageTree = ({ purl }: PackageTreeProps) => {
+const PackageTree = ({ purl }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter, setLicenseFilter] = useQueryState(
         "licenseFilter",
@@ -43,8 +44,17 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
 
+    // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useImmutableQuery(
         "/filetree",
+        { purl: purl as string },
+        { withCredentials: true },
+        { enabled: !!purl },
+    );
+
+    // Fetch the path exclusions for the package
+    const { data: pathExclusions } = userHooks.useImmutableQuery(
+        "/path-exclusions",
         { purl: purl as string },
         { withCredentials: true },
         { enabled: !!purl },
@@ -100,12 +110,17 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
-        if (data) {
-            const convertedData = convertJsonToTree(data.filetrees);
+        if (data && pathExclusions) {
+            const convertedData = convertJsonToTree(
+                data.filetrees,
+                pathExclusions.pathExclusions.map(
+                    (exclusion) => exclusion.pattern,
+                ),
+            );
             setTreeData(convertedData);
             setOriginalTreeData(convertedData);
         }
-    }, [data]);
+    }, [data, pathExclusions]);
 
     return (
         <div className="flex flex-col h-full">
@@ -137,7 +152,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
-                {data && (
+                {data && pathExclusions && (
                     <Tree
                         className=""
                         data={treeData}
@@ -179,12 +194,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                     filterString={"licenseFilter"}
                 />
                 <div className="pt-1 rounded-md flex text-sm justify-end">
-                    <Button
-                        variant="outline"
-                        className="text-xs p-1 rounded-md"
-                    >
-                        List path exclusions
-                    </Button>
+                    <ExclusionList purl={purl} />
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button

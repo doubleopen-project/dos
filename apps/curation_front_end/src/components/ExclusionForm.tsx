@@ -58,7 +58,7 @@ const ExclusionForm = ({ purl }: Props) => {
         defaultValues,
     });
 
-    const key = userHooks.getKeyByPath("post", "/path-exclusion");
+    const key = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.useMutation(
         "post",
@@ -74,16 +74,6 @@ const ExclusionForm = ({ purl }: Props) => {
     );
 
     const onSubmit = (data: ExclusionFormType) => {
-        console.log(
-            "purl=",
-            purl,
-            "pattern=",
-            data.pattern,
-            "reason=",
-            data.reason,
-            "comment=",
-            data.comment,
-        );
         addPathExclusion({
             purl: purl,
             pattern: data.pattern,

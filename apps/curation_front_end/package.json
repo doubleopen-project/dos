@@ -46,7 +46,8 @@
         "tailwind-merge": "1.14.0",
         "tailwindcss-animate": "1.0.7",
         "validation-helpers": "*",
-        "zod": "3.22.4"
+        "zod": "3.22.4",
+        "minimatch": "^9.0.3"
     },
     "devDependencies": {
         "@types/js-yaml": "4.0.8",

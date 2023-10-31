@@ -5,8 +5,13 @@
 import type { FileTreeType } from "validation-helpers";
 import type { TreeNode } from "../types";
 import { sortTree } from "./sortTree";
+import { minimatch } from "minimatch";
+import { updateExclusionStatus } from "./updateExclusionStatus";
 
-export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
+export const convertJsonToTree = (
+    filetrees: FileTreeType[],
+    patterns?: string[],
+): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
     const root: TreeNode[] = []; // Initialize an empty root
     const map: { [key: string]: TreeNode } = {}; // Maintain a mapping from directory name to TreeNode object
@@ -22,14 +27,21 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
 
             fullPath += (i > 0 ? "/" : "") + part;
 
+            // Determine if the current node's path matches any of the provided patterns
+            const isExcluded =
+                patterns?.some((pattern) =>
+                    minimatch(fullPath, pattern, { dot: true }),
+                ) || false;
+
             if (!map[fullPath]) {
                 const newNode: TreeNode = {
                     id: id.toString(),
                     name: part,
-                    path: isLastPart ? fileTree.path : undefined,
+                    path: fullPath,
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
                     hasLicenseFindings: false,
                     hasLicenseConclusions: false,
+                    isExcluded: isExcluded,
                     file: {
                         licenseFindings: isLastPart
                             ? fileTree.file.licenseFindings
@@ -74,6 +86,9 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                 }
             }
 
+            // Update isExcluded for existing nodes
+            map[fullPath].isExcluded = isExcluded;
+
             // Propagate the hasLicenseFindings and hasLicenseConclusions flags to ancestor directories
             if (
                 fileTree.file.licenseFindings.length > 0 ||
@@ -92,11 +107,14 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                     }
                 }
             }
-
             if (!isLastPart) {
                 currentNode = map[fullPath].children!;
             }
         }
+    }
+    // Update the exclusion status of all nodes
+    for (const node of root) {
+        updateExclusionStatus(node);
     }
 
     return sortTree(root);

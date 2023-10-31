@@ -9,6 +9,7 @@ export type TreeNode = {
     fileSha256?: string;
     hasLicenseFindings: boolean;
     hasLicenseConclusions: boolean;
+    isExcluded?: boolean;
     file?: {
         licenseFindings: LicenseFindings[];
         licenseConclusions: LicenseConclusions[];
