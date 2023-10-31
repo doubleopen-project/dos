@@ -4,8 +4,9 @@
 
 import z from "zod";
 import { useForm } from "react-hook-form";
-import { Check, Loader2, Info } from "lucide-react";
+import generator from "generate-password";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, Loader2, Info, Dices } from "lucide-react";
 import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
 
 import { adminHooks } from "@/hooks/zodiosHooks";
@@ -106,7 +107,6 @@ const AddUserForm = () => {
                             <FormItem className="!mt-4">
                                 <div className="flex flex-row">
                                     <FormLabel>Password</FormLabel>
-
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger className="ml-1">
@@ -136,14 +136,31 @@ const AddUserForm = () => {
                                         </Tooltip>
                                     </TooltipProvider>
                                 </div>
-
-                                <FormControl>
-                                    <Input
-                                        placeholder=""
-                                        type="password"
-                                        {...field}
-                                    />
-                                </FormControl>
+                                <div className="flex flex-row">
+                                    <FormControl>
+                                        <Input placeholder="" {...field} />
+                                    </FormControl>
+                                    <Button
+                                        className="ml-2 gen-pass-btn"
+                                        variant={"outline"}
+                                        onClick={() => {
+                                            const password = generator.generate(
+                                                {
+                                                    length: 10,
+                                                    numbers: true,
+                                                    lowercase: true,
+                                                    uppercase: true,
+                                                    symbols: true,
+                                                    strict: true,
+                                                },
+                                            );
+                                            field.onChange(password);
+                                        }}
+                                        type="button"
+                                    >
+                                        <Dices />
+                                    </Button>
+                                </div>
                                 <FormMessage />
                             </FormItem>
                         )}
