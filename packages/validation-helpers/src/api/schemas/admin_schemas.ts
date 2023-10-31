@@ -28,7 +28,11 @@ export const PostUserReq = z.object({
 });
 
 export const PostUserRes = z.object({
-    message: z.string(),
+    username: z.string(),
+    password: z.string(),
+    role: z.enum(["ADMIN", "USER"]),
+    subscription: z.enum(["SILVER", "GOLD"]),
+    token: z.string(),
 });
 
 //------------------- DELETE user -------------------

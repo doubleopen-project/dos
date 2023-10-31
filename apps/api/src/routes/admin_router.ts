@@ -21,7 +21,7 @@ adminRouter.post("/user", async (req, res) => {
             ? req.body.subscription
             : role == "ADMIN"
             ? "GOLD"
-            : null;
+            : "SILVER";
         const user = await dbQueries.findUserByUsername(username);
         if (user) {
             res.status(400).send({ message: "User already exists" });
@@ -52,7 +52,13 @@ adminRouter.post("/user", async (req, res) => {
                         role,
                         subscription,
                     });
-                    res.send({ message: "User created" });
+                    res.send({
+                        username: req.body.username,
+                        password: req.body.password,
+                        role: role,
+                        subscription: subscription,
+                        token: token,
+                    });
                 },
             );
         }
