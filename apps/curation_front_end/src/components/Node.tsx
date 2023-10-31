@@ -69,7 +69,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
                     }}
                 >
                     <span className="flex items-center">{icon}</span>
-                    <span className="ml-1 font-mono text-xs">
+                    <span className="ml-1 font-mono text-xs flex-grow truncate">
                         {isLeaf ? (
                             <Link
                                 href={{
@@ -81,10 +81,12 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
                                         : {},
                                 }}
                             >
-                                <div className={selectedClassName}>{name}</div>
+                                <span className={selectedClassName}>
+                                    {name}
+                                </span>
                             </Link>
                         ) : (
-                            <div className={selectedClassName}>{name}</div>
+                            <span className={selectedClassName}>{name}</span>
                         )}
                     </span>
                 </div>
