@@ -19,43 +19,26 @@ import {
     ContextMenuRadioGroup,
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { Label } from "@/components/ui/label";
-import { minimatch } from "minimatch";
-import { userAPI } from "validation-helpers";
-import { ZodiosResponseByPath } from "@zodios/core";
-
-type PathExclusionProps = ZodiosResponseByPath<
-    typeof userAPI,
-    "post",
-    "/path-exclusions"
->;
 
 type NodeProps = NodeRendererProps<any> & {
     purl: string | undefined;
     licenseFilter: string | null;
-    pathExclusions: PathExclusionProps | undefined;
 };
 
-const Node = ({
-    node,
-    style,
-    purl,
-    licenseFilter,
-    pathExclusions,
-}: NodeProps) => {
-    const { isLeaf, isInternal, isClosed, isSelected, data } = node;
-    const { hasLicenseFindings, hasLicenseConclusions, name, path, children } =
-        data;
+const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
+    const { isLeaf, isClosed, isSelected, data } = node;
+    const {
+        hasLicenseFindings,
+        hasLicenseConclusions,
+        isExcluded,
+        name,
+        path,
+    } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
     let icon;
     let isBold = false;
     let selectedClassName;
-
-    const patterns = pathExclusions?.pathExclusions.map(
-        (exclusion) => exclusion.pattern,
-    );
-    const isExcluded = patterns?.some((pattern) => minimatch(path, pattern));
 
     if (isSelected) {
         selectedClassName = "bg-gray-400 rounded-sm";
