@@ -1833,15 +1833,27 @@ declare const adminAPI: [
         ];
         response: zod.ZodObject<
             {
-                message: zod.ZodString;
+                username: zod.ZodString;
+                password: zod.ZodString;
+                role: zod.ZodEnum<["ADMIN", "USER"]>;
+                subscription: zod.ZodEnum<["SILVER", "GOLD"]>;
+                token: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
-                message: string;
+                username: string;
+                password: string;
+                role: "ADMIN" | "USER";
+                subscription: "SILVER" | "GOLD";
+                token: string;
             },
             {
-                message: string;
+                username: string;
+                password: string;
+                role: "ADMIN" | "USER";
+                subscription: "SILVER" | "GOLD";
+                token: string;
             }
         >;
         errors: [
@@ -10143,15 +10155,27 @@ declare const dosAPI: [
         ];
         response: zod.ZodObject<
             {
-                message: zod.ZodString;
+                username: zod.ZodString;
+                password: zod.ZodString;
+                role: zod.ZodEnum<["ADMIN", "USER"]>;
+                subscription: zod.ZodEnum<["SILVER", "GOLD"]>;
+                token: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
-                message: string;
+                username: string;
+                password: string;
+                role: "ADMIN" | "USER";
+                subscription: "SILVER" | "GOLD";
+                token: string;
             },
             {
-                message: string;
+                username: string;
+                password: string;
+                role: "ADMIN" | "USER";
+                subscription: "SILVER" | "GOLD";
+                token: string;
             }
         >;
         errors: [
