@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import z from "zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import generator from "generate-password";
 import { Check, Loader2, Dices } from "lucide-react";
@@ -40,18 +41,29 @@ const addUserFormSchema = z.object({
 type AddUserDataType = z.infer<typeof addUserFormSchema>;
 
 type AddUserFormProps = {
-    onNewUserCreated: (user: {
-        username: string;
-        password: string;
-        role: string;
-        subscription: string;
-        token: string;
-    }) => void;
+    onNewUserCreated: (
+        user: {
+            username: string;
+            password: string;
+            role: string;
+            subscription: string;
+            token: string;
+        } | null,
+    ) => void;
+};
+
+const parseError = (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+        return error.response?.data.message;
+    } else {
+        return error;
+    }
 };
 
 const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
     const {
         error,
+        isError,
         isLoading,
         isSuccess,
         reset,
@@ -65,6 +77,9 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
         {
             onSuccess: (data) => {
                 onNewUserCreated(data);
+            },
+            onError: () => {
+                onNewUserCreated(null);
             },
         },
     );
@@ -89,7 +104,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
     };
 
     const onchange = () => {
-        if (isSuccess) reset();
+        if (isSuccess || isError) reset();
     };
 
     return (
@@ -208,6 +223,16 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                             </FormItem>
                         )}
                     />
+                    {error && (
+                        <div
+                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            role="alert"
+                        >
+                            <span className="block sm:inline">
+                                {parseError(error)}
+                            </span>
+                        </div>
+                    )}
 
                     {isLoading && (
                         <div className="flex flex-row">
