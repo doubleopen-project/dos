@@ -110,12 +110,17 @@ const PackageTree = ({ purl }: Props) => {
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
-        if (data) {
-            const convertedData = convertJsonToTree(data.filetrees);
+        if (data && pathExclusions) {
+            const convertedData = convertJsonToTree(
+                data.filetrees,
+                pathExclusions.pathExclusions.map(
+                    (exclusion) => exclusion.pattern,
+                ),
+            );
             setTreeData(convertedData);
             setOriginalTreeData(convertedData);
         }
-    }, [data]);
+    }, [data, pathExclusions]);
 
     return (
         <div className="flex flex-col h-full">
@@ -172,7 +177,6 @@ const PackageTree = ({ purl }: Props) => {
                                 {...nodeProps}
                                 licenseFilter={licenseFilter}
                                 purl={purl}
-                                pathExclusions={pathExclusions}
                             />
                         )}
                     </Tree>
