@@ -24,20 +24,15 @@ import {
     DialogContent,
     DialogFooter,
 } from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-} from "@/components/ui/dropdown-menu";
 import ExclusionForm from "@/components/ExclusionForm";
 import ExclusionList from "@/components/ExclusionList";
 import { DialogClose } from "@radix-ui/react-dialog";
 
-type PackageTreeProps = {
+type Props = {
     purl: string | undefined;
 };
 
-const PackageTree = ({ purl }: PackageTreeProps) => {
+const PackageTree = ({ purl }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter, setLicenseFilter] = useQueryState(
         "licenseFilter",
@@ -49,8 +44,17 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
 
+    // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useImmutableQuery(
         "/filetree",
+        { purl: purl as string },
+        { withCredentials: true },
+        { enabled: !!purl },
+    );
+
+    // Fetch the path exclusions for the package
+    const { data: pathExclusions } = userHooks.useImmutableQuery(
+        "/path-exclusions",
         { purl: purl as string },
         { withCredentials: true },
         { enabled: !!purl },
@@ -143,7 +147,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
-                {data && (
+                {data && pathExclusions && (
                     <Tree
                         className=""
                         data={treeData}
@@ -168,6 +172,7 @@ const PackageTree = ({ purl }: PackageTreeProps) => {
                                 {...nodeProps}
                                 licenseFilter={licenseFilter}
                                 purl={purl}
+                                pathExclusions={pathExclusions}
                             />
                         )}
                     </Tree>
