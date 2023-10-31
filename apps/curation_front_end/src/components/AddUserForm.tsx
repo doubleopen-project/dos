@@ -5,16 +5,15 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import generator from "generate-password";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Loader2, Dices } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
 
 import { adminHooks } from "@/hooks/zodiosHooks";
 
-import PasswordTooltip from "./PasswordTooltip";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import PasswordTooltip from "@/components/PasswordTooltip";
 import {
     Select,
     SelectContent,
@@ -40,16 +39,35 @@ const addUserFormSchema = z.object({
 
 type AddUserDataType = z.infer<typeof addUserFormSchema>;
 
-const AddUserForm = () => {
+type AddUserFormProps = {
+    onNewUserCreated: (user: {
+        username: string;
+        password: string;
+        role: string;
+        subscription: string;
+        token: string;
+    }) => void;
+};
+
+const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
     const {
         error,
         isLoading,
         isSuccess,
         reset,
         mutate: addUser,
-    } = adminHooks.useMutation("post", "/user", {
-        withCredentials: true,
-    });
+    } = adminHooks.useMutation(
+        "post",
+        "/user",
+        {
+            withCredentials: true,
+        },
+        {
+            onSuccess: (data) => {
+                onNewUserCreated(data);
+            },
+        },
+    );
 
     const form = useForm<AddUserDataType>({
         resolver: zodResolver(addUserFormSchema),
@@ -115,7 +133,7 @@ const AddUserForm = () => {
                                         onClick={() => {
                                             const password = generator.generate(
                                                 {
-                                                    length: 10,
+                                                    length: 15,
                                                     numbers: true,
                                                     lowercase: true,
                                                     uppercase: true,
