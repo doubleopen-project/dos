@@ -11,6 +11,7 @@ import {
     GrInspect,
     GrCatalog,
     GrLogout,
+    GrUserManager,
     GrUserSettings,
     GrLogin,
 } from "react-icons/gr";
@@ -76,6 +77,17 @@ const Sidebar = ({ children }: SidebarProps) => {
                             </div>
                         </Link>
                     )}
+                    {router.pathname !== "/logout" &&
+                        user?.role === "ADMIN" && (
+                            <Link href="/admin/users">
+                                <div
+                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    title="User Management"
+                                >
+                                    <GrUserManager size={20} />
+                                </div>
+                            </Link>
+                        )}
                     {router.pathname !== "/logout" && user && (
                         <Link href="/logout">
                             <div
