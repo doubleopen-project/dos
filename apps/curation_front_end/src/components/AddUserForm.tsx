@@ -6,19 +6,15 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import generator from "generate-password";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Loader2, Info, Dices } from "lucide-react";
+import { Check, Loader2, Dices } from "lucide-react";
 import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
 
 import { adminHooks } from "@/hooks/zodiosHooks";
 
+import PasswordTooltip from "./PasswordTooltip";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
     Select,
     SelectContent,
@@ -107,34 +103,7 @@ const AddUserForm = () => {
                             <FormItem className="!mt-4">
                                 <div className="flex flex-row">
                                     <FormLabel>Password</FormLabel>
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger className="ml-1">
-                                                <Info size={"15px"} />
-                                            </TooltipTrigger>
-                                            <TooltipContent side="right">
-                                                Password should have:
-                                                <ul className="list-disc list-inside">
-                                                    <li>
-                                                        at least 8 characters
-                                                    </li>
-                                                    <li>
-                                                        at least one uppercase
-                                                        letter
-                                                    </li>
-                                                    <li>
-                                                        at least one lowercase
-                                                        letter
-                                                    </li>
-                                                    <li>at least one number</li>
-                                                    <li>
-                                                        at least one special
-                                                        character
-                                                    </li>
-                                                </ul>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
+                                    <PasswordTooltip />
                                 </div>
                                 <div className="flex flex-row">
                                     <FormControl>

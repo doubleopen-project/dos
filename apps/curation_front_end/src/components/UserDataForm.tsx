@@ -15,12 +15,7 @@ import { userHooks } from "@/hooks/zodiosHooks";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import PasswordTooltip from "./PasswordTooltip";
 import {
     Form,
     FormControl,
@@ -234,39 +229,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                             <FormItem className="!mt-4">
                                 <div className="flex flex-row">
                                     <FormLabel>New password</FormLabel>
-                                    {editMode && (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger className="ml-1">
-                                                    <Info size={"15px"} />
-                                                </TooltipTrigger>
-                                                <TooltipContent side="right">
-                                                    Password should have:
-                                                    <ul className="list-disc list-inside">
-                                                        <li>
-                                                            at least 8
-                                                            characters
-                                                        </li>
-                                                        <li>
-                                                            at least one
-                                                            uppercase letter
-                                                        </li>
-                                                        <li>
-                                                            at least one
-                                                            lowercase letter
-                                                        </li>
-                                                        <li>
-                                                            at least one number
-                                                        </li>
-                                                        <li>
-                                                            at least one special
-                                                            character
-                                                        </li>
-                                                    </ul>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    )}
+                                    {editMode && <PasswordTooltip />}
                                 </div>
                                 {passwordError && (
                                     <div
