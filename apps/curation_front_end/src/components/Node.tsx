@@ -10,50 +10,90 @@ import {
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
+import { MdArrowRight, MdArrowDropDown } from "react-icons/md";
 import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuCheckboxItem,
     ContextMenuRadioItem,
     ContextMenuRadioGroup,
-    ContextMenuLabel,
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { Label } from "@/components/ui/label";
+import { minimatch } from "minimatch";
+import { userAPI } from "validation-helpers";
+import { ZodiosResponseByPath } from "@zodios/core";
+
+type PathExclusionProps = ZodiosResponseByPath<
+    typeof userAPI,
+    "post",
+    "/path-exclusions"
+>;
 
 type NodeProps = NodeRendererProps<any> & {
     purl: string | undefined;
     licenseFilter: string | null;
+    pathExclusions: PathExclusionProps | undefined;
 };
 
-const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
+const Node = ({
+    node,
+    style,
+    purl,
+    licenseFilter,
+    pathExclusions,
+}: NodeProps) => {
     const { isLeaf, isInternal, isClosed, isSelected, data } = node;
-    const { hasLicenseFindings, hasLicenseConclusions, name, path } = data;
+    const { hasLicenseFindings, hasLicenseConclusions, name, path, children } =
+        data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
     let icon;
     let isBold = false;
     let selectedClassName;
 
+    const patterns = pathExclusions?.pathExclusions.map(
+        (exclusion) => exclusion.pattern,
+    );
+    const isExcluded = patterns?.some((pattern) => minimatch(path, pattern));
+
     if (isSelected) {
-        selectedClassName = "bg-gray-300 rounded-sm";
+        selectedClassName = "bg-gray-400 rounded-sm";
     }
 
-    if (hasLicenseConclusions) {
-        color = "green";
-        isBold = true;
-    } else if (hasLicenseFindings) {
-        color = "red";
-        isBold = true;
+    if (isExcluded) {
+        color = "gray";
+    } else {
+        if (hasLicenseConclusions) {
+            color = "green";
+            isBold = true;
+        } else if (hasLicenseFindings) {
+            color = "red";
+            isBold = true;
+        }
     }
 
     if (isLeaf) {
-        icon = <FileText color={color} style={isBold && boldStyle} />;
+        icon = (
+            <>
+                <span className="ml-4"></span>
+                <FileText color={color} style={isBold && boldStyle} />
+            </>
+        );
     } else if (isClosed) {
-        icon = <FolderClosed color={color} style={isBold && boldStyle} />;
+        icon = (
+            <>
+                <MdArrowRight />
+                <FolderClosed color={color} style={isBold && boldStyle} />
+            </>
+        );
     } else {
-        icon = <FolderOpen color={color} style={isBold && boldStyle} />;
+        icon = (
+            <>
+                <MdArrowDropDown />
+                <FolderOpen color={color} style={isBold && boldStyle} />
+            </>
+        );
     }
 
     return (

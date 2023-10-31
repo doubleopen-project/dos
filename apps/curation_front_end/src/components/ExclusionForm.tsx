@@ -74,16 +74,6 @@ const ExclusionForm = ({ purl }: Props) => {
     );
 
     const onSubmit = (data: ExclusionFormType) => {
-        console.log(
-            "purl=",
-            purl,
-            "pattern=",
-            data.pattern,
-            "reason=",
-            data.reason,
-            "comment=",
-            data.comment,
-        );
         addPathExclusion({
             purl: purl,
             pattern: data.pattern,

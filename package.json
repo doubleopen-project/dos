@@ -59,5 +59,8 @@
     "packageManager": "npm@9.5.0",
     "overrides": {
         "formidable": "1.2.6"
+    },
+    "dependencies": {
+        "minimatch": "^9.0.3"
     }
 }
