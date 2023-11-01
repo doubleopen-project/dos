@@ -171,6 +171,9 @@ const PackageTree = ({ purl }: Props) => {
                         paddingTop={30}
                         paddingBottom={10}
                         padding={25}
+                        onFocus={(node) => {
+                            console.log(node.data.path);
+                        }}
                         ref={(t) => (tree = t)}
                     >
                         {(nodeProps) => (
