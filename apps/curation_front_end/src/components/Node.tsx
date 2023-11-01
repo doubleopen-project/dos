@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { NodeRendererProps } from "react-arborist";
 import {
     BsFileText as FileText,
@@ -27,6 +27,7 @@ import ExclusionForm from "./ExclusionForm";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import ExclusionFormDialog from "./ExclusionFormDialog";
+import { Badge } from "@/components/ui/badge";
 
 type NodeProps = NodeRendererProps<any> & {
     purl: string | undefined;
@@ -34,7 +35,6 @@ type NodeProps = NodeRendererProps<any> & {
 };
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { isLeaf, isClosed, isSelected, data } = node;
     const {
         hasLicenseFindings,
@@ -91,7 +91,6 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
 
     const handleExcludeThisDir = (p: string) => {
         pattern = p;
-        setIsDialogOpen(true);
     };
 
     return (
@@ -139,38 +138,79 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
                         <>
                             <DialogTrigger asChild>
                                 <ContextMenuItem>
-                                    Exclude this directory
+                                    <div className="flex flex-col justify-between">
+                                        <span>Exclude this directory</span>
+                                        <Badge
+                                            variant="secondary"
+                                            className="p-0.5 rounded-md"
+                                        >
+                                            {path + "/*"}
+                                        </Badge>
+                                    </div>
                                 </ContextMenuItem>
                             </DialogTrigger>
                             <ContextMenuItem>
-                                Exclude this & all subdirectories
+                                <div className="flex flex-col justify-between">
+                                    <span>
+                                        Exclude this & all subdirectories
+                                    </span>
+                                    <Badge
+                                        variant="secondary"
+                                        className="p-0.5 rounded-md"
+                                    >
+                                        {path + "/**"}
+                                    </Badge>
+                                </div>
                             </ContextMenuItem>
                         </>
                     )}
                     {isLeaf && (
                         <>
-                            <ContextMenuItem>Exclude this file</ContextMenuItem>
                             <ContextMenuItem>
-                                Exclude all files with the same extension
+                                <div className="flex flex-col justify-between">
+                                    <span>Exclude this file</span>
+                                    <Badge
+                                        variant="secondary"
+                                        className="p-0.5 rounded-md"
+                                    >
+                                        {path}
+                                    </Badge>
+                                </div>
+                            </ContextMenuItem>
+                            <ContextMenuItem>
+                                <div className="flex flex-col justify-between">
+                                    <span>
+                                        Exclude all files with this extension
+                                    </span>
+                                    <Badge
+                                        variant="secondary"
+                                        className="p-0.5 rounded-md"
+                                    >
+                                        {"**/*." + path.split(".").pop()}
+                                    </Badge>
+                                </div>
                             </ContextMenuItem>
                         </>
                     )}
                 </ContextMenuContent>
             </ContextMenu>
             {false && <ExclusionFormDialog purl={purl} />}
-            <DialogContent>
-                <ExclusionForm purl={purl} pattern={pattern} />
-                <DialogFooter className="flex justify-end">
-                    <DialogClose asChild>
-                        <Button
-                            variant="outline"
-                            className="text-xs p-1 rounded-md"
-                        >
-                            Close
-                        </Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
+            {purl && (
+                <DialogContent>
+                    <ExclusionForm purl={purl} pattern={pattern} />
+                    {purl}+{pattern}
+                    <DialogFooter className="flex justify-end">
+                        <DialogClose asChild>
+                            <Button
+                                variant="outline"
+                                className="text-xs p-1 rounded-md"
+                            >
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            )}
         </Dialog>
     );
 };
