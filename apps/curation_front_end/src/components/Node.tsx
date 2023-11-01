@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { NodeRendererProps } from "react-arborist";
 import {
     BsFileText as FileText,
@@ -15,10 +15,18 @@ import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuRadioItem,
-    ContextMenuRadioGroup,
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import ExclusionForm from "./ExclusionForm";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
+import ExclusionFormDialog from "./ExclusionFormDialog";
 
 type NodeProps = NodeRendererProps<any> & {
     purl: string | undefined;
@@ -26,6 +34,7 @@ type NodeProps = NodeRendererProps<any> & {
 };
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { isLeaf, isClosed, isSelected, data } = node;
     const {
         hasLicenseFindings,
@@ -39,6 +48,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
     let icon;
     let isBold = false;
     let selectedClassName;
+    let pattern;
 
     if (isSelected) {
         selectedClassName = "bg-gray-400 rounded-sm";
@@ -79,64 +89,89 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
         );
     }
 
+    const handleExcludeThisDir = (p: string) => {
+        pattern = p;
+        setIsDialogOpen(true);
+    };
+
     return (
-        <ContextMenu>
-            <ContextMenuTrigger>
-                <div
-                    className="flex items-center cursor-pointer"
-                    style={style}
-                    onClick={() => {
-                        if (!isLeaf) {
-                            node.toggle();
-                        }
-                    }}
-                >
-                    <span className="flex items-center">{icon}</span>
-                    <span className="ml-1 font-mono text-xs flex-grow truncate">
-                        {isLeaf ? (
-                            <Link
-                                href={{
-                                    pathname: `/packages/${encodeURIComponent(
-                                        purl || "",
-                                    )}/${encodeURIComponent(path || "")}`,
-                                    query: licenseFilter
-                                        ? { licenseFilter: `${licenseFilter}` }
-                                        : {},
-                                }}
-                            >
+        <Dialog>
+            <ContextMenu>
+                <ContextMenuTrigger>
+                    <div
+                        className="flex items-center cursor-pointer"
+                        style={style}
+                        onClick={() => {
+                            if (!isLeaf) {
+                                node.toggle();
+                            }
+                        }}
+                    >
+                        <span className="flex items-center">{icon}</span>
+                        <span className="ml-1 font-mono text-xs flex-grow truncate">
+                            {isLeaf ? (
+                                <Link
+                                    href={{
+                                        pathname: `/packages/${encodeURIComponent(
+                                            purl || "",
+                                        )}/${encodeURIComponent(path || "")}`,
+                                        query: licenseFilter
+                                            ? {
+                                                  licenseFilter: `${licenseFilter}`,
+                                              }
+                                            : {},
+                                    }}
+                                >
+                                    <span className={selectedClassName}>
+                                        {name}
+                                    </span>
+                                </Link>
+                            ) : (
                                 <span className={selectedClassName}>
                                     {name}
                                 </span>
-                            </Link>
-                        ) : (
-                            <span className={selectedClassName}>{name}</span>
-                        )}
-                    </span>
-                </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-                {!isLeaf && (
-                    <ContextMenuRadioGroup value="exclude_dir">
-                        <ContextMenuRadioItem value="exclude_dir">
-                            Exclude this directory
-                        </ContextMenuRadioItem>
-                        <ContextMenuRadioItem value="exclude_all_subdirs">
-                            Exclude this & all subdirectories
-                        </ContextMenuRadioItem>
-                    </ContextMenuRadioGroup>
-                )}
-                {isLeaf && (
-                    <ContextMenuRadioGroup value="exclude_file">
-                        <ContextMenuRadioItem value="exclude_file">
-                            Exclude this file
-                        </ContextMenuRadioItem>
-                        <ContextMenuRadioItem value="exclude_similar_files">
-                            Exclude all files with the same extension
-                        </ContextMenuRadioItem>
-                    </ContextMenuRadioGroup>
-                )}
-            </ContextMenuContent>
-        </ContextMenu>
+                            )}
+                        </span>
+                    </div>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                    {!isLeaf && (
+                        <>
+                            <DialogTrigger asChild>
+                                <ContextMenuItem>
+                                    Exclude this directory
+                                </ContextMenuItem>
+                            </DialogTrigger>
+                            <ContextMenuItem>
+                                Exclude this & all subdirectories
+                            </ContextMenuItem>
+                        </>
+                    )}
+                    {isLeaf && (
+                        <>
+                            <ContextMenuItem>Exclude this file</ContextMenuItem>
+                            <ContextMenuItem>
+                                Exclude all files with the same extension
+                            </ContextMenuItem>
+                        </>
+                    )}
+                </ContextMenuContent>
+            </ContextMenu>
+            {false && <ExclusionFormDialog purl={purl} />}
+            <DialogContent>
+                <ExclusionForm purl={purl} pattern={pattern} />
+                <DialogFooter className="flex justify-end">
+                    <DialogClose asChild>
+                        <Button
+                            variant="outline"
+                            className="text-xs p-1 rounded-md"
+                        >
+                            Close
+                        </Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

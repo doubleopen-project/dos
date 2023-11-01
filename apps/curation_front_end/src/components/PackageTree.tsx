@@ -27,6 +27,7 @@ import {
 import ExclusionForm from "@/components/ExclusionForm";
 import ExclusionList from "@/components/ExclusionList";
 import { DialogClose } from "@radix-ui/react-dialog";
+import ExclusionFormDialog from "./ExclusionFormDialog";
 
 type Props = {
     purl: string | undefined;
@@ -204,19 +205,7 @@ const PackageTree = ({ purl }: Props) => {
                                 Add path exclusion
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
-                            <ExclusionForm purl={purl} />
-                            <DialogFooter className="flex justify-end">
-                                <DialogClose asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="text-xs p-1 rounded-md"
-                                    >
-                                        Close
-                                    </Button>
-                                </DialogClose>
-                            </DialogFooter>
-                        </DialogContent>
+                        <ExclusionFormDialog purl={purl} />
                     </Dialog>
                 </div>
             </div>
