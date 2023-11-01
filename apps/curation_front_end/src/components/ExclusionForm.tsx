@@ -44,11 +44,12 @@ type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 
 type Props = {
     purl: string | undefined;
+    pattern?: string;
 };
 
-const ExclusionForm = ({ purl }: Props) => {
+const ExclusionForm = ({ purl, pattern }: Props) => {
     const defaultValues: ExclusionFormType = {
-        pattern: "",
+        pattern: pattern || "",
         reason: "",
         comment: "",
     };
