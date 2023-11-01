@@ -48,6 +48,7 @@ type Props = {
 };
 
 const ExclusionForm = ({ purl, pattern }: Props) => {
+    console.log("ExclusionForm rerender with props: ", pattern, purl);
     const defaultValues: ExclusionFormType = {
         pattern: pattern || "",
         reason: "",
