@@ -3,9 +3,17 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+
+import z from "zod";
 import { Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
+
+import { cn } from "@/lib/utils";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -14,14 +22,16 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
-import z from "zod";
 
 const loginFormSchema = z.object({
-    username: z.string(),
-    password: z.string(),
+    username: z
+        .string({ required_error: "Username is required" })
+        .trim()
+        .min(1, { message: "Username is required" }),
+    password: z
+        .string({ required_error: "Password is required" })
+        .trim()
+        .min(1, { message: "Password is required" }),
 });
 
 type LoginFormType = z.infer<typeof loginFormSchema>;
@@ -30,12 +40,14 @@ interface LoginFormProps {
     onSubmit: (data: LoginFormType) => void;
     errMsg?: string;
     isLoading?: boolean;
+    onReset: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
     onSubmit,
     errMsg,
     isLoading,
+    onReset,
 }) => {
     const form = useForm<LoginFormType>({
         resolver: zodResolver(loginFormSchema),
@@ -45,22 +57,23 @@ const LoginForm: React.FC<LoginFormProps> = ({
         },
     });
 
-    const errVisibilityClass = errMsg ? "visible" : "hidden";
-
     return (
-        <div className="w-72 rounded-md border shadow-lg h-min">
+        <div className="border rounded-md shadow-lg w-72 h-min">
             <Form {...form}>
                 <div
-                    className={
-                        errVisibilityClass +
-                        " text-xs text-red-500 pt-4 pr-4 pl-4"
-                    }
+                    className={cn(
+                        "text-xs text-red-500 pt-4 pr-4 pl-4",
+                        errMsg ? "visible" : "hidden",
+                    )}
                 >
                     {errMsg}
                 </div>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8 p-4 flex flex-col"
+                    onChange={() => {
+                        if (errMsg) onReset();
+                    }}
+                    className="flex flex-col p-4 space-y-8"
                 >
                     <FormField
                         control={form.control}
@@ -109,26 +122,20 @@ const LoginForm: React.FC<LoginFormProps> = ({
                             </FormItem>
                         )}
                     />
-                    {isLoading && (
-                        <Button
-                            className="grow"
-                            type="submit"
-                            variant={"outline"}
-                            disabled
-                        >
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button>
-                    )}
-                    {!isLoading && (
-                        <Button
-                            className="grow"
-                            type="submit"
-                            variant={"outline"}
-                        >
-                            Login
-                        </Button>
-                    )}
+                    <Button
+                        className="grow"
+                        type="submit"
+                        variant={"outline"}
+                        disabled={isLoading}
+                    >
+                        {isLoading && (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                <span>Please wait</span>
+                            </>
+                        )}
+                        {!isLoading && <span>Login</span>}
+                    </Button>
                 </form>
             </Form>
         </div>

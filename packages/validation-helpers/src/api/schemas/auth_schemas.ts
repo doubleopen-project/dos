@@ -7,12 +7,18 @@ import { z } from "zod";
 //------------------ POST login/password -------------------
 
 export const PostLoginPasswordReq = z.object({
-    username: z.string({
-        required_error: "Username is required",
-    }),
-    password: z.string({
-        required_error: "Password is required",
-    }),
+    username: z
+        .string({
+            required_error: "Username is required",
+        })
+        .trim()
+        .min(1, { message: "Username is required" }),
+    password: z
+        .string({
+            required_error: "Password is required",
+        })
+        .trim()
+        .min(1, { message: "Password is required" }),
 });
 
 export const PostLoginPasswordRes = z.object({});

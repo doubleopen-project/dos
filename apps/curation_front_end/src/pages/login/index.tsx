@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import axios from "axios";
 import { useRouter } from "next/router";
 
 import { useUser } from "@/hooks/useUser";
@@ -9,12 +10,13 @@ import { authHooks } from "@/hooks/zodiosHooks";
 
 import LoginForm from "@/components/LoginForm";
 
-const getErrorString = (errorCode: number) => {
-    switch (errorCode) {
-        case 401:
-            return "Invalid username or password";
-        default:
-            return "Something went wrong. Please try again.";
+const parseError = (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+        return error.response?.status === 401
+            ? "Invalid username or password"
+            : error.response?.data.message || error.response?.statusText;
+    } else {
+        return error;
     }
 };
 
@@ -32,6 +34,7 @@ export default function Login() {
         error,
         isSuccess,
         isLoading,
+        reset,
         mutate: loginUser,
     } = authHooks.useMutation("post", "/login/password", {
         withCredentials: true,
@@ -49,14 +52,9 @@ export default function Login() {
         <div className="flex items-center justify-center h-screen">
             <LoginForm
                 onSubmit={submitForm}
-                errMsg={
-                    error
-                        ? getErrorString(
-                              parseInt(error.message.slice(-3) as string),
-                          )
-                        : undefined
-                }
+                errMsg={error ? parseError(error) : undefined}
                 isLoading={isLoading || isSuccess}
+                onReset={reset}
             />
         </div>
     );
