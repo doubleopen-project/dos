@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useRef, useEffect } from "react";
-import { Tree } from "react-arborist";
+import { NodeApi, Tree } from "react-arborist";
 import { Button } from "./ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -24,9 +24,7 @@ import {
     DialogContent,
     DialogFooter,
 } from "@/components/ui/dialog";
-import ExclusionForm from "@/components/ExclusionForm";
 import ExclusionList from "@/components/ExclusionList";
-import { DialogClose } from "@radix-ui/react-dialog";
 import ExclusionFormDialog from "./ExclusionFormDialog";
 
 type Props = {
@@ -43,6 +41,7 @@ const PackageTree = ({ purl }: Props) => {
     const [treeHeight, setTreeHeight] = useState(0);
     const [treeData, setTreeData] = useState<TreeNode[]>([]);
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
+    const [currentPath, setCurrentPath] = useState("");
     const treeRef = useRef<HTMLDivElement>(null);
 
     // Fetch the package file tree data
@@ -67,6 +66,11 @@ const PackageTree = ({ purl }: Props) => {
 
     let tree: any;
     const uniqueLicenses = extractUniqueLicenses(treeData);
+
+    const handleFocus = (node: NodeApi<TreeNode>) => {
+        //currentPath = node.data.path || "";
+        //console.log(currentPath);
+    };
 
     const handleExpand = () => {
         if (!isExpanded) {
@@ -147,6 +151,62 @@ const PackageTree = ({ purl }: Props) => {
                 </Button>
             </div>
 
+            <div className="p-1 mb-2 rounded-md border shadow-lg flex items-center text-sm">
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="text-xs p-1 rounded-md ml-2"
+                        >
+                            Exclude dir
+                        </Button>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={currentPath + "/*"}
+                    />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="text-xs p-1 rounded-md ml-2"
+                        >
+                            Exclude all subdirs
+                        </Button>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={currentPath + "/**"}
+                    />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="text-xs p-1 rounded-md ml-2"
+                        >
+                            Exclude file
+                        </Button>
+                    </DialogTrigger>
+                    <ExclusionFormDialog purl={purl} pattern={currentPath} />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="text-xs p-1 rounded-md ml-2"
+                        >
+                            Exclude similar files
+                        </Button>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={"*." + currentPath.split(".").pop()}
+                    />
+                </Dialog>
+            </div>
+
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
                     <div className="flex justify-center items-center h-full">
@@ -171,9 +231,7 @@ const PackageTree = ({ purl }: Props) => {
                         paddingTop={30}
                         paddingBottom={10}
                         padding={25}
-                        onFocus={(node) => {
-                            console.log(node.data.path);
-                        }}
+                        onFocus={(node) => setCurrentPath(node.data.path!)}
                         ref={(t) => (tree = t)}
                     >
                         {(nodeProps) => (
