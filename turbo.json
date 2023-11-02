@@ -92,6 +92,7 @@
             "cache": false,
             "dependsOn": ["^db:generate"]
         },
+        "test:watch": {},
         "worker": {
             "dependsOn": ["^build"]
         }

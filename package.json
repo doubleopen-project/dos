@@ -45,7 +45,9 @@
         "start:scanner_worker": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-worker",
         "test": "turbo run test --concurrency=1",
         "test:api": "turbo run test --filter=api",
-        "test:scanner_agent": "turbo run test --filter=scanner-agent"
+        "test:scanner_agent": "turbo run test --filter=scanner-agent",
+        "test:cfe": "turbo run test --filter=curation_front_end",
+        "test:cfe:watch": "turbo run test:watch --filter=curation_front_end"
     },
     "devDependencies": {
         "prettier": "3.0.3",

@@ -3,7 +3,14 @@
 // SPDX-License-Identifier: MIT
 
 module.exports = {
-    extends: ["next", "next/core-web-vitals", "prettier", "turbo"],
+    extends: [
+        "next",
+        "next/core-web-vitals",
+        "prettier",
+        "turbo",
+        "plugin:testing-library/react",
+        "plugin:jest-dom/recommended",
+    ],
     plugins: ["react-hooks"],
     rules: {
         "@next/next/no-html-link-for-pages": "off",

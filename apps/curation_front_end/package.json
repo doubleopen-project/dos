@@ -8,7 +8,9 @@
         "clever-logs": "clever logs",
         "dev": "next dev",
         "lint": "next lint",
-        "start": "next start"
+        "start": "next start",
+        "test": "jest",
+        "test:watch": "jest --watchAll"
     },
     "dependencies": {
         "@hookform/resolvers": "3.3.2",
@@ -37,6 +39,7 @@
         "generate-password": "^1.7.1",
         "js-yaml": "4.1.0",
         "lucide-react": "0.288.0",
+        "minimatch": "^9.0.3",
         "next-themes": "0.2.1",
         "next-usequerystate": "1.8.4",
         "react-arborist": "3.2.0",
@@ -46,16 +49,21 @@
         "tailwind-merge": "1.14.0",
         "tailwindcss-animate": "1.0.7",
         "validation-helpers": "*",
-        "zod": "3.22.4",
-        "minimatch": "^9.0.3"
+        "zod": "3.22.4"
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "5.16.5",
+        "@testing-library/react": "^14.0.0",
         "@types/js-yaml": "4.0.8",
         "@types/react": "18.2.30",
         "@types/react-copy-to-clipboard": "^5.0.6",
         "eslint-config-custom": "*",
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
         "next": "13.5.6",
+        "next-router-mock": "^0.9.10",
         "tailwindcss": "3.3.3",
+        "ts-jest": "^29.1.1",
         "typescript": "5.2.2"
     }
 }
