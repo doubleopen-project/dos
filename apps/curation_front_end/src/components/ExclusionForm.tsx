@@ -30,12 +30,7 @@ import isGlob from "is-glob";
 import { validReasons } from "validation-helpers";
 
 const exclusionFormSchema = z.object({
-    pattern: z
-        .string()
-        .min(1, "Pattern cannot be empty")
-        .refine((pattern) => isGlob(pattern), {
-            message: "Pattern is not a valid glob",
-        }),
+    pattern: z.string().min(1, "Pattern cannot be empty"),
     reason: z.string().min(1, "Please select a valid reason from this list"),
     comment: z.string().optional(),
 });
