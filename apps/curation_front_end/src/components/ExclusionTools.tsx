@@ -41,9 +41,14 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                 <>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="ghost" className="p-1 ml-2">
-                                <TbFolderOff className="text-lg" />
-                            </Button>
+                            <div className="group relative">
+                                <Button variant="ghost" className="p-2">
+                                    <TbFolderOff className="text-lg" />
+                                </Button>
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                    Exclude this directory
+                                </div>
+                            </div>
                         </DialogTrigger>
                         <ExclusionFormDialog
                             purl={purl}
@@ -53,9 +58,14 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                     {hasChildrenDirs(selectedNode) && (
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button variant="ghost" className="p-1 ml-2">
-                                    <TbFoldersOff className="text-lg" />
-                                </Button>
+                                <div className="group relative">
+                                    <Button variant="ghost" className="p-2">
+                                        <TbFoldersOff className="text-lg" />
+                                    </Button>
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                        Exclude this and all subdirectories
+                                    </div>
+                                </div>
                             </DialogTrigger>
                             <ExclusionFormDialog
                                 purl={purl}
@@ -68,12 +78,14 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                 <>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                className="text-xs p-1 rounded-md ml-2"
-                            >
-                                <TbFileOff className="text-lg" />
-                            </Button>
+                            <div className="group relative">
+                                <Button variant="ghost" className="p-2">
+                                    <TbFileOff className="text-lg" />
+                                </Button>
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                    Exclude this file
+                                </div>
+                            </div>
                         </DialogTrigger>
                         <ExclusionFormDialog
                             purl={purl}
@@ -82,12 +94,14 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                     </Dialog>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                className="text-xs p-1 rounded-md ml-2"
-                            >
-                                <TbFilesOff className="text-lg" />
-                            </Button>
+                            <div className="group relative">
+                                <Button variant="ghost" className="p-2">
+                                    <TbFilesOff className="text-lg" />
+                                </Button>
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                    Exclude all files with this extension
+                                </div>
+                            </div>
                         </DialogTrigger>
                         <ExclusionFormDialog
                             purl={purl}
