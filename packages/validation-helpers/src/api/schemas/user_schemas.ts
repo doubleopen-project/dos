@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
-import isGlob from "is-glob";
 import { PackageURL } from "packageurl-js";
 import { getUsernameSchema, getPasswordSchema } from "./common_schemas";
 
@@ -113,10 +112,7 @@ export const PostPathExclusionReq = z.object({
             required_error: "Pattern is required",
         })
         .trim()
-        .min(1, "Pattern cannot be empty")
-        .refine((pattern) => isGlob(pattern), {
-            message: "Pattern should be a glob",
-        }),
+        .min(1, "Pattern cannot be empty"),
     reason: z
         .string({
             required_error: "Reason is required",

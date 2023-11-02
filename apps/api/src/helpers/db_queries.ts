@@ -939,6 +939,41 @@ export const findFileTreesByPackagePurl = async (
     return filetrees;
 };
 
+export const findMatchingPath = async (input: {
+    purl: string;
+    path: string;
+}): Promise<boolean> => {
+    const filetrees = await prisma.fileTree.findMany({
+        where: {
+            package: {
+                purl: input.purl,
+            },
+            path: input.path,
+        },
+    });
+
+    if (filetrees.length > 0) return true;
+
+    return false;
+};
+
+export const findFilePathsByPackagePurl = async (
+    purl: string,
+): Promise<string[]> => {
+    const filetrees = await prisma.fileTree.findMany({
+        where: {
+            package: {
+                purl: purl,
+            },
+        },
+        select: {
+            path: true,
+        },
+    });
+
+    return filetrees.map((filetree) => filetree.path);
+};
+
 export const findScannerJobStateById = async (
     id: string,
 ): Promise<{ id: string; state: string } | null> => {
