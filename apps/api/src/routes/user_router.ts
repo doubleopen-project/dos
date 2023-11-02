@@ -9,6 +9,8 @@ import * as s3Helpers from "s3-helpers";
 import { hashPassword } from "../helpers/password_helper";
 import { Prisma } from "database";
 import crypto from "crypto";
+import isGlob from "is-glob";
+import { minimatch } from "minimatch";
 
 const userRouter = zodiosRouter(userAPI);
 
@@ -215,6 +217,34 @@ userRouter.post("/path-exclusion", async (req, res) => {
 
         if (!user) throw new Error("User not found");
 
+        let match = false;
+
+        if (isGlob(req.body.pattern)) {
+            const filePaths = await dbQueries.findFilePathsByPackagePurl(
+                req.body.purl,
+            );
+            // Check that a path that matches the glob pattern exists for the package
+            while (!match && filePaths.length > 0) {
+                const filePath = filePaths.pop();
+
+                if (!filePath) break;
+                if (minimatch(filePath, req.body.pattern.trim())) {
+                    match = true;
+                }
+            }
+        } else {
+            // Check that a matching path exists for the package
+            match = await dbQueries.findMatchingPath({
+                purl: req.body.purl,
+                path: req.body.pattern.trim(),
+            });
+        }
+
+        if (!match)
+            throw new Error(
+                "No matching path(s) for the provided pattern were found in the package",
+            );
+
         const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
 
         if (!packageId) throw new Error("Package not found");
@@ -233,7 +263,16 @@ userRouter.post("/path-exclusion", async (req, res) => {
         });
     } catch (error) {
         console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof Error) {
+            if (error.message === "User not found")
+                res.status(401).json({ message: "Unauthorized" });
+            else
+                res.status(400).json({
+                    message: error.message,
+                });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
     }
 });
 

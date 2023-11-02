@@ -4933,7 +4933,7 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         purl: zod.ZodString;
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        pattern: zod.ZodString;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
@@ -8776,7 +8776,7 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         purl: zod.ZodString;
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        pattern: zod.ZodString;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
