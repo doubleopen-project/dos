@@ -25,15 +25,18 @@ type Props = {
     purl: string | undefined;
 };
 
-const ExclusionTools = ({ selectedNode, purl }: Props) => {
-    // Check if the selected node has children directories:
-    // if it does, then either this node or this and all subdirs can be excluded
-    const hasChildrenDirs = (node: SelectedNode) => {
-        return node.children?.some((child: SelectedNode) => !child.isLeaf);
-    };
+// Check if the selected node has children directories:
+// if it does, then either this node or this and all subdirs can be excluded
+const hasChildrenDirs = (node: SelectedNode) => {
+    return node.children?.some((child: SelectedNode) => !child.isLeaf);
+};
 
+const ExclusionTools = ({ selectedNode, purl }: Props) => {
     return (
-        <div className="p-1 mb-2 flex rounded-mb border items-center text-sm">
+        <div className="relative p-1 mb-2 flex rounded-md border shadow-lg items-center text-sm">
+            <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
+                Path exclusion tools
+            </span>
             {selectedNode?.isInternal ? (
                 <>
                     <Dialog>

@@ -132,7 +132,7 @@ const PackageTree = ({ purl }: Props) => {
                 <Badge className="rounded-md">{purl}</Badge>
             </div>
 
-            <div className="p-1 mb-2 rounded-md border shadow-lg flex items-center text-sm">
+            <div className="p-1 mb-3 rounded-md border shadow-lg flex items-center text-sm">
                 <Input
                     className="p-1 rounded-md w-full text-xs"
                     type="text"
