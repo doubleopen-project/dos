@@ -73,9 +73,10 @@ const PackageTree = ({ purl }: Props) => {
     let tree: any;
     const uniqueLicenses = extractUniqueLicenses(treeData);
 
-    const handleFocus = (node: NodeApi<TreeNode>) => {
-        //currentPath = node.data.path || "";
-        //console.log(currentPath);
+    // Check if the selected node has children directories:
+    // if it does, then either this node or this and all subdirs can be excluded
+    const hasChildrenDirs = (node: SelectedNode) => {
+        return node.children?.some((child: SelectedNode) => !child.isLeaf);
     };
 
     const handleExpand = () => {
@@ -157,75 +158,82 @@ const PackageTree = ({ purl }: Props) => {
                 </Button>
             </div>
 
-            <div className="p-1 mb-2 rounded-md border shadow-lg flex items-center text-sm">
-                {!selectedNode?.isLeaf && (
-                    <>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="text-xs p-1 rounded-md ml-2"
-                                >
-                                    Exclude dir
-                                </Button>
-                            </DialogTrigger>
-                            <ExclusionFormDialog
-                                purl={purl}
-                                pattern={selectedNode?.data.path + "/*"}
-                            />
-                        </Dialog>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="text-xs p-1 rounded-md ml-2"
-                                >
-                                    Exclude all subdirs
-                                </Button>
-                            </DialogTrigger>
-                            <ExclusionFormDialog
-                                purl={purl}
-                                pattern={selectedNode?.data.path + "/**"}
-                            />
-                        </Dialog>
-                    </>
-                )}
-                {selectedNode?.isLeaf && (
-                    <>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="text-xs p-1 rounded-md ml-2"
-                                >
-                                    Exclude file
-                                </Button>
-                            </DialogTrigger>
-                            <ExclusionFormDialog
-                                purl={purl}
-                                pattern={selectedNode?.data.path}
-                            />
-                        </Dialog>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="text-xs p-1 rounded-md ml-2"
-                                >
-                                    Exclude similar files
-                                </Button>
-                            </DialogTrigger>
-                            <ExclusionFormDialog
-                                purl={purl}
-                                pattern={
-                                    "*." +
-                                    selectedNode?.data.path?.split(".").pop()
-                                }
-                            />
-                        </Dialog>
-                    </>
-                )}
-            </div>
+            {selectedNode && (
+                <div className="p-1 mb-2 rounded-md border shadow-lg flex items-center text-sm">
+                    {selectedNode?.isInternal ? (
+                        <>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="text-xs p-1 rounded-md ml-2"
+                                    >
+                                        Exclude dir
+                                    </Button>
+                                </DialogTrigger>
+                                <ExclusionFormDialog
+                                    purl={purl}
+                                    pattern={selectedNode?.data.path + "/*"}
+                                />
+                            </Dialog>
+                            {hasChildrenDirs(selectedNode) && (
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="text-xs p-1 rounded-md ml-2"
+                                        >
+                                            Exclude all subdirs
+                                        </Button>
+                                    </DialogTrigger>
+                                    <ExclusionFormDialog
+                                        purl={purl}
+                                        pattern={
+                                            selectedNode?.data.path + "/**"
+                                        }
+                                    />
+                                </Dialog>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="text-xs p-1 rounded-md ml-2"
+                                    >
+                                        Exclude file
+                                    </Button>
+                                </DialogTrigger>
+                                <ExclusionFormDialog
+                                    purl={purl}
+                                    pattern={selectedNode?.data.path}
+                                />
+                            </Dialog>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="text-xs p-1 rounded-md ml-2"
+                                    >
+                                        Exclude similar files
+                                    </Button>
+                                </DialogTrigger>
+                                <ExclusionFormDialog
+                                    purl={purl}
+                                    pattern={
+                                        "*." +
+                                        selectedNode?.data.path
+                                            ?.split(".")
+                                            .pop()
+                                    }
+                                />
+                            </Dialog>
+                        </>
+                    )}
+                </div>
+            )}
 
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
