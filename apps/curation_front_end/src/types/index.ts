@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { NodeApi } from "react-arborist";
+
 export type TreeNode = {
     id: string;
     name: string;
@@ -24,3 +26,9 @@ export type LicenseFindings = {
 export type LicenseConclusions = {
     concludedLicenseExpressionSPDX?: string;
 };
+
+// A type for the selected node that is passed to the exclusion form
+export type SelectedNode = Omit<
+    NodeApi<TreeNode>,
+    "name, hasLicenseFIndings, hasLicenseConclusions"
+>;
