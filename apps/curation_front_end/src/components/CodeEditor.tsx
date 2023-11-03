@@ -19,10 +19,7 @@ type CodeEditorProps = {
 };
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
-    const [line, setLine] = useQueryState(
-        "line",
-        parseAsInteger.withDefault(1),
-    );
+    const [licenseMatchId] = useQueryState("licenseMatchId", parseAsInteger);
     const router = useRouter();
     const { path } = router.query;
     const { theme } = useTheme();
@@ -50,7 +47,24 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
         });
         editor.deltaDecorations([], decorations);
 
-        // Move the editor to the specified line
+        // Find the starting line of the license match whose id is licenseMatchId
+        // If licenseMatchId is null, use the first license match
+        const licenseFindingMatches = licenseFindings.flatMap(
+            (licenseFinding) => {
+                return licenseFinding.licenseFindingMatches;
+            },
+        );
+        const licenseMatch =
+            licenseMatchId === null
+                ? licenseFindingMatches[0]
+                : licenseFindingMatches.find(
+                      (licenseFindingMatch) =>
+                          licenseFindingMatch.id === licenseMatchId,
+                  );
+        if (!licenseMatch) {
+            return;
+        }
+        const line = licenseMatch ? licenseMatch.startLine : 1;
         editor.revealLineInCenter(line);
 
         // Syntax highlighting
@@ -88,7 +102,6 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
             const model = editor.getModel();
 
             if (fileType && fileTypes[fileType] && model) {
-                //console.log("Editor language:", fileTypes[fileType]);
                 monaco.editor.setModelLanguage(model, fileTypes[fileType]);
             }
         }
@@ -96,7 +109,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
 
     return (
         <Editor
-            key={contents + line}
+            key={contents + licenseMatchId}
             language="plaintext"
             onMount={handleEditorDidMount}
             theme={theme === "dark" ? "vs-dark" : "vs-light"}
