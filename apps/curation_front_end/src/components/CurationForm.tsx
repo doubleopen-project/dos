@@ -87,11 +87,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                         concludedLicenseExpressionSPDX,
                         null,
                         2,
-                    )}to this file\n${JSON.stringify(
-                        fileData.sha256,
-                        null,
-                        2,
-                    )}`,
+                    )} to this file?`,
                 )
             ) {
                 addLicenseConclusion({
@@ -104,8 +100,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                     comment: data.comment ?? "",
                     contextPurl: purl,
                 });
-
-                //addLicenseConclusion(data as LicenseConclusionPostData);
+                alert("License conclusion added successfully.");
             } else {
                 return;
             }
