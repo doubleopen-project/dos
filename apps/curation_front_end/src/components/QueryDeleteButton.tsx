@@ -25,7 +25,9 @@ const QueryDeleteButton = ({ id, data, deleteQuery }: Props) => {
         },
         {
             onSuccess: (data) => {
-                alert("Item deleted successfully.");
+                if (deleteQuery === "/path-exclusion/:id")
+                    alert("Path exclusion deleted successfully.");
+                else alert("License conclusion deleted successfully.");
             },
             onError: () => {
                 alert("Something went wrong. Please try again.");
@@ -42,7 +44,7 @@ const QueryDeleteButton = ({ id, data, deleteQuery }: Props) => {
     }
 
     const handleDelete = () => {
-        if (confirm(`Are you sure you want to delete item ${data}?`)) {
+        if (confirm(`Are you sure you want to delete this?`)) {
             deleteItem(undefined);
         }
     };

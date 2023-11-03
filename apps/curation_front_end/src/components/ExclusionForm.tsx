@@ -64,6 +64,7 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
         },
         {
             onSuccess: () => {
+                alert("Path exclusion added successfully.");
                 queryClient.invalidateQueries(key);
             },
         },

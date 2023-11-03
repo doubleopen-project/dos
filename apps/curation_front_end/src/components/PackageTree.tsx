@@ -149,9 +149,7 @@ const PackageTree = ({ purl }: Props) => {
                 </Button>
             </div>
 
-            {selectedNode && (
-                <ExclusionTools selectedNode={selectedNode} purl={purl} />
-            )}
+            <ExclusionTools selectedNode={selectedNode} purl={purl} />
 
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
