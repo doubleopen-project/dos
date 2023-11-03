@@ -106,7 +106,8 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                         <ExclusionFormDialog
                             purl={purl}
                             pattern={
-                                "*." + selectedNode?.data.path?.split(".").pop()
+                                "**/*." +
+                                selectedNode?.data.path?.split(".").pop()
                             }
                         />
                     </Dialog>
