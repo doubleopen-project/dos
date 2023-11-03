@@ -6,7 +6,7 @@ import Editor, { OnMount } from "@monaco-editor/react";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import React from "react";
-import styles from "../styles/CodeInspector.module.css";
+import styles from "@/styles/CodeInspector.module.css";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
@@ -19,54 +19,15 @@ type CodeEditorProps = {
 };
 
 const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
-    const [licenseMatchId] = useQueryState("licenseMatchId", parseAsInteger);
+    const [licenseMatchId] = useQueryState(
+        "licenseMatchId",
+        parseAsInteger.withDefault(0),
+    );
     const router = useRouter();
     const { path } = router.query;
     const { theme } = useTheme();
 
     const handleEditorDidMount: OnMount = (editor, monaco) => {
-        // Show the decorations for all individual license matches
-        const decorations = licenseFindings.flatMap((licenseFinding) => {
-            return licenseFinding.licenseFindingMatches.map(
-                (licenseFindingMatch: any) => {
-                    const startLine = licenseFindingMatch.startLine;
-                    const endLine = licenseFindingMatch.endLine;
-                    const range = new monaco.Range(startLine, 1, endLine, 1);
-                    const decoration = {
-                        range: range,
-                        options: {
-                            isWholeLine: true,
-                            className: styles["myWholeLineDecoration"],
-                            linesDecorationsClassName:
-                                styles["myLineDecoration"],
-                        },
-                    };
-                    return decoration;
-                },
-            );
-        });
-        editor.deltaDecorations([], decorations);
-
-        // Find the starting line of the license match whose id is licenseMatchId
-        // If licenseMatchId is null, use the first license match
-        const licenseFindingMatches = licenseFindings.flatMap(
-            (licenseFinding) => {
-                return licenseFinding.licenseFindingMatches;
-            },
-        );
-        const licenseMatch =
-            licenseMatchId === null
-                ? licenseFindingMatches[0]
-                : licenseFindingMatches.find(
-                      (licenseFindingMatch) =>
-                          licenseFindingMatch.id === licenseMatchId,
-                  );
-        if (!licenseMatch) {
-            return;
-        }
-        const line = licenseMatch ? licenseMatch.startLine : 1;
-        editor.revealLineInCenter(line);
-
         // Syntax highlighting
         if (typeof path === "string") {
             const fileType = path.split(".").pop();
@@ -98,13 +59,74 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                 yaml: "yaml",
                 yml: "yaml",
             };
-
             const model = editor.getModel();
-
             if (fileType && fileTypes[fileType] && model) {
                 monaco.editor.setModelLanguage(model, fileTypes[fileType]);
             }
         }
+
+        // Show the side decorations for all individual license matches
+        const allMatchesDecorations = licenseFindings.flatMap(
+            (licenseFinding) => {
+                return licenseFinding.licenseFindingMatches.map(
+                    (licenseFindingMatch: any) => {
+                        const startLine = licenseFindingMatch.startLine;
+                        const endLine = licenseFindingMatch.endLine;
+                        const range = new monaco.Range(
+                            startLine,
+                            1,
+                            endLine,
+                            1,
+                        );
+                        const decoration = {
+                            range: range,
+                            options: {
+                                isWholeLine: true,
+                                linesDecorationsClassName:
+                                    styles["myLineDecoration"],
+                            },
+                        };
+                        return decoration;
+                    },
+                );
+            },
+        );
+        editor.createDecorationsCollection(allMatchesDecorations);
+
+        // Find the starting line of the license match whose id is licenseMatchId
+        // If licenseMatchId is null, use the first license match
+        const licenseFindingMatches = licenseFindings.flatMap(
+            (licenseFinding) => {
+                return licenseFinding.licenseFindingMatches;
+            },
+        );
+        const licenseMatch =
+            licenseMatchId === null
+                ? licenseFindingMatches[0]
+                : licenseFindingMatches.find(
+                      (licenseFindingMatch) =>
+                          licenseFindingMatch.id === licenseMatchId,
+                  );
+        if (!licenseMatch) {
+            return;
+        }
+
+        const matchDecoration = {
+            range: new monaco.Range(
+                licenseMatch.startLine,
+                1,
+                licenseMatch.endLine,
+                1,
+            ),
+            options: {
+                isWholeLine: true,
+                className: styles["myWholeLineDecoration"],
+            },
+        };
+        editor.deltaDecorations([], [matchDecoration]);
+
+        const line = licenseMatch ? licenseMatch.startLine : 1;
+        editor.revealLine(line);
     };
 
     return (
