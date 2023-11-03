@@ -9,8 +9,8 @@
         "dev": "next dev",
         "lint": "next lint",
         "start": "next start",
-        "test": "jest",
-        "test:watch": "jest --watchAll"
+        "test": "jest --verbose",
+        "test:watch": "jest --watchAll --verbose"
     },
     "dependencies": {
         "@hookform/resolvers": "3.3.2",
