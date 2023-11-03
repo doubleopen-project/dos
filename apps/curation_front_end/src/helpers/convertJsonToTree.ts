@@ -5,8 +5,8 @@
 import type { FileTreeType } from "validation-helpers";
 import type { TreeNode } from "../types";
 import { sortTree } from "./sortTree";
-import { minimatch } from "minimatch";
 import { updateExclusionStatus } from "./updateExclusionStatus";
+import { isPathExcluded } from "./isExcluded";
 
 export const convertJsonToTree = (
     filetrees: FileTreeType[],
@@ -30,7 +30,7 @@ export const convertJsonToTree = (
             // Determine if the current node's path matches any of the provided patterns
             const isExcluded =
                 patterns?.some((pattern) =>
-                    minimatch(fullPath, pattern, { dot: true }),
+                    isPathExcluded(fullPath, pattern),
                 ) || false;
 
             if (!map[fullPath]) {
