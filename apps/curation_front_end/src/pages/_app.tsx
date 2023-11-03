@@ -7,7 +7,7 @@ import type { AppProps } from "next/app";
 import Header from "@/components/Header";
 import Sidebar from "../components/Sidebar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
-import { ThemeProvider } from "next-themes";
+import ThemeProvider from "@/components/providers/ThemeProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
