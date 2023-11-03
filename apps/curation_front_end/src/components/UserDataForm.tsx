@@ -2,20 +2,22 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import z from "zod";
 import axios from "axios";
-import z, { ZodError } from "zod";
 import { useForm } from "react-hook-form";
-import { ZodiosError } from "@zodios/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil, Check, Loader2, Info } from "lucide-react";
+import { Pencil, Check, Loader2 } from "lucide-react";
+import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
 
 import { userHooks } from "@/hooks/zodiosHooks";
 
+import { cn } from "@/lib/utils";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordTooltip from "./PasswordTooltip";
+import PasswordTooltip from "@/components/PasswordTooltip";
 import {
     Form,
     FormControl,
@@ -25,13 +27,23 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
-const userDataFormSchema = z.object({
-    username: z.string(),
-    password: z.string().optional(),
-    confirmPassword: z.string().optional(),
-    role: z.string().optional(),
-});
-
+const userDataFormSchema = z
+    .object({
+        username: getUsernameSchema(false),
+        password: getPasswordSchema(false),
+        confirmPassword: z.string(),
+        role: z.string(),
+    })
+    .partial()
+    .superRefine(({ confirmPassword, password }, ctx) => {
+        if (password !== confirmPassword) {
+            ctx.addIssue({
+                code: "custom",
+                message: "Passwords do not match",
+                path: ["confirmPassword"],
+            });
+        }
+    });
 type PutUserDataType = {
     username: string | undefined;
     role: string;
@@ -48,12 +60,6 @@ type UserDataProps = {
 
 const UserDataForm = ({ user }: UserDataProps) => {
     const [username, setUsername] = useState<string>(user.username);
-    const [otherError, setOtherError] = useState<string | null>(null);
-    const [confirmPasswordError, setConfirmPasswordError] = useState<
-        string | null
-    >(null);
-    const [usernameError, setUsernameError] = useState<string | null>(null);
-    const [passwordError, setPasswordError] = useState<string | null>(null);
     const [editMode, setEditMode] = useState(false);
 
     const {
@@ -70,88 +76,61 @@ const UserDataForm = ({ user }: UserDataProps) => {
         resolver: zodResolver(userDataFormSchema),
         values: {
             username: username,
-            password: "",
-            confirmPassword: "",
+            password: undefined,
+            confirmPassword: undefined,
             role: user.role,
         },
     });
 
-    const nullifyErrors = () => {
-        setOtherError(null);
-        setUsernameError(null);
-        setPasswordError(null);
-        setConfirmPasswordError(null);
-    };
-
     const onSubmit = (data: PutUserDataType) => {
-        nullifyErrors();
-        if (data.password !== data.confirmPassword)
-            setConfirmPasswordError("Passwords do not match");
-        else {
-            if (data.password === "") data.password = undefined;
+        if (!data.password) data.password = undefined;
+        updateUser(data, {
+            onSuccess() {
+                const formUsername = form.getValues("username");
 
-            updateUser(data, {
-                onSuccess() {
-                    const formUsername = form.getValues("username");
-
-                    if (formUsername && formUsername !== username) {
-                        setUsername(formUsername);
-                    }
-                },
-            });
-        }
+                if (formUsername && formUsername !== username) {
+                    setUsername(formUsername);
+                }
+            },
+        });
     };
 
     const onDiscard = () => {
         reset();
         form.reset();
         setEditMode(false);
-        nullifyErrors();
     };
 
     const onInputChange = () => {
-        reset();
-        if (otherError) setOtherError(null);
-        if (usernameError) setUsernameError(null);
-        if (passwordError) setPasswordError(null);
-        if (confirmPasswordError) setConfirmPasswordError(null);
+        if (isSuccess || error) reset();
     };
 
-    if (error) {
-        if (error instanceof ZodiosError) {
-            if (error.cause instanceof ZodError) {
-                let tempUserError: string | null = null;
-                let tempPasswordError: string | null = null;
-                for (const issue of error.cause.issues) {
-                    for (const path of issue.path) {
-                        if (path === "username") {
-                            if (tempUserError === null) {
-                                tempUserError = issue.message;
-                            }
-                        }
-                        if (path === "password") {
-                            if (tempPasswordError === null) {
-                                tempPasswordError = issue.message;
-                            }
-                        }
-                    }
+    useEffect(() => {
+        if (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.data?.path === "username") {
+                    form.setError("username", {
+                        type: "manual",
+                        message: error.response?.data?.message,
+                    });
+                } else if (error.response?.data?.message) {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.response?.data?.message,
+                    });
                 }
-                if (tempUserError && !usernameError)
-                    setUsernameError(tempUserError);
-                if (tempPasswordError && !passwordError)
-                    setPasswordError(tempPasswordError);
-            }
-        } else if (axios.isAxiosError(error)) {
-            if (error.response?.data?.path === "username") {
-                if (!usernameError)
-                    setUsernameError(error.response?.data?.message);
-            } else if (error.response?.data?.message && !otherError) {
-                if (!otherError) setOtherError(error.response?.data?.message);
+            } else {
+                form.setError("root", {
+                    type: "manual",
+                    message: error.message,
+                });
             }
         } else {
-            if (!otherError) setOtherError(error.message);
+            if (form.formState.errors.root) {
+                form.clearErrors();
+            }
         }
-    }
+    }, [error, form]);
 
     return (
         <div className="flex flex-col">
@@ -188,16 +167,6 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
-                                {usernameError && (
-                                    <div
-                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
-                                        role="alert"
-                                    >
-                                        <span className="block sm:inline">
-                                            {usernameError}
-                                        </span>
-                                    </div>
-                                )}
                                 <FormControl>
                                     <Input
                                         placeholder="username"
@@ -231,16 +200,6 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                     <FormLabel>New password</FormLabel>
                                     {editMode && <PasswordTooltip />}
                                 </div>
-                                {passwordError && (
-                                    <div
-                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
-                                        role="alert"
-                                    >
-                                        <span className="block sm:inline">
-                                            {passwordError}
-                                        </span>
-                                    </div>
-                                )}
                                 <FormControl>
                                     <Input
                                         placeholder=""
@@ -259,16 +218,6 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         render={({ field }) => (
                             <FormItem className="!mt-4">
                                 <FormLabel>Confirm new password</FormLabel>
-                                {confirmPasswordError && (
-                                    <div
-                                        className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
-                                        role="alert"
-                                    >
-                                        <span className="block sm:inline">
-                                            {confirmPasswordError}
-                                        </span>
-                                    </div>
-                                )}
                                 <FormControl>
                                     <Input
                                         placeholder=""
@@ -281,72 +230,62 @@ const UserDataForm = ({ user }: UserDataProps) => {
                             </FormItem>
                         )}
                     />
-                    {otherError && !usernameError && !passwordError && (
+                    {form.formState.errors.root && (
                         <div
                             className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
                             role="alert"
                         >
                             <span className="block sm:inline">
-                                {otherError}
+                                {form.formState.errors.root?.message}
                             </span>
                         </div>
                     )}
-                    {isLoading && (
-                        <div className="flex flex-row">
-                            <Button
-                                className="grow"
-                                type="submit"
-                                variant={"outline"}
-                                disabled
-                            >
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Please wait
-                            </Button>
-                            <Button
-                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
-                                type="reset"
-                                disabled
-                            >
-                                Discard changes
-                            </Button>
-                        </div>
-                    )}
-                    {!isLoading && editMode && !isSuccess && (
-                        <div className="flex flex-row">
-                            <Button
-                                className="flex-1 mr-1"
-                                type="submit"
-                                variant={"outline"}
-                            >
-                                Save changes
-                            </Button>
-                            <Button
-                                className="flex-1 ml-1 border"
-                                variant={"destructive"}
-                                type="reset"
-                            >
-                                Discard changes
-                            </Button>
-                        </div>
-                    )}
-                    {isSuccess && (
-                        <div className="flex flex-row">
-                            <Button
-                                className="grow !opacity-100"
-                                variant={"outline"}
-                                disabled
-                            >
-                                <Check />
-                            </Button>
-                            <Button
-                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
-                                type="reset"
-                                disabled
-                            >
-                                Discard changes
-                            </Button>
-                        </div>
-                    )}
+                    <div
+                        className={cn(
+                            "flex flex-row",
+                            editMode ? "visible" : "hidden",
+                        )}
+                    >
+                        <Button
+                            className={cn(
+                                "flex-1 mr-1",
+                                isSuccess ? "!opacity-100" : undefined,
+                            )}
+                            type="submit"
+                            variant={"outline"}
+                            disabled={isLoading || isSuccess}
+                        >
+                            {isSuccess && <Check />}
+
+                            {isLoading && (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    <span>Please wait</span>
+                                </>
+                            )}
+
+                            {!isLoading && editMode && !isSuccess && (
+                                <span>Save changes</span>
+                            )}
+                        </Button>
+                        <Button
+                            className={cn(
+                                "flex-1 ml-1 border",
+                                isLoading || isSuccess
+                                    ? "bg-gray-400 hover:bg-gray-400"
+                                    : undefined,
+                            )}
+                            type="reset"
+                            variant={
+                                !isLoading && editMode && !isSuccess
+                                    ? "destructive"
+                                    : undefined
+                            }
+                            disabled={isLoading || isSuccess}
+                        >
+                            Discard changes
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </div>
