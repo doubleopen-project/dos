@@ -23,10 +23,9 @@ type ButtonGroupProps = {
 };
 
 const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [line, setLine] = useQueryState(
-        "line",
-        parseAsInteger.withDefault(1),
+    const [licenseMatchId, setLicenseMatchId] = useQueryState(
+        "licenseMatchId",
+        parseAsInteger,
     );
 
     // Sort and filter data by startLine and license, only when data changes
@@ -51,8 +50,7 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
                 key="reset"
                 className="p-0.5 m-0.5 text-xs h-fit"
                 onClick={() => {
-                    setSelectedId(null);
-                    setLine(1);
+                    setLicenseMatchId(null);
                 }}
             >
                 RESET
@@ -64,14 +62,13 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
                             <Button
                                 key={d.id}
                                 className={`p-0.5 m-0.5 text-xs h-fit ${
-                                    selectedId === d.id
+                                    licenseMatchId === d.id
                                         ? "bg-red-300 hover:bg-red-300"
                                         : "hover:bg-gray-400"
                                 }`}
                                 variant="secondary"
                                 onClick={() => {
-                                    setSelectedId(d.id);
-                                    setLine(d.startLine);
+                                    setLicenseMatchId(d.id);
                                 }}
                             >
                                 {d.startLine}:{" "}
