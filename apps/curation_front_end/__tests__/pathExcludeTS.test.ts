@@ -3,23 +3,20 @@
 // SPDX-License-Identifier: MIT
 
 // Minimatch unit tests
-import { minimatch } from "minimatch";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { isPathExcluded } from "@/helpers/isExcluded";
 
-describe("Minimatch tests", () => {
-    const minimatchOptions = { dot: true };
-
+describe("Path exclusion tests", () => {
     it("Matches properly a single file", () => {
         const paths = ["package.json", "README.md", "dir1/dir2/file.txt"];
         for (const path of paths) {
-            expect(minimatch(path, path, minimatchOptions)).toBe(true);
+            expect(isPathExcluded(path, path)).toBe(true);
         }
     });
 
     it("Doesn't match when the filename is different", () => {
         const paths = ["package.json", "README.md", "dir1/dir2/file.txt"];
         for (const path of paths) {
-            expect(minimatch(path, "file.txt", minimatchOptions)).toBe(false);
+            expect(isPathExcluded(path, "file.txt")).toBe(false);
         }
     });
 
@@ -30,7 +27,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/package.json",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "**/*.json", minimatchOptions)).toBe(true);
+            expect(isPathExcluded(path, "**/*.json")).toBe(true);
         }
     });
 
@@ -41,7 +38,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/package.json",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "**/*.txt", minimatchOptions)).toBe(false);
+            expect(isPathExcluded(path, "**/*.txt")).toBe(false);
         }
     });
 
@@ -52,7 +49,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/file2.css",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "dir1/dir2/*", minimatchOptions)).toBe(true);
+            expect(isPathExcluded(path, "dir1/dir2/*")).toBe(true);
         }
     });
 
@@ -63,9 +60,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/file2.css",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "dir1/dir3/*", minimatchOptions)).toBe(
-                false,
-            );
+            expect(isPathExcluded(path, "dir1/dir3/*")).toBe(false);
         }
     });
 
@@ -78,9 +73,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/dir3/file4.css",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "dir1/dir2/**", minimatchOptions)).toBe(
-                true,
-            );
+            expect(isPathExcluded(path, "dir1/dir2/**")).toBe(true);
         }
     });
 
@@ -93,9 +86,7 @@ describe("Minimatch tests", () => {
             "dir1/dir2/dir3/file4.css",
         ];
         for (const path of paths) {
-            expect(minimatch(path, "dir1/dir3/**", minimatchOptions)).toBe(
-                false,
-            );
+            expect(isPathExcluded(path, "dir1/dir3/**")).toBe(false);
         }
     });
 });
