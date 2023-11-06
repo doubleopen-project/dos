@@ -38,88 +38,109 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                 Path exclusion tools
             </span>
             <>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <div className="group relative">
-                            <Button
-                                variant="ghost"
-                                disabled={!selectedNode?.isInternal}
-                                className="p-2"
-                            >
-                                <TbFolderOff className="text-lg" />
-                            </Button>
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                Exclude this directory
-                            </div>
-                        </div>
-                    </DialogTrigger>
-                    <ExclusionFormDialog
-                        purl={purl}
-                        pattern={selectedNode?.data.path + "/*"}
-                    />
-                </Dialog>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <div className="group relative">
-                            <Button
-                                variant="ghost"
-                                disabled={!hasChildrenDirs(selectedNode)}
-                                className="p-2"
-                            >
-                                <TbFoldersOff className="text-lg" />
-                            </Button>
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                Exclude this and all subdirectories
-                            </div>
-                        </div>
-                    </DialogTrigger>
-                    <ExclusionFormDialog
-                        purl={purl}
-                        pattern={selectedNode?.data.path + "/**"}
-                    />
-                </Dialog>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <div className="group relative">
-                            <Button
-                                variant="ghost"
-                                disabled={!selectedNode?.isLeaf}
-                                className="p-2"
-                            >
-                                <TbFileOff className="text-lg" />
-                            </Button>
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                Exclude this file
-                            </div>
-                        </div>
-                    </DialogTrigger>
-                    <ExclusionFormDialog
-                        purl={purl}
-                        pattern={selectedNode?.data.path}
-                    />
-                </Dialog>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <div className="group relative">
-                            <Button
-                                variant="ghost"
-                                disabled={!selectedNode?.isLeaf}
-                                className="p-2"
-                            >
-                                <TbFilesOff className="text-lg" />
-                            </Button>
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                Exclude all files with this extension
-                            </div>
-                        </div>
-                    </DialogTrigger>
-                    <ExclusionFormDialog
-                        purl={purl}
-                        pattern={
-                            "**/*." + selectedNode?.data.path?.split(".").pop()
-                        }
-                    />
-                </Dialog>
+                <TooltipProvider>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="group relative">
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            disabled={!selectedNode?.isInternal}
+                                            className="p-2"
+                                        >
+                                            <TbFolderOff className="text-lg" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Exclude this directory
+                                    </TooltipContent>
+                                </div>
+                            </DialogTrigger>
+                            <ExclusionFormDialog
+                                purl={purl}
+                                pattern={selectedNode?.data.path + "/*"}
+                            />
+                        </Dialog>
+                    </Tooltip>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="group relative">
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            disabled={
+                                                !hasChildrenDirs(selectedNode)
+                                            }
+                                            className="p-2"
+                                        >
+                                            <TbFoldersOff className="text-lg" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Exclude this and all subdirectories
+                                    </TooltipContent>
+                                </div>
+                            </DialogTrigger>
+                            <ExclusionFormDialog
+                                purl={purl}
+                                pattern={selectedNode?.data.path + "/**"}
+                            />
+                        </Dialog>
+                    </Tooltip>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="group relative">
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            disabled={!selectedNode?.isLeaf}
+                                            className="p-2"
+                                        >
+                                            <TbFileOff className="text-lg" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Exclude this file
+                                    </TooltipContent>
+                                </div>
+                            </DialogTrigger>
+                            <ExclusionFormDialog
+                                purl={purl}
+                                pattern={selectedNode?.data.path}
+                            />
+                        </Dialog>
+                    </Tooltip>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="group relative">
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            disabled={!selectedNode?.isLeaf}
+                                            className="p-2"
+                                        >
+                                            <TbFilesOff className="text-lg" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Exclude all files with this extension
+                                    </TooltipContent>
+                                </div>
+                            </DialogTrigger>
+                            <ExclusionFormDialog
+                                purl={purl}
+                                pattern={
+                                    "**/*." +
+                                    selectedNode?.data.path?.split(".").pop()
+                                }
+                            />
+                        </Dialog>
+                    </Tooltip>
+                </TooltipProvider>
             </>
         </div>
     );
