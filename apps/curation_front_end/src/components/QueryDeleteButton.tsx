@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RiDeleteBin6Line as Delete } from "react-icons/ri";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
     id: number;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
+    const { toast } = useToast();
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -25,12 +27,24 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
         },
         {
             onSuccess: () => {
-                if (deleteQuery === "/path-exclusion/:id")
-                    alert("Path exclusion deleted successfully.");
-                else alert("License conclusion deleted successfully.");
+                if (deleteQuery === "/path-exclusion/:id") {
+                    toast({
+                        title: "Path exclusion",
+                        description: "Path exclusion deleted successfully.",
+                    });
+                } else {
+                    toast({
+                        title: "License conclusion",
+                        description: "License conclusion deleted successfully.",
+                    });
+                }
             },
             onError: () => {
-                alert("Something went wrong. Please try again.");
+                toast({
+                    variant: "destructive",
+                    title: "Path exclusion",
+                    description: "Something went wrong. Please try again.",
+                });
             },
         },
     );
