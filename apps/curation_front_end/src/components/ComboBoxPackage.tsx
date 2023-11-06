@@ -71,7 +71,6 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                                 key={license.value}
                                 className="items-start text-left"
                                 onSelect={(currentValue) => {
-                                    //console.log("Current value:", currentValue);
                                     setValue(
                                         currentValue === value
                                             ? null

@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Sidebar from "../components/Sidebar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -21,6 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <Sidebar>
                     <Component {...pageProps} />
                 </Sidebar>
+                <Toaster />
             </TanstackProvider>
         </ThemeProvider>
     );

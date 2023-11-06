@@ -26,8 +26,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
-import isGlob from "is-glob";
 import { validReasons } from "validation-helpers";
+import { useToast } from "@/components/ui/use-toast";
 
 const exclusionFormSchema = z.object({
     pattern: z.string().min(1, "Pattern cannot be empty"),
@@ -48,12 +48,10 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
         reason: "",
         comment: "",
     };
-
     const form = useForm<ExclusionFormType>({
         resolver: zodResolver(exclusionFormSchema),
         defaultValues,
     });
-
     const key = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.useMutation(
@@ -64,12 +62,14 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
         },
         {
             onSuccess: () => {
-                alert("Path exclusion added successfully.");
+                toast({
+                    title: "Path exclusion",
+                    description: "Path exclusion added successfully.",
+                });
                 queryClient.invalidateQueries(key);
             },
         },
     );
-
     const onSubmit = (data: ExclusionFormType) => {
         addPathExclusion({
             purl: purl,
@@ -78,6 +78,7 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
             comment: data.comment,
         });
     };
+    const { toast } = useToast();
 
     return (
         <div className="flex flex-col w-full">
