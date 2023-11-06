@@ -14,7 +14,7 @@ type Props = {
     deleteQuery: "/path-exclusion/:id" | "/license-conclusion/:id";
 };
 
-const QueryDeleteButton = ({ id, data, deleteQuery }: Props) => {
+const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -24,7 +24,7 @@ const QueryDeleteButton = ({ id, data, deleteQuery }: Props) => {
             },
         },
         {
-            onSuccess: (data) => {
+            onSuccess: () => {
                 if (deleteQuery === "/path-exclusion/:id")
                     alert("Path exclusion deleted successfully.");
                 else alert("License conclusion deleted successfully.");

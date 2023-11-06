@@ -23,6 +23,7 @@ import CurationDB from "./CurationDB";
 import CurationLicense from "./CurationLicense";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 const curationFormSchema = z.object({
     concludedLicenseSPDX: z.string(),
@@ -47,12 +48,10 @@ const CurationForm = ({ purl, fileData }: Props) => {
         concludedLicenseList: "",
         comment: "",
     };
-
     const form = useForm<CurationFormType>({
         resolver: zodResolver(curationFormSchema),
         defaultValues,
     });
-
     const key = userHooks.getKeyByPath("post", "/file");
     const queryClient = useQueryClient();
     const { mutate: addLicenseConclusion } = userHooks.useMutation(
@@ -67,6 +66,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
             },
         },
     );
+    const { toast } = useToast();
 
     function onSubmit(data: CurationFormType) {
         // Create an array of fields with values
@@ -100,18 +100,27 @@ const CurationForm = ({ purl, fileData }: Props) => {
                     comment: data.comment ?? "",
                     contextPurl: purl,
                 });
-                alert("License conclusion added successfully.");
+                toast({
+                    title: "License conclusion",
+                    description: "License conclusion added successfully.",
+                });
             } else {
                 return;
             }
         } else if (fieldsWithValue.length === 0) {
-            alert(
-                "No license conclusion (SPDX expression, from DB, from a license list) are specified. Please specify exactly one.",
-            );
+            toast({
+                variant: "destructive",
+                title: "ERROR",
+                description:
+                    "No license conclusion (SPDX expression, from DB, from a license list) are specified. Please specify exactly one.",
+            });
         } else {
-            alert(
-                "More than one license conclusion specified. Please specify exactly one.",
-            );
+            toast({
+                variant: "destructive",
+                title: "ERROR",
+                description:
+                    "More than one license conclusion specified. Please specify exactly one.",
+            });
         }
     }
 
