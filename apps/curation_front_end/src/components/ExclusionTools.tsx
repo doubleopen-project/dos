@@ -27,8 +27,8 @@ type Props = {
 
 // Check if the selected node has children directories:
 // if it does, then either this node or this and all subdirs can be excluded
-const hasChildrenDirs = (node: SelectedNode) => {
-    return node.children?.some((child: SelectedNode) => !child.isLeaf);
+const hasChildrenDirs = (node: SelectedNode | undefined) => {
+    return node?.children?.some((child: SelectedNode) => !child.isLeaf);
 };
 
 const ExclusionTools = ({ selectedNode, purl }: Props) => {
@@ -37,82 +37,90 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
             <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
                 Path exclusion tools
             </span>
-            {selectedNode?.isInternal ? (
-                <>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <div className="group relative">
-                                <Button variant="ghost" className="p-2">
-                                    <TbFolderOff className="text-lg" />
-                                </Button>
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                    Exclude this directory
-                                </div>
+            <>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="group relative">
+                            <Button
+                                variant="ghost"
+                                disabled={!selectedNode?.isInternal}
+                                className="p-2"
+                            >
+                                <TbFolderOff className="text-lg" />
+                            </Button>
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                Exclude this directory
                             </div>
-                        </DialogTrigger>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            pattern={selectedNode?.data.path + "/*"}
-                        />
-                    </Dialog>
-                    {hasChildrenDirs(selectedNode) && (
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <div className="group relative">
-                                    <Button variant="ghost" className="p-2">
-                                        <TbFoldersOff className="text-lg" />
-                                    </Button>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                        Exclude this and all subdirectories
-                                    </div>
-                                </div>
-                            </DialogTrigger>
-                            <ExclusionFormDialog
-                                purl={purl}
-                                pattern={selectedNode?.data.path + "/**"}
-                            />
-                        </Dialog>
-                    )}
-                </>
-            ) : (
-                <>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <div className="group relative">
-                                <Button variant="ghost" className="p-2">
-                                    <TbFileOff className="text-lg" />
-                                </Button>
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                    Exclude this file
-                                </div>
+                        </div>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={selectedNode?.data.path + "/*"}
+                    />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="group relative">
+                            <Button
+                                variant="ghost"
+                                disabled={!hasChildrenDirs(selectedNode)}
+                                className="p-2"
+                            >
+                                <TbFoldersOff className="text-lg" />
+                            </Button>
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                Exclude this and all subdirectories
                             </div>
-                        </DialogTrigger>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            pattern={selectedNode?.data.path}
-                        />
-                    </Dialog>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <div className="group relative">
-                                <Button variant="ghost" className="p-2">
-                                    <TbFilesOff className="text-lg" />
-                                </Button>
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
-                                    Exclude all files with this extension
-                                </div>
+                        </div>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={selectedNode?.data.path + "/**"}
+                    />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="group relative">
+                            <Button
+                                variant="ghost"
+                                disabled={!selectedNode?.isLeaf}
+                                className="p-2"
+                            >
+                                <TbFileOff className="text-lg" />
+                            </Button>
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                Exclude this file
                             </div>
-                        </DialogTrigger>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            pattern={
-                                "**/*." +
-                                selectedNode?.data.path?.split(".").pop()
-                            }
-                        />
-                    </Dialog>
-                </>
-            )}
+                        </div>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={selectedNode?.data.path}
+                    />
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="group relative">
+                            <Button
+                                variant="ghost"
+                                disabled={!selectedNode?.isLeaf}
+                                className="p-2"
+                            >
+                                <TbFilesOff className="text-lg" />
+                            </Button>
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible text-xs bg-gray-200 text-gray-800 py-1 px-2 rounded">
+                                Exclude all files with this extension
+                            </div>
+                        </div>
+                    </DialogTrigger>
+                    <ExclusionFormDialog
+                        purl={purl}
+                        pattern={
+                            "**/*." + selectedNode?.data.path?.split(".").pop()
+                        }
+                    />
+                </Dialog>
+            </>
         </div>
     );
 };

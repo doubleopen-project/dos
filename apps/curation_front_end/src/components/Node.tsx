@@ -17,7 +17,7 @@ type NodeProps = NodeRendererProps<any> & {
 };
 
 const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
-    const { isLeaf, isClosed, isSelected, data } = node;
+    const { isLeaf, isClosed, isFocused, data } = node;
     const {
         hasLicenseFindings,
         hasLicenseConclusions,
@@ -31,7 +31,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
     let isBold = false;
     let selectedClassName;
 
-    if (isSelected) {
+    if (isFocused) {
         selectedClassName = "bg-gray-400 rounded-sm";
     }
 
