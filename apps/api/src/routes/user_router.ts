@@ -322,8 +322,6 @@ userRouter.post("/path-exclusions", async (req, res) => {
             req.body.purl,
         );
 
-        if (!pathExclusions) throw new Error("Package not found");
-
         res.status(200).json({
             pathExclusions: pathExclusions,
         });
