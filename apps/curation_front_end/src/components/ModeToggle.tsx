@@ -10,12 +10,16 @@ import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import useThemeStore from "@/store/theme.store";
 
 export function ModeToggle() {
     const { setTheme } = useTheme();
+    const appTheme = useThemeStore((state) => state.appTheme);
+    const setAppTheme = useThemeStore((state) => state.setAppTheme);
 
     return (
         <DropdownMenu>
@@ -27,15 +31,29 @@ export function ModeToggle() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                </DropdownMenuItem>
+                <DropdownMenuRadioGroup
+                    value={appTheme}
+                    onValueChange={(value) => setAppTheme(value)}
+                >
+                    <DropdownMenuRadioItem
+                        value="light"
+                        onClick={() => setTheme("light")}
+                    >
+                        Light
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem
+                        value="dark"
+                        onClick={() => setTheme("dark")}
+                    >
+                        Dark
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem
+                        value="system"
+                        onClick={() => setTheme("system")}
+                    >
+                        System
+                    </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
             </DropdownMenuContent>
         </DropdownMenu>
     );
