@@ -3,9 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import * as dbQueries from "../helpers/db_queries";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore: has no exported member 'ScannerJob'
-import { ScannerJob } from "database";
 import { ScannerJobResultSchema } from "validation-helpers";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
 
@@ -196,20 +193,23 @@ export const deletePackageDataByPurl = async (
     purl: string,
 ): Promise<string> => {
     // Find all package ids with purl
-    const packageIds: number[] | null =
-        await dbQueries.findPackageIdsByPurl(purl);
+    const packageId: number | null = await dbQueries.findPackageIdByPurl(purl);
 
-    if (packageIds && packageIds.length > 0) {
-        // Find all scannerJobs for packages
-        const scannerJobs: ScannerJob[] | null =
-            await dbQueries.findScannerJobsByPackageIds(packageIds);
-
+    if (packageId) {
         // Find all file ids related to packages
-        const fileHashes =
-            await dbQueries.findFileHashesByPackageIds(packageIds);
+        const allFileHashes =
+            await dbQueries.findFileHashesByPackageId(packageId);
+
+        if (allFileHashes.length === 0)
+            throw new Error("No files found for Package with purl " + purl);
+
+        // Exclude hashes that are related to other packages
+        const fileHashes = await dbQueries.findFileHashesNotInOtherPackages(
+            packageId,
+            allFileHashes,
+        );
 
         if (fileHashes && fileHashes.length > 0) {
-            console.log("fileHashes count: " + fileHashes.length);
             // Delete all licenseFindings related to files
             const deletedLicenseFindings =
                 await dbQueries.deleteLicenseFindingsByFileHashes(fileHashes);
@@ -230,24 +230,44 @@ export const deletePackageDataByPurl = async (
                 await dbQueries.deleteScanIssuesByFileHashes(fileHashes);
             console.log("deletedScanIssues count: " + deletedScanIssues.count);
 
-            // Update file scanStatuses to 'notScanned'
-            await dbQueries.updateManyFilesStatuses(fileHashes, "notStarted");
-        }
-
-        if (scannerJobs && scannerJobs.length > 0) {
-            // Update all scannerJobs states for packages
-            await dbQueries.updateScannerJobsStatesByPackageIds(
-                packageIds,
-                "resultsDeleted",
+            // Delete all LicenseConclusions related to files
+            const deletedLicenseConclusions =
+                await dbQueries.deleteLicenseConclusionsByFileHashes(
+                    fileHashes,
+                );
+            console.log(
+                "deletedLicenseConclusions count: " +
+                    deletedLicenseConclusions.count,
             );
         }
+        // Delete all PathExclusions related to package
+        const deletedPathExclusions =
+            await dbQueries.deletePathExclusionsByPackageId(packageId);
+        console.log(
+            "deletedPathExclusions count: " + deletedPathExclusions.count,
+        );
+        // Delete all Scanner Jobs related to package
+        const deletedScannerJobs =
+            await dbQueries.deleteScannerJobsByPackageId(packageId);
+        console.log("deletedScannerJobs count: " + deletedScannerJobs.count);
 
-        // Update all packages with purl
-        await dbQueries.updatePackagesScanStatusesByPurl(purl, "notStarted");
+        // Delete all fileTrees related to package
+        const deletedFileTrees =
+            await dbQueries.deleteFileTreesByPackageId(packageId);
+        console.log("deletedFileTrees count: " + deletedFileTrees.count);
+
+        // Delete all files related to package that are not in other packages
+        const deletedFiles =
+            await dbQueries.deleteFilesByFileHashes(fileHashes);
+        console.log("deletedFiles count: " + deletedFiles.count);
+
+        // Delete Package
+        await dbQueries.deletePackage(packageId);
+        console.log("deleted package with purl " + purl);
 
         return "Results deleted for packages with purl " + purl;
     } else {
-        return "No packages found with purl " + purl;
+        return "No package found with purl " + purl;
     }
 };
 
