@@ -241,6 +241,10 @@ userRouter.post("/path-exclusion", async (req, res) => {
 
         if (!user) throw new Error("User not found");
 
+        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+
+        if (!packageId) throw new Error("Package not found");
+
         let match = false;
 
         if (isGlob(req.body.pattern)) {
@@ -268,10 +272,6 @@ userRouter.post("/path-exclusion", async (req, res) => {
             throw new Error(
                 "No matching path(s) for the provided pattern were found in the package",
             );
-
-        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
-
-        if (!packageId) throw new Error("Package not found");
 
         const pathExclusion = await dbQueries.createPathExclusion({
             pattern: req.body.pattern,
