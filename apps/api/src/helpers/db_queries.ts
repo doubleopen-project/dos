@@ -21,6 +21,33 @@ import {
 } from "database";
 const prisma: PrismaClient = new PrismaClient();
 
+const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
+const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+
+const handleError = (error: unknown) => {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log("Prisma error code: ", error.code);
+        // Prisma error codes reference: https://www.prisma.io/docs/reference/api-reference/error-reference#prisma-client-query-engine
+        switch (error.code) {
+            case "P2000":
+            case "P2001":
+            case "P2002":
+            case "P2003":
+            case "P2004":
+            case "P2015":
+            case "P2025":
+                throw error;
+            default:
+                break;
+        }
+    }
+};
+
+const waitToRetry = async () => {
+    await new Promise((resolve) => setTimeout(resolve, retryInterval));
+    console.log("Retrying database query");
+};
+
 // ------------------------- Database queries -------------------------
 
 // ------------------------------ Create ------------------------------
@@ -29,9 +56,7 @@ export const createScannerJob = async (input: {
     state: string;
     packageId: number;
 }): Promise<ScannerJob> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
 
     while (!scannerJob && retries > 0) {
@@ -41,19 +66,14 @@ export const createScannerJob = async (input: {
             });
         } catch (error) {
             console.log("Error creating ScannerJob: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!scannerJob) {
-        throw "Error: Unable to create ScannerJob";
-    }
+    if (!scannerJob) throw new Error("Error: Unable to create ScannerJob");
 
     return scannerJob;
 };
@@ -61,9 +81,7 @@ export const createScannerJob = async (input: {
 export const createPackage = async (
     input: Prisma.PackageCreateInput,
 ): Promise<Package> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let packageObj: Package | null = null;
     let querySuccess = false;
 
@@ -75,19 +93,14 @@ export const createPackage = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error creating Package: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!packageObj) {
-        throw "Error: Unable to create Package";
-    }
+    if (!packageObj) throw new Error("Error: Unable to create Package");
 
     return packageObj;
 };
@@ -95,9 +108,7 @@ export const createPackage = async (
 export const createFile = async (
     input: Prisma.FileCreateInput,
 ): Promise<File> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let file: File | null = null;
 
     while (!file && retries > 0) {
@@ -107,19 +118,14 @@ export const createFile = async (
             });
         } catch (error) {
             console.log("Error creating File: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!file) {
-        throw "Error: Unable to create File";
-    }
+    if (!file) throw new Error("Error: Unable to create File");
 
     return file;
 };
@@ -133,9 +139,7 @@ type CreateFileTreeType = {
 export const createFileTree = async (
     input: CreateFileTreeType,
 ): Promise<FileTree> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let fileTree: FileTree | null = null;
 
     while (!fileTree && retries > 0) {
@@ -145,19 +149,14 @@ export const createFileTree = async (
             });
         } catch (error) {
             console.log("Error creating FileTree: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!fileTree) {
-        throw "Error: Unable to create FileTree";
-    }
+    if (!fileTree) throw new Error("Error: Unable to create FileTree");
 
     return fileTree;
 };
@@ -168,9 +167,7 @@ export const createLicenseFinding = async (input: {
     scannerConfig: string;
     fileSha256: string;
 }): Promise<LicenseFinding> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let licenseFinding: LicenseFinding | null = null;
 
     while (!licenseFinding && retries > 0) {
@@ -180,19 +177,15 @@ export const createLicenseFinding = async (input: {
             });
         } catch (error) {
             console.log("Error creating LicenseFinding: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!licenseFinding) {
-        throw "Error: Unable to create LicenseFinding";
-    }
+    if (!licenseFinding)
+        throw new Error("Error: Unable to create LicenseFinding");
 
     return licenseFinding;
 };
@@ -204,9 +197,7 @@ export const createLicenseFindingMatch = async (input: {
     score: number;
     licenseFindingId: number;
 }): Promise<LicenseFindingMatch> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let licenseFindingMatch: LicenseFindingMatch | null = null;
 
     while (!licenseFindingMatch && retries > 0) {
@@ -216,19 +207,15 @@ export const createLicenseFindingMatch = async (input: {
             });
         } catch (error) {
             console.log("Error creating LicenseFindingMatch: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!licenseFindingMatch) {
-        throw "Error: Unable to create LicenseFindingMatch";
-    }
+    if (!licenseFindingMatch)
+        throw new Error("Error: Unable to create LicenseFindingMatch");
 
     return licenseFindingMatch;
 };
@@ -241,9 +228,7 @@ export const createLicenseConclusion = async (input: {
     fileSha256: string;
     userId: number;
 }): Promise<LicenseConclusion> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
 
     while (!licenseConclusion && retries > 0) {
@@ -253,6 +238,7 @@ export const createLicenseConclusion = async (input: {
             });
         } catch (error) {
             console.log("Error creating LicenseConclusion: " + error);
+            handleError(error);
             retries--;
             if (retries > 0) {
                 await new Promise((resolve) =>
@@ -262,9 +248,8 @@ export const createLicenseConclusion = async (input: {
         }
     }
 
-    if (!licenseConclusion) {
-        throw "Error: Unable to create LicenseConclusion";
-    }
+    if (!licenseConclusion)
+        throw new Error("Error: Unable to create LicenseConclusion");
 
     return licenseConclusion;
 };
@@ -277,9 +262,7 @@ export const createCopyrightFinding = async (input: {
     scannerConfig: string;
     fileSha256: string;
 }): Promise<CopyrightFinding> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let copyrightFinding: CopyrightFinding | null = null;
 
     while (!copyrightFinding && retries > 0) {
@@ -289,19 +272,15 @@ export const createCopyrightFinding = async (input: {
             });
         } catch (error) {
             console.log("Error creating CopyrightFinding: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!copyrightFinding) {
-        throw "Error: Unable to create CopyrightFinding";
-    }
+    if (!copyrightFinding)
+        throw new Error("Error: Unable to create CopyrightFinding");
 
     return copyrightFinding;
 };
@@ -313,9 +292,7 @@ export const createScanIssue = async (input: {
     scannerConfig: string;
     fileSha256: string;
 }): Promise<ScanIssue> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scanIssue: ScanIssue | null = null;
 
     while (!scanIssue && retries > 0) {
@@ -325,19 +302,14 @@ export const createScanIssue = async (input: {
             });
         } catch (error) {
             console.log("Error creating ScanIssue: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!scanIssue) {
-        throw "Error: Unable to create ScanIssue";
-    }
+    if (!scanIssue) throw new Error("Error: Unable to create ScanIssue");
 
     return scanIssue;
 };
@@ -345,9 +317,7 @@ export const createScanIssue = async (input: {
 export const createUser = async (
     input: Prisma.UserCreateInput,
 ): Promise<User> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let user: User | null = null;
 
     while (!user && retries > 0) {
@@ -357,19 +327,14 @@ export const createUser = async (
             });
         } catch (error) {
             console.log("Error creating User: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!user) {
-        throw "Error: Unable to create User";
-    }
+    if (!user) throw new Error("Error: Unable to create User");
 
     return user;
 };
@@ -381,9 +346,27 @@ export const createPathExclusion = async (input: {
     packageId: number;
     userId: number;
 }): Promise<PathExclusion> => {
-    return await prisma.pathExclusion.create({
-        data: input,
-    });
+    let retries = initialRetryCount;
+    let pathExclusion: PathExclusion | null = null;
+
+    while (!pathExclusion && retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.create({
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error creating PathExclusion: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!pathExclusion)
+        throw new Error("Error: Unable to create PathExclusion");
+
+    return pathExclusion;
 };
 
 // Create file if it doesn't exist, otherwise return existing file
@@ -418,9 +401,7 @@ export const updateScannerJob = async (
     id: string,
     input: Prisma.ScannerJobUpdateInput,
 ): Promise<ScannerJob> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
 
     while (!scannerJob && retries > 0) {
@@ -433,19 +414,14 @@ export const updateScannerJob = async (
             });
         } catch (error) {
             console.log("Error with trying to update ScannerJob: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!scannerJob) {
-        throw "Error: Unable to update ScannerJob";
-    }
+    if (!scannerJob) throw new Error("Error: Unable to update ScannerJob");
 
     return scannerJob;
 };
@@ -454,9 +430,7 @@ export const updateScannerJobsStatesByPackageIds = async (
     packageIds: number[],
     state: string,
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchUpdate = null;
 
     while (!batchUpdate && retries > 0) {
@@ -473,19 +447,14 @@ export const updateScannerJobsStatesByPackageIds = async (
             });
         } catch (error) {
             console.log("Error with trying to update ScannerJobs: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchUpdate) {
-        throw "Error: Unable to update ScannerJobs";
-    }
+    if (!batchUpdate) throw new Error("Error: Unable to update ScannerJobs");
 
     return batchUpdate;
 };
@@ -494,9 +463,7 @@ export const updateFile = async (input: {
     id: number;
     data: Prisma.FileUpdateInput;
 }): Promise<File> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let file = null;
 
     while (!file && retries > 0) {
@@ -509,19 +476,14 @@ export const updateFile = async (input: {
             });
         } catch (error) {
             console.log("Error with trying to update File: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!file) {
-        throw "Error: Unable to update File";
-    }
+    if (!file) throw new Error("Error: Unable to update File");
 
     return file;
 };
@@ -530,9 +492,7 @@ export const updateManyFilesStatuses = async (
     fileHashes: string[],
     scanStatus: string,
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchUpdate = null;
 
     while (!batchUpdate && retries > 0) {
@@ -549,19 +509,14 @@ export const updateManyFilesStatuses = async (
             });
         } catch (error) {
             console.log("Error with trying to update Files: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchUpdate) {
-        throw "Error: Unable to update Files";
-    }
+    if (!batchUpdate) throw new Error("Error: Unable to update Files");
 
     return batchUpdate;
 };
@@ -570,9 +525,7 @@ export const updatePackage = async (input: {
     id: number;
     data: Prisma.PackageUpdateInput;
 }): Promise<Package> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let packageObj = null;
 
     while (!packageObj && retries > 0) {
@@ -584,20 +537,17 @@ export const updatePackage = async (input: {
                 data: input.data,
             });
         } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError)
+                console.log(error.code);
             console.log("Error with trying to update Package: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!packageObj) {
-        throw "Error: Unable to update Package";
-    }
+    if (!packageObj) throw new Error("Error: Unable to update Package");
 
     return packageObj;
 };
@@ -606,9 +556,7 @@ export const updatePackagesScanStatusesByPurl = async (
     purl: string,
     scanStatus: string,
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchUpdate = null;
 
     while (!batchUpdate && retries > 0) {
@@ -623,19 +571,14 @@ export const updatePackagesScanStatusesByPurl = async (
             });
         } catch (error) {
             console.log("Error with trying to update Packages: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchUpdate) {
-        throw "Error: Unable to update Packages";
-    }
+    if (!batchUpdate) throw new Error("Error: Unable to update Packages");
 
     return batchUpdate;
 };
@@ -643,10 +586,8 @@ export const updatePackagesScanStatusesByPurl = async (
 export const updateLicenseConclusion = async (
     id: number,
     input: Prisma.LicenseConclusionUpdateInput,
-): Promise<LicenseConclusion | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+): Promise<LicenseConclusion> => {
+    let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
 
     while (!licenseConclusion && retries > 0) {
@@ -662,20 +603,15 @@ export const updateLicenseConclusion = async (
                 "Error with trying to update LicenseConclusion: " + error,
             );
 
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-            } else {
-                throw error;
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!licenseConclusion) {
-        throw "Error: Unable to update LicenseConclusion";
-    }
+    if (!licenseConclusion)
+        throw new Error("Error: Unable to update LicenseConclusion");
 
     return licenseConclusion;
 };
@@ -684,9 +620,7 @@ export const updateUser = async (
     id: number,
     input: Prisma.UserUpdateInput,
 ): Promise<User> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let user: User | null = null;
     let querySuccess = false;
 
@@ -709,15 +643,10 @@ export const updateUser = async (
                 throw error;
 
             console.log("Error with trying to update User: " + error);
-            if (retries > 0) {
-                retries--;
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw error;
-            }
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -729,9 +658,7 @@ export const updateUser = async (
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let file: File | null = null;
     let querySuccess = false;
 
@@ -745,13 +672,10 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find File: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -761,9 +685,7 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
 export const findFileHashesByPackageIds = async (
     packageIds: number[],
 ): Promise<string[] | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let fileHashes = null;
     let querySuccess = false;
 
@@ -788,18 +710,11 @@ export const findFileHashesByPackageIds = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find File hashes: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return fileHashes;
@@ -808,9 +723,7 @@ export const findFileHashesByPackageIds = async (
 export const findFileTree = async (
     input: CreateFileTreeType,
 ): Promise<FileTree | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let fileTree = null;
     let querySuccess = false;
 
@@ -826,18 +739,11 @@ export const findFileTree = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find FileTree: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return fileTree;
@@ -847,9 +753,7 @@ export const findFileTreeByHashAndPackageId = async (
     hash: string,
     packageId: number,
 ): Promise<FileTree | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let fileTree: FileTree | null = null;
     let querySuccess = false;
 
@@ -864,18 +768,11 @@ export const findFileTreeByHashAndPackageId = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find FileTree: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return fileTree;
@@ -906,35 +803,50 @@ export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
 export const findFileTreesByPackagePurl = async (
     purl: string,
 ): Promise<FileTreeWithRelations[]> => {
-    const filetrees = await prisma.fileTree.findMany({
-        where: {
-            package: {
-                purl: purl,
-            },
-        },
-        select: {
-            path: true,
-            packageId: true,
-            fileSha256: true,
-            file: {
-                select: {
-                    licenseFindings: {
-                        select: {
-                            licenseExpressionSPDX: true,
-                        },
+    let retries = initialRetryCount;
+    let querySuccess = false;
+    let filetrees: FileTreeWithRelations[] = [];
+
+    while (!querySuccess && retries > 0) {
+        try {
+            filetrees = await prisma.fileTree.findMany({
+                where: {
+                    package: {
+                        purl: purl,
                     },
-                    licenseConclusions: {
+                },
+                select: {
+                    path: true,
+                    packageId: true,
+                    fileSha256: true,
+                    file: {
                         select: {
-                            concludedLicenseExpressionSPDX: true,
+                            licenseFindings: {
+                                select: {
+                                    licenseExpressionSPDX: true,
+                                },
+                            },
+                            licenseConclusions: {
+                                select: {
+                                    concludedLicenseExpressionSPDX: true,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        },
-        orderBy: {
-            path: "asc",
-        },
-    });
+                orderBy: {
+                    path: "asc",
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
 
     return filetrees;
 };
@@ -943,16 +855,33 @@ export const findMatchingPath = async (input: {
     purl: string;
     path: string;
 }): Promise<boolean> => {
-    const filetrees = await prisma.fileTree.findMany({
-        where: {
-            package: {
-                purl: input.purl,
-            },
-            path: input.path,
-        },
-    });
+    let retries = initialRetryCount;
+    let querySuccess = false;
+    let match = null;
 
-    if (filetrees.length > 0) return true;
+    while (!querySuccess && retries > 0) {
+        try {
+            match = await prisma.fileTree.findFirst({
+                where: {
+                    package: {
+                        purl: input.purl,
+                    },
+                    path: input.path,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find matching path in filetree: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (match) return true;
 
     return false;
 };
@@ -960,26 +889,43 @@ export const findMatchingPath = async (input: {
 export const findFilePathsByPackagePurl = async (
     purl: string,
 ): Promise<string[]> => {
-    const filetrees = await prisma.fileTree.findMany({
-        where: {
-            package: {
-                purl: purl,
-            },
-        },
-        select: {
-            path: true,
-        },
-    });
+    let retries = initialRetryCount;
+    let querySuccess = false;
+    let filepaths: string[] = [];
 
-    return filetrees.map((filetree) => filetree.path);
+    while (!querySuccess && retries > 0) {
+        try {
+            filepaths = await prisma.fileTree
+                .findMany({
+                    where: {
+                        package: {
+                            purl: purl,
+                        },
+                    },
+                    select: {
+                        path: true,
+                    },
+                })
+                .then((filetrees: { path: string }[]) => {
+                    return filetrees.map((filetree) => filetree.path);
+                });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return filepaths;
 };
 
 export const findScannerJobStateById = async (
     id: string,
 ): Promise<{ id: string; state: string } | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJob: { id: string; state: string } | null = null;
     let querySuccess = false;
 
@@ -997,18 +943,11 @@ export const findScannerJobStateById = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find ScannerJob: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return scannerJob;
@@ -1017,9 +956,7 @@ export const findScannerJobStateById = async (
 export const findScannerJobIdStateByPackageId = async (
     packageId: number,
 ): Promise<{ id: string; state: string } | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJob: { id: string; state: string } | null = null;
     let querySuccess = false;
 
@@ -1037,18 +974,11 @@ export const findScannerJobIdStateByPackageId = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find ScannerJob: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return scannerJob;
@@ -1057,9 +987,7 @@ export const findScannerJobIdStateByPackageId = async (
 export const findScannerJobsByPackageIds = async (
     packageIds: number[],
 ): Promise<ScannerJob[] | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJobs: ScannerJob[] | null = null;
     let querySuccess = false;
 
@@ -1075,18 +1003,11 @@ export const findScannerJobsByPackageIds = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find ScannerJobs: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return scannerJobs;
@@ -1095,9 +1016,7 @@ export const findScannerJobsByPackageIds = async (
 export const findPackageByPurl = async (
     purl: string,
 ): Promise<Package | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let packageObj: Package | null = null;
     let querySuccess = false;
 
@@ -1111,18 +1030,11 @@ export const findPackageByPurl = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find Package: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return packageObj;
@@ -1131,9 +1043,7 @@ export const findPackageByPurl = async (
 export const findPackageIdByPurl = async (
     purl: string,
 ): Promise<number | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let packageId: number | null = null;
     let querySuccess = false;
 
@@ -1154,18 +1064,11 @@ export const findPackageIdByPurl = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find Package id: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return packageId;
@@ -1174,9 +1077,7 @@ export const findPackageIdByPurl = async (
 export const findPackageIdsByPurl = async (
     purl: string,
 ): Promise<number[] | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let packageIds: number[] | null = null;
     let querySuccess = false;
 
@@ -1199,18 +1100,11 @@ export const findPackageIdsByPurl = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find Package ids: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return packageIds;
@@ -1232,9 +1126,7 @@ type PackageWithRelations = Prisma.PackageGetPayload<{
 export const findPackageWithPathExclusionsByPurl = async (
     purl: string,
 ): Promise<PackageWithRelations> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
     let packageObj: PackageWithRelations | null = null;
 
@@ -1258,13 +1150,10 @@ export const findPackageWithPathExclusionsByPurl = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find Package: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -1276,21 +1165,18 @@ export const findPackageWithPathExclusionsByPurl = async (
 export const getPathExclusionsByPackagePurl = async (
     purl: string,
 ): Promise<
-    | {
-          id: number;
-          updatedAt: Date;
-          pattern: string;
-          reason: string;
-          comment: string | null;
-          user: {
-              username: string;
-          };
-      }[]
-    | null
+    {
+        id: number;
+        updatedAt: Date;
+        pattern: string;
+        reason: string;
+        comment: string | null;
+        user: {
+            username: string;
+        };
+    }[]
 > => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
     let packageObj = null;
 
@@ -1320,13 +1206,10 @@ export const getPathExclusionsByPackagePurl = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find Package: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -1336,9 +1219,7 @@ export const getPathExclusionsByPackagePurl = async (
 };
 
 export const getPackageScanResults = async (packageId: number) => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let results = null;
     let querySuccess = false;
 
@@ -1366,18 +1247,11 @@ export const getPackageScanResults = async (packageId: number) => {
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find scan results: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return results;
@@ -1387,9 +1261,7 @@ export const getPackageScanResults = async (packageId: number) => {
 export const findMostRecentScannerJobByPackageId = async (
     packageId: number,
 ): Promise<{ id: string } | null> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let scannerJob = null;
     let querySuccess = false;
 
@@ -1409,18 +1281,11 @@ export const findMostRecentScannerJobByPackageId = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find ScannerJob: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-    }
-
-    if (!querySuccess) {
-        throw "Error: Unable to find File hashes";
     }
 
     return scannerJob;
@@ -1443,9 +1308,7 @@ type ScanIssueWithRelations = Prisma.ScanIssueGetPayload<{
 export const findScanIssuesWithRelatedFileAndPackageAndFileTree =
     async (): Promise<ScanIssueWithRelations[]> => {
         let scanIssues: ScanIssueWithRelations[] = [];
-        let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-        const retryInterval =
-            parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+        let retries = initialRetryCount;
         let querySuccess = false;
 
         while (!querySuccess && retries > 0) {
@@ -1466,13 +1329,10 @@ export const findScanIssuesWithRelatedFileAndPackageAndFileTree =
                 querySuccess = true;
             } catch (error) {
                 console.log("Error with trying to find ScanIssues: " + error);
+                handleError(error);
                 retries--;
-                if (retries > 0) {
-                    await new Promise((resolve) =>
-                        setTimeout(resolve, retryInterval),
-                    );
-                    console.log("Retrying database query");
-                }
+                if (retries > 0) await waitToRetry();
+                else throw error;
             }
         }
         return scanIssues;
@@ -1480,9 +1340,7 @@ export const findScanIssuesWithRelatedFileAndPackageAndFileTree =
 
 export const findUser = async (token: string): Promise<User | null> => {
     let user: User | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1495,13 +1353,10 @@ export const findUser = async (token: string): Promise<User | null> => {
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find User: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return user;
@@ -1509,9 +1364,7 @@ export const findUser = async (token: string): Promise<User | null> => {
 
 export const findUserById = async (id: number): Promise<User | null> => {
     let user: User | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1524,13 +1377,10 @@ export const findUserById = async (id: number): Promise<User | null> => {
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find User: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return user;
@@ -1540,9 +1390,7 @@ export const findUserByUsername = async (
     username: string,
 ): Promise<User | null> => {
     let user: User | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1555,13 +1403,10 @@ export const findUserByUsername = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find User: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return user;
@@ -1583,9 +1428,7 @@ type findScannedPackagesOutput = Prisma.PackageGetPayload<{
 export const findScannedPackages =
     async (): Promise<findScannedPackagesOutput> => {
         let scannedPackages: findScannedPackagesOutput = [];
-        let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-        const retryInterval =
-            parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+        let retries = initialRetryCount;
         let querySuccess = false;
 
         while (!querySuccess && retries > 0) {
@@ -1613,17 +1456,10 @@ export const findScannedPackages =
                 console.log(
                     "Error with trying to find ScannedPackages: " + error,
                 );
+                handleError(error);
                 retries--;
-                if (retries > 0) {
-                    await new Promise((resolve) =>
-                        setTimeout(resolve, retryInterval),
-                    );
-                    console.log("Retrying database query");
-                } else {
-                    throw new Error(
-                        "Error: Unable to perform query to find ScannedPackages",
-                    );
-                }
+                if (retries > 0) await waitToRetry();
+                else throw error;
             }
         }
         return scannedPackages;
@@ -1634,9 +1470,7 @@ export const findFileSha256 = async (
     path: string,
 ): Promise<string> => {
     let fileSha256: string | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1654,25 +1488,18 @@ export const findFileSha256 = async (
                     },
                 })
                 .then((fileTree: { fileSha256: string } | null) => {
-                    if (!fileTree) {
+                    if (!fileTree)
                         throw new Error("Error: Unable to find file sha256");
-                    }
+
                     return fileTree.fileSha256;
                 });
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find FileSha256: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw new Error(
-                    "Error: Unable to perform query to find FileSha256",
-                );
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -1731,9 +1558,7 @@ export const findFileData = async (
     sha256: string,
 ): Promise<FileWithRelations | null> => {
     let file: FileWithRelations | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1790,17 +1615,10 @@ export const findFileData = async (
             querySuccess = true;
         } catch (error) {
             console.log("Error with trying to find FileData: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw new Error(
-                    "Error: Unable to perform query to find FileData",
-                );
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return file;
@@ -1810,9 +1628,7 @@ export const findLicenseConclusionUserId = async (
     id: number,
 ): Promise<number | null> => {
     let licenseConclusion: { userId: number } | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1830,17 +1646,10 @@ export const findLicenseConclusionUserId = async (
             console.log(
                 "Error with trying to find LicenseConclusionUserId: " + error,
             );
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw new Error(
-                    "Error: Unable to perform query to find LicenseConclusionUserId",
-                );
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return licenseConclusion ? licenseConclusion.userId : null;
@@ -1850,9 +1659,7 @@ export const findPathExclusionUserId = async (
     id: number,
 ): Promise<number | null> => {
     let pathExclusion: { userId: number } | null = null;
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1870,17 +1677,10 @@ export const findPathExclusionUserId = async (
             console.log(
                 "Error with trying to find PathExclusion userId: " + error,
             );
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw new Error(
-                    "Error: Unable to perform query to find PathExclusion userId",
-                );
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
     return pathExclusion ? pathExclusion.userId : null;
@@ -1896,9 +1696,7 @@ export const findLicenseConclusionsByPackageId = async (
         comment: string;
     }[]
 > => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let querySuccess = false;
     let filetrees = null;
 
@@ -1930,15 +1728,10 @@ export const findLicenseConclusionsByPackageId = async (
             console.log(
                 "Error with trying to find LicenseConclusions: " + error,
             );
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            } else {
-                throw error;
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -1968,9 +1761,7 @@ export const findLicenseConclusionsByPackageId = async (
 export const deleteLicenseFindingsByFileHashes = async (
     fileHashes: string[],
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchDelete = null;
 
     while (!batchDelete && retries > 0) {
@@ -1986,19 +1777,15 @@ export const deleteLicenseFindingsByFileHashes = async (
             console.log(
                 "Error with trying to delete LicenseFindings: " + error,
             );
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchDelete) {
-        throw "Error: Unable to delete LicenseFindings";
-    }
+    if (!batchDelete)
+        throw new Error("Error: Unable to delete LicenseFindings");
 
     return batchDelete;
 };
@@ -2007,9 +1794,7 @@ export const deleteLicenseFindingsByFileHashes = async (
 export const deleteCopyrightFindingsByFileHashes = async (
     fileHashes: string[],
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchDelete = null;
 
     while (!batchDelete && retries > 0) {
@@ -2025,19 +1810,15 @@ export const deleteCopyrightFindingsByFileHashes = async (
             console.log(
                 "Error with trying to delete CopyrightFindings: " + error,
             );
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchDelete) {
-        throw "Error: Unable to delete CopyrightFindings";
-    }
+    if (!batchDelete)
+        throw new Error("Error: Unable to delete CopyrightFindings");
 
     return batchDelete;
 };
@@ -2046,9 +1827,7 @@ export const deleteCopyrightFindingsByFileHashes = async (
 export const deleteScanIssuesByFileHashes = async (
     fileHashes: string[],
 ): Promise<{ count: number }> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let batchDelete = null;
 
     while (!batchDelete && retries > 0) {
@@ -2062,19 +1841,14 @@ export const deleteScanIssuesByFileHashes = async (
             });
         } catch (error) {
             console.log("Error with trying to delete ScanIssues: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (!batchDelete) {
-        throw "Error: Unable to delete ScanIssues";
-    }
+    if (!batchDelete) throw new Error("Error: Unable to delete ScanIssues");
 
     return batchDelete;
 };
@@ -2082,37 +1856,102 @@ export const deleteScanIssuesByFileHashes = async (
 export const deleteLicenseConclusion = async (
     id: number,
 ): Promise<LicenseConclusion | null> => {
-    return await prisma.licenseConclusion.delete({
-        where: {
-            id: id,
-        },
-    });
+    let retries = initialRetryCount;
+    let licenseConclusion: LicenseConclusion | null = null;
+
+    while (!licenseConclusion && retries > 0) {
+        try {
+            licenseConclusion = await prisma.licenseConclusion.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            console.log(
+                "Error with trying to delete LicenseConclusion: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return licenseConclusion;
 };
 
 export const deleteUser = async (id: number): Promise<User | null> => {
-    return await prisma.user.delete({
-        where: {
-            id: id,
-        },
-    });
+    let retries = initialRetryCount;
+    let user: User | null = null;
+
+    while (!user && retries > 0) {
+        try {
+            user = await prisma.user.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete User: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return user;
 };
 
 export const deletePackage = async (id: number): Promise<Package | null> => {
-    return await prisma.package.delete({
-        where: {
-            id: id,
-        },
-    });
+    let retries = initialRetryCount;
+    let pkg: Package | null = null;
+
+    while (!pkg && retries > 0) {
+        try {
+            pkg = await prisma.package.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete Package: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pkg;
 };
 
 export const deletePathExclusion = async (
     id: number,
 ): Promise<PathExclusion> => {
-    return await prisma.pathExclusion.delete({
-        where: {
-            id: id,
-        },
-    });
+    let retries = initialRetryCount;
+    let pathExclusion: PathExclusion | null = null;
+
+    while (!pathExclusion && retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete Package: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!pathExclusion)
+        throw new Error("Error: Unable to delete PathExclusion");
+
+    return pathExclusion;
 };
 
 // ------------------------------ Count --------------------------------
@@ -2120,9 +1959,7 @@ export const deletePathExclusion = async (
 export const countFileTreesByPackageId = async (
     packageId: number,
 ): Promise<number> => {
-    let retries = parseInt(process.env.DB_RETRIES as string) || 5;
-    const retryInterval =
-        parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
+    let retries = initialRetryCount;
     let count = null;
 
     while (!count && retries > 0) {
@@ -2134,19 +1971,15 @@ export const countFileTreesByPackageId = async (
             });
         } catch (error) {
             console.log("Error with trying to count FileTrees: " + error);
+            handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-                console.log("Retrying database query");
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
-    if (count != 0 && !count) {
-        throw "Error: Unable to count FileTrees";
-    }
+    if (count != 0 && !count)
+        throw new Error("Error: Unable to count FileTrees");
 
     return count;
 };
