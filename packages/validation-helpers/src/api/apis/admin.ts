@@ -10,7 +10,8 @@ export const adminAPI = makeApi([
     {
         method: "delete",
         path: "/scan-results",
-        description: "Delete scan results for specified purl",
+        description:
+            "Delete scan results and other data for specified purl. Doesn't delete files and related data if files are in other packages",
         parameters: [
             {
                 name: "body",

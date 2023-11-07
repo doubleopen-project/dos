@@ -426,39 +426,6 @@ export const updateScannerJob = async (
     return scannerJob;
 };
 
-export const updateScannerJobsStatesByPackageIds = async (
-    packageIds: number[],
-    state: string,
-): Promise<{ count: number }> => {
-    let retries = initialRetryCount;
-    let batchUpdate = null;
-
-    while (!batchUpdate && retries > 0) {
-        try {
-            batchUpdate = await prisma.scannerJob.updateMany({
-                where: {
-                    packageId: {
-                        in: packageIds,
-                    },
-                },
-                data: {
-                    state: state,
-                },
-            });
-        } catch (error) {
-            console.log("Error with trying to update ScannerJobs: " + error);
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-
-    if (!batchUpdate) throw new Error("Error: Unable to update ScannerJobs");
-
-    return batchUpdate;
-};
-
 export const updateFile = async (input: {
     id: number;
     data: Prisma.FileUpdateInput;
@@ -682,11 +649,11 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
     return file;
 };
 
-export const findFileHashesByPackageIds = async (
-    packageIds: number[],
-): Promise<string[] | null> => {
+export const findFileHashesByPackageId = async (
+    packageId: number,
+): Promise<string[]> => {
     let retries = initialRetryCount;
-    let fileHashes = null;
+    let fileHashes: string[] = [];
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -694,9 +661,7 @@ export const findFileHashesByPackageIds = async (
             fileHashes = await prisma.fileTree
                 .findMany({
                     where: {
-                        packageId: {
-                            in: packageIds,
-                        },
+                        packageId: packageId,
                     },
                     select: {
                         fileSha256: true,
@@ -718,6 +683,52 @@ export const findFileHashesByPackageIds = async (
     }
 
     return fileHashes;
+};
+
+export const findFileHashesNotInOtherPackages = async (
+    packageId: number,
+    fileHashes: string[],
+): Promise<string[]> => {
+    let retries = initialRetryCount;
+    let fileHashesInOtherPackages: string[] = [];
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            fileHashesInOtherPackages = await prisma.fileTree
+                .findMany({
+                    where: {
+                        packageId: {
+                            not: packageId,
+                        },
+                        fileSha256: {
+                            in: fileHashes,
+                        },
+                    },
+                    select: {
+                        fileSha256: true,
+                    },
+                })
+                .then((fileTrees: { fileSha256: string }[]) => {
+                    return fileTrees.map((elem: { fileSha256: string }) => {
+                        return elem.fileSha256;
+                    });
+                });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find File hashes not in other packages: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return fileHashes.filter((elem) => {
+        return !fileHashesInOtherPackages.includes(elem);
+    });
 };
 
 export const findFileTree = async (
@@ -984,35 +995,6 @@ export const findScannerJobIdStateByPackageId = async (
     return scannerJob;
 };
 
-export const findScannerJobsByPackageIds = async (
-    packageIds: number[],
-): Promise<ScannerJob[] | null> => {
-    let retries = initialRetryCount;
-    let scannerJobs: ScannerJob[] | null = null;
-    let querySuccess = false;
-
-    while (!querySuccess && retries > 0) {
-        try {
-            scannerJobs = await prisma.scannerJob.findMany({
-                where: {
-                    packageId: {
-                        in: packageIds,
-                    },
-                },
-            });
-            querySuccess = true;
-        } catch (error) {
-            console.log("Error with trying to find ScannerJobs: " + error);
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-
-    return scannerJobs;
-};
-
 export const findPackageByPurl = async (
     purl: string,
 ): Promise<Package | null> => {
@@ -1072,42 +1054,6 @@ export const findPackageIdByPurl = async (
     }
 
     return packageId;
-};
-
-export const findPackageIdsByPurl = async (
-    purl: string,
-): Promise<number[] | null> => {
-    let retries = initialRetryCount;
-    let packageIds: number[] | null = null;
-    let querySuccess = false;
-
-    while (!querySuccess && retries > 0) {
-        try {
-            packageIds = await prisma.package
-                .findMany({
-                    where: {
-                        purl: purl,
-                    },
-                    select: {
-                        id: true,
-                    },
-                })
-                .then((packages: { id: number }[]) => {
-                    return packages.map((elem: { id: number }) => {
-                        return elem.id;
-                    });
-                });
-            querySuccess = true;
-        } catch (error) {
-            console.log("Error with trying to find Package ids: " + error);
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-
-    return packageIds;
 };
 
 type PackageWithRelations = Prisma.PackageGetPayload<{
@@ -1880,6 +1826,65 @@ export const deleteLicenseConclusion = async (
     return licenseConclusion;
 };
 
+export const deleteLicenseConclusionsByFileHashes = async (
+    fileHashes: string[],
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.licenseConclusion.deleteMany({
+                where: {
+                    fileSha256: {
+                        in: fileHashes,
+                    },
+                },
+            });
+        } catch (error) {
+            console.log(
+                "Error with trying to delete LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchDelete)
+        throw new Error("Error: Unable to delete LicenseConclusions");
+
+    return batchDelete;
+};
+
+export const deleteFilesByFileHashes = async (
+    fileHashes: string[],
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.file.deleteMany({
+                where: {
+                    sha256: {
+                        in: fileHashes,
+                    },
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete Files: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchDelete) throw new Error("Error: Unable to delete Files");
+
+    return batchDelete;
+};
+
 export const deleteUser = async (id: number): Promise<User | null> => {
     let retries = initialRetryCount;
     let user: User | null = null;
@@ -1952,6 +1957,85 @@ export const deletePathExclusion = async (
         throw new Error("Error: Unable to delete PathExclusion");
 
     return pathExclusion;
+};
+
+export const deletePathExclusionsByPackageId = async (
+    packageId: number,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.pathExclusion.deleteMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!batchDelete) throw new Error("Error: Unable to delete PathExclusions");
+
+    return batchDelete;
+};
+
+export const deleteScannerJobsByPackageId = async (
+    packageId: number,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.scannerJob.deleteMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchDelete) throw new Error("Error: Unable to delete ScannerJobs");
+
+    return batchDelete;
+};
+
+export const deleteFileTreesByPackageId = async (
+    packageId: number,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.fileTree.deleteMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchDelete) throw new Error("Error: Unable to delete FileTrees");
+
+    return batchDelete;
 };
 
 // ------------------------------ Count --------------------------------

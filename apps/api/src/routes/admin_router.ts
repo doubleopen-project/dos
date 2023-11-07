@@ -92,13 +92,16 @@ adminRouter.delete("/user/:id", async (req, res) => {
 
 // Delete scan results for a specified package purl
 adminRouter.delete("/scan-results", async (req, res) => {
-    // TODO: this endpoint should only be used by specific users
     try {
         const message = await dbOperations.deletePackageDataByPurl(
             req.body.purl,
         );
         res.status(200).json({ message: message });
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError)
+            res.status(404).json({
+                message: "Package or items to delete not found",
+            });
         console.log("Error: ", error);
         res.status(500).json({ message: "Internal server error" });
     }

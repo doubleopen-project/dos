@@ -1662,7 +1662,7 @@ declare const adminAPI: [
     {
         method: "delete";
         path: "/scan-results";
-        description: "Delete scan results for specified purl";
+        description: "Delete scan results and other data for specified purl. Doesn't delete files and related data if files are in other packages";
         parameters: [
             {
                 name: "body";
@@ -9984,7 +9984,7 @@ declare const dosAPI: [
     {
         method: "delete";
         path: "/admin/scan-results";
-        description: "Delete scan results for specified purl";
+        description: "Delete scan results and other data for specified purl. Doesn't delete files and related data if files are in other packages";
         parameters: [
             {
                 name: "body";
