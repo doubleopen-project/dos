@@ -240,11 +240,8 @@ export const createLicenseConclusion = async (input: {
             console.log("Error creating LicenseConclusion: " + error);
             handleError(error);
             retries--;
-            if (retries > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-            }
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 
@@ -860,6 +857,34 @@ export const findFileTreesByPackagePurl = async (
     }
 
     return filetrees;
+};
+
+export const findFiletreeByPackageIdAndFileSha256 = async (
+    packageId: number,
+    fileSha256: string,
+): Promise<FileTree | null> => {
+    let retries = initialRetryCount;
+    let querySuccess = false;
+    let filetree: FileTree | null = null;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            filetree = await prisma.fileTree.findFirst({
+                where: {
+                    packageId: packageId,
+                    fileSha256: fileSha256,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find FileTree: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return filetree;
 };
 
 export const findMatchingPath = async (input: {

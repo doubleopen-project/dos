@@ -102,6 +102,25 @@ userRouter.post("/license-conclusion", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
 
+        // Make sure that a package with purl exists
+        const packageId = await dbQueries.findPackageIdByPurl(
+            req.body.contextPurl,
+        );
+
+        if (!packageId)
+            throw new Error("Package with specified purl not found");
+
+        // Make sure that a file with sha256 exists in package with purl
+        const filetree = await dbQueries.findFiletreeByPackageIdAndFileSha256(
+            packageId,
+            req.body.fileSha256,
+        );
+
+        if (!filetree)
+            throw new Error(
+                "File with specified sha256 does not exist in the specified context package",
+            );
+
         const licenseConclusion = await dbQueries.createLicenseConclusion({
             concludedLicenseExpressionSPDX:
                 req.body.concludedLicenseExpressionSPDX,
@@ -118,8 +137,14 @@ userRouter.post("/license-conclusion", async (req, res) => {
             message: "License conclusion created",
         });
     } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof Error) {
+            return res
+                .status(400)
+                .json({ message: "Bad request. " + error.message });
+        } else {
+            console.log("Error: ", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
     }
 });
 
@@ -145,7 +170,6 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
                 detectedLicenseExpressionSPDX:
                     req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
-                contextPurl: req.body.contextPurl,
             });
 
             res.status(200).json({ message: "License conclusion updated" });
@@ -217,6 +241,10 @@ userRouter.post("/path-exclusion", async (req, res) => {
 
         if (!user) throw new Error("User not found");
 
+        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+
+        if (!packageId) throw new Error("Package not found");
+
         let match = false;
 
         if (isGlob(req.body.pattern)) {
@@ -244,10 +272,6 @@ userRouter.post("/path-exclusion", async (req, res) => {
             throw new Error(
                 "No matching path(s) for the provided pattern were found in the package",
             );
-
-        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
-
-        if (!packageId) throw new Error("Package not found");
 
         const pathExclusion = await dbQueries.createPathExclusion({
             pattern: req.body.pattern,
