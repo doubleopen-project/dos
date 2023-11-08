@@ -4,9 +4,10 @@
 
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useUser } from "@/hooks/useUser";
-import { authHooks } from "@/hooks/zodiosHooks";
+import { authHooks, userHooks } from "@/hooks/zodiosHooks";
 
 import LoginForm from "@/components/LoginForm";
 
@@ -27,6 +28,7 @@ type LoginFormType = {
 
 export default function Login() {
     useUser({ redirectTo: "/", redirectIfFound: true });
+    const queryClient = useQueryClient();
 
     const router = useRouter();
 
@@ -36,9 +38,19 @@ export default function Login() {
         isLoading,
         reset,
         mutate: loginUser,
-    } = authHooks.useMutation("post", "/login/password", {
-        withCredentials: true,
-    });
+    } = authHooks.useMutation(
+        "post",
+        "/login/password",
+        {
+            withCredentials: true,
+        },
+        {
+            onSuccess: () => {
+                const key = userHooks.getKeyByPath("get", "/user");
+                queryClient.invalidateQueries(key);
+            },
+        },
+    );
 
     const submitForm = (loginData: LoginFormType) => {
         loginUser(loginData);

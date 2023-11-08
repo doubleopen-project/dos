@@ -7,13 +7,12 @@ import logo from "@/public/icons/Double_Open_logo.png";
 import { useUser } from "@/hooks/useUser";
 
 const Header = () => {
-    let user = undefined;
-    user = useUser({});
-    const username = user ? user.username : "Guest";
+    const user = useUser({});
+    const username = user ? user.username : user === null ? "Guest" : undefined;
     return (
         <div className="flex justify-between p-4">
             <img src={logo.src} alt="DoubleOpen Logo" width="160" />
-            {user !== undefined && <h2>Welcome back, {username}</h2>}
+            {username && <h2>Welcome back, {username}</h2>}
         </div>
     );
 };
