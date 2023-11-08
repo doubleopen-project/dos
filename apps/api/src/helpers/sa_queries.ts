@@ -3,15 +3,21 @@
 // SPDX-License-Identifier: MIT
 
 import fetch from "cross-fetch";
+import { Zodios, isErrorFromAlias } from "@zodios/core";
+import { scannerAgentApi } from "validation-helpers";
+import { isAxiosError } from "axios";
+
+const scannerUrl: string = process.env.SCANNER_URL
+    ? process.env.SCANNER_URL
+    : "http://localhost:5001/";
+
+const scannerAgentClient = new Zodios(scannerUrl, scannerAgentApi);
 
 export const sendJobToQueue = async (
     jobId: string,
     files: { hash: string; path: string }[],
     options?: { timeout: string },
 ): Promise<boolean> => {
-    const scannerUrl: string = process.env.SCANNER_URL
-        ? process.env.SCANNER_URL
-        : "http://localhost:5001/";
     const postJobUrl = scannerUrl + "job";
 
     const request = {
@@ -123,5 +129,30 @@ export const reportResultState = async (
         return true;
     } else {
         return false;
+    }
+};
+
+export const queryJobState = async (jobId: string): Promise<string> => {
+    try {
+        const jobDetails = await scannerAgentClient.getJobDetails({
+            params: { id: jobId },
+            headers: {
+                Authorization: "Bearer " + process.env.SA_TOKEN,
+            },
+        });
+
+        return jobDetails.state;
+    } catch (error) {
+        if (isErrorFromAlias(scannerAgentApi, "getJobDetails", error)) {
+            if (error.response.status === 404) {
+                return "notFound";
+            }
+            console.log(error.response.status);
+            console.log(error.response.data);
+        } else if (isAxiosError(error) && error.code === "ECONNREFUSED") {
+            console.log("Unable to connect Scanner Agent");
+            return "noConnectionToSA";
+        }
+        throw error;
     }
 };

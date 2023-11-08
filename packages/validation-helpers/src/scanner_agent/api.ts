@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { makeApi, makeErrors } from "@zodios/core";
+import { Zodios, makeApi, makeErrors } from "@zodios/core";
 import * as schemas from "./schemas";
 
 const errors = makeErrors([
@@ -66,6 +66,7 @@ export const scannerAgentApi = makeApi([
         method: "get",
         path: "/job/:id",
         description: "Get scanner job status",
+        alias: "getJobDetails",
         parameters: [
             {
                 name: "id",
