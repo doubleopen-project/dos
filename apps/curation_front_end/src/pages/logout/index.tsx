@@ -2,17 +2,33 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Loader2 } from "lucide-react";
-import { authHooks } from "@/hooks/zodiosHooks";
 import { useEffect, useState } from "react";
+
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { authHooks, userHooks } from "@/hooks/zodiosHooks";
 
 export default function Logout() {
     const [counter, setCounter] = useState(3);
-    const { error, isSuccess, isLoading } = authHooks.useImmutableQuery(
+    const queryClient = useQueryClient();
+
+    const {
+        error,
+        isSuccess,
+        isLoading,
+        mutate: logoutUser,
+    } = authHooks.useMutation(
+        "post",
         "/logout",
-        undefined,
         { withCredentials: true },
+        {
+            onSuccess: () => {
+                const key = userHooks.getKeyByPath("get", "/user");
+                queryClient.invalidateQueries(key);
+            },
+        },
     );
     const router = useRouter();
 
@@ -25,30 +41,30 @@ export default function Logout() {
         }
     }, [counter, router, isSuccess]);
 
+    useEffect(() => {
+        logoutUser(undefined);
+    }, [logoutUser]);
+
     return (
         <div className="h-screen">
-            {isLoading && (
-                <div className="flex justify-center items-center h-full ">
-                    <div className="text-lg w-72  rounded-md h-min p-10 flex justify-center">
-                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+            <div className="flex items-center justify-center h-full ">
+                {isLoading && (
+                    <div className="flex justify-center p-10 text-lg rounded-md w-72 h-min">
+                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                     </div>
-                </div>
-            )}
-            {error && (
-                <div className="flex justify-center items-center h-full">
-                    <h1 className="text-lg w-72 rounded-md h-min p-10 border shadow-lg">
+                )}
+                {error && (
+                    <h1 className="p-10 text-lg border rounded-md shadow-lg w-72 h-min">
                         Error
                     </h1>
-                </div>
-            )}
-            {isSuccess && (
-                <div className="flex justify-center items-center h-full">
-                    <div className="text-lg w-72  rounded-md h-min p-10 border shadow-lg">
+                )}
+                {isSuccess && (
+                    <div className="p-10 text-lg border rounded-md shadow-lg w-72 h-min">
                         <p>Logged out successfully.</p>
                         <p>Redirecting in {counter} seconds.</p>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

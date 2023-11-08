@@ -5,7 +5,6 @@
 import React from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { AiOutlineHome } from "react-icons/ai";
 import {
     GrInspect,
@@ -25,7 +24,6 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ children }: SidebarProps) => {
-    const router = useRouter();
     const user = useUser({});
     return (
         <div className="flex">
@@ -67,7 +65,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                             </div>
                         </Link>
                     )}
-                    {router.pathname !== "/logout" && user && (
+                    {user && (
                         <Link href="/settings">
                             <div
                                 className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
@@ -77,18 +75,17 @@ const Sidebar = ({ children }: SidebarProps) => {
                             </div>
                         </Link>
                     )}
-                    {router.pathname !== "/logout" &&
-                        user?.role === "ADMIN" && (
-                            <Link href="/admin/users">
-                                <div
-                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                                    title="User Management"
-                                >
-                                    <GrUserManager size={20} />
-                                </div>
-                            </Link>
-                        )}
-                    {router.pathname !== "/logout" && user && (
+                    {user?.role === "ADMIN" && (
+                        <Link href="/admin/users">
+                            <div
+                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                title="User Management"
+                            >
+                                <GrUserManager size={20} />
+                            </div>
+                        </Link>
+                    )}
+                    {user && (
                         <Link href="/logout">
                             <div
                                 className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
