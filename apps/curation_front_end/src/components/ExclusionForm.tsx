@@ -66,7 +66,7 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
                     title: "Path exclusion",
                     description: "Path exclusion added successfully.",
                 });
-                // When path exclusions are mutated, invalidate the query to refetch the data
+                // When a path exclusions is added, invalidate the query to refetch the data
                 queryClient.invalidateQueries(keyPathExclusion);
             },
         },

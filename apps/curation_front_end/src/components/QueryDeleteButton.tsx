@@ -5,9 +5,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { RiDeleteBin6Line as Delete } from "react-icons/ri";
-import { userHooks } from "@/hooks/zodiosHooks";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { userHooks } from "@/hooks/zodiosHooks";
 
 type Props = {
     id: number;
@@ -17,6 +18,11 @@ type Props = {
 
 const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
     const { toast } = useToast();
+
+    const keyFile = userHooks.getKeyByPath("post", "/file");
+    const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
+    const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
+    const queryClient = useQueryClient();
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -32,11 +38,16 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
                         title: "Path exclusion",
                         description: "Path exclusion deleted successfully.",
                     });
+                    // When a path exclusion deleted, invalidate the query to refetch the data
+                    queryClient.invalidateQueries(keyPathExclusion);
                 } else {
                     toast({
                         title: "License conclusion",
                         description: "License conclusion deleted successfully.",
                     });
+                    // When a license conclusion is deleted, invalidate the file and filetree queries to refetch the data
+                    queryClient.invalidateQueries(keyFile);
+                    queryClient.invalidateQueries(keyFiletree);
                 }
             },
             onError: () => {
