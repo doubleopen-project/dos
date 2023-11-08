@@ -3,15 +3,19 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import logo from "@/public/icons/Double_Open_logo.png";
+
+import Image from "next/image";
+
 import { useUser } from "@/hooks/useUser";
+
+import logo from "@/public/icons/Double_Open_logo.png";
 
 const Header = () => {
     const user = useUser({});
     const username = user ? user.username : user === null ? "Guest" : undefined;
     return (
         <div className="flex justify-between p-4">
-            <img src={logo.src} alt="DoubleOpen Logo" width="160" />
+            <Image src={logo} alt="DoubleOpen Logo" width="160" />
             {username && <h2>Welcome back, {username}</h2>}
         </div>
     );
