@@ -26,6 +26,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { useQueryClient } from "@tanstack/react-query";
 
 const userDataFormSchema = z
     .object({
@@ -59,8 +60,8 @@ type UserDataProps = {
 };
 
 const UserDataForm = ({ user }: UserDataProps) => {
-    const [username, setUsername] = useState<string>(user.username);
     const [editMode, setEditMode] = useState(false);
+    const queryClient = useQueryClient();
 
     const {
         error,
@@ -68,14 +69,24 @@ const UserDataForm = ({ user }: UserDataProps) => {
         isSuccess,
         reset,
         mutate: updateUser,
-    } = userHooks.usePut("/user", {
-        withCredentials: true,
-    });
+    } = userHooks.usePut(
+        "/user",
+        {
+            withCredentials: true,
+        },
+        {
+            onSuccess() {
+                // invalidate user data query
+                const key = userHooks.getKeyByPath("get", "/user");
+                queryClient.invalidateQueries(key);
+            },
+        },
+    );
 
     const form = useForm<PutUserDataType>({
         resolver: zodResolver(userDataFormSchema),
         values: {
-            username: username,
+            username: user.username,
             password: undefined,
             confirmPassword: undefined,
             role: user.role,
@@ -84,15 +95,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
 
     const onSubmit = (data: PutUserDataType) => {
         if (!data.password) data.password = undefined;
-        updateUser(data, {
-            onSuccess() {
-                const formUsername = form.getValues("username");
-
-                if (formUsername && formUsername !== username) {
-                    setUsername(formUsername);
-                }
-            },
-        });
+        updateUser(data);
     };
 
     const onDiscard = () => {
