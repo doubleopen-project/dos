@@ -52,7 +52,7 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
         resolver: zodResolver(exclusionFormSchema),
         defaultValues,
     });
-    const key = userHooks.getKeyByPath("post", "/path-exclusions");
+    const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.useMutation(
         "post",
@@ -66,7 +66,8 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
                     title: "Path exclusion",
                     description: "Path exclusion added successfully.",
                 });
-                queryClient.invalidateQueries(key);
+                // When a path exclusions is added, invalidate the query to refetch the data
+                queryClient.invalidateQueries(keyPathExclusion);
             },
         },
     );

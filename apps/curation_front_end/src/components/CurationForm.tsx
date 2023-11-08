@@ -52,7 +52,8 @@ const CurationForm = ({ purl, fileData }: Props) => {
         resolver: zodResolver(curationFormSchema),
         defaultValues,
     });
-    const key = userHooks.getKeyByPath("post", "/file");
+    const keyFile = userHooks.getKeyByPath("post", "/file");
+    const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const queryClient = useQueryClient();
     const { mutate: addLicenseConclusion } = userHooks.useMutation(
         "post",
@@ -62,7 +63,9 @@ const CurationForm = ({ purl, fileData }: Props) => {
         },
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(key);
+                // When a license conclusion is added, invalidate the file and filetree queries to refetch the data
+                queryClient.invalidateQueries(keyFile);
+                queryClient.invalidateQueries(keyFiletree);
             },
         },
     );
@@ -70,8 +73,6 @@ const CurationForm = ({ purl, fileData }: Props) => {
 
     function onSubmit(data: CurationFormType) {
         // Create an array of fields with values
-        console.log(data);
-
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
             data.concludedLicenseDB,
