@@ -130,10 +130,10 @@ export const ScannerJobInfoRequestSchema = z.string({
 
 export const ScannerJobInfoResponseBodySchema = z.object({
     id: z.string(),
-    state: z.string().optional(),
+    state: z.string(),
     data: z
         .object({
-            directory: z.string(),
+            directory: z.string().optional(),
         })
         .optional(),
     finishedOn: z.number().optional(),

@@ -17,7 +17,7 @@ import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 import { loadEnv } from "common-helpers";
 import { dosAPI } from "validation-helpers";
 
-import { rescanFilesWithTimeoutIssues } from "./helpers/cron_jobs";
+import { cronJobs } from "./cron_jobs";
 import { localStrategy } from "./passport_strategies/local_strategy";
 import * as dbQueries from "./helpers/db_queries";
 import { User as DBUser } from "database";
@@ -136,10 +136,17 @@ app.use(`/docs/swagger.json`, (_, res) => res.json(document));
 app.use("/docs", serve);
 app.use("/docs", setup(undefined, { swaggerUrl: "/docs/swagger.json" }));
 
+// Run rescanFilesWithTimeoutIssues every day at midnight or at the time specified in RESCAN_SCHEDULE
 const rescanSchedule = process.env.RESCAN_SCHEDULE || "0 0 * * *";
-
 cron.schedule(rescanSchedule, () => {
-    rescanFilesWithTimeoutIssues();
+    cronJobs.rescanFilesWithTimeoutIssues();
+});
+
+// Run jobStateQuery every 10 seconds (for testing purposes)
+//cron.schedule("*/10 * * * * *", () => {
+// Run jobStateQuery every 5 minutes
+cron.schedule("*/5 * * * *", () => {
+    cronJobs.jobStateQuery();
 });
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
