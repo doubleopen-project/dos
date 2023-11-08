@@ -3,10 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import Header from "@/components/Header";
-import { useUser } from "@/hooks/useUser";
 
 export default function Home() {
-    const user = useUser({});
     return (
         <main className="min-h-screen">
             <Header />

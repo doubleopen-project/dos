@@ -15,7 +15,7 @@ interface UseUserOptions {
 }
 
 export const useUser = (options: UseUserOptions) => {
-    const { data, error } = userHooks.useGetUser(
+    const { data, isLoading, error } = userHooks.useGetUser(
         { withCredentials: true },
         { retry: false, cacheTime: 0 },
     );
@@ -24,6 +24,8 @@ export const useUser = (options: UseUserOptions) => {
 
     const user = error
         ? null
+        : isLoading
+        ? undefined
         : data
         ? { username: data.username, role: data.role }
         : null;
