@@ -14,12 +14,12 @@ import {
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import useThemeStore from "@/store/theme.store";
+import useSettingsStore from "@/store/settings.store";
 
 export function ModeToggle() {
     const { setTheme } = useTheme();
-    const appTheme = useThemeStore((state) => state.appTheme);
-    const setAppTheme = useThemeStore((state) => state.setAppTheme);
+    const appTheme = useSettingsStore((state) => state.appTheme);
+    const setAppTheme = useSettingsStore((state) => state.setAppTheme);
 
     return (
         <DropdownMenu>
