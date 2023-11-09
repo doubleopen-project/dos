@@ -27,7 +27,7 @@ const Sidebar = ({ children }: SidebarProps) => {
     const user = useUser({});
     return (
         <div className="flex">
-            <div className="fixed w-20 h-screen p-4  border-r-[1px] flex flex-col justify-between">
+            <div className="flex flex-col items-center h-screen p-4 border-r-[1px] justify-between overflow-auto">
                 <div className="flex flex-col items-center">
                     <Link href="/">
                         <div
@@ -98,7 +98,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     <ModeToggle />
                 </div>
             </div>
-            <main className="w-full ml-20">{children}</main>
+            <main className="w-full overflow-auto">{children}</main>
         </div>
     );
 };
