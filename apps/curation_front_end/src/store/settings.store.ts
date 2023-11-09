@@ -16,7 +16,7 @@ type Actions = {
     setAppTheme: (appTheme: string) => void;
 };
 
-const useThemeStore = create<State & Actions>()(
+const useSettingsStore = create<State & Actions>()(
     persist(
         (set) => ({
             appTheme: "light",
@@ -28,4 +28,4 @@ const useThemeStore = create<State & Actions>()(
     ),
 );
 
-export default useThemeStore;
+export default useSettingsStore;
