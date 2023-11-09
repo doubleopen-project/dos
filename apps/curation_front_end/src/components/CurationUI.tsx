@@ -13,14 +13,14 @@ type CurationUIProps = {
 
 const CurationUI = ({ purl, path }: CurationUIProps) => {
     return (
-        <div className="flex flex-col md:flex-row h-screen">
-            {/* 1st column (4/12): Show and filter package */}
-            <div className="w-full md:w-4/12 flex flex-col m-2 mr-1 p-2 rounded-md border shadow-lg">
+        <div className="flex flex-col md:flex-row md:h-screen overflow-auto">
+            {/* 1st column: Show and filter package */}
+            <div className="flex flex-col m-2 mr-1 p-2 rounded-md border shadow-lg overflow-auto resize-x">
                 <PackageTree purl={purl} />
             </div>
 
-            {/* 2nd column (8/12): Open a file for license inspection and curation */}
-            <div className="w-full md:w-8/12 flex flex-col m-2 ml-1 p-2 rounded-md border shadow-lg">
+            {/* 2nd column: Open a file for license inspection and curation */}
+            <div className="flex-1 m-2 ml-1 p-2 rounded-md border shadow-lg overflow-auto">
                 <CodeInspector purl={purl} path={path} />
             </div>
         </div>
