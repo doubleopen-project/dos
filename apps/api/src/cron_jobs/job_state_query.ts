@@ -7,12 +7,13 @@
  * jobs that are not in a final state (completed, failed, resultsDeleted).
  */
 
+import { saveJobResults } from "../helpers/db_operations";
 import {
     findScannerJobsWithStates,
     updatePackage,
     updateScannerJob,
 } from "../helpers/db_queries";
-import { queryJobState } from "../helpers/sa_queries";
+import { queryJobDetails } from "../helpers/sa_queries";
 
 const flaggedMap = new Map<
     string,
@@ -111,7 +112,8 @@ export const jobStateQuery = async () => {
                 }
             } else {
                 // State of the job in the job queue
-                const jobQueueState = await queryJobState(scannerJobId);
+                const jobDetails = await queryJobDetails(scannerJobId);
+                const jobQueueState = jobDetails.state;
 
                 if (dbState !== jobQueueState) {
                     switch (jobQueueState) {
@@ -134,22 +136,29 @@ export const jobStateQuery = async () => {
                              * Case where job is completed in queue but Scanner Agent's
                              * attempt to inform API about the state of the job has failed.
                              */
-                            // TODO: Launch a new task to save the results
-                            // For now, just update the state "failed" for ScannerJob and Package in the database
-                            console.log(
-                                scannerJobId +
-                                    ": Job has completed, but changing job state to failed, as the saving results phase needs to be initiated separately",
-                            );
-                            await updateScannerJob(scannerJobId, {
-                                state: "failed",
-                            });
-                            await updatePackage({
-                                id: packageId,
-                                data: {
-                                    scanStatus: "failed",
-                                },
-                            });
-                            flaggedMap.delete(scannerJobId);
+                            if (jobDetails.result)
+                                // Save the job results to the database
+                                saveJobResults(
+                                    scannerJobId,
+                                    jobDetails.result,
+                                    undefined,
+                                );
+                            else {
+                                console.log(
+                                    scannerJobId +
+                                        ": Job has completed, but no result was found. Changing state to failed.",
+                                );
+                                await updateScannerJob(scannerJobId, {
+                                    state: "failed",
+                                });
+                                await updatePackage({
+                                    id: packageId,
+                                    data: {
+                                        scanStatus: "failed",
+                                    },
+                                });
+                                flaggedMap.delete(scannerJobId);
+                            }
                             break;
                         case "notFound":
                             /*
