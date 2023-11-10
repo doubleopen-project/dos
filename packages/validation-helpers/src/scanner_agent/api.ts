@@ -52,6 +52,7 @@ export const scannerAgentApi = makeApi([
         method: "post",
         path: "/job",
         description: "Add scanner job",
+        alias: "postJob",
         parameters: [
             {
                 name: "body",
@@ -81,6 +82,7 @@ export const scannerAgentApi = makeApi([
         method: "post",
         path: "/result-state/:id",
         description: "Set scanner job result state",
+        alias: "postResultState",
         parameters: [
             {
                 name: "id",
