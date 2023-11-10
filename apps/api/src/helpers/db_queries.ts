@@ -55,6 +55,7 @@ const waitToRetry = async () => {
 export const createScannerJob = async (input: {
     state: string;
     packageId: number;
+    objectStorageKey?: string;
 }): Promise<ScannerJob> => {
     let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
