@@ -215,6 +215,7 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
             const newScannerJob = await dbQueries.createScannerJob({
                 state: "created",
                 packageId: packageId,
+                objectStorageKey: req.body.zipFileKey,
             });
 
             processPackageAndSendToScanner(
