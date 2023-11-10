@@ -401,6 +401,11 @@ export const updateScannerJob = async (
     let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
 
+    if (input.state === "failed") {
+        const jobStateObj = await findScannerJobStateById(id);
+        if (jobStateObj) input.failureState = jobStateObj.state;
+    }
+
     while (!scannerJob && retries > 0) {
         try {
             scannerJob = await prisma.scannerJob.update({
