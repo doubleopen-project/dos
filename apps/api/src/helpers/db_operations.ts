@@ -306,7 +306,7 @@ const getScannerConfigString = (options: {
 export const saveJobResults = async (
     jobId: string,
     result: ScannerJobResultSchema,
-    jobStateMap: Map<string, string>,
+    jobStateMap?: Map<string, string>,
 ): Promise<void> => {
     try {
         // Save result locally for debugging
@@ -461,7 +461,11 @@ export const saveJobResults = async (
                 }
 
                 j++;
-                jobStateMap.set(jobId, `Saving results (${j}/${filesCount})`);
+                if (jobStateMap)
+                    jobStateMap.set(
+                        jobId,
+                        `Saving results (${j}/${filesCount})`,
+                    );
             }
             if (promises.length > 0) {
                 await Promise.all(promises);
@@ -470,7 +474,7 @@ export const saveJobResults = async (
         console.timeEnd(jobId + ": Saving results to database took");
 
         result = null;
-        jobStateMap.delete(jobId);
+        if (jobStateMap) jobStateMap.delete(jobId);
 
         if (newJobFilesList.length > 0) {
             try {

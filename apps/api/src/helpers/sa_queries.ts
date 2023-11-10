@@ -4,7 +4,7 @@
 
 import { Zodios, isErrorFromAlias } from "@zodios/core";
 import { isAxiosError } from "axios";
-import { scannerAgentApi } from "validation-helpers";
+import { ScannerJobResultSchema, scannerAgentApi } from "validation-helpers";
 
 const scannerUrl: string = process.env.SCANNER_URL
     ? process.env.SCANNER_URL
@@ -122,7 +122,9 @@ export const reportResultState = async (
     return true;
 };
 
-export const queryJobState = async (jobId: string): Promise<string> => {
+export const queryJobDetails = async (
+    jobId: string,
+): Promise<{ state: string; result: ScannerJobResultSchema | undefined }> => {
     try {
         const jobDetails = await scannerAgentClient.getJobDetails({
             params: { id: jobId },
@@ -131,17 +133,17 @@ export const queryJobState = async (jobId: string): Promise<string> => {
             },
         });
 
-        return jobDetails.state;
+        return { state: jobDetails.state, result: jobDetails.result };
     } catch (error) {
         if (isErrorFromAlias(scannerAgentApi, "getJobDetails", error)) {
             if (error.response.status === 404) {
-                return "notFound";
+                return { state: "notFound", result: undefined };
             }
             console.log(error.response.status);
             console.log(error.response.data);
         } else if (isAxiosError(error) && error.code === "ECONNREFUSED") {
             console.log("Unable to connect Scanner Agent");
-            return "noConnectionToSA";
+            return { state: "noConnectionToSA", result: undefined };
         }
         throw error;
     }
