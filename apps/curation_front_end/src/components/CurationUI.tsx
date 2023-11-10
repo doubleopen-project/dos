@@ -17,21 +17,6 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
     const setTreeWidth = useSettingsStore((state) => state.setTreeWidth);
     const treeRef = useRef<HTMLDivElement>(null);
 
-    // Ensure the initial width is set based on the persisted value from Zustand
-    useEffect(() => {
-        if (treeWidth !== null && treeWidth !== undefined) {
-            // Use the persisted treeWidth if available
-            treeRef.current?.style.setProperty(
-                "width",
-                `${treeWidth}px`,
-                "important",
-            );
-        } else {
-            // Set the default width if Zustand value is not available
-            treeRef.current?.style.removeProperty("width");
-        }
-    }, [treeWidth]);
-
     useEffect(() => {
         // Event listener for mouseup event on window
         const handleMouseUp = () => {
@@ -52,6 +37,7 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
             {/* 1st column: Show and filter package */}
             <div
                 ref={treeRef}
+                style={{ width: treeWidth }}
                 className="flex flex-col m-2 mr-1 p-2 rounded-md border shadow-lg overflow-auto resize-x"
             >
                 <PackageTree purl={purl} />
