@@ -48,7 +48,7 @@ const ExclusionList = ({ purl }: Props) => {
                             variant="outline"
                             className="p-1 text-xs rounded-md"
                         >
-                            List path exclusions
+                            List/delete path exclusions
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="max-h-[70vh] min-h-[1px] overflow-y-auto">
