@@ -50,7 +50,7 @@
         "test:cfe:watch": "turbo run test:watch --filter=curation_front_end"
     },
     "devDependencies": {
-        "prettier": "3.0.3",
+        "prettier": "3.1.0",
         "rimraf": "5.0.5",
         "turbo": "1.10.16"
     },

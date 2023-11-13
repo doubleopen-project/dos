@@ -4,7 +4,7 @@
 
 /*
  * This cron job will query the state of all jobs that are not in a final state (completed, failed, resultsDeleted)
- * So that the state of the job in the database can be updated if the state of the job in the job queue has changed
+ * so that the state of the job in the database can be updated if the state of the job in the job queue has changed
  * or if the state is stuck on pre-scan or post-scan phases.
  * These error stages could be caused by:
  * - a connection issue between the API and Scanner Agent
