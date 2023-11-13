@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { columns } from "@/components/datatable/columns";
-import { DataTable } from "@/components/datatable/data-table";
+import { columns } from "@/components/package_table/columns";
+import { DataTable } from "@/components/package_table/DataTable";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 

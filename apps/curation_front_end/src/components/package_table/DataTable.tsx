@@ -23,7 +23,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { DataTablePagination } from "./data-table-pagination";
+import { DataTablePagination } from "@/components/package_table/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
                 />
                 <DataTablePagination table={table} />
             </div>
-            <div className="rounded-md border">
+            <div className="border rounded-md">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
