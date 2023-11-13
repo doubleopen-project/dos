@@ -40,9 +40,10 @@ type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 type Props = {
     purl: string | undefined;
     pattern?: string;
+    setOpen: (open: boolean) => void;
 };
 
-const ExclusionForm = ({ purl, pattern }: Props) => {
+const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
     const defaultValues: ExclusionFormType = {
         pattern: pattern || "",
         reason: "",
@@ -68,6 +69,7 @@ const ExclusionForm = ({ purl, pattern }: Props) => {
                 });
                 // When a path exclusions is added, invalidate the query to refetch the data
                 queryClient.invalidateQueries(keyPathExclusion);
+                setOpen(false);
             },
         },
     );

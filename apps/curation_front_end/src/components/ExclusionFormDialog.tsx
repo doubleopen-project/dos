@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTrigger,
@@ -19,9 +19,16 @@ type Props = {
 };
 
 const ExclusionFormDialog = ({ purl, pattern }: Props) => {
+    const [open, setOpen] = useState<boolean>(true);
+
+    // Log the value of open to the console
+    useEffect(() => {
+        console.log(open);
+    }, [open]);
+
     return (
         <DialogContent>
-            <ExclusionForm purl={purl} pattern={pattern} />
+            <ExclusionForm purl={purl} pattern={pattern} setOpen={setOpen} />
             <DialogFooter className="flex justify-end">
                 <DialogClose asChild>
                     <Button
