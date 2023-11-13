@@ -36,8 +36,8 @@ const ExclusionList = ({ purl }: Props) => {
     return (
         <>
             {isLoading && (
-                <div className="flex justify-center items-center h-full">
-                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                <div className="flex items-center justify-center h-full">
+                    <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                 </div>
             )}
             {error && <div>{error.message}</div>}
@@ -46,7 +46,7 @@ const ExclusionList = ({ purl }: Props) => {
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="outline"
-                            className="text-xs p-1 rounded-md"
+                            className="p-1 text-xs rounded-md"
                         >
                             List path exclusions
                         </Button>
@@ -55,19 +55,19 @@ const ExclusionList = ({ purl }: Props) => {
                         {data.pathExclusions.map((exclusion) => (
                             <div
                                 key={`wrapper-${exclusion.id}`}
-                                className="flex justify-between items-start"
+                                className="flex items-start justify-between"
                             >
                                 <DropdownMenuItem
                                     key={exclusion.id}
-                                    className="flex-1 items-start text-left"
+                                    className="items-start flex-1 text-left"
                                 >
-                                    <div className="text-xs flex flex-col w-full">
+                                    <div className="flex flex-col w-full text-xs">
                                         <span className="flex justify-between mb-2">
                                             <span>
                                                 <span className="mr-1">
                                                     Glob:
                                                 </span>
-                                                <span className="font-bold bg-green-400 p-1 rounded-sm">
+                                                <span className="p-1 font-bold bg-green-400 rounded-sm">
                                                     {exclusion.pattern}
                                                 </span>
                                             </span>
@@ -81,7 +81,7 @@ const ExclusionList = ({ purl }: Props) => {
                                                             .split("T")[0]
                                                     }
                                                 </span>
-                                                <span className="font-bold bg-orange-400 p-1 rounded-sm">
+                                                <span className="p-1 font-bold bg-orange-400 rounded-sm">
                                                     {exclusion.user.username}
                                                 </span>
                                             </span>
@@ -92,7 +92,7 @@ const ExclusionList = ({ purl }: Props) => {
                                             </span>
                                             <span>{exclusion.reason}</span>
                                         </span>
-                                        <span className="text-smaller italic">
+                                        <span className="italic text-smaller">
                                             {exclusion.comment}
                                         </span>
                                     </div>

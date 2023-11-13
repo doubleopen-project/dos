@@ -4,7 +4,7 @@
 
 import React from "react";
 import { columns } from "@/components/datatable/columns";
-import { DataTable } from "./datatable/data-table";
+import { DataTable } from "@/components/datatable/data-table";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 

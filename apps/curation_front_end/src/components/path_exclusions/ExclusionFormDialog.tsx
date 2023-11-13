@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import ExclusionForm from "@/components/ExclusionForm";
+import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -26,7 +26,7 @@ const ExclusionFormDialog = ({ purl, pattern, open, setOpen }: Props) => {
                 <DialogFooter className="flex justify-end">
                     <Button
                         variant="outline"
-                        className="text-xs p-1 rounded-md"
+                        className="p-1 text-xs rounded-md"
                         onClick={() => setOpen(false)}
                     >
                         Cancel

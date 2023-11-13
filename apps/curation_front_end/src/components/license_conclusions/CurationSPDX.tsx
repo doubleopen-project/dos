@@ -17,7 +17,7 @@ const CurationSPDX = ({ value, setValue }: Props) => {
 
     return (
         <Input
-            className="rounded-md w-full text-xs"
+            className="w-full text-xs rounded-md"
             type="text"
             placeholder="Write your SPDX expression here..."
             value={value}

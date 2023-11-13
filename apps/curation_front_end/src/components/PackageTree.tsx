@@ -13,16 +13,14 @@ import { parseAsString, useQueryState } from "next-usequerystate";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Loader2 } from "lucide-react";
-import { Label } from "./ui/label";
-import { Badge } from "./ui/badge";
-import { Input } from "./ui/input";
-import ComboBoxPackage from "./ComboBoxPackage";
-import Node from "./Node";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import ExclusionList from "@/components/ExclusionList";
-import ExclusionFormDialog from "./ExclusionFormDialog";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import ComboBoxPackage from "@/components/ComboBoxPackage";
+import Node from "@/components/Node";
+import ExclusionList from "@/components/path_exclusions/ExclusionList";
 import type { SelectedNode } from "@/types/index";
-import ExclusionTools from "./ExclusionTools";
+import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 
 type Props = {
     purl: string | undefined;
@@ -63,12 +61,6 @@ const PackageTree = ({ purl }: Props) => {
 
     let tree: any;
     const uniqueLicenses = extractUniqueLicenses(treeData);
-
-    // Check if the selected node has children directories:
-    // if it does, then either this node or this and all subdirs can be excluded
-    const hasChildrenDirs = (node: SelectedNode) => {
-        return node.children?.some((child: SelectedNode) => !child.isLeaf);
-    };
 
     const handleExpand = () => {
         if (!isExpanded) {
@@ -127,21 +119,21 @@ const PackageTree = ({ purl }: Props) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-row p-1 mb-2 rounded-md border shadow-lg">
+            <div className="flex-row p-1 mb-2 border rounded-md shadow-lg">
                 <Label className="font-bold">Package: </Label>
                 <Badge className="rounded-md">{purl}</Badge>
             </div>
 
-            <div className="p-1 mb-3 rounded-md border shadow-lg flex items-center text-sm">
+            <div className="flex items-center p-1 mb-3 text-sm border rounded-md shadow-lg">
                 <Input
-                    className="p-1 rounded-md w-full text-xs"
+                    className="w-full p-1 text-xs rounded-md"
                     type="text"
                     placeholder="Filter"
                     value={treeFilter}
                     onChange={handleTreeFilter}
                 />
                 <Button
-                    className="text-xs p-1 rounded-md ml-2"
+                    className="p-1 ml-2 text-xs rounded-md"
                     onClick={handleExpand}
                     variant={"outline"}
                 >
@@ -153,8 +145,8 @@ const PackageTree = ({ purl }: Props) => {
 
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
-                    <div className="flex justify-center items-center h-full">
-                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                    <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                     </div>
                 )}
                 {data && pathExclusions && (
@@ -188,18 +180,18 @@ const PackageTree = ({ purl }: Props) => {
                     </Tree>
                 )}
                 {error && (
-                    <div className="flex justify-center items-center h-full">
+                    <div className="flex items-center justify-center h-full">
                         Unable to fetch package data
                     </div>
                 )}
             </div>
 
-            <div className="flex flex-col p-1 mt-2 rounded-md shadow-lg border items-center text-sm">
+            <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
                 <ComboBoxPackage
                     data={uniqueLicenses}
                     filterString={"licenseFilter"}
                 />
-                <div className="pt-1 rounded-md flex text-sm justify-end">
+                <div className="flex justify-end pt-1 text-sm rounded-md">
                     <ExclusionList purl={purl} />
                 </div>
             </div>

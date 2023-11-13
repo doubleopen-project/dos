@@ -89,7 +89,7 @@ const CurationLicense = ({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full h-fit justify-between"
+                    className="justify-between w-full h-fit"
                 >
                     <div className="text-xs">
                         {router.isReady
@@ -99,7 +99,7 @@ const CurationLicense = ({
                                 : "Select license..."
                             : null}
                     </div>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0" style={{ width: listWidth }}>

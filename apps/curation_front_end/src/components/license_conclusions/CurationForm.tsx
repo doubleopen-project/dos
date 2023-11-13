@@ -18,9 +18,9 @@ import { Button } from "@/components/ui/button";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import CurationSPDX from "./CurationSPDX";
-import CurationDB from "./CurationDB";
-import CurationLicense from "./CurationLicense";
+import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import CurationDB from "@/components/license_conclusions/CurationDB";
+import CurationLicense from "@/components/license_conclusions/CurationLicense";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
@@ -127,7 +127,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
 
     return (
         <div className="flex flex-col w-full">
-            <Label className="font-bold mb-1">Curation:</Label>
+            <Label className="mb-1 font-bold">Curation:</Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -209,7 +209,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                         <div className="flex items-center">
                             <Button
                                 type="submit"
-                                className="text-left text-xs"
+                                className="text-xs text-left"
                                 variant={"outline"}
                             >
                                 Submit

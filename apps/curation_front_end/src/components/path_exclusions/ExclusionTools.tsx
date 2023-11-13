@@ -12,7 +12,7 @@ import {
     TbFilesOff,
 } from "react-icons/tb";
 import { TfiPencil } from "react-icons/tfi";
-import ExclusionFormDialog from "./ExclusionFormDialog";
+import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import {
     Tooltip,
     TooltipContent,
@@ -40,14 +40,14 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
         useState<boolean>(false);
 
     return (
-        <div className="relative p-1 mb-2 flex rounded-md border shadow-lg items-center text-sm">
+        <div className="relative flex items-center p-1 mb-2 text-sm border rounded-md shadow-lg">
             <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
                 Path exclusion tools
             </span>
             <>
                 <TooltipProvider>
                     <Tooltip>
-                        <div className="group relative">
+                        <div className="relative group">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -70,7 +70,7 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="group relative">
+                        <div className="relative group">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -93,7 +93,7 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="group relative">
+                        <div className="relative group">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -114,7 +114,7 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="group relative">
+                        <div className="relative group">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -140,7 +140,7 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="group relative">
+                        <div className="relative group">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
