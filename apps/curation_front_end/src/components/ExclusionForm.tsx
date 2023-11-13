@@ -69,11 +69,11 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                 });
                 // When a path exclusions is added, invalidate the query to refetch the data
                 queryClient.invalidateQueries(keyPathExclusion);
-                setOpen(false);
             },
         },
     );
     const onSubmit = (data: ExclusionFormType) => {
+        setOpen(false);
         addPathExclusion({
             purl: purl,
             pattern: data.pattern,
