@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import CurationUI from "@/components/CurationUI";
+const CurationUI = dynamic(() => import("@/components/CurationUI"), {
+    ssr: false,
+});
 
 export default function Package() {
     const router = useRouter();

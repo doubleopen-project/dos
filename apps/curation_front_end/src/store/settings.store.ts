@@ -10,17 +10,21 @@ import { persist } from "zustand/middleware";
 
 type State = {
     appTheme: string;
+    treeWidth: number;
 };
 
 type Actions = {
     setAppTheme: (appTheme: string) => void;
+    setTreeWidth: (treeWidth: number) => void;
 };
 
-const useThemeStore = create<State & Actions>()(
+const useSettingsStore = create<State & Actions>()(
     persist(
         (set) => ({
             appTheme: "light",
             setAppTheme: (appTheme: string) => set({ appTheme }),
+            treeWidth: 300,
+            setTreeWidth: (treeWidth: number) => set({ treeWidth }),
         }),
         {
             name: "theme-storage",
@@ -28,4 +32,4 @@ const useThemeStore = create<State & Actions>()(
     ),
 );
 
-export default useThemeStore;
+export default useSettingsStore;
