@@ -33,18 +33,18 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
     }, []);
 
     return (
-        <div className="flex flex-col md:flex-row md:h-screen overflow-auto">
+        <div className="flex flex-col overflow-auto md:flex-row md:h-screen">
             {/* 1st column: Show and filter package */}
             <div
                 ref={treeRef}
                 style={{ width: treeWidth }}
-                className="flex flex-col m-2 mr-1 p-2 rounded-md border shadow-lg overflow-auto resize-x"
+                className="flex flex-col p-2 m-2 mr-1 overflow-auto border rounded-md shadow-lg resize-x"
             >
                 <PackageTree purl={purl} />
             </div>
 
             {/* 2nd column: Open a file for license inspection and curation */}
-            <div className="flex-1 m-2 ml-1 p-2 rounded-md border shadow-lg overflow-auto">
+            <div className="flex-1 p-2 m-2 ml-1 overflow-auto border rounded-md shadow-lg">
                 <CodeInspector purl={purl} path={path} />
             </div>
         </div>

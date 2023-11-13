@@ -83,7 +83,7 @@ const CurationDB = ({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full h-fit justify-between"
+                    className="justify-between w-full h-fit"
                 >
                     <div className="text-xs">
                         {router.isReady
@@ -94,7 +94,7 @@ const CurationDB = ({
                                 : "Select curation from DB..."
                             : null}
                     </div>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0" style={{ width: listWidth }}>
@@ -105,11 +105,11 @@ const CurationDB = ({
                         {data?.licenseConclusions.map((d) => (
                             <div
                                 key={`wrapper-${d.id}`}
-                                className="flex justify-between items-start"
+                                className="flex items-start justify-between"
                             >
                                 <CommandItem
                                     key={d.id}
-                                    className="flex-1 items-start text-left"
+                                    className="items-start flex-1 text-left"
                                     onSelect={() => handleSelect(d)}
                                 >
                                     <Check
@@ -120,13 +120,13 @@ const CurationDB = ({
                                                 : "opacity-0",
                                         )}
                                     />
-                                    <div className="text-xs flex flex-col w-full ml-2">
+                                    <div className="flex flex-col w-full ml-2 text-xs">
                                         <span className="flex justify-between mb-2">
                                             <span>
                                                 <span className="mr-1">
                                                     Curated:
                                                 </span>
-                                                <span className="font-bold bg-green-400 p-1 rounded-sm">
+                                                <span className="p-1 font-bold bg-green-400 rounded-sm">
                                                     {
                                                         d.concludedLicenseExpressionSPDX
                                                     }
@@ -140,7 +140,7 @@ const CurationDB = ({
                                                             .split("T")[0]
                                                     }
                                                 </span>
-                                                <span className="font-bold bg-orange-400 p-1 rounded-sm">
+                                                <span className="p-1 font-bold bg-orange-400 rounded-sm">
                                                     {d.user.username}
                                                 </span>
                                             </span>
@@ -161,7 +161,7 @@ const CurationDB = ({
                                             </span>
                                             {d.contextPurl}
                                         </span>
-                                        <span className="text-smaller italic">
+                                        <span className="italic text-smaller">
                                             {d.comment}
                                         </span>
                                     </div>

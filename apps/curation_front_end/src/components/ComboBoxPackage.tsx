@@ -47,7 +47,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full h-fit justify-between"
+                    className="justify-between w-full h-fit"
                 >
                     <span className="text-xs">
                         {router.isReady
@@ -58,7 +58,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                                 : "Select license..."
                             : null}
                     </span>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0">

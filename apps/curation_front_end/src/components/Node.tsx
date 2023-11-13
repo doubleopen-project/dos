@@ -81,7 +81,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
             }}
         >
             <span className="flex items-center">{icon}</span>
-            <span className="ml-1 font-mono text-xs flex-grow truncate">
+            <span className="flex-grow ml-1 font-mono text-xs truncate">
                 {isLeaf ? (
                     <Link
                         href={{

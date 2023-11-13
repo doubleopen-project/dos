@@ -7,14 +7,13 @@ import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
-import CodeEditor from "./CodeEditor";
+import CodeEditor from "@/components/CodeEditor";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import ButtonGroup from "./ButtonGroup";
-import CurationForm from "./CurationForm";
+import ButtonGroup from "@/components/ButtonGroup";
+import CurationForm from "@/components/license_conclusions/CurationForm";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
-type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 type CodeInspectorProps = {
     purl: string | undefined;
@@ -46,7 +45,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
+            <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
                 <Label className="font-bold">File: </Label>
                 {path ? (
                     <Badge className="rounded-md">{path}</Badge>
@@ -56,9 +55,9 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
 
             {data?.licenseFindings[0] && (
-                <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
+                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
                     <Label className="font-semibold">Detected SPDX</Label>
-                    <p className="p-1 rounded-md border text-xs">
+                    <p className="p-1 text-xs border rounded-md">
                         {data.licenseFindings.map((license) => (
                             <span key={license.id}>
                                 <>
@@ -77,7 +76,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             )}
 
             {data?.licenseFindings[0]?.licenseFindingMatches && (
-                <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
+                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
                     <Label className="font-semibold">
                         Individual license matches
                     </Label>
@@ -90,9 +89,9 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             )}
 
             {data?.licenseConclusions[0] && (
-                <div className="flex-row p-1 mb-2 rounded-md shadow-lg border items-center">
+                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
                     <Label className="font-semibold">Curations</Label>
-                    <p className="p-1 rounded-md border text-xs">
+                    <p className="p-1 text-xs border rounded-md">
                         {data.licenseConclusions.map((license) => (
                             <span key={license.id}>
                                 <>
@@ -110,15 +109,15 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 </div>
             )}
 
-            <div className="flex flex-1 justify-center items-center overflow-auto">
+            <div className="flex items-center justify-center flex-1 overflow-auto">
                 {!path && (
-                    <div className="flex justify-center items-center h-full">
+                    <div className="flex items-center justify-center h-full">
                         No file opened
                     </div>
                 )}
                 {path && isLoading && (
-                    <div className="flex justify-center items-center h-full">
-                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                    <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                     </div>
                 )}
                 {data && fileContents && (
@@ -128,13 +127,13 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     />
                 )}
                 {error && (
-                    <div className="flex justify-center items-center h-full">
+                    <div className="flex items-center justify-center h-full">
                         Unable to fetch file data
                     </div>
                 )}
             </div>
             {data && purl && (
-                <div className="p-1 mt-2 rounded-md shadow-lg border flex-row text-sm">
+                <div className="flex-row p-1 mt-2 text-sm border rounded-md shadow-lg">
                     <CurationForm purl={purl} fileData={data} />
                 </div>
             )}
