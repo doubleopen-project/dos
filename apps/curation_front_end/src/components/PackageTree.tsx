@@ -194,24 +194,13 @@ const PackageTree = ({ purl }: Props) => {
                 )}
             </div>
 
-            <div className="p-1 mt-2 rounded-md shadow-lg border flex flex-col items-center text-sm">
+            <div className="flex flex-col p-1 mt-2 rounded-md shadow-lg border items-center text-sm">
                 <ComboBoxPackage
                     data={uniqueLicenses}
                     filterString={"licenseFilter"}
                 />
                 <div className="pt-1 rounded-md flex text-sm justify-end">
                     <ExclusionList purl={purl} />
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="text-xs p-1 rounded-md ml-2"
-                            >
-                                Add path exclusion
-                            </Button>
-                        </DialogTrigger>
-                        <ExclusionFormDialog purl={purl} />
-                    </Dialog>
                 </div>
             </div>
         </div>
