@@ -2,9 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-/* In case anything goes wrong with Scanner Agent trying to inform API
- * about the state of a job, this cron job will query the state of all
- * jobs that are not in a final state (completed, failed, resultsDeleted).
+/*
+ * This cron job will query the state of all jobs that are not in a final state (completed, failed, resultsDeleted)
+ * So that the state of the job in the database can be updated if the state of the job in the job queue has changed
+ * or if the state is stuck on pre-scan or post-scan phases.
+ * These error stages could be caused by:
+ * - a connection issue between the API and Scanner Agent
+ * - API not being able to reach database
+ * - API or Scanner Agent crashing / stopping / not responding unexpectedly
+ * - job queue being wiped before the job has finished
  */
 
 import { saveJobResults } from "../helpers/db_operations";
@@ -31,6 +37,7 @@ const nonFinalStates = [
     "stuck",
     "resumed",
     "stalled",
+    "savingResults",
 ];
 
 export const jobStateQuery = async () => {
@@ -65,7 +72,6 @@ export const jobStateQuery = async () => {
                 /*
                  * Case where the job hasn't yet been added to the queue.
                  */
-                // TODO: figure out what the optimal limits for flagCount are for "created" and "processing" states
                 if (flaggedJob) {
                     if (flaggedJob.dbState === dbState) {
                         // If the job is in the flagged map, increment the flagCount
@@ -93,9 +99,6 @@ export const jobStateQuery = async () => {
                                 data: { scanStatus: "failed" },
                             });
                             flaggedMap.delete(scannerJobId);
-
-                            //TODO: maybe retry jobs that have failed during creation/processing?
-                            // And log an issue if the retry fails
                         }
                     } else {
                         // If the dbState has changed since the last check
@@ -106,7 +109,56 @@ export const jobStateQuery = async () => {
                     // If the job is not in the flagged map
                     flaggedMap.set(scannerJobId, {
                         dbState: dbState,
-                        queueState: "notReadyForQueue",
+                        queueState: "prescan",
+                        flagCount: 1,
+                    });
+                }
+            } else if (dbState === "savingResults") {
+                if (flaggedJob) {
+                    if (flaggedJob.dbState === dbState) {
+                        flaggedJob.flagCount++;
+                        if (flaggedJob.flagCount > 6) {
+                            /* Case where API has crashed / stopped during saving results phase */
+                            console.log(
+                                scannerJobId +
+                                    ": Restarting saving results phase as the job has been in the savingResults state for 30 minutes",
+                            );
+                            const jobDetails =
+                                await queryJobDetails(scannerJobId);
+                            if (jobDetails.result) {
+                                saveJobResults(
+                                    scannerJobId,
+                                    jobDetails.result,
+                                    undefined,
+                                );
+                            } else {
+                                console.log(
+                                    scannerJobId +
+                                        ": Job has completed, but no result was found. Changing state to failed.",
+                                );
+                                await updateScannerJob(scannerJobId, {
+                                    state: "failed",
+                                });
+                                await updatePackage({
+                                    id: packageId,
+                                    data: {
+                                        scanStatus: "failed",
+                                    },
+                                });
+                            }
+
+                            flaggedMap.delete(scannerJobId);
+                        }
+                    } else {
+                        // If the dbState has changed since the last check
+                        flaggedJob.dbState = dbState;
+                        flaggedJob.flagCount = 1;
+                    }
+                } else {
+                    // If the job is not in the flagged map
+                    flaggedMap.set(scannerJobId, {
+                        dbState: dbState,
+                        queueState: "postscan",
                         flagCount: 1,
                     });
                 }
@@ -136,14 +188,19 @@ export const jobStateQuery = async () => {
                              * Case where job is completed in queue but Scanner Agent's
                              * attempt to inform API about the state of the job has failed.
                              */
-                            if (jobDetails.result)
+                            if (jobDetails.result) {
+                                console.log(
+                                    "The job has completed state in the queue, but " +
+                                        dbState +
+                                        " in the database. Initiating saving results.",
+                                );
                                 // Save the job results to the database
                                 saveJobResults(
                                     scannerJobId,
                                     jobDetails.result,
                                     undefined,
                                 );
-                            else {
+                            } else {
                                 console.log(
                                     scannerJobId +
                                         ": Job has completed, but no result was found. Changing state to failed.",
@@ -167,9 +224,6 @@ export const jobStateQuery = async () => {
                              * This could mean that the queue has been wiped before the job has finished,
                              * or something else could have gone wrong, so we'll just mark the job as failed.
                              */
-
-                            // TODO: Add an issue about this to the database, so that it can be investigated
-                            // Could be like a SystemIssue table or something, so it wouldn't get lost in the logs.
                             if (
                                 flaggedJob &&
                                 flaggedJob.dbState === dbState &&
@@ -274,6 +328,14 @@ export const jobStateQuery = async () => {
                 }
             }
         }
+        //console.log(flaggedMap.entries());
+        if (flaggedMap.size > 0)
+            console.log(
+                "Tracking " +
+                    flaggedMap.size +
+                    (flaggedMap.size === 1 ? " job" : " jobs"),
+            );
+        else console.log("No issues found");
     } catch (error) {
         console.error(error);
     }
