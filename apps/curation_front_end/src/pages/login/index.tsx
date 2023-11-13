@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/useUser";
 import { authHooks, userHooks } from "@/hooks/zodiosHooks";
 
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/user_management/LoginForm";
 
 const parseError = (error: unknown) => {
     if (axios.isAxiosError(error)) {

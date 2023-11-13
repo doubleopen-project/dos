@@ -4,7 +4,6 @@
 
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import Header from "@/components/Header";
 import Sidebar from "../components/Sidebar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";

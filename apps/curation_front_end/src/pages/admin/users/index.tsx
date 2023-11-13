@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 import { useUser } from "@/hooks/useUser";
 
-import RegisterUser from "@/components/RegisterUser";
+import RegisterUser from "@/components/user_management/RegisterUser";
 import MultiSection from "@/components/MultiSection";
 
 export default function UserManagement() {

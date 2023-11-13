@@ -14,7 +14,7 @@ import { adminHooks } from "@/hooks/zodiosHooks";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordTooltip from "@/components/PasswordTooltip";
+import PasswordTooltip from "@/components/user_management/PasswordTooltip";
 import {
     Select,
     SelectContent,

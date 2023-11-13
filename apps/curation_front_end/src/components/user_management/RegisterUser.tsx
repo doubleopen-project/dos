@@ -4,8 +4,8 @@
 
 import { useState } from "react";
 
-import AddUserForm from "@/components/AddUserForm";
-import CopyUserData from "@/components/CopyUserData";
+import AddUserForm from "@/components/user_management/AddUserForm";
+import CopyUserData from "@/components/user_management/CopyUserData";
 
 const RegisterUser = () => {
     const [newUser, setNewUser] = useState<{
