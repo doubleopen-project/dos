@@ -49,7 +49,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                     aria-expanded={open}
                     className="justify-between w-full h-fit"
                 >
-                    <span className="text-xs">
+                    <span className="text-xs truncate">
                         {router.isReady
                             ? value
                                 ? licenses.find(
