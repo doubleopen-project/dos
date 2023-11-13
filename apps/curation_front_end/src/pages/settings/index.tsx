@@ -6,8 +6,8 @@ import { Loader2 } from "lucide-react";
 
 import { useUser } from "@/hooks/useUser";
 
-import TokenDialog from "@/components/TokenDialog";
-import UserDataForm from "@/components/UserDataForm";
+import TokenDialog from "@/components/user_management/TokenDialog";
+import UserDataForm from "@/components/user_management/UserDataForm";
 import MultiSection from "@/components/MultiSection";
 
 export default function Settings() {

@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordTooltip from "@/components/PasswordTooltip";
+import PasswordTooltip from "@/components/user_management/PasswordTooltip";
 import {
     Form,
     FormControl,
