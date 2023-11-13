@@ -12,6 +12,7 @@ import {
     TbFileOff,
     TbFilesOff,
 } from "react-icons/tb";
+import { TfiPencil } from "react-icons/tfi";
 import ExclusionFormDialog from "./ExclusionFormDialog";
 import {
     Tooltip,
@@ -137,6 +138,26 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                                     "**/*." +
                                     selectedNode?.data.path?.split(".").pop()
                                 }
+                            />
+                        </Dialog>
+                    </Tooltip>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <div className="group relative">
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" className="p-2">
+                                            <TfiPencil className="text-lg" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Write a freetext exclusion pattern
+                                    </TooltipContent>
+                                </div>
+                            </DialogTrigger>
+                            <ExclusionFormDialog
+                                purl={purl}
+                                pattern={undefined}
                             />
                         </Dialog>
                     </Tooltip>
