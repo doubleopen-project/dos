@@ -55,6 +55,7 @@ const waitToRetry = async () => {
 export const createScannerJob = async (input: {
     state: string;
     packageId: number;
+    objectStorageKey?: string;
 }): Promise<ScannerJob> => {
     let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
@@ -400,6 +401,11 @@ export const updateScannerJob = async (
 ): Promise<ScannerJob> => {
     let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
+
+    if (input.state === "failed") {
+        const jobStateObj = await findScannerJobStateById(id);
+        if (jobStateObj) input.failureState = jobStateObj.state;
+    }
 
     while (!scannerJob && retries > 0) {
         try {
@@ -1018,6 +1024,56 @@ export const findScannerJobIdStateByPackageId = async (
     }
 
     return scannerJob;
+};
+
+export const findScannerJobsWithStates = async (
+    states: string[],
+): Promise<
+    Map<
+        string,
+        {
+            state: string;
+            packageId: number;
+        }
+    >
+> => {
+    let retries = initialRetryCount;
+    const scannerJobsMap = new Map<
+        string,
+        {
+            state: string;
+            packageId: number;
+        }
+    >();
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            const scannerJobs = await prisma.scannerJob.findMany({
+                where: {
+                    state: {
+                        in: states,
+                    },
+                },
+            });
+
+            for (const scannerJob of scannerJobs) {
+                scannerJobsMap.set(scannerJob.id, {
+                    state: scannerJob.state,
+                    packageId: scannerJob.packageId,
+                });
+            }
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scannerJobsMap;
 };
 
 export const findPackageByPurl = async (

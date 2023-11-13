@@ -196,13 +196,15 @@ model PathExclusion {
 
 /// A scanner job.
 model ScannerJob {
-  id           String   @id @default(uuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  state        String
-  timeout      Int?
-  fileCount    Int?
-  scanDuration Float?
+  id               String   @id @default(uuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  state            String
+  failureState     String?
+  objectStorageKey String?
+  timeout          Int?
+  fileCount        Int?
+  scanDuration     Float?
 
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])

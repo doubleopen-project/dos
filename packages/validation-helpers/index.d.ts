@@ -651,6 +651,7 @@ declare const scannerAgentApi: [
         method: "post";
         path: "/job";
         description: "Add scanner job";
+        alias: "postJob";
         parameters: [
             {
                 name: "body";
@@ -821,6 +822,7 @@ declare const scannerAgentApi: [
         method: "get";
         path: "/job/:id";
         description: "Get scanner job status";
+        alias: "getJobDetails";
         parameters: [
             {
                 name: "id";
@@ -831,19 +833,19 @@ declare const scannerAgentApi: [
         response: zod.ZodObject<
             {
                 id: zod.ZodString;
-                state: zod.ZodOptional<zod.ZodString>;
+                state: zod.ZodString;
                 data: zod.ZodOptional<
                     zod.ZodObject<
                         {
-                            directory: zod.ZodString;
+                            directory: zod.ZodOptional<zod.ZodString>;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            directory: string;
+                            directory?: string | undefined;
                         },
                         {
-                            directory: string;
+                            directory?: string | undefined;
                         }
                     >
                 >;
@@ -1304,10 +1306,10 @@ declare const scannerAgentApi: [
             zod.ZodTypeAny,
             {
                 id: string;
-                state?: string | undefined;
+                state: string;
                 data?:
                     | {
-                          directory: string;
+                          directory?: string | undefined;
                       }
                     | undefined;
                 finishedOn?: number | undefined;
@@ -1372,10 +1374,10 @@ declare const scannerAgentApi: [
             },
             {
                 id: string;
-                state?: string | undefined;
+                state: string;
                 data?:
                     | {
-                          directory: string;
+                          directory?: string | undefined;
                       }
                     | undefined;
                 finishedOn?: number | undefined;
@@ -1531,6 +1533,7 @@ declare const scannerAgentApi: [
         method: "post";
         path: "/result-state/:id";
         description: "Set scanner job result state";
+        alias: "postResultState";
         parameters: [
             {
                 name: "id";

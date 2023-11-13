@@ -25,10 +25,10 @@ export const useUser = (options: UseUserOptions) => {
     const user = error
         ? null
         : isLoading
-        ? undefined
-        : data
-        ? { username: data.username, role: data.role }
-        : null;
+          ? undefined
+          : data
+            ? { username: data.username, role: data.role }
+            : null;
     const finished = Boolean(data);
     const hasUser = Boolean(user);
     const isAdmin = user?.role === "ADMIN";

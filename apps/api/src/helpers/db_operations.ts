@@ -5,6 +5,7 @@
 import * as dbQueries from "../helpers/db_queries";
 import { ScannerJobResultSchema } from "validation-helpers";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
+import { deleteFile } from "s3-helpers";
 
 // ------------------------- Database operations -------------------------
 
@@ -306,7 +307,7 @@ const getScannerConfigString = (options: {
 export const saveJobResults = async (
     jobId: string,
     result: ScannerJobResultSchema,
-    jobStateMap: Map<string, string>,
+    jobStateMap?: Map<string, string>,
 ): Promise<void> => {
     try {
         // Save result locally for debugging
@@ -461,7 +462,11 @@ export const saveJobResults = async (
                 }
 
                 j++;
-                jobStateMap.set(jobId, `Saving results (${j}/${filesCount})`);
+                if (jobStateMap)
+                    jobStateMap.set(
+                        jobId,
+                        `Saving results (${j}/${filesCount})`,
+                    );
             }
             if (promises.length > 0) {
                 await Promise.all(promises);
@@ -470,7 +475,7 @@ export const saveJobResults = async (
         console.timeEnd(jobId + ": Saving results to database took");
 
         result = null;
-        jobStateMap.delete(jobId);
+        if (jobStateMap) jobStateMap.delete(jobId);
 
         if (newJobFilesList.length > 0) {
             try {
@@ -539,8 +544,6 @@ export const saveJobResults = async (
         await dbQueries.updateScannerJob(scannerJob.id, {
             state: "completed",
         });
-        // TODO:
-        // Inform Scanner Agent that saving results was successful
 
         const reportSuccess = await reportResultState(jobId, "saved");
         if (!reportSuccess) {
@@ -548,6 +551,13 @@ export const saveJobResults = async (
                 jobId + ": Unable to report result state to Scanner Agent",
             );
         }
+
+        // Delete zip file from object storage
+        if (scannerJob.objectStorageKey)
+            await deleteFile(
+                process.env.SPACES_BUCKET || "doubleopen",
+                scannerJob.objectStorageKey,
+            );
     } catch (error) {
         console.log(error);
         // TODO:

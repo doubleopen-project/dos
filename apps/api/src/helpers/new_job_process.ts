@@ -125,9 +125,6 @@ export const processPackageAndSendToScanner = async (
         fileHelpers.deleteLocalFiles(downloadPath, extractPath);
         //console.log('Local files deleted');
 
-        // Deleting zip file from object storage
-        await s3Helpers.deleteFile(process.env.SPACES_BUCKET, zipFileKey);
-
         if (filesToBeScanned.length > 0) {
             console.log(
                 scannerJobId +

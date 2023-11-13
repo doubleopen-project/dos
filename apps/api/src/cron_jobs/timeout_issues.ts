@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 //import { sendJobToQueue } from "./sa_queries";
-import * as dbQueries from "./db_queries";
-import { sendJobToQueue } from "./sa_queries";
+import * as dbQueries from "../helpers/db_queries";
+import { sendJobToQueue } from "../helpers/sa_queries";
 
 export const rescanFilesWithTimeoutIssues = async () => {
     try {
-        console.log("Checking for unresolved issues");
+        console.log("Cron job: Checking for unresolved timeout issues");
 
         const scanIssuesWithRelations =
             await dbQueries.findScanIssuesWithRelatedFileAndPackageAndFileTree();
