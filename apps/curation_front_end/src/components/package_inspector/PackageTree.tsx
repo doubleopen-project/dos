@@ -4,7 +4,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Tree } from "react-arborist";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
@@ -16,8 +16,8 @@ import { Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import ComboBoxPackage from "@/components/ComboBoxPackage";
-import Node from "@/components/Node";
+import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
+import Node from "@/components/package_inspector/Node";
 import ExclusionList from "@/components/path_exclusions/ExclusionList";
 import type { SelectedNode } from "@/types/index";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";

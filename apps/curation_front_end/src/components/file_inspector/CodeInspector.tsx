@@ -7,10 +7,10 @@ import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
-import CodeEditor from "@/components/CodeEditor";
+import CodeEditor from "@/components/file_inspector/CodeEditor";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import ButtonGroup from "@/components/ButtonGroup";
+import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CurationForm from "@/components/license_conclusions/CurationForm";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;

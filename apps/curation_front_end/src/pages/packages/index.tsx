@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import PackageList from "@/components/PackageList";
-import { userHooks } from "../../hooks/zodiosHooks";
+import PackageList from "@/components/package_table/PackageList";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function PackageLibrary() {
@@ -18,7 +18,7 @@ export default function PackageLibrary() {
     const packages = data.packages;
 
     return (
-        <div className="flex flex-col p-2 h-screen">
+        <div className="flex flex-col h-screen p-2">
             <div className="flex-none m-1 rounded-md shadow">
                 <Card>
                     <CardHeader>
@@ -40,7 +40,7 @@ export default function PackageLibrary() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="flex-1 py-1 m-1 border shadow rounded-lg overflow-auto">
+            <div className="flex-1 py-1 m-1 overflow-auto border rounded-lg shadow">
                 <PackageList data={{ packages }} />
             </div>
         </div>
