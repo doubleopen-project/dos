@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
+
+export type { ScannerJobResultType } from "./scanner_agent/schemas";
 export { ScannerJobResultSchema } from "./scanner_agent/schemas";
 export * from "./scanner_agent/api";
 export { adminAPI } from "./api/apis/admin";

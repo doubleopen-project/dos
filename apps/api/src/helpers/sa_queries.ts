@@ -4,7 +4,7 @@
 
 import { isErrorFromAlias, Zodios } from "@zodios/core";
 import { isAxiosError } from "axios";
-import { scannerAgentApi, ScannerJobResultSchema } from "validation-helpers";
+import { scannerAgentApi, type ScannerJobResultType } from "validation-helpers";
 
 const scannerUrl: string = process.env.SCANNER_URL
     ? process.env.SCANNER_URL
@@ -124,7 +124,7 @@ export const reportResultState = async (
 
 export const queryJobDetails = async (
     jobId: string,
-): Promise<{ state: string; result: ScannerJobResultSchema | undefined }> => {
+): Promise<{ state: string; result: ScannerJobResultType | undefined }> => {
     try {
         const jobDetails = await scannerAgentClient.getJobDetails({
             params: { id: jobId },

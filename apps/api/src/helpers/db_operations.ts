@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { deleteFile } from "s3-helpers";
-import { ScannerJobResultSchema } from "validation-helpers";
+import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
 
@@ -306,7 +306,7 @@ const getScannerConfigString = (options: {
 
 export const saveJobResults = async (
     jobId: string,
-    result: ScannerJobResultSchema,
+    result: ScannerJobResultType,
     jobStateMap?: Map<string, string>,
 ): Promise<void> => {
     try {
@@ -474,7 +474,6 @@ export const saveJobResults = async (
         }
         console.timeEnd(jobId + ": Saving results to database took");
 
-        result = null;
         if (jobStateMap) jobStateMap.delete(jobId);
 
         if (newJobFilesList.length > 0) {
