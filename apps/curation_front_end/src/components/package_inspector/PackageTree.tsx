@@ -59,7 +59,7 @@ const PackageTree = ({ purl }: Props) => {
     };
 
     let tree: TreeApi<TreeNode> | null | undefined;
-    const uniqueLicenses = extractUniqueLicenses(treeData);
+    const uniqueLicenses = extractUniqueLicenses(originalTreeData);
 
     const handleExpand = () => {
         if (!isExpanded) {
@@ -86,8 +86,7 @@ const PackageTree = ({ purl }: Props) => {
     // Update tree data when the license search text is changed
     useEffect(() => {
         if (licenseFilter) {
-            let updatedTreeData = JSON.parse(JSON.stringify(treeData)); // Create a deep copy
-            updateHasLicenseFindings(updatedTreeData, licenseFilter); // Update hasLicenseFindings flag
+            let updatedTreeData = JSON.parse(JSON.stringify(originalTreeData)); // Create a deep copy
 
             // Filter the tree based on the licenseSearchText
             updatedTreeData = filterTreeDataByLicense(
@@ -95,12 +94,14 @@ const PackageTree = ({ purl }: Props) => {
                 licenseFilter,
             );
 
+            updateHasLicenseFindings(updatedTreeData, licenseFilter); // Update hasLicenseFindings flag
+
             setTreeData(updatedTreeData); // Set the updated and/or filtered tree data to trigger a re-render
         } else {
             // Reset to original tree data if licenseFilter is empty
             setTreeData(originalTreeData);
         }
-    }, [licenseFilter, originalTreeData, treeData]);
+    }, [licenseFilter, originalTreeData]);
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
