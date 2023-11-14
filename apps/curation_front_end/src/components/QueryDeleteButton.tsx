@@ -9,6 +9,17 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { userHooks } from "@/hooks/zodiosHooks";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogAction,
+    AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
     id: number;
@@ -18,11 +29,14 @@ type Props = {
 
 const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
     const { toast } = useToast();
-
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
+    const dialogText =
+        deleteQuery === "/path-exclusion/:id"
+            ? "Path exclusion"
+            : "License conclusion";
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -33,18 +47,14 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
         },
         {
             onSuccess: () => {
+                toast({
+                    title: "Delete successful",
+                    description: `${dialogText} deleted successfully.`,
+                });
                 if (deleteQuery === "/path-exclusion/:id") {
-                    toast({
-                        title: "Path exclusion",
-                        description: "Path exclusion deleted successfully.",
-                    });
                     // When a path exclusion deleted, invalidate the query to refetch the data
                     queryClient.invalidateQueries(keyPathExclusion);
                 } else {
-                    toast({
-                        title: "License conclusion",
-                        description: "License conclusion deleted successfully.",
-                    });
                     // When a license conclusion is deleted, invalidate the file and filetree queries to refetch the data
                     queryClient.invalidateQueries(keyFile);
                     queryClient.invalidateQueries(keyFiletree);
@@ -53,7 +63,7 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
             onError: () => {
                 toast({
                     variant: "destructive",
-                    title: "Path exclusion",
+                    title: `${dialogText} deletion failed`,
                     description: "Something went wrong. Please try again.",
                 });
             },
@@ -68,21 +78,28 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
         );
     }
 
-    const handleDelete = () => {
-        if (confirm(`Are you sure you want to delete this?`)) {
-            deleteItem(undefined);
-        }
-    };
-
     return (
-        <Button
-            variant="outline"
-            key={id}
-            className="px-2"
-            onClick={() => handleDelete()}
-        >
-            <Delete></Delete>
-        </Button>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button variant="outline" key={id} className="px-2">
+                    <Delete></Delete>
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Delete</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Do you really want to delete this {dialogText}?
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => deleteItem(undefined)}>
+                        Delete
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 };
 

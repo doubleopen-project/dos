@@ -18,9 +18,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
 import Node from "@/components/package_inspector/Node";
-import ExclusionList from "@/components/path_exclusions/ExclusionList";
 import type { SelectedNode } from "@/types/index";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
+import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 
 type Props = {
     purl: string | undefined;
@@ -187,13 +187,13 @@ const PackageTree = ({ purl }: Props) => {
             </div>
 
             <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
-                <ComboBoxPackage
-                    data={uniqueLicenses}
-                    filterString={"licenseFilter"}
-                />
-                <div className="flex justify-end pt-1 text-sm rounded-md">
-                    <ExclusionList purl={purl} />
+                <div className="mb-1 w-full">
+                    <ComboBoxPackage
+                        data={uniqueLicenses}
+                        filterString={"licenseFilter"}
+                    />
                 </div>
+                <ExclusionDB purl={purl} fractionalWidth={1.0} />
             </div>
         </div>
     );
