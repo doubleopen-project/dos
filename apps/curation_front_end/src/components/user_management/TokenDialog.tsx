@@ -28,8 +28,6 @@ const TokenDialog = () => {
     const [open, setOpen] = useState(false);
 
     const {
-        error,
-        data,
         isLoading,
         isSuccess,
         reset,

@@ -9,7 +9,7 @@
     "scripts": {
         "build": "turbo run build",
         "build:api": "turbo run build --filter=api --no-daemon",
-        "build:curation": "turbo run build --filter=curation_front_end --no-daemon",
+        "build:cfe": "turbo run build --filter=curation_front_end --no-daemon",
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
         "build:scanner_worker": "turbo run build --filter=scanner-worker --no-daemon",
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
@@ -37,6 +37,7 @@
         "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
         "lint": "turbo run lint",
+        "lint:cfe": "turbo run lint --filter=curation_front_end",
         "prettier": "prettier --write .",
         "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",

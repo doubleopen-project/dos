@@ -13,6 +13,15 @@ import { useTheme } from "next-themes";
 
 type LicenseFindings = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
+type LicenseFindingMatch = {
+    id: number;
+    score: number;
+    updatedAt: Date;
+    licenseExpression: string | null;
+    startLine: number;
+    endLine: number;
+};
+
 type CodeEditorProps = {
     contents: string;
     licenseFindings: LicenseFindings["licenseFindings"];
@@ -69,7 +78,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
         const allMatchesDecorations = licenseFindings.flatMap(
             (licenseFinding) => {
                 return licenseFinding.licenseFindingMatches.map(
-                    (licenseFindingMatch: any) => {
+                    (licenseFindingMatch: LicenseFindingMatch) => {
                         const startLine = licenseFindingMatch.startLine;
                         const endLine = licenseFindingMatch.endLine;
                         const range = new monaco.Range(

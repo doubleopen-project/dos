@@ -28,7 +28,7 @@ type Props = {
     fractionalWidth?: number;
 };
 
-const fetchAndConvertYAML = async (): Promise<any> => {
+const fetchAndConvertYAML = async () => {
     const response = await fetch(
         "https://raw.githubusercontent.com/doubleopen-project/policy-configuration/main/license-classifications.yml",
     );
@@ -63,7 +63,7 @@ const CurationLicense = ({
             const width = buttonRef.current.offsetWidth;
             setListWidth(width * fractionalWidth);
         }
-    }, [buttonRef.current?.offsetWidth]); // Re-run effect if the button's size changes
+    }, [buttonRef.current?.offsetWidth, fractionalWidth]); // Re-run effect if the button's size changes
 
     // Fetch the license classifications from Github
     const { data, isLoading, error } = useQuery({
@@ -76,7 +76,7 @@ const CurationLicense = ({
     if (error) return <div>Error</div>;
 
     // Map data to the format required by the Command component
-    const dataAsArray = Array.from(data as Set<string>).map((d) => ({
+    const dataAsArray = Array.from(data as unknown as Set<string>).map((d) => ({
         value: d.toLowerCase(),
         label: d,
     }));

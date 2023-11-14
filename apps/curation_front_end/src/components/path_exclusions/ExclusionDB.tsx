@@ -43,7 +43,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
             const width = buttonRef.current.offsetWidth;
             setListWidth(width * fractionalWidth);
         }
-    }, [buttonRef.current?.offsetWidth]); // Re-run effect if the button's size changes
+    }, [buttonRef.current?.offsetWidth, fractionalWidth]); // Re-run effect if the button's size changes
 
     // Get user from useUser hook, to decide what DB rights the user has for curations
     let user = undefined;
