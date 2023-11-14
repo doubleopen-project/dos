@@ -169,3 +169,7 @@ License: CC-BY-4.0
 Files: apps/scanner_worker/tsconfig.json
 Copyright: 2023 Double Open Oy
 License: CC-BY-4.0
+
+Files: apps/curation_front_end/tsconfig.eslint.json
+Copyright: 2023 Double Open Oy
+License: CC-BY-4.0

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState, useRef, useEffect } from "react";
-import { Tree } from "react-arborist";
+import { Tree, TreeApi } from "react-arborist";
 import { Button } from "../ui/button";
 import type { TreeNode } from "@/types/index";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -28,7 +28,7 @@ type Props = {
 
 const PackageTree = ({ purl }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
-    const [licenseFilter, setLicenseFilter] = useQueryState(
+    const [licenseFilter] = useQueryState(
         "licenseFilter",
         parseAsString.withDefault(""),
     );
@@ -59,15 +59,15 @@ const PackageTree = ({ purl }: Props) => {
         setTreeFilter(event.target.value);
     };
 
-    let tree: any;
+    let tree: TreeApi<TreeNode> | null | undefined;
     const uniqueLicenses = extractUniqueLicenses(treeData);
 
     const handleExpand = () => {
         if (!isExpanded) {
-            tree.openAll();
+            tree?.openAll();
             setIsExpanded(true);
         } else {
-            tree.closeAll();
+            tree?.closeAll();
             setIsExpanded(false);
         }
     };
@@ -101,7 +101,7 @@ const PackageTree = ({ purl }: Props) => {
             // Reset to original tree data if licenseFilter is empty
             setTreeData(originalTreeData);
         }
-    }, [licenseFilter, originalTreeData]);
+    }, [licenseFilter, originalTreeData, treeData]);
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
@@ -187,7 +187,7 @@ const PackageTree = ({ purl }: Props) => {
             </div>
 
             <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
-                <div className="mb-1 w-full">
+                <div className="w-full mb-1">
                     <ComboBoxPackage
                         data={uniqueLicenses}
                         filterString={"licenseFilter"}

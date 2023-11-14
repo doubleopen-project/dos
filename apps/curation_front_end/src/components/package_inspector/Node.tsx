@@ -10,8 +10,9 @@ import {
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
 import { MdArrowRight, MdArrowDropDown } from "react-icons/md";
+import type { TreeNode } from "@/types/index";
 
-type NodeProps = NodeRendererProps<any> & {
+type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;
     licenseFilter: string | null;
 };

@@ -30,7 +30,7 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
         return () => {
             window.removeEventListener("mouseup", handleMouseUp);
         };
-    }, []);
+    }, [setTreeWidth]);
 
     return (
         <div className="flex flex-col overflow-auto md:flex-row md:h-screen">

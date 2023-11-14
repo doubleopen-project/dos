@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { TreeNode, LicenseFindings } from "../types";
+import { TreeNode } from "../types";
 
 export const extractUniqueLicenses = (treeNodes: TreeNode[]): Set<string> => {
     const uniqueLicenses = new Set<string>();

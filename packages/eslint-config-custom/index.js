@@ -4,14 +4,14 @@
 
 module.exports = {
     extends: [
-        "next",
-        "next/core-web-vitals",
         "prettier",
         "turbo",
-        "plugin:testing-library/react",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@next/next/recommended",
         "plugin:jest-dom/recommended",
+        "plugin:testing-library/react",
+        "plugin:react-hooks/recommended",
     ],
-    plugins: ["react-hooks"],
     rules: {
         "@next/next/no-html-link-for-pages": "off",
         "react-hooks/rules-of-hooks": "error",

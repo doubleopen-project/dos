@@ -56,7 +56,7 @@ const CurationDB = ({
             const width = buttonRef.current.offsetWidth;
             setListWidth(width * fractionalWidth);
         }
-    }, [buttonRef.current?.offsetWidth]); // Re-run effect if the button's size changes
+    }, [buttonRef.current?.offsetWidth, fractionalWidth]); // Re-run effect if the button's size changes
 
     // Update parent state when a curation is selected
     const handleSelect = (d: {
