@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
-import { scannerAgentApi } from "validation-helpers";
 import Queue, { Job } from "bull";
 import fetch from "cross-fetch";
+import { scannerAgentApi } from "validation-helpers";
 //import milliseconds from "milliseconds";
 import { authenticateAPIToken } from "../helpers/auth_helpers";
 

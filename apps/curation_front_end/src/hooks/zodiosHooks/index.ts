@@ -4,7 +4,7 @@
 
 import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
-import { authAPI, userAPI, adminAPI } from "validation-helpers";
+import { adminAPI, authAPI, userAPI } from "validation-helpers";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/";
 

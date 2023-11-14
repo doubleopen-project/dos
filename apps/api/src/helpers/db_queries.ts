@@ -8,17 +8,18 @@ import {
     CopyrightFinding,
     File,
     FileTree,
+    LicenseConclusion,
     LicenseFinding,
     LicenseFindingMatch,
     Package,
-    PrismaClient,
-    ScannerJob,
-    ScanIssue,
-    Prisma,
-    User,
-    LicenseConclusion,
     PathExclusion,
+    Prisma,
+    PrismaClient,
+    ScanIssue,
+    ScannerJob,
+    User,
 } from "database";
+
 const prisma: PrismaClient = new PrismaClient();
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;

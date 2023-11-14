@@ -2,11 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState, useEffect, useRef } from "react";
-import { userHooks } from "@/hooks/zodiosHooks";
-import { useUser } from "@/hooks/useUser";
-import { Loader2 } from "lucide-react";
-import { ChevronsUpDown } from "lucide-react";
+import QueryDeleteButton from "@/components/QueryDeleteButton";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -20,7 +16,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import QueryDeleteButton from "@/components/QueryDeleteButton";
+import { useUser } from "@/hooks/useUser";
+import { userHooks } from "@/hooks/zodiosHooks";
+import { ChevronsUpDown, Loader2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
     purl: string | undefined;

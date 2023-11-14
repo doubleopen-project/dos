@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+import crypto from "crypto";
 import passportLocal from "passport-local";
 import * as dbQueries from "../helpers/db_queries";
-import crypto from "crypto";
 
 const LocalStrategy = passportLocal.Strategy;
 

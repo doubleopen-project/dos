@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect } from "react";
-
-import { useRouter } from "next/router";
-
 import { userHooks } from "@/hooks/zodiosHooks";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 interface UseUserOptions {
     redirectTo?: string;

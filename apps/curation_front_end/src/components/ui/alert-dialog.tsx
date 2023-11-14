@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as React from "react";
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-
-import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import * as React from "react";
 
 const AlertDialog = AlertDialogPrimitive.Root;
 

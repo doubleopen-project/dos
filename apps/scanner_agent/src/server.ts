@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosApp } from "@zodios/express";
-import router from "./routes/router";
-import express from "express";
-import { scannerAgentApi } from "validation-helpers";
-import { serve, setup } from "swagger-ui-express";
 import { openApiBuilder } from "@zodios/openapi";
-import compression from "compression";
 import { loadEnv } from "common-helpers";
+import compression from "compression";
+import express from "express";
+import { serve, setup } from "swagger-ui-express";
+import { scannerAgentApi } from "validation-helpers";
+import router from "./routes/router";
 
 loadEnv("../../.env");
 

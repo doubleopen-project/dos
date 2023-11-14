@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import React from "react";
 
 type Props = {
     purl: string | undefined;

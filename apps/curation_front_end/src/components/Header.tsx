@@ -2,13 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
-
-import Image from "next/image";
-
 import { useUser } from "@/hooks/useUser";
-
 import logo from "@/public/icons/Double_Open_logo.png";
+import Image from "next/image";
+import React from "react";
 
 const Header = () => {
     const user = useUser({});

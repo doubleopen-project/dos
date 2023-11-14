@@ -4,9 +4,9 @@
 
 import type { FileTreeType } from "validation-helpers";
 import type { TreeNode } from "../types";
+import { isPathExcluded } from "./isExcluded";
 import { sortTree } from "./sortTree";
 import { updateExclusionStatus } from "./updateExclusionStatus";
-import { isPathExcluded } from "./isExcluded";
 
 export const convertJsonToTree = (
     filetrees: FileTreeType[],

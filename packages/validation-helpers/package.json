@@ -4,7 +4,7 @@
     "module": "./dist/index.mjs",
     "types": "./index.d.ts",
     "scripts": {
-        "build": "tsup && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts && prettier --write index.d.ts",
+        "build": "tsup && prettier --write dist/index.d.ts && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
         "clever-cfe-prebuild": "tsup"
     },
     "dependencies": {
@@ -15,7 +15,6 @@
     },
     "devDependencies": {
         "@types/is-glob": "^4.0.3",
-        "prettier": "3.1.0",
         "tsup": "7.2.0"
     }
 }

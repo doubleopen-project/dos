@@ -1,9 +1,10 @@
+import * as zod from "zod";
+import { z } from "zod";
+
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
 export { ScannerJobResultSchema } from "./scanner_agent/schemas";
-import * as zod from "zod";
-import { z } from "zod";
 
 declare const ScannerJobResultSchema: z.ZodObject<
     {

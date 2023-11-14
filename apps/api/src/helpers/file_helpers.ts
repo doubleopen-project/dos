@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import admZip from "adm-zip";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
-
+import admZip from "adm-zip";
 import { downloadFile } from "s3-helpers";
-import crypto from "crypto";
 
 // Fetching zip file from object storage
 export const downloadZipFile = async (

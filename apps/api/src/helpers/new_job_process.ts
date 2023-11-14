@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as dbQueries from "./db_queries";
-import { findFilesToBeScanned } from "./db_operations";
-import { sendJobToQueue } from "./sa_queries";
 import * as s3Helpers from "s3-helpers";
+import { findFilesToBeScanned } from "./db_operations";
+import * as dbQueries from "./db_queries";
 import * as fileHelpers from "./file_helpers";
+import { sendJobToQueue } from "./sa_queries";
 
 export const processPackageAndSendToScanner = async (
     zipFileKey: string,

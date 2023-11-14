@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Zodios, isErrorFromAlias } from "@zodios/core";
+import { isErrorFromAlias, Zodios } from "@zodios/core";
 import { isAxiosError } from "axios";
-import { ScannerJobResultSchema, scannerAgentApi } from "validation-helpers";
+import { scannerAgentApi, ScannerJobResultSchema } from "validation-helpers";
 
 const scannerUrl: string = process.env.SCANNER_URL
     ? process.env.SCANNER_URL

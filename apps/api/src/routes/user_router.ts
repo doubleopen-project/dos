@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { zodiosRouter } from "@zodios/express";
-import { userAPI } from "validation-helpers";
-import * as dbQueries from "../helpers/db_queries";
-import * as s3Helpers from "s3-helpers";
-import { hashPassword } from "../helpers/password_helper";
-import { Prisma } from "database";
 import crypto from "crypto";
+import { zodiosRouter } from "@zodios/express";
+import { Prisma } from "database";
 import isGlob from "is-glob";
 import { minimatch } from "minimatch";
+import * as s3Helpers from "s3-helpers";
+import { userAPI } from "validation-helpers";
+import * as dbQueries from "../helpers/db_queries";
+import { hashPassword } from "../helpers/password_helper";
 
 const userRouter = zodiosRouter(userAPI);
 

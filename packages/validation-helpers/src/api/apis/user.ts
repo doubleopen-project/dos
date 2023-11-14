@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import { makeApi } from "@zodios/core";
-import * as schemas from "../schemas/user_schemas";
 import { errors } from "../errors";
+import * as schemas from "../schemas/user_schemas";
 
 export const userAPI = makeApi([
     {
