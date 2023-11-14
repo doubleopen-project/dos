@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
-import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-    ChevronDownIcon,
-    ChevronUpIcon,
-    ChevronsUpDownIcon,
-} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
     Tooltip,
-    TooltipTrigger,
-    TooltipProvider,
     TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ColumnDef } from "@tanstack/react-table";
 import { ZodiosResponseByPath } from "@zodios/core";
+import {
+    ChevronDownIcon,
+    ChevronsUpDownIcon,
+    ChevronUpIcon,
+} from "lucide-react";
+import Link from "next/link";
+import React from "react";
 import { userAPI } from "validation-helpers";
 
 // Get the table column datatype from the query response

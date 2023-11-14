@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
-import Queue, { Job } from "bull";
-import throng from "throng";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
-import { downloadFile } from "s3-helpers";
-import { loadEnv, getCurrentDateTime } from "common-helpers";
-import { rimraf } from "rimraf";
 import * as path from "path";
+import Queue, { Job } from "bull";
+import { getCurrentDateTime, loadEnv } from "common-helpers";
+import { rimraf } from "rimraf";
+import { downloadFile } from "s3-helpers";
+import throng from "throng";
 
 //////////////////////////
 // Environment variables

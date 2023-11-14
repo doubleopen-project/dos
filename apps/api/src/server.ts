@@ -3,25 +3,24 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosApp } from "@zodios/express";
-import express from "express";
-import { serve, setup } from "swagger-ui-express";
 import { openApiBuilder } from "@zodios/openapi";
-import compression from "compression";
-import cron from "node-cron";
-import cors from "cors";
-import session from "express-session";
-import passport from "passport";
-import cookieParser from "cookie-parser";
-import genFunc from "connect-pg-simple";
-import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 import { loadEnv } from "common-helpers";
-import { dosAPI } from "validation-helpers";
-
-import { cronJobs } from "./cron_jobs";
-import { localStrategy } from "./passport_strategies/local_strategy";
-import * as dbQueries from "./helpers/db_queries";
+import compression from "compression";
+import genFunc from "connect-pg-simple";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import { User as DBUser } from "database";
+import express from "express";
+import session from "express-session";
+import cron from "node-cron";
+import passport from "passport";
+import { serve, setup } from "swagger-ui-express";
+import { dosAPI } from "validation-helpers";
+import { cronJobs } from "./cron_jobs";
 import { authorizeAdmin, authorizeUser } from "./helpers/auth_helpers";
+import * as dbQueries from "./helpers/db_queries";
+import { localStrategy } from "./passport_strategies/local_strategy";
+import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
 loadEnv("../../.env");
 

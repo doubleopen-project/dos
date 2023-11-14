@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState } from "react";
-import type { SelectedNode } from "@/types/index";
-import { Button } from "@/components/ui/button";
-import {
-    TbFolderOff,
-    TbFoldersOff,
-    TbFileOff,
-    TbFilesOff,
-} from "react-icons/tb";
-import { TfiPencil } from "react-icons/tfi";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
+import { Button } from "@/components/ui/button";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { SelectedNode } from "@/types/index";
+import React, { useState } from "react";
+import {
+    TbFileOff,
+    TbFilesOff,
+    TbFolderOff,
+    TbFoldersOff,
+} from "react-icons/tb";
+import { TfiPencil } from "react-icons/tfi";
 
 type Props = {
     selectedNode: SelectedNode | undefined;

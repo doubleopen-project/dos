@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as dotenv from "dotenv";
 import * as fs from "fs";
+import * as dotenv from "dotenv";
 
 // Check if ".env" exists and load environment variables from it
 // Otherwise, use the environment variables provided by cloud provider

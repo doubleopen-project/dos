@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Zodios, makeApi, makeErrors } from "@zodios/core";
+import { makeApi, makeErrors, Zodios } from "@zodios/core";
 import * as schemas from "./schemas";
 
 const errors = makeErrors([

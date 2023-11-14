@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import type { TreeNode } from "@/types/index";
 import Link from "next/link";
 import { NodeRendererProps } from "react-arborist";
 import {
@@ -9,8 +10,7 @@ import {
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
-import { MdArrowRight, MdArrowDropDown } from "react-icons/md";
-import type { TreeNode } from "@/types/index";
+import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 
 type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;

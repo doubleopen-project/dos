@@ -2,17 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
-
-import z from "zod";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
-
-import { cn } from "@/lib/utils";
-
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -22,6 +11,14 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
+import z from "zod";
 
 const loginFormSchema = z.object({
     username: z

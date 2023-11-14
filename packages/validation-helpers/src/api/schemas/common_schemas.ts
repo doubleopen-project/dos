@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { z } from "zod";
 import { passwordStrength } from "check-password-strength";
+import { z } from "zod";
 
 export const getUsernameSchema = (required: boolean) => {
     const requiredObject = required

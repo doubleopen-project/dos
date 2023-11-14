@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect, useRef } from "react";
-import PackageTree from "@/components/package_inspector/PackageTree";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
+import PackageTree from "@/components/package_inspector/PackageTree";
 import useSettingsStore from "@/store/settings.store";
+import React, { useEffect, useRef } from "react";
 
 type CurationUIProps = {
     purl: string | undefined;

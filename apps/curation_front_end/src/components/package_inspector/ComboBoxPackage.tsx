@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -18,8 +15,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 type ComboBoxPackageProps = {
     data: Set<string>;

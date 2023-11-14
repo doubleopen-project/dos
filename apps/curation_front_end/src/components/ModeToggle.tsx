@@ -2,19 +2,18 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuTrigger,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useSettingsStore from "@/store/settings.store";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import * as React from "react";
 
 export function ModeToggle() {
     const { setTheme } = useTheme();

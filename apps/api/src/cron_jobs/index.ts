@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { rescanFilesWithTimeoutIssues } from "./timeout_issues";
 import { jobStateQuery } from "./job_state_query";
+import { rescanFilesWithTimeoutIssues } from "./timeout_issues";
 
 export const cronJobs = {
     rescanFilesWithTimeoutIssues,

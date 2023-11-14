@@ -2,13 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Loader2 } from "lucide-react";
-
-import { useUser } from "@/hooks/useUser";
-
+import MultiSection from "@/components/MultiSection";
 import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
-import MultiSection from "@/components/MultiSection";
+import { useUser } from "@/hooks/useUser";
+import { Loader2 } from "lucide-react";
 
 export default function Settings() {
     const user = useUser({ redirectTo: "/login", redirectIfFound: false });

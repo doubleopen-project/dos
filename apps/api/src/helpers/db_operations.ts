@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as dbQueries from "../helpers/db_queries";
-import { ScannerJobResultSchema } from "validation-helpers";
-import { reportResultState, sendJobToQueue } from "./sa_queries";
 import { deleteFile } from "s3-helpers";
+import { ScannerJobResultSchema } from "validation-helpers";
+import * as dbQueries from "../helpers/db_queries";
+import { reportResultState, sendJobToQueue } from "./sa_queries";
 
 // ------------------------- Database operations -------------------------
 

@@ -3,18 +3,18 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
+import { Prisma } from "database";
 import { PackageURL } from "packageurl-js";
-import { scannerAPI } from "validation-helpers";
 import * as s3Helpers from "s3-helpers";
-import * as dbQueries from "../helpers/db_queries";
-import * as dbOperations from "../helpers/db_operations";
+import { scannerAPI } from "validation-helpers";
 import {
     authenticateORTToken,
     authenticateSAToken,
 } from "../helpers/auth_helpers";
+import * as dbOperations from "../helpers/db_operations";
+import * as dbQueries from "../helpers/db_queries";
 import { processPackageAndSendToScanner } from "../helpers/new_job_process";
 import { stateMap } from "../helpers/state_helpers";
-import { Prisma } from "database";
 
 const scannerRouter = zodiosRouter(scannerAPI);
 

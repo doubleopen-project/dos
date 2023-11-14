@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 import { NextFunction, Request, Response } from "express";
-import { findUser } from "./db_queries";
 import NodeCache from "node-cache";
+import { findUser } from "./db_queries";
 
 const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
 

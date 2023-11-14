@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState, useEffect, useRef } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import QueryDeleteButton from "@/components/QueryDeleteButton";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -18,11 +16,13 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useRouter } from "next/router";
-import { ZodiosResponseByPath } from "@zodios/core";
-import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
-import QueryDeleteButton from "@/components/QueryDeleteButton";
+import { cn } from "@/lib/utils";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
+import { userAPI } from "validation-helpers";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 

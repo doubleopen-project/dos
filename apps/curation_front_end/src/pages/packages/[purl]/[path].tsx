@@ -4,6 +4,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+
 const CurationUI = dynamic(() => import("@/components/CurationUI"), {
     ssr: false,
 });

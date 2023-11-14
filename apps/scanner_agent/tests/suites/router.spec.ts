@@ -4,13 +4,13 @@
 
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import nock from "nock";
-import app from "../../src/server";
 import { loadEnv } from "common-helpers";
+import nock from "nock";
 import {
-    createRequestState,
     createRequestResults,
+    createRequestState,
 } from "../../src/routes/router";
+import app from "../../src/server";
 
 chai.use(chaiHttp);
 loadEnv("../../.env");

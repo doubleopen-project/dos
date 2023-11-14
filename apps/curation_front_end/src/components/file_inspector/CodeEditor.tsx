@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+import styles from "@/styles/CodeInspector.module.css";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { ZodiosResponseByPath } from "@zodios/core";
-import { userAPI } from "validation-helpers";
-import React from "react";
-import styles from "@/styles/CodeInspector.module.css";
+import { useTheme } from "next-themes";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
+import React from "react";
+import { userAPI } from "validation-helpers";
 
 type LicenseFindings = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 

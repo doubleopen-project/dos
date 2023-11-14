@@ -2,11 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import * as yaml from "js-yaml";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -20,7 +15,12 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import * as yaml from "js-yaml";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
     concludedLicenseExpressionSPDX: string | undefined;

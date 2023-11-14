@@ -2,22 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect, useState } from "react";
-
-import z from "zod";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil, Check, Loader2 } from "lucide-react";
-import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
-
-import { userHooks } from "@/hooks/zodiosHooks";
-
-import { cn } from "@/lib/utils";
-
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordTooltip from "@/components/user_management/PasswordTooltip";
 import {
     Form,
     FormControl,
@@ -26,7 +11,18 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import PasswordTooltip from "@/components/user_management/PasswordTooltip";
+import { userHooks } from "@/hooks/zodiosHooks";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Check, Loader2, Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
+import z from "zod";
 
 const userDataFormSchema = z
     .object({

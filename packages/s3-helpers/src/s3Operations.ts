@@ -4,31 +4,31 @@
 
 // All needed file operations for Digital Ocean Spaces
 
+import * as fs from "fs";
+import { writeFile } from "fs/promises";
+import * as path from "path";
+import { Readable } from "stream";
 import {
-    ListBucketsCommand,
-    ListObjectsCommand,
-    ListObjectsCommandInput,
-    PutObjectCommand,
-    PutObjectCommandInput,
-    GetObjectCommand,
-    ListBucketsCommandOutput,
-    ListObjectsCommandOutput,
-    PutObjectCommandOutput,
-    ListObjectsV2CommandOutput,
     _Object,
+    DeleteObjectCommand,
+    DeleteObjectCommandInput,
+    GetObjectCommand,
     GetObjectCommandOutput,
+    GetObjectRequest,
     HeadObjectCommand,
     HeadObjectCommandOutput,
-    GetObjectRequest,
-    DeleteObjectCommandInput,
-    DeleteObjectCommand,
+    ListBucketsCommand,
+    ListBucketsCommandOutput,
+    ListObjectsCommand,
+    ListObjectsCommandInput,
+    ListObjectsCommandOutput,
+    ListObjectsV2CommandOutput,
+    PutObjectCommand,
+    PutObjectCommandInput,
+    PutObjectCommandOutput,
 } from "@aws-sdk/client-s3";
-import { s3Client } from "./s3Client";
-import * as fs from "fs";
-import * as path from "path";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { Readable } from "stream";
-import { mkdir, writeFile } from "fs/promises";
+import { s3Client } from "./s3Client";
 
 // List all buckets in the account
 export const listBuckets = async (): Promise<string | undefined> => {

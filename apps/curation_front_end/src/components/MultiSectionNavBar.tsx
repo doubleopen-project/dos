@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-
-import { cn } from "@/lib/utils";
-
-import { buttonVariants } from "@/components/ui/button";
 
 interface MultiSectionNavBarProps extends React.HTMLAttributes<HTMLElement> {
     defaultSection: string;

@@ -2,26 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import z from "zod";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import generator from "generate-password";
-import { Check, Loader2, Dices } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getUsernameSchema, getPasswordSchema } from "validation-helpers";
-
-import { adminHooks } from "@/hooks/zodiosHooks";
-
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordTooltip from "@/components/user_management/PasswordTooltip";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import {
     Form,
     FormControl,
@@ -30,6 +11,23 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import PasswordTooltip from "@/components/user_management/PasswordTooltip";
+import { adminHooks } from "@/hooks/zodiosHooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import generator from "generate-password";
+import { Check, Dices, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
+import z from "zod";
 
 const addUserFormSchema = z.object({
     username: getUsernameSchema(true),

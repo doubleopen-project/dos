@@ -2,13 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useSearchParams } from "next/navigation";
-
-import { cn } from "@/lib/utils";
-
-import MultiSectionNavBar from "./MultiSectionNavBar";
-
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import MultiSectionNavBar from "./MultiSectionNavBar";
 
 interface MultiSectionProps extends React.HTMLAttributes<HTMLElement> {
     title: string;

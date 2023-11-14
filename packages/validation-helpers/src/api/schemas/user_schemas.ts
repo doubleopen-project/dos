@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { z } from "zod";
 import { PackageURL } from "packageurl-js";
-import { getUsernameSchema, getPasswordSchema } from "./common_schemas";
+import { z } from "zod";
+import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
 
 export const GetUserRes = z.object({
     username: z.string(),
