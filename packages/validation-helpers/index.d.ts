@@ -1,10 +1,9 @@
-import * as zod from "zod";
-import { z } from "zod";
-
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
-export { ScannerJobResultSchema } from "./scanner_agent/schemas";
+
+import * as zod from "zod";
+import { z } from "zod";
 
 declare const ScannerJobResultSchema: z.ZodObject<
     {
@@ -15,7 +14,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
                     tool_version: z.ZodString;
                     options: z.ZodObject<
                         {
-                            input: z.ZodArray<z.ZodString, "many">;
                             "--copyright": z.ZodBoolean;
                             "--info": z.ZodBoolean;
                             "--json": z.ZodOptional<z.ZodString>;
@@ -26,7 +24,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
                         "strip",
                         z.ZodTypeAny,
                         {
-                            input: string[];
                             "--copyright": boolean;
                             "--info": boolean;
                             "--license": boolean;
@@ -35,7 +32,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             "--package"?: boolean | undefined;
                         },
                         {
-                            input: string[];
                             "--copyright": boolean;
                             "--info": boolean;
                             "--license": boolean;
@@ -113,7 +109,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 {
                     message: string | null;
                     options: {
-                        input: string[];
                         "--copyright": boolean;
                         "--info": boolean;
                         "--license": boolean;
@@ -145,7 +140,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 {
                     message: string | null;
                     options: {
-                        input: string[];
                         "--copyright": boolean;
                         "--info": boolean;
                         "--license": boolean;
@@ -340,7 +334,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
         headers: {
             message: string | null;
             options: {
-                input: string[];
                 "--copyright": boolean;
                 "--info": boolean;
                 "--license": boolean;
@@ -396,7 +389,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
         headers: {
             message: string | null;
             options: {
-                input: string[];
                 "--copyright": boolean;
                 "--info": boolean;
                 "--license": boolean;
@@ -427,6 +419,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
         }[];
     }
 >;
+type ScannerJobResultType = z.infer<typeof ScannerJobResultSchema>;
 
 declare const scannerAgentApi: [
     {
@@ -861,10 +854,6 @@ declare const scannerAgentApi: [
                                         tool_version: zod.ZodString;
                                         options: zod.ZodObject<
                                             {
-                                                input: zod.ZodArray<
-                                                    zod.ZodString,
-                                                    "many"
-                                                >;
                                                 "--copyright": zod.ZodBoolean;
                                                 "--info": zod.ZodBoolean;
                                                 "--json": zod.ZodOptional<zod.ZodString>;
@@ -875,7 +864,6 @@ declare const scannerAgentApi: [
                                             "strip",
                                             zod.ZodTypeAny,
                                             {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -888,7 +876,6 @@ declare const scannerAgentApi: [
                                                     | undefined;
                                             },
                                             {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -976,7 +963,6 @@ declare const scannerAgentApi: [
                                     {
                                         message: string | null;
                                         options: {
-                                            input: string[];
                                             "--copyright": boolean;
                                             "--info": boolean;
                                             "--license": boolean;
@@ -1008,7 +994,6 @@ declare const scannerAgentApi: [
                                     {
                                         message: string | null;
                                         options: {
-                                            input: string[];
                                             "--copyright": boolean;
                                             "--info": boolean;
                                             "--license": boolean;
@@ -1214,7 +1199,6 @@ declare const scannerAgentApi: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -1270,7 +1254,6 @@ declare const scannerAgentApi: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -1341,7 +1324,6 @@ declare const scannerAgentApi: [
                           headers: {
                               message: string | null;
                               options: {
-                                  input: string[];
                                   "--copyright": boolean;
                                   "--info": boolean;
                                   "--license": boolean;
@@ -1409,7 +1391,6 @@ declare const scannerAgentApi: [
                           headers: {
                               message: string | null;
                               options: {
-                                  input: string[];
                                   "--copyright": boolean;
                                   "--info": boolean;
                                   "--license": boolean;
@@ -3453,10 +3434,6 @@ declare const scannerAPI: [
                                             tool_version: zod.ZodString;
                                             options: zod.ZodObject<
                                                 {
-                                                    input: zod.ZodArray<
-                                                        zod.ZodString,
-                                                        "many"
-                                                    >;
                                                     "--copyright": zod.ZodBoolean;
                                                     "--info": zod.ZodBoolean;
                                                     "--json": zod.ZodOptional<zod.ZodString>;
@@ -3467,7 +3444,6 @@ declare const scannerAPI: [
                                                 "strip",
                                                 zod.ZodTypeAny,
                                                 {
-                                                    input: string[];
                                                     "--copyright": boolean;
                                                     "--info": boolean;
                                                     "--license": boolean;
@@ -3482,7 +3458,6 @@ declare const scannerAPI: [
                                                         | undefined;
                                                 },
                                                 {
-                                                    input: string[];
                                                     "--copyright": boolean;
                                                     "--info": boolean;
                                                     "--license": boolean;
@@ -3572,7 +3547,6 @@ declare const scannerAPI: [
                                         {
                                             message: string | null;
                                             options: {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -3608,7 +3582,6 @@ declare const scannerAPI: [
                                         {
                                             message: string | null;
                                             options: {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -3820,7 +3793,6 @@ declare const scannerAPI: [
                                 headers: {
                                     message: string | null;
                                     options: {
-                                        input: string[];
                                         "--copyright": boolean;
                                         "--info": boolean;
                                         "--license": boolean;
@@ -3878,7 +3850,6 @@ declare const scannerAPI: [
                                 headers: {
                                     message: string | null;
                                     options: {
-                                        input: string[];
                                         "--copyright": boolean;
                                         "--info": boolean;
                                         "--license": boolean;
@@ -3940,7 +3911,6 @@ declare const scannerAPI: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -3999,7 +3969,6 @@ declare const scannerAPI: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -7299,10 +7268,6 @@ declare const dosAPI: [
                                             tool_version: zod.ZodString;
                                             options: zod.ZodObject<
                                                 {
-                                                    input: zod.ZodArray<
-                                                        zod.ZodString,
-                                                        "many"
-                                                    >;
                                                     "--copyright": zod.ZodBoolean;
                                                     "--info": zod.ZodBoolean;
                                                     "--json": zod.ZodOptional<zod.ZodString>;
@@ -7313,7 +7278,6 @@ declare const dosAPI: [
                                                 "strip",
                                                 zod.ZodTypeAny,
                                                 {
-                                                    input: string[];
                                                     "--copyright": boolean;
                                                     "--info": boolean;
                                                     "--license": boolean;
@@ -7328,7 +7292,6 @@ declare const dosAPI: [
                                                         | undefined;
                                                 },
                                                 {
-                                                    input: string[];
                                                     "--copyright": boolean;
                                                     "--info": boolean;
                                                     "--license": boolean;
@@ -7418,7 +7381,6 @@ declare const dosAPI: [
                                         {
                                             message: string | null;
                                             options: {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -7454,7 +7416,6 @@ declare const dosAPI: [
                                         {
                                             message: string | null;
                                             options: {
-                                                input: string[];
                                                 "--copyright": boolean;
                                                 "--info": boolean;
                                                 "--license": boolean;
@@ -7666,7 +7627,6 @@ declare const dosAPI: [
                                 headers: {
                                     message: string | null;
                                     options: {
-                                        input: string[];
                                         "--copyright": boolean;
                                         "--info": boolean;
                                         "--license": boolean;
@@ -7724,7 +7684,6 @@ declare const dosAPI: [
                                 headers: {
                                     message: string | null;
                                     options: {
-                                        input: string[];
                                         "--copyright": boolean;
                                         "--info": boolean;
                                         "--license": boolean;
@@ -7786,7 +7745,6 @@ declare const dosAPI: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -7845,7 +7803,6 @@ declare const dosAPI: [
                             headers: {
                                 message: string | null;
                                 options: {
-                                    input: string[];
                                     "--copyright": boolean;
                                     "--info": boolean;
                                     "--license": boolean;
@@ -10880,6 +10837,7 @@ export {
     PostFileTreeResType,
     PutUserReq,
     ScannerJobResultSchema,
+    ScannerJobResultType,
     adminAPI,
     authAPI,
     dosAPI,

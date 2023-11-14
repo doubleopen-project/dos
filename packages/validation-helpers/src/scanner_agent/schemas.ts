@@ -63,7 +63,6 @@ export const ScannerJobResultSchema = z.object({
             tool_name: z.string(),
             tool_version: z.string(),
             options: z.object({
-                input: z.array(z.string()),
                 "--copyright": z.boolean(),
                 "--info": z.boolean(),
                 "--json": z.string().optional(),
@@ -123,6 +122,8 @@ export const ScannerJobResultSchema = z.object({
         }),
     ),
 });
+
+export type ScannerJobResultType = z.infer<typeof ScannerJobResultSchema>;
 
 export const ScannerJobInfoRequestSchema = z.string({
     required_error: "Job ID is required",
