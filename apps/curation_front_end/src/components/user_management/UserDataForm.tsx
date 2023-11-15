@@ -18,16 +18,36 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { passwordStrength } from "check-password-strength";
 import { Check, Loader2, Pencil } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
+import { getUsernameSchema } from "validation-helpers";
 import z from "zod";
 
 const userDataFormSchema = z
     .object({
         username: getUsernameSchema(false),
-        password: getPasswordSchema(false),
+        password: z
+            .string()
+            .trim()
+            .refine(
+                (password) => {
+                    if (password.length > 0 && password.length < 8)
+                        return false;
+                    return true;
+                },
+                { message: "Password needs to be at least 8 characters long" },
+            )
+            .refine(
+                (password) => {
+                    if (password.length === 0) return true;
+                    return passwordStrength(password).id > 1;
+                },
+                {
+                    message: "Password is too weak",
+                },
+            ),
         confirmPassword: z.string(),
         role: z.string(),
     })
@@ -77,14 +97,14 @@ const UserDataForm = ({ user }: UserDataProps) => {
         resolver: zodResolver(userDataFormSchema),
         values: {
             username: user.username,
-            password: undefined,
-            confirmPassword: undefined,
+            password: "",
+            confirmPassword: "",
             role: user.role,
         },
     });
 
     const onSubmit = (data: PutUserDataType) => {
-        if (!data.password) data.password = undefined;
+        if (!data.password || data.password === "") delete data.password;
         updateUser(data);
     };
 
