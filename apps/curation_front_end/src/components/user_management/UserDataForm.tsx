@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Check, Loader2, Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
 import z from "zod";
@@ -43,7 +43,7 @@ const userDataFormSchema = z
     });
 type PutUserDataType = {
     username: string | undefined;
-    role: string;
+    role: string | undefined;
     password: string | undefined;
     confirmPassword: string | undefined;
 };
@@ -70,13 +70,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
         {
             withCredentials: true,
         },
-        {
-            onSuccess() {
-                // invalidate user data query
-                const key = userHooks.getKeyByPath("get", "/user");
-                queryClient.invalidateQueries(key);
-            },
-        },
+        undefined,
     );
 
     const form = useForm<PutUserDataType>({
@@ -95,7 +89,8 @@ const UserDataForm = ({ user }: UserDataProps) => {
     };
 
     const onDiscard = () => {
-        reset();
+        const key = userHooks.getKeyByPath("get", "/user");
+        queryClient.invalidateQueries(key);
         form.reset();
         setEditMode(false);
     };
@@ -103,6 +98,14 @@ const UserDataForm = ({ user }: UserDataProps) => {
     const onInputChange = () => {
         if (isSuccess || error) reset();
     };
+
+    useEffect(() => {
+        // Invalidate user data query when component unmounts
+        return () => {
+            const key = userHooks.getKeyByPath("get", "/user");
+            queryClient.invalidateQueries(key);
+        };
+    }, [queryClient]);
 
     useEffect(() => {
         if (error) {
@@ -251,7 +254,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 isSuccess ? "!opacity-100" : undefined,
                             )}
                             type="submit"
-                            variant={"outline"}
+                            variant={isSuccess ? "success" : "outline"}
                             disabled={isLoading || isSuccess}
                         >
                             {isSuccess && <Check />}
