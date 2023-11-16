@@ -15,10 +15,16 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import * as yaml from "js-yaml";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, XCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -82,71 +88,103 @@ const CurationLicense = ({
     }));
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    ref={buttonRef}
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="justify-between w-full h-fit"
-                >
-                    <div className="text-xs">
-                        {router.isReady
-                            ? value
-                                ? dataAsArray.find((d) => d.value === value)
-                                      ?.label
-                                : "Select license..."
-                            : null}
-                    </div>
-                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0" style={{ width: listWidth }}>
-                <Command>
-                    <CommandInput placeholder="Search license..." />
-                    <CommandEmpty>No license found.</CommandEmpty>
-                    <CommandGroup className="max-h-[60vh] min-h-[1px] w-full overflow-y-auto">
-                        {dataAsArray.map((d, index) => (
-                            <CommandItem
-                                key={`${d.value}-${index}`} // Combining value with index
-                                className="items-start text-left"
-                                onSelect={(currentValue) => {
-                                    if (currentValue === value) {
-                                        // Unselect the current value
-                                        setValue("");
-                                        setConcludedLicenseExpressionSPDX("");
-                                    } else {
-                                        const selectedData = dataAsArray.find(
-                                            (d) => d.value === currentValue,
-                                        );
-                                        const newLabel = selectedData
-                                            ? selectedData.label
-                                            : null;
+        <div className="flex">
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        ref={buttonRef}
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between w-full h-fit"
+                    >
+                        <div className="text-xs">
+                            {router.isReady
+                                ? value
+                                    ? dataAsArray.find((d) => d.value === value)
+                                          ?.label
+                                    : "Select license..."
+                                : null}
+                        </div>
+                        <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0" style={{ width: listWidth }}>
+                    <Command>
+                        <CommandInput placeholder="Search license..." />
+                        <CommandEmpty>No license found.</CommandEmpty>
+                        <CommandGroup className="max-h-[60vh] min-h-[1px] w-full overflow-y-auto">
+                            {dataAsArray.map((d, index) => (
+                                <CommandItem
+                                    key={`${d.value}-${index}`} // Combining value with index
+                                    className="items-start text-left"
+                                    onSelect={(currentValue) => {
+                                        if (currentValue === value) {
+                                            // Unselect the current value
+                                            setValue("");
+                                            setConcludedLicenseExpressionSPDX(
+                                                "",
+                                            );
+                                        } else {
+                                            const selectedData =
+                                                dataAsArray.find(
+                                                    (d) =>
+                                                        d.value ===
+                                                        currentValue,
+                                                );
+                                            const newLabel = selectedData
+                                                ? selectedData.label
+                                                : null;
 
-                                        setValue(currentValue); // Update component state
-                                        setConcludedLicenseExpressionSPDX(
-                                            newLabel,
-                                        ); // Update parent state
-                                    }
-                                    setOpen(false);
-                                }}
-                            >
-                                <Check
-                                    className={cn(
-                                        "mr-2 h-4 w-4",
-                                        value === d.value
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                    )}
-                                />
-                                <div className="text-xs">{d.label}</div>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </Command>
-            </PopoverContent>
-        </Popover>
+                                            setValue(currentValue); // Update component state
+                                            setConcludedLicenseExpressionSPDX(
+                                                newLabel,
+                                            ); // Update parent state
+                                        }
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <Check
+                                        className={cn(
+                                            "mr-2 h-4 w-4",
+                                            value === d.value
+                                                ? "opacity-100"
+                                                : "opacity-0",
+                                        )}
+                                    />
+                                    <div className="text-xs">{d.label}</div>
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger
+                        className="ml-1"
+                        type="button"
+                        onClick={() => {
+                            setValue("");
+                            setConcludedLicenseExpressionSPDX("");
+                        }}
+                        disabled={!value || value === ""}
+                    >
+                        <XCircle
+                            className={cn(
+                                "mx-2 text-gray-400 h-fit",
+                                !value || value.length === 0
+                                    ? "opacity-40"
+                                    : "opacity-100",
+                            )}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        Clear selection
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        </div>
     );
 };
 
