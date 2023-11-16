@@ -46,7 +46,7 @@ model Package {
   type       String
   name       String
   namespace  String?
-  version    String
+  version    String?
   qualifiers String?
   subpath    String?
   scanStatus String
