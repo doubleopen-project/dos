@@ -16,7 +16,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -41,59 +41,70 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
     }));
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="justify-between w-full h-fit"
-                >
-                    <span className="text-xs truncate">
-                        {router.isReady
-                            ? value
-                                ? licenses.find(
-                                      (license) => license.value === value,
-                                  )?.label
-                                : "Select license..."
-                            : null}
-                    </span>
-                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0">
-                <Command>
-                    <CommandInput placeholder="Search license..." />
-                    <CommandEmpty>No license found.</CommandEmpty>
-                    <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
-                        {licenses.map((license) => (
-                            <CommandItem
-                                key={license.value}
-                                className="items-start text-left"
-                                onSelect={(currentValue) => {
-                                    setValue(
-                                        currentValue === value
-                                            ? null
-                                            : currentValue,
-                                    );
-                                    setOpen(false);
-                                }}
-                            >
-                                <Check
-                                    className={cn(
-                                        "mr-2 h-4 w-4",
-                                        value === license.value
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                    )}
-                                />
-                                <span className="text-xs">{license.label}</span>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </Command>
-            </PopoverContent>
-        </Popover>
+        <div className="flex flex-row justify-between w-full">
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="justify-between w-full h-fit"
+                    >
+                        <span className="text-xs truncate">
+                            {router.isReady
+                                ? value
+                                    ? licenses.find(
+                                          (license) => license.value === value,
+                                      )?.label
+                                    : "Select license..."
+                                : null}
+                        </span>
+                        <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0">
+                    <Command>
+                        <CommandInput placeholder="Search license..." />
+                        <CommandEmpty>No license found.</CommandEmpty>
+                        <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
+                            {licenses.map((license) => (
+                                <CommandItem
+                                    key={license.value}
+                                    className="items-start text-left"
+                                    onSelect={(currentValue) => {
+                                        setValue(
+                                            currentValue === value
+                                                ? null
+                                                : currentValue,
+                                        );
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <Check
+                                        className={cn(
+                                            "mr-2 h-4 w-4",
+                                            value === license.value
+                                                ? "opacity-100"
+                                                : "opacity-0",
+                                        )}
+                                    />
+                                    <span className="text-xs">
+                                        {license.label}
+                                    </span>
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            <Button
+                variant="destructive"
+                className="h-fit"
+                onClick={() => setValue(null)}
+            >
+                <X className="w-4 h-4 shrink-0" />
+            </Button>
+        </div>
     );
 };
 
