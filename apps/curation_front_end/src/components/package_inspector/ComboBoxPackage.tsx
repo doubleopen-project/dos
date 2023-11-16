@@ -48,7 +48,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="justify-between w-full h-fit"
+                        className="justify-between w-5/6 h-fit"
                     >
                         <span className="text-xs truncate">
                             {router.isReady
@@ -82,13 +82,13 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                                 >
                                     <Check
                                         className={cn(
-                                            "mr-2 h-4 w-4",
+                                            "mr-2 h-4 w-1/12",
                                             value === license.value
                                                 ? "opacity-100"
                                                 : "opacity-0",
                                         )}
                                     />
-                                    <span className="text-xs">
+                                    <span className="text-xs w-11/12">
                                         {license.label}
                                     </span>
                                 </CommandItem>
@@ -99,7 +99,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
             </Popover>
             <Button
                 variant="destructive"
-                className="h-fit"
+                className="h-fit w-1/6"
                 onClick={() => setValue(null)}
             >
                 <X className="w-4 h-4 shrink-0" />
