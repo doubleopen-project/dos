@@ -215,7 +215,7 @@ export const GetPackagesRes = z.object({
             purl: z.string(),
             updatedAt: z.coerce.date(),
             name: z.string(),
-            version: z.string(),
+            version: z.nullable(z.string()),
             type: z.string(),
             namespace: z.nullable(z.string()),
             qualifiers: z.nullable(z.string()),

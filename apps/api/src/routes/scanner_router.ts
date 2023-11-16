@@ -148,8 +148,6 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
         if (!packageId) {
             const parsedPurl = PackageURL.fromString(req.body.purl);
 
-            if (!parsedPurl.version) throw new Error("Check package url");
-
             let qualifiers = undefined;
 
             if (parsedPurl.qualifiers) {
@@ -177,7 +175,7 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
             if (jobPackage.purl !== req.body.purl) {
                 dbQueries.deletePackage(jobPackage.id);
                 throw new Error(
-                    "Purl generated from the package data is invalid",
+                    "Internal server error. Generated purl does not match the requested purl",
                 );
             }
 
@@ -231,8 +229,12 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof Error) {
+            res.status(500).json({ message: error.message });
+        } else {
+            console.log("Error: ", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
     }
 });
 

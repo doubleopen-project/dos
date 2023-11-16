@@ -5597,7 +5597,7 @@ declare const userAPI: [
                             purl: zod.ZodString;
                             updatedAt: zod.ZodDate;
                             name: zod.ZodString;
-                            version: zod.ZodString;
+                            version: zod.ZodNullable<zod.ZodString>;
                             type: zod.ZodString;
                             namespace: zod.ZodNullable<zod.ZodString>;
                             qualifiers: zod.ZodNullable<zod.ZodString>;
@@ -5610,7 +5610,7 @@ declare const userAPI: [
                             name: string;
                             purl: string;
                             updatedAt: Date;
-                            version: string;
+                            version: string | null;
                             namespace: string | null;
                             qualifiers: string | null;
                             subpath: string | null;
@@ -5620,7 +5620,7 @@ declare const userAPI: [
                             name: string;
                             purl: string;
                             updatedAt: Date;
-                            version: string;
+                            version: string | null;
                             namespace: string | null;
                             qualifiers: string | null;
                             subpath: string | null;
@@ -5637,7 +5637,7 @@ declare const userAPI: [
                     name: string;
                     purl: string;
                     updatedAt: Date;
-                    version: string;
+                    version: string | null;
                     namespace: string | null;
                     qualifiers: string | null;
                     subpath: string | null;
@@ -5649,7 +5649,7 @@ declare const userAPI: [
                     name: string;
                     purl: string;
                     updatedAt: Date;
-                    version: string;
+                    version: string | null;
                     namespace: string | null;
                     qualifiers: string | null;
                     subpath: string | null;
@@ -9428,7 +9428,7 @@ declare const dosAPI: [
                             purl: zod.ZodString;
                             updatedAt: zod.ZodDate;
                             name: zod.ZodString;
-                            version: zod.ZodString;
+                            version: zod.ZodNullable<zod.ZodString>;
                             type: zod.ZodString;
                             namespace: zod.ZodNullable<zod.ZodString>;
                             qualifiers: zod.ZodNullable<zod.ZodString>;
@@ -9441,7 +9441,7 @@ declare const dosAPI: [
                             name: string;
                             purl: string;
                             updatedAt: Date;
-                            version: string;
+                            version: string | null;
                             namespace: string | null;
                             qualifiers: string | null;
                             subpath: string | null;
@@ -9451,7 +9451,7 @@ declare const dosAPI: [
                             name: string;
                             purl: string;
                             updatedAt: Date;
-                            version: string;
+                            version: string | null;
                             namespace: string | null;
                             qualifiers: string | null;
                             subpath: string | null;
@@ -9468,7 +9468,7 @@ declare const dosAPI: [
                     name: string;
                     purl: string;
                     updatedAt: Date;
-                    version: string;
+                    version: string | null;
                     namespace: string | null;
                     qualifiers: string | null;
                     subpath: string | null;
@@ -9480,7 +9480,7 @@ declare const dosAPI: [
                     name: string;
                     purl: string;
                     updatedAt: Date;
-                    version: string;
+                    version: string | null;
                     namespace: string | null;
                     qualifiers: string | null;
                     subpath: string | null;
