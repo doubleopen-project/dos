@@ -45,7 +45,7 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
                 Path exclusion tools
             </span>
             <>
-                <TooltipProvider>
+                <TooltipProvider delayDuration={300}>
                     <Tooltip>
                         <div className="relative group">
                             <TooltipTrigger asChild>

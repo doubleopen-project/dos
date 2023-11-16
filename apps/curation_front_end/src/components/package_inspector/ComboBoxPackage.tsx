@@ -15,6 +15,12 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { parseAsString, useQueryState } from "next-usequerystate";
@@ -97,14 +103,21 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                     </Command>
                 </PopoverContent>
             </Popover>
-            <Button
-                variant="destructive"
-                className="h-fit w-1/6"
-                onClick={() => setValue(null)}
-                disabled={value === ""}
-            >
-                <X className="w-4 h-4 shrink-0" />
-            </Button>
+            <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="destructive"
+                            className="h-fit w-1/6"
+                            onClick={() => setValue(null)}
+                            disabled={value === ""}
+                        >
+                            <X className="w-4 h-4 shrink-0" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove license filtering</TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         </div>
     );
 };

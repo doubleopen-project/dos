@@ -56,8 +56,8 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
                 RESET
             </Button>
             {uniqueData.map((d) => (
-                <TooltipProvider key={d.id}>
-                    <Tooltip delayDuration={400}>
+                <TooltipProvider delayDuration={300} key={d.id}>
+                    <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
                                 key={d.id}
