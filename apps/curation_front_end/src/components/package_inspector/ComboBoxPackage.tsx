@@ -101,6 +101,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                 variant="destructive"
                 className="h-fit w-1/6"
                 onClick={() => setValue(null)}
+                disabled={value === ""}
             >
                 <X className="w-4 h-4 shrink-0" />
             </Button>
