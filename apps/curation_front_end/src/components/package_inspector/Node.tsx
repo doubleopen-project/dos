@@ -15,9 +15,10 @@ import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;
     licenseFilter: string | null;
+    filtering: boolean;
 };
 
-const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
+const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
     const { isLeaf, isClosed, isFocused, data } = node;
     const {
         hasLicenseFindings,
@@ -92,6 +93,7 @@ const Node = ({ node, style, purl, licenseFilter }: NodeProps) => {
                             query: licenseFilter
                                 ? {
                                       licenseFilter: `${licenseFilter}`,
+                                      filtering: `${filtering}`,
                                   }
                                 : {},
                         }}

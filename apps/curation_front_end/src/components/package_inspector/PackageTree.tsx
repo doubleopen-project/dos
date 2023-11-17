@@ -126,7 +126,6 @@ const PackageTree = ({ purl }: Props) => {
     // This should have worked without useEffect, as a component should be re-rendered
     // when the isExpanded state changes. However, it didn't
     useEffect(() => {
-        console.log("isExpanded: ", isExpanded);
         if (isExpanded) {
             tree?.openAll();
         } else {
@@ -220,6 +219,7 @@ const PackageTree = ({ purl }: Props) => {
                             <Node
                                 {...nodeProps}
                                 licenseFilter={licenseFilter}
+                                filtering={filtering}
                                 purl={purl}
                             />
                         )}
