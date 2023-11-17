@@ -42,7 +42,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
         filterString,
         parseAsString.withDefault(""),
     );
-    const [filtering, setFiltering] = useQueryState(
+    const [, setFiltering] = useQueryState(
         "filtering",
         parseAsBoolean.withDefault(false),
     );
