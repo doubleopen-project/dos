@@ -290,7 +290,15 @@ userRouter.post("/path-exclusion", async (req, res) => {
         if (error instanceof Error) {
             if (error.message === "User not found")
                 res.status(401).json({ message: "Unauthorized" });
-            else
+            else if (
+                error.message ===
+                "No matching path(s) for the provided pattern were found in the package"
+            ) {
+                res.status(400).json({
+                    message: error.message,
+                    path: "pattern",
+                });
+            } else
                 res.status(400).json({
                     message: error.message,
                 });

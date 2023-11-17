@@ -24,6 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { validReasons } from "validation-helpers";
@@ -63,6 +64,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
         },
         {
             onSuccess: () => {
+                setOpen(false);
                 toast({
                     title: "Path exclusion",
                     description: "Path exclusion added successfully.",
@@ -70,10 +72,30 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                 // When a path exclusions is added, invalidate the query to refetch the data
                 queryClient.invalidateQueries(keyPathExclusion);
             },
+            onError: (error) => {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.data?.path === "pattern") {
+                        form.setError("pattern", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    } else if (error.response?.data?.message) {
+                        form.setError("root", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    }
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.message,
+                    });
+                }
+            },
         },
     );
+
     const onSubmit = (data: ExclusionFormType) => {
-        setOpen(false);
         addPathExclusion({
             purl: purl,
             pattern: data.pattern,
@@ -158,6 +180,16 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                             </FormItem>
                         )}
                     />
+                    {form.formState.errors.root && (
+                        <div
+                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            role="alert"
+                        >
+                            <span className="block sm:inline">
+                                {form.formState.errors.root?.message}
+                            </span>
+                        </div>
+                    )}
                     <div className="flex justify-end">
                         <Button
                             variant="outline"
