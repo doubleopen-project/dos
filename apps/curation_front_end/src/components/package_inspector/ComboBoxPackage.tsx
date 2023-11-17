@@ -22,7 +22,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronsUpDown, XCircle } from "lucide-react";
 import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -105,15 +105,18 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
             </Popover>
             <TooltipProvider delayDuration={300}>
                 <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="destructive"
-                            className="h-fit w-1/6"
-                            onClick={() => setValue(null)}
-                            disabled={value === ""}
-                        >
-                            <X className="w-4 h-4 shrink-0" />
-                        </Button>
+                    <TooltipTrigger
+                        className="ml-1"
+                        type="button"
+                        onClick={() => setValue(null)}
+                        disabled={value === ""}
+                    >
+                        <XCircle
+                            className={cn(
+                                "mx-2 text-gray-400 h-fit",
+                                !value ? "opacity-40" : "opacity-100",
+                            )}
+                        />
                     </TooltipTrigger>
                     <TooltipContent>Remove license filtering</TooltipContent>
                 </Tooltip>
