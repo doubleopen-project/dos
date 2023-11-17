@@ -23,9 +23,13 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, XCircle } from "lucide-react";
-import { parseAsString, useQueryState } from "next-usequerystate";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ComboBoxPackageProps = {
     data: Set<string>;
@@ -38,6 +42,10 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
         filterString,
         parseAsString.withDefault(""),
     );
+    const [filtering, setFiltering] = useQueryState(
+        "filtering",
+        parseAsBoolean.withDefault(false),
+    );
     const router = useRouter();
 
     // Map data to the format required by the Command component
@@ -45,6 +53,14 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
         value: license.toLowerCase(),
         label: license,
     }));
+
+    // If the license filter is set, set "filtering" to true.
+    // Do it as a side effect to avoid infinite loop
+    useEffect(() => {
+        if (value) {
+            setFiltering(true);
+        }
+    }, [value]);
 
     return (
         <div className="flex flex-row justify-between w-full">
@@ -108,7 +124,10 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
                     <TooltipTrigger
                         className="ml-1"
                         type="button"
-                        onClick={() => setValue(null)}
+                        onClick={() => {
+                            setValue(null);
+                            setFiltering(null);
+                        }}
                         disabled={value === ""}
                     >
                         <XCircle
