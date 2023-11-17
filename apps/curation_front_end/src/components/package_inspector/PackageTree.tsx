@@ -10,6 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
@@ -69,10 +75,7 @@ const PackageTree = ({ purl }: Props) => {
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
     };
-    const handleFilterToggle = () => {
-        setFiltering(!filtering);
-        setIsExpanded(!filtering);
-    };
+
     const handleResize = () => {
         if (treeRef.current) {
             const { offsetHeight } = treeRef.current;
@@ -158,21 +161,32 @@ const PackageTree = ({ purl }: Props) => {
                 <div className="flex-1 mr-2 h-full">
                     <ExclusionTools selectedNode={selectedNode} purl={purl} />
                 </div>
-                <Toggle
-                    className="text-xs"
-                    variant="outline"
-                    disabled={licenseFilter === ""}
-                    pressed={filtering}
-                    onPressedChange={handleFilterToggle}
-                >
-                    {filtering === true ? (
-                        <span className="text-red-500 font-bold">
-                            Filtering
-                        </span>
-                    ) : (
-                        "Filter"
-                    )}
-                </Toggle>
+                <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle
+                                className="text-xs"
+                                variant="outline"
+                                disabled={licenseFilter === ""}
+                                pressed={filtering}
+                                onPressedChange={() => setFiltering(!filtering)}
+                            >
+                                {filtering ? (
+                                    <span className="text-red-500 font-bold">
+                                        Filtering
+                                    </span>
+                                ) : (
+                                    "Filter"
+                                )}
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {filtering
+                                ? "Toggle license filter off to show the whole tree"
+                                : "Toggle license filter on to filter the tree by license"}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
 
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
