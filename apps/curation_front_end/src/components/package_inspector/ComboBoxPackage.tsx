@@ -22,10 +22,14 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, X } from "lucide-react";
-import { parseAsString, useQueryState } from "next-usequerystate";
+import { Check, ChevronsUpDown, XCircle } from "lucide-react";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ComboBoxPackageProps = {
     data: Set<string>;
@@ -38,6 +42,10 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
         filterString,
         parseAsString.withDefault(""),
     );
+    const [, setFiltering] = useQueryState(
+        "filtering",
+        parseAsBoolean.withDefault(false),
+    );
     const router = useRouter();
 
     // Map data to the format required by the Command component
@@ -45,6 +53,14 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
         value: license.toLowerCase(),
         label: license,
     }));
+
+    // If the license filter is set, set "filtering" to true.
+    // Do it as a side effect to avoid infinite loop
+    useEffect(() => {
+        if (value) {
+            setFiltering(true);
+        }
+    }, [value]);
 
     return (
         <div className="flex flex-row justify-between w-full">
@@ -105,15 +121,21 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
             </Popover>
             <TooltipProvider delayDuration={300}>
                 <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="destructive"
-                            className="h-fit w-1/6"
-                            onClick={() => setValue(null)}
-                            disabled={value === ""}
-                        >
-                            <X className="w-4 h-4 shrink-0" />
-                        </Button>
+                    <TooltipTrigger
+                        className="ml-1"
+                        type="button"
+                        onClick={() => {
+                            setValue(null);
+                            setFiltering(null);
+                        }}
+                        disabled={value === ""}
+                    >
+                        <XCircle
+                            className={cn(
+                                "mx-2 text-gray-400 h-fit",
+                                !value ? "opacity-40" : "opacity-100",
+                            )}
+                        />
                     </TooltipTrigger>
                     <TooltipContent>Remove license filtering</TooltipContent>
                 </Tooltip>

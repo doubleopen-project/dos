@@ -9,6 +9,13 @@ import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Toggle } from "@/components/ui/toggle";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
@@ -16,7 +23,11 @@ import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import { userHooks } from "@/hooks/zodiosHooks";
 import type { SelectedNode, TreeNode } from "@/types/index";
 import { Loader2 } from "lucide-react";
-import { parseAsString, useQueryState } from "next-usequerystate";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
 import React, { useEffect, useRef, useState } from "react";
 import { Tree, TreeApi } from "react-arborist";
 import { Button } from "../ui/button";
@@ -30,6 +41,10 @@ const PackageTree = ({ purl }: Props) => {
     const [licenseFilter] = useQueryState(
         "licenseFilter",
         parseAsString.withDefault(""),
+    );
+    const [filtering, setFiltering] = useQueryState(
+        "filtering",
+        parseAsBoolean.withDefault(false),
     );
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
@@ -54,21 +69,11 @@ const PackageTree = ({ purl }: Props) => {
         { enabled: !!purl },
     );
 
-    const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTreeFilter(event.target.value);
-    };
-
     let tree: TreeApi<TreeNode> | null | undefined;
     const uniqueLicenses = extractUniqueLicenses(originalTreeData);
 
-    const handleExpand = () => {
-        if (!isExpanded) {
-            tree?.openAll();
-            setIsExpanded(true);
-        } else {
-            tree?.closeAll();
-            setIsExpanded(false);
-        }
+    const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTreeFilter(event.target.value);
     };
 
     const handleResize = () => {
@@ -83,9 +88,9 @@ const PackageTree = ({ purl }: Props) => {
         window.addEventListener("resize", handleResize);
     }, []);
 
-    // Update tree data when the license search text is changed
+    // Update tree data when the license filter is set and filtered is true
     useEffect(() => {
-        if (licenseFilter) {
+        if (licenseFilter && filtering) {
             let updatedTreeData = JSON.parse(JSON.stringify(originalTreeData)); // Create a deep copy
 
             // Filter the tree based on the licenseSearchText
@@ -95,13 +100,14 @@ const PackageTree = ({ purl }: Props) => {
             );
 
             updateHasLicenseFindings(updatedTreeData, licenseFilter); // Update hasLicenseFindings flag
-
             setTreeData(updatedTreeData); // Set the updated and/or filtered tree data to trigger a re-render
+            setIsExpanded(true); // Expand the tree when filtering
         } else {
             // Reset to original tree data if licenseFilter is empty
             setTreeData(originalTreeData);
+            setIsExpanded(false);
         }
-    }, [licenseFilter, originalTreeData]);
+    }, [licenseFilter, filtering, originalTreeData]);
 
     // Return the whole original tree data when the license search text is empty
     useEffect(() => {
@@ -116,6 +122,16 @@ const PackageTree = ({ purl }: Props) => {
             setOriginalTreeData(convertedData);
         }
     }, [data, pathExclusions]);
+
+    // This should have worked without useEffect, as a component should be re-rendered
+    // when the isExpanded state changes. However, it didn't
+    useEffect(() => {
+        if (isExpanded) {
+            tree?.openAll();
+        } else {
+            tree?.closeAll();
+        }
+    }, [isExpanded]);
 
     return (
         <div className="flex flex-col h-full">
@@ -134,14 +150,43 @@ const PackageTree = ({ purl }: Props) => {
                 />
                 <Button
                     className="p-1 ml-2 text-xs rounded-md"
-                    onClick={handleExpand}
+                    onClick={() => setIsExpanded(!isExpanded)}
                     variant={"outline"}
                 >
                     {isExpanded ? "Collapse" : "Expand"}
                 </Button>
             </div>
-
-            <ExclusionTools selectedNode={selectedNode} purl={purl} />
+            <div className="flex items-center justify-between">
+                <div className="flex-1 mr-2 h-full">
+                    <ExclusionTools selectedNode={selectedNode} purl={purl} />
+                </div>
+                <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle
+                                className="text-xs"
+                                variant="outline"
+                                disabled={licenseFilter === ""}
+                                pressed={filtering}
+                                onPressedChange={() => setFiltering(!filtering)}
+                            >
+                                {filtering ? (
+                                    <span className="text-red-500 font-bold">
+                                        Filtering
+                                    </span>
+                                ) : (
+                                    "Filter"
+                                )}
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {filtering
+                                ? "Toggle license filter off to show the whole tree"
+                                : "Toggle license filter on to filter the tree by license"}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
 
             <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
                 {isLoading && (
@@ -174,6 +219,7 @@ const PackageTree = ({ purl }: Props) => {
                             <Node
                                 {...nodeProps}
                                 licenseFilter={licenseFilter}
+                                filtering={filtering}
                                 purl={purl}
                             />
                         )}

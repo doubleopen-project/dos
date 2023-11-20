@@ -22,11 +22,25 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import React from "react";
 import { useForm } from "react-hook-form";
+import parse from "spdx-expression-parse";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
 
 const curationFormSchema = z.object({
-    concludedLicenseSPDX: z.string(),
+    concludedLicenseSPDX: z
+        .string()
+        .refine(
+            (value) => {
+                try {
+                    parse(value);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            },
+            { message: "Invalid SPDX expression" },
+        )
+        .or(z.enum(["", "NONE", "NOASSERTION"])),
     concludedLicenseDB: z.string(),
     concludedLicenseList: z.string(),
     comment: z.string(),
@@ -197,7 +211,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                                 <FormItem className="flex-1 mr-1">
                                     <FormControl>
                                         <Textarea
-                                            className="text-xs"
+                                            className="text-xs !min-h-[40px]"
                                             placeholder="Comment on your curation..."
                                             {...field}
                                         />
