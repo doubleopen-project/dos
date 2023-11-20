@@ -24,7 +24,7 @@ import { TfiPencil } from "react-icons/tfi";
 type Props = {
     selectedNode: SelectedNode | undefined;
     purl: string | undefined;
-    className?: string | undefined;
+    className?: string;
 };
 
 // Check if the selected node has children directories:
