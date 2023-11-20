@@ -197,7 +197,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
                                 <FormItem className="flex-1 mr-1">
                                     <FormControl>
                                         <Textarea
-                                            className="text-xs"
+                                            className="text-xs !min-h-[40px]"
                                             placeholder="Comment on your curation..."
                                             {...field}
                                         />
