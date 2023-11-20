@@ -128,9 +128,11 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
             {data && purl && (
-                <div className="flex-row p-1 mt-2 text-sm border rounded-md shadow-lg">
-                    <CurationForm purl={purl} fileData={data} />
-                </div>
+                <CurationForm
+                    purl={purl}
+                    fileData={data}
+                    className="p-1 mt-2 text-sm border rounded-md shadow-lg"
+                />
             )}
         </div>
     );
