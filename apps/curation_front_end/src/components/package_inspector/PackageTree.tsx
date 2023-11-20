@@ -235,12 +235,11 @@ const PackageTree = ({ purl }: Props) => {
             </div>
 
             <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
-                <div className="w-full mb-1">
-                    <ComboBoxPackage
-                        data={uniqueLicenses}
-                        filterString={"licenseFilter"}
-                    />
-                </div>
+                <ComboBoxPackage
+                    data={uniqueLicenses}
+                    filterString={"licenseFilter"}
+                    className="w-full mb-1"
+                />
                 <ExclusionDB purl={purl} fractionalWidth={1.0} />
             </div>
         </div>

@@ -34,9 +34,14 @@ import React, { useEffect, useState } from "react";
 type ComboBoxPackageProps = {
     data: Set<string>;
     filterString: string;
+    className?: string;
 };
 
-const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
+const ComboBoxPackage = ({
+    data,
+    filterString,
+    className,
+}: ComboBoxPackageProps) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useQueryState(
         filterString,
@@ -63,7 +68,7 @@ const ComboBoxPackage = ({ data, filterString }: ComboBoxPackageProps) => {
     }, [value]);
 
     return (
-        <div className="flex flex-row justify-between w-full">
+        <div className={cn("flex flex-row justify-between w-full", className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
