@@ -157,9 +157,11 @@ const PackageTree = ({ purl }: Props) => {
                 </Button>
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex-1 mr-2 h-full">
-                    <ExclusionTools selectedNode={selectedNode} purl={purl} />
-                </div>
+                <ExclusionTools
+                    selectedNode={selectedNode}
+                    purl={purl}
+                    className="flex-1 mr-2"
+                />
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
                         <TooltipTrigger asChild>
