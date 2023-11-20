@@ -212,7 +212,7 @@ model ScannerJob {
   @@index([packageId])
 }
 
-/// A system issue.
+/// A system issue that can be used to save information about errors in unexpected situations, so that the issue is easier and faster to investigate and fix.
 model SystemIssue {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
