@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { Prisma } from "database";
 import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
@@ -559,8 +560,6 @@ export const saveJobResults = async (
             );
     } catch (error) {
         console.log(error);
-        // TODO:
-        // Inform Scanner Agent that saving results failed
         try {
             console.log(jobId + ': Changing ScannerJob state to "failed"');
             const editedScannerJob = await dbQueries.updateScannerJob(jobId, {
@@ -570,6 +569,31 @@ export const saveJobResults = async (
             await dbQueries.updatePackage({
                 id: editedScannerJob.packageId,
                 data: { scanStatus: "failed" },
+            });
+            await dbQueries.createSystemIssue({
+                message: "Saving results failed",
+                severity: "MODERATE",
+                errorCode: "SAVING_RESULTS_FAILED",
+                errorType: "ScannerRouterError",
+                details:
+                    error instanceof Error
+                        ? error.message
+                        : error instanceof Prisma.PrismaClientKnownRequestError
+                          ? error.message
+                          : error instanceof
+                                  Prisma.PrismaClientRustPanicError ||
+                              error instanceof
+                                  Prisma.PrismaClientInitializationError ||
+                              error instanceof
+                                  Prisma.PrismaClientValidationError ||
+                              error instanceof
+                                  Prisma.PrismaClientUnknownRequestError
+                            ? error.stack
+                            : null,
+                info: JSON.stringify({
+                    jobId: jobId,
+                    packageId: editedScannerJob.packageId,
+                }),
             });
         } catch (error) {
             console.log(
