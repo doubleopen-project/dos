@@ -17,6 +17,7 @@ import {
     PrismaClient,
     ScanIssue,
     ScannerJob,
+    SystemIssue,
     User,
 } from "database";
 
@@ -311,6 +312,32 @@ export const createScanIssue = async (input: {
     if (!scanIssue) throw new Error("Error: Unable to create ScanIssue");
 
     return scanIssue;
+};
+
+export const createSystemIssue = async (
+    input: Prisma.SystemIssueCreateInput,
+) => {
+    let retries = initialRetryCount;
+    let systemIssue: SystemIssue | null = null;
+
+    while (!systemIssue && retries > 0) {
+        try {
+            systemIssue = await prisma.systemIssue.create({
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error creating SystemIssue: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+
+        if (!systemIssue)
+            throw new Error("Error: Unable to create SystemIssue");
+    }
+
+    return systemIssue;
 };
 
 export const createUser = async (

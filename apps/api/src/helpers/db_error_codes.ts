@@ -2,7 +2,18 @@
 //
 // SPDX-License-Identifier: MIT
 
-export const dbErrorCodeResMessagesMap = new Map([
+import { Severity } from "database";
+
+export const dbErrorCodeResMessagesMap: Map<
+    string,
+    {
+        message: string;
+        description: string;
+        requiresAction: boolean;
+        requiresTracking: boolean;
+        severity: Severity | null;
+    }
+> = new Map([
     [
         "P1000",
         {

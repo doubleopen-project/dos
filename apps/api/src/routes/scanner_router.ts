@@ -11,9 +11,9 @@ import {
     authenticateORTToken,
     authenticateSAToken,
 } from "../helpers/auth_helpers";
-import { dbErrorCodeResMessagesMap } from "../helpers/db_error_codes";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
+import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { processPackageAndSendToScanner } from "../helpers/new_job_process";
 import { stateMap } from "../helpers/state_helpers";
 
@@ -169,6 +169,17 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
 
             if (jobPackage.purl !== req.body.purl) {
                 dbQueries.deletePackage(jobPackage.id);
+                await dbQueries.createSystemIssue({
+                    message: "Generated purl does not match the requested purl",
+                    severity: "MODERATE",
+                    errorCode: "PURL_MISMATCH",
+                    errorType: "ScannerRouterError",
+                    info: JSON.stringify({
+                        requestedPurl: req.body.purl,
+                        generatedPurl: jobPackage.purl,
+                        zipFileKey: req.body.zipFileKey,
+                    }),
+                });
                 throw new Error(
                     "Internal server error. Generated purl does not match the requested purl",
                 );
@@ -225,28 +236,8 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
         }
     } catch (error) {
         console.log("Error: ", error);
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            return res.status(500).json({
-                message:
-                    "Internal server error. " +
-                        dbErrorCodeResMessagesMap.get(error.code)?.message ||
-                    "Internal server error. Issue with database connection or query.",
-            });
-        } else if (
-            error instanceof Prisma.PrismaClientUnknownRequestError ||
-            error instanceof Prisma.PrismaClientValidationError ||
-            error instanceof Prisma.PrismaClientInitializationError ||
-            error instanceof Prisma.PrismaClientRustPanicError
-        ) {
-            return res.status(500).json({
-                message:
-                    "Internal server error. Issue with database connection or query.",
-            });
-        } else if (error instanceof Error) {
-            return res.status(500).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
     }
 });
 
