@@ -212,6 +212,27 @@ model ScannerJob {
   @@index([packageId])
 }
 
+/// A system issue.
+model SystemIssue {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  severity  Severity @default(UNKNOWN)
+  message   String
+  details   String?
+  errorCode String?
+  info      Json?
+  errorType String?
+  resolved  Boolean  @default(false)
+}
+
+enum Severity {
+  CRITICAL
+  MODERATE
+  LOW
+  UNKNOWN
+}
+
 /// A session for authentication.
 model Session {
   sid    String   @id
