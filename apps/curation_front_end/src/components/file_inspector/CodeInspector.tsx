@@ -76,11 +76,10 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     <Label className="font-semibold">
                         Individual license matches
                     </Label>
-                    <div className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto">
-                        <ButtonGroup
-                            data={data.licenseFindings[0].licenseFindingMatches}
-                        />
-                    </div>
+                    <ButtonGroup
+                        data={data.licenseFindings[0].licenseFindingMatches}
+                        className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto"
+                    />
                 </div>
             )}
 
