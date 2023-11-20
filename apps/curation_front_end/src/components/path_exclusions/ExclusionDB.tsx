@@ -94,35 +94,26 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                             className="items-start flex-1 text-left"
                                         >
                                             <div className="flex flex-col w-full text-xs">
-                                                <span className="flex justify-between mb-2">
-                                                    <span>
-                                                        <span className="mr-1">
-                                                            Glob:
-                                                        </span>
-                                                        <span className="p-1 font-bold bg-green-400 rounded-sm">
-                                                            {exclusion.pattern}
-                                                        </span>
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="mr-1">
+                                                        {
+                                                            new Date(
+                                                                exclusion.updatedAt,
+                                                            )
+                                                                .toISOString()
+                                                                .split("T")[0]
+                                                        }
                                                     </span>
-                                                    <span className="">
-                                                        <span className="mr-1">
-                                                            {
-                                                                new Date(
-                                                                    exclusion.updatedAt,
-                                                                )
-                                                                    .toISOString()
-                                                                    .split(
-                                                                        "T",
-                                                                    )[0]
-                                                            }
-                                                        </span>
-                                                        <span className="p-1 font-bold bg-orange-400 rounded-sm">
-                                                            {
-                                                                exclusion.user
-                                                                    .username
-                                                            }
-                                                        </span>
+                                                    <span className="p-1 font-bold bg-orange-400 rounded-sm">
+                                                        {
+                                                            exclusion.user
+                                                                .username
+                                                        }
                                                     </span>
-                                                </span>
+                                                </div>
+                                                <div className="p-1 font-bold bg-slate-500 rounded-sm mb-1">
+                                                    {exclusion.pattern}
+                                                </div>
                                                 <span className="text-smaller">
                                                     <span className="mr-1">
                                                         Reason:
@@ -138,7 +129,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                         </CommandItem>
                                         <CommandItem
                                             key={`delete-${exclusion.id}`}
-                                            className="items-start text-left"
+                                            className="items-start text-left mr-1"
                                         >
                                             {(userName ===
                                                 exclusion.user.username ||
