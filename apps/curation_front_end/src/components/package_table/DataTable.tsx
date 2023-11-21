@@ -2,16 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { DataTablePagination } from "@/components/package_table/DataTablePagination";
-import { Input } from "@/components/ui/input";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -23,7 +14,16 @@ import {
     SortingState,
     useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { DataTablePagination } from "@/components/package_table/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];

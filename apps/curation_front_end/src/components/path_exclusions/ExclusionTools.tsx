@@ -2,15 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
-import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { SelectedNode } from "@/types/index";
 import React, { useState } from "react";
 import {
     TbFileOff,
@@ -19,10 +10,21 @@ import {
     TbFoldersOff,
 } from "react-icons/tb";
 import { TfiPencil } from "react-icons/tfi";
+import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
+import { cn } from "@/lib/utils";
+import type { SelectedNode } from "@/types/index";
 
 type Props = {
     selectedNode: SelectedNode | undefined;
     purl: string | undefined;
+    className?: string;
 };
 
 // Check if the selected node has children directories:
@@ -31,7 +33,7 @@ const hasChildrenDirs = (node: SelectedNode | undefined) => {
     return node?.children?.some((child: SelectedNode) => !child.isLeaf);
 };
 
-const ExclusionTools = ({ selectedNode, purl }: Props) => {
+const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     const [openDirDialog, setOpenDirDialog] = useState<boolean>(false);
     const [openSubdirsDialog, setOpenSubdirsDialog] = useState<boolean>(false);
     const [openFileDialog, setOpenFileDialog] = useState<boolean>(false);
@@ -40,7 +42,12 @@ const ExclusionTools = ({ selectedNode, purl }: Props) => {
         useState<boolean>(false);
 
     return (
-        <div className="relative flex items-center p-1 mb-2 text-sm border rounded-md shadow-lg">
+        <div
+            className={cn(
+                "relative flex items-center p-1 mb-2 text-sm border rounded-md shadow-lg",
+                className,
+            )}
+        >
             <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
                 Path exclusion tools
             </span>

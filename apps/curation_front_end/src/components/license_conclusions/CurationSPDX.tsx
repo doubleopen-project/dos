@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React from "react";
+import { XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
     Tooltip,
@@ -10,8 +12,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { XCircle } from "lucide-react";
-import React from "react";
 
 type Props = {
     value: string | undefined;

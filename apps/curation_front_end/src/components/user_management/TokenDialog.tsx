@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useState } from "react";
+import { Check, Copy, Loader2 } from "lucide-react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -13,11 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { userHooks } from "@/hooks/zodiosHooks";
 import { cn } from "@/lib/utils";
-import { Check, Copy, Loader2 } from "lucide-react";
-import { useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const TokenDialog = () => {
     const [token, setToken] = useState("");

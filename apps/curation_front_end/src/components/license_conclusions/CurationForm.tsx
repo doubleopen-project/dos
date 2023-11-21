@@ -2,9 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import CurationDB from "@/components/license_conclusions/CurationDB";
-import CurationLicense from "@/components/license_conclusions/CurationLicense";
-import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { useForm } from "react-hook-form";
+import parse from "spdx-expression-parse";
+import { userAPI } from "validation-helpers";
+import { z } from "zod";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -16,15 +22,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { userHooks } from "@/hooks/zodiosHooks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { ZodiosResponseByPath } from "@zodios/core";
-import React from "react";
-import { useForm } from "react-hook-form";
-import parse from "spdx-expression-parse";
-import { userAPI } from "validation-helpers";
-import { z } from "zod";
+import CurationDB from "@/components/license_conclusions/CurationDB";
+import CurationLicense from "@/components/license_conclusions/CurationLicense";
+import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import { cn } from "@/lib/utils";
 
 const curationFormSchema = z.object({
     concludedLicenseSPDX: z
@@ -53,9 +54,10 @@ type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type Props = {
     purl: string;
     fileData: DataType;
+    className?: string;
 };
 
-const CurationForm = ({ purl, fileData }: Props) => {
+const CurationForm = ({ purl, fileData, className }: Props) => {
     const defaultValues: CurationFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseDB: "",
@@ -140,7 +142,7 @@ const CurationForm = ({ purl, fileData }: Props) => {
     }
 
     return (
-        <div className="flex flex-col w-full">
+        <div className={cn("flex flex-col w-full", className)}>
             <Label className="mb-1 font-bold">Curation:</Label>
             <Form {...form}>
                 <form

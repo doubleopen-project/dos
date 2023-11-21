@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import "@/styles/globals.css";
+import type { AppProps } from "next/app";
+import { Toaster } from "@/components/ui/toaster";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import { Toaster } from "@/components/ui/toaster";
-import type { AppProps } from "next/app";
 import Sidebar from "../components/Sidebar";
 
 export default function App({ Component, pageProps }: AppProps) {

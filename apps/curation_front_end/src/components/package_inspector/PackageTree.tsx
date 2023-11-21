@@ -2,10 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
-import Node from "@/components/package_inspector/Node";
-import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
-import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
+import React, { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
+import { Tree, TreeApi } from "react-arborist";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,20 +21,15 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
+import Node from "@/components/package_inspector/Node";
+import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
+import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
-import { userHooks } from "@/hooks/zodiosHooks";
 import type { SelectedNode, TreeNode } from "@/types/index";
-import { Loader2 } from "lucide-react";
-import {
-    parseAsBoolean,
-    parseAsString,
-    useQueryState,
-} from "next-usequerystate";
-import React, { useEffect, useRef, useState } from "react";
-import { Tree, TreeApi } from "react-arborist";
 import { Button } from "../ui/button";
 
 type Props = {
@@ -157,9 +157,11 @@ const PackageTree = ({ purl }: Props) => {
                 </Button>
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex-1 mr-2 h-full">
-                    <ExclusionTools selectedNode={selectedNode} purl={purl} />
-                </div>
+                <ExclusionTools
+                    selectedNode={selectedNode}
+                    purl={purl}
+                    className="flex-1 mr-2"
+                />
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -233,12 +235,11 @@ const PackageTree = ({ purl }: Props) => {
             </div>
 
             <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
-                <div className="w-full mb-1">
-                    <ComboBoxPackage
-                        data={uniqueLicenses}
-                        filterString={"licenseFilter"}
-                    />
-                </div>
+                <ComboBoxPackage
+                    data={uniqueLicenses}
+                    filterString={"licenseFilter"}
+                    className="w-full mb-1"
+                />
                 <ExclusionDB purl={purl} fractionalWidth={1.0} />
             </div>
         </div>

@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React, { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { userHooks } from "@/hooks/zodiosHooks";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import CurationForm from "@/components/license_conclusions/CurationForm";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { userHooks } from "@/hooks/zodiosHooks";
-import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 type CodeInspectorProps = {
     purl: string | undefined;
@@ -76,11 +76,10 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     <Label className="font-semibold">
                         Individual license matches
                     </Label>
-                    <div className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto">
-                        <ButtonGroup
-                            data={data.licenseFindings[0].licenseFindingMatches}
-                        />
-                    </div>
+                    <ButtonGroup
+                        data={data.licenseFindings[0].licenseFindingMatches}
+                        className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto"
+                    />
                 </div>
             )}
 
@@ -129,9 +128,11 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
             {data && purl && (
-                <div className="flex-row p-1 mt-2 text-sm border rounded-md shadow-lg">
-                    <CurationForm purl={purl} fileData={data} />
-                </div>
+                <CurationForm
+                    purl={purl}
+                    fileData={data}
+                    className="p-1 mt-2 text-sm border rounded-md shadow-lg"
+                />
             )}
         </div>
     );

@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React, { useMemo } from "react";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { parseAsInteger, useQueryState } from "next-usequerystate";
+import { userAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -9,10 +13,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ZodiosResponseByPath } from "@zodios/core";
-import { parseAsInteger, useQueryState } from "next-usequerystate";
-import React, { useMemo } from "react";
-import { userAPI } from "validation-helpers";
+import { cn } from "@/lib/utils";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
@@ -20,9 +21,10 @@ type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 // Define type for component props
 type ButtonGroupProps = {
     data?: LicenseMatch[];
+    className?: string;
 };
 
-const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
+const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
     const [licenseMatchId, setLicenseMatchId] = useQueryState(
         "licenseMatchId",
         parseAsInteger,
@@ -45,7 +47,7 @@ const ButtonGroup = ({ data = [] }: ButtonGroupProps) => {
     }, [data]);
 
     return (
-        <div className="flex flex-wrap">
+        <div className={cn("flex flex-wrap", className)}>
             <Button
                 key="reset"
                 className="p-0.5 m-0.5 text-xs h-fit"
