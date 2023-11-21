@@ -226,7 +226,7 @@ export const createLicenseFindingMatch = async (input: {
 export const createLicenseConclusion = async (input: {
     concludedLicenseExpressionSPDX: string;
     detectedLicenseExpressionSPDX: string | null;
-    comment: string;
+    comment: string | null;
     contextPurl: string;
     fileSha256: string;
     userId: number;
@@ -1748,7 +1748,7 @@ export const findLicenseConclusionsByPackageId = async (
         path: string;
         detectedLicenseExpressionSPDX: string | null;
         concludedLicenseExpressionSPDX: string;
-        comment: string;
+        comment: string | null;
     }[]
 > => {
     let retries = initialRetryCount;

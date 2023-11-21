@@ -136,7 +136,7 @@ model LicenseConclusion {
   updatedAt                      DateTime @updatedAt
   concludedLicenseExpressionSPDX String
   detectedLicenseExpressionSPDX  String?
-  comment                        String
+  comment                        String?
   contextPurl                    String
 
   fileSha256 String

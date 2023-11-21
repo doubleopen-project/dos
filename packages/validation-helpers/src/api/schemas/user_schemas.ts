@@ -35,7 +35,7 @@ export const PostLicenseConclusionReq = z.object({
         .trim()
         .min(1, "Concluded license expression (SPDX) cannot be empty"),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
-    comment: z.string(),
+    comment: z.string().optional(),
     contextPurl: z
         .string({
             required_error: "Context purl is required",
@@ -329,7 +329,7 @@ export const PostFileRes = z.object({
             updatedAt: z.coerce.date(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             concludedLicenseExpressionSPDX: z.string(),
-            comment: z.string(),
+            comment: z.nullable(z.string()),
             contextPurl: z.string(),
             user: z.object({
                 username: z.string(),

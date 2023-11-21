@@ -73,7 +73,7 @@ export const PostPackageConfigurationRes = z.object({
             path: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             concludedLicenseExpressionSPDX: z.string(),
-            comment: z.string(),
+            comment: z.nullable(z.string()),
         }),
     ),
     pathExclusions: z.array(
