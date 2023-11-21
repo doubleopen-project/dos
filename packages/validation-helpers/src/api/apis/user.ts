@@ -86,6 +86,53 @@ export const userAPI = makeApi([
     },
     {
         method: "post",
+        path: "/bulk-curation",
+        description: "Add a new bulk curation",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostBulkCurationReq,
+            },
+        ],
+        response: schemas.PostBulkCurationRes,
+        errors,
+    },
+    {
+        method: "put",
+        path: "/bulk-curation/:id",
+        description: "Update bulk curation",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.PathParamIdInteger,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PutBulkCurationReq,
+            },
+        ],
+        response: schemas.PutBulkCurationRes,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/bulk-curation/:id",
+        description: "Delete a bulk curation",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.PathParamIdInteger,
+            },
+        ],
+        response: schemas.DeleteBulkCurationRes,
+        errors,
+    },
+    {
+        method: "post",
         path: "/path-exclusion",
         description: "Add a new path exclusion",
         parameters: [

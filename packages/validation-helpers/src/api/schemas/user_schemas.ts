@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import isGlob from "is-glob";
 import { PackageURL } from "packageurl-js";
 import { z } from "zod";
 import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
@@ -84,6 +85,59 @@ export const PutLicenseConclusionRes = z.object({
 //------------- DELETE license conclusion -------------
 
 export const DeleteLicenseConclusionRes = z.object({
+    message: z.string(),
+});
+
+//-------------- POST bulk curation --------------
+
+export const PostBulkCurationReq = z.object({
+    pattern: z
+        .string({
+            required_error: "Pattern is required",
+        })
+        .trim()
+        .min(1, "Pattern cannot be empty")
+        .refine((pattern) => isGlob(pattern), {
+            message: "Pattern is not a valid glob pattern",
+        }),
+    concludedLicenseExpressionSPDX: z
+        .string({
+            required_error: "Concluded license expression is required",
+        })
+        .trim()
+        .min(1, "Concluded license expression (SPDX) cannot be empty"),
+    detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
+    comment: z.string().optional(),
+    purl: z
+        .string({
+            required_error: "Purl is required",
+        })
+        .trim()
+        .min(1, "Purl cannot be empty"),
+});
+
+export const PostBulkCurationRes = z.object({
+    bulkCurationId: z.number(),
+    message: z.string(),
+});
+
+//--------------- PUT bulk curation ---------------
+export const PutBulkCurationReq = z
+    .object({
+        pattern: z.string(),
+        concludedLicenseExpressionSPDX: z.string(),
+        detectedLicenseExpressionSPDX: z.string(),
+        comment: z.string(),
+    })
+    .partial();
+
+export const PutBulkCurationRes = z.object({
+    message: z.string(),
+});
+
+//------------- DELETE bulk curation -------------
+
+export const DeleteBulkCurationRes = z.object({
     message: z.string(),
 });
 
