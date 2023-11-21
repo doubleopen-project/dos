@@ -10,6 +10,7 @@ import { minimatch } from "minimatch";
 import * as s3Helpers from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
+import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { hashPassword } from "../helpers/password_helper";
 
 const userRouter = zodiosRouter(userAPI);
@@ -231,6 +232,108 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
             return res.status(404).json({ message: error.message });
         } else {
             res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
+class CustomError extends Error {
+    statusCode: number;
+    constructor(message: string, statusCode: number) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
+userRouter.post("/bulk-curation", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new CustomError("Unauthorized", 401);
+
+        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+
+        if (!packageId) throw new CustomError("Package not found", 404);
+
+        const LicenseConclusionInputs = [];
+
+        const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
+
+        const pattern = req.body.pattern.trim();
+
+        const bulkCuration = await dbQueries.createBulkCuration({
+            pattern: pattern,
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX || null,
+            comment: req.body.comment || null,
+            packageId: packageId,
+            userId: user.id,
+        });
+
+        for (const fileTree of fileTrees) {
+            if (minimatch(fileTree.path, pattern)) {
+                LicenseConclusionInputs.push({
+                    concludedLicenseExpressionSPDX:
+                        req.body.concludedLicenseExpressionSPDX,
+                    detectedLicenseExpressionSPDX:
+                        req.body.detectedLicenseExpressionSPDX || null,
+                    comment: req.body.comment || null,
+                    contextPurl: req.body.purl,
+                    fileSha256: fileTree.fileSha256,
+                    userId: user.id,
+                    bulkCurationId: bulkCuration.id,
+                });
+            }
+        }
+
+        if (LicenseConclusionInputs.length === 0) {
+            const deletedBulkCuration = await dbQueries.deleteBulkCuration(
+                bulkCuration.id,
+            );
+            if (!deletedBulkCuration)
+                console.log(
+                    "Unable to delete bulk curation id: " + bulkCuration.id,
+                );
+            throw new CustomError(
+                "No matching files for the provided pattern were found in the package",
+                400,
+            );
+        }
+
+        const batchCount = await dbQueries.createManyLicenseConclusions(
+            LicenseConclusionInputs,
+        );
+
+        if (batchCount.count !== LicenseConclusionInputs.length) {
+            const deletedBulkCuration = await dbQueries.deleteBulkCuration(
+                bulkCuration.id,
+            );
+            if (!deletedBulkCuration)
+                console.log(
+                    "Unable to delete bulk curation id: " + bulkCuration.id,
+                );
+            throw new CustomError(
+                "Internal server error: Error creating license conclusions",
+                500,
+            );
+        }
+
+        res.status(200).json({
+            bulkCurationId: bulkCuration.id,
+            message: "Bulk curation created and license conclusions added",
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
         }
     }
 });
