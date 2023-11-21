@@ -5,6 +5,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
 import {
+    BulkCuration,
     CopyrightFinding,
     File,
     FileTree,
@@ -252,6 +253,61 @@ export const createLicenseConclusion = async (input: {
         throw new Error("Error: Unable to create LicenseConclusion");
 
     return licenseConclusion;
+};
+
+export const createManyLicenseConclusions = async (
+    input: Prisma.LicenseConclusionCreateManyInput[],
+): Promise<Prisma.BatchPayload> => {
+    let retries = initialRetryCount;
+    let batchCreate = null;
+
+    while (!batchCreate && retries > 0) {
+        try {
+            batchCreate = await prisma.licenseConclusion.createMany({
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error creating LicenseConclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchCreate)
+        throw new Error("Error: Unable to create LicenseConclusions");
+
+    return batchCreate;
+};
+
+export const createBulkCuration = async (input: {
+    pattern: string;
+    concludedLicenseExpressionSPDX: string;
+    detectedLicenseExpressionSPDX: string | null;
+    comment: string | null;
+    packageId: number;
+    userId: number;
+}): Promise<BulkCuration> => {
+    let retries = initialRetryCount;
+    let bulkCuration: BulkCuration | null = null;
+
+    while (!bulkCuration && retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.create({
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error creating BulkCuration: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!bulkCuration) throw new Error("Error: Unable to create BulkCuration");
+
+    return bulkCuration;
 };
 
 export const createCopyrightFinding = async (input: {
@@ -891,6 +947,33 @@ export const findFileTreesByPackagePurl = async (
     }
 
     return filetrees;
+};
+
+export const findFileTreesByPackageId = async (
+    packageId: number,
+): Promise<FileTree[]> => {
+    let retries = initialRetryCount;
+    let fileTrees: FileTree[] = [];
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            fileTrees = await prisma.fileTree.findMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return fileTrees;
 };
 
 export const findFiletreeByPackageIdAndFileSha256 = async (
@@ -1964,6 +2047,31 @@ export const deleteLicenseConclusionsByFileHashes = async (
         throw new Error("Error: Unable to delete LicenseConclusions");
 
     return batchDelete;
+};
+
+export const deleteBulkCuration = async (
+    id: number,
+): Promise<BulkCuration | null> => {
+    let retries = initialRetryCount;
+    let bulkCuration: BulkCuration | null = null;
+
+    while (!bulkCuration && retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to delete BulkCuration: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkCuration;
 };
 
 export const deleteFilesByFileHashes = async (
