@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React, { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { userHooks } from "@/hooks/zodiosHooks";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import CurationForm from "@/components/license_conclusions/CurationForm";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { userHooks } from "@/hooks/zodiosHooks";
-import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 type CodeInspectorProps = {
     purl: string | undefined;

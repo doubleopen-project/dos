@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useEffect, useState } from "react";
+import { Check, Copy } from "lucide-react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Check, Copy } from "lucide-react";
-import { useEffect, useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 
 type CopyUserDataProps = {
     copyContent: string;

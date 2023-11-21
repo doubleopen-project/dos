@@ -8,7 +8,17 @@
 const config = {
     tabWidth: 4,
     plugins: ["@ianvs/prettier-plugin-sort-imports"],
-    importOrder: ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
+    importOrder: [
+        "^react$",
+        "<THIRD_PARTY_MODULES>",
+        "^@core/(.*)$",
+        "^@server/(.*)$",
+        "^@/hooks/(.*)$",
+        "^@/store/(.*)$",
+        "^@/components/ui/(.*)$",
+        "^@/(.*)$",
+        "^[./]",
+    ],
     importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
     importOrderTypeScriptVersion: "5.2.2",
 };

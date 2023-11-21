@@ -2,14 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ZodiosResponseByPath } from "@zodios/core";
 import {
@@ -18,8 +11,15 @@ import {
     ChevronUpIcon,
 } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import { userAPI } from "validation-helpers";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed

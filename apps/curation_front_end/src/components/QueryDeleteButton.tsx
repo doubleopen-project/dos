@@ -2,6 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
+import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { RiDeleteBin6Line as Delete } from "react-icons/ri";
+import { userHooks } from "@/hooks/zodiosHooks";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,11 +20,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { userHooks } from "@/hooks/zodiosHooks";
-import { useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import React from "react";
-import { RiDeleteBin6Line as Delete } from "react-icons/ri";
 
 type Props = {
     id: number;
