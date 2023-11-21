@@ -691,7 +691,7 @@ type PackageConfiguration = {
         path: string;
         detectedLicenseExpressionSPDX: string | null;
         concludedLicenseExpressionSPDX: string;
-        comment: string;
+        comment: string | null;
     }[];
     pathExclusions: {
         pattern: string;
