@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { authHooks, userHooks } from "@/hooks/zodiosHooks";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { authHooks, userHooks } from "@/hooks/zodiosHooks";
 
 export default function Logout() {
     const [counter, setCounter] = useState(3);

@@ -2,10 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
-import Node from "@/components/package_inspector/Node";
-import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
-import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
+import React, { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
+import { Tree, TreeApi } from "react-arborist";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,20 +21,15 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
+import Node from "@/components/package_inspector/Node";
+import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
+import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
-import { userHooks } from "@/hooks/zodiosHooks";
 import type { SelectedNode, TreeNode } from "@/types/index";
-import { Loader2 } from "lucide-react";
-import {
-    parseAsBoolean,
-    parseAsString,
-    useQueryState,
-} from "next-usequerystate";
-import React, { useEffect, useRef, useState } from "react";
-import { Tree, TreeApi } from "react-arborist";
 import { Button } from "../ui/button";
 
 type Props = {

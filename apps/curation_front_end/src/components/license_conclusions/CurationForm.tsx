@@ -2,9 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import CurationDB from "@/components/license_conclusions/CurationDB";
-import CurationLicense from "@/components/license_conclusions/CurationLicense";
-import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { ZodiosResponseByPath } from "@zodios/core";
+import { useForm } from "react-hook-form";
+import parse from "spdx-expression-parse";
+import { userAPI } from "validation-helpers";
+import { z } from "zod";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -16,16 +22,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { userHooks } from "@/hooks/zodiosHooks";
+import CurationDB from "@/components/license_conclusions/CurationDB";
+import CurationLicense from "@/components/license_conclusions/CurationLicense";
+import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
 import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { ZodiosResponseByPath } from "@zodios/core";
-import React from "react";
-import { useForm } from "react-hook-form";
-import parse from "spdx-expression-parse";
-import { userAPI } from "validation-helpers";
-import { z } from "zod";
 
 const curationFormSchema = z.object({
     concludedLicenseSPDX: z

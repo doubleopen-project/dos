@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { ModeToggle } from "@/components/ModeToggle";
-import { useUser } from "@/hooks/useUser";
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 import { AiOutlineHome } from "react-icons/ai";
 import {
     GrCatalog,
@@ -15,6 +13,8 @@ import {
     GrUserManager,
     GrUserSettings,
 } from "react-icons/gr";
+import { useUser } from "@/hooks/useUser";
+import { ModeToggle } from "@/components/ModeToggle";
 
 interface SidebarProps {
     children: React.ReactNode;

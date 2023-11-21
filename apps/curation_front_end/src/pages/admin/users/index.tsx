@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { Loader2 } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/MultiSection";
 import RegisterUser from "@/components/user_management/RegisterUser";
-import { useUser } from "@/hooks/useUser";
-import { Loader2 } from "lucide-react";
 
 export default function UserManagement() {
     const user = useUser({ redirectTo: "/login", admin: true });

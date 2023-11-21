@@ -2,6 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import generator from "generate-password";
+import { Check, Dices, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
+import z from "zod";
+import { adminHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -20,14 +28,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import PasswordTooltip from "@/components/user_management/PasswordTooltip";
-import { adminHooks } from "@/hooks/zodiosHooks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import generator from "generate-password";
-import { Check, Dices, Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
-import z from "zod";
 
 const addUserFormSchema = z.object({
     username: getUsernameSchema(true),

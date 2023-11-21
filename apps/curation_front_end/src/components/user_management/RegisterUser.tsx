@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useState } from "react";
 import AddUserForm from "@/components/user_management/AddUserForm";
 import CopyUserData from "@/components/user_management/CopyUserData";
-import { useState } from "react";
 
 const RegisterUser = () => {
     const [newUser, setNewUser] = useState<{

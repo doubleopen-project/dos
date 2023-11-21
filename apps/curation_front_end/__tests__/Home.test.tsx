@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import TanstackProvider from "@/components/providers/TanstackProvider";
-import Home from "@/pages/index";
 import { render, screen } from "@testing-library/react";
 import mockRouter from "next-router-mock";
+import TanstackProvider from "@/components/providers/TanstackProvider";
+import Home from "@/pages/index";
 
 jest.mock("next/router", () => jest.requireActual("next-router-mock"));
 
