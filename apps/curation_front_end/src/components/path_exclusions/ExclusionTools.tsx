@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from "react";
+import { LuFileStack } from "react-icons/lu";
 import {
     TbFileOff,
     TbFilesOff,
@@ -17,6 +18,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import BulkCurationFormDialog from "@/components/license_conclusions/BulkCurationFormDialog";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { cn } from "@/lib/utils";
 import type { SelectedNode } from "@/types/index";
@@ -40,6 +42,8 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     const [openFileExtDialog, setOpenFileExtDialog] = useState<boolean>(false);
     const [openFreeTextDialog, setOpenFreeTextDialog] =
         useState<boolean>(false);
+    const [openBulkCurationDialog, setOpenBulkCurationDialog] =
+        useState<boolean>(false);
 
     return (
         <div
@@ -49,7 +53,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
             )}
         >
             <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
-                Path exclusion tools
+                Curation tools
             </span>
             <>
                 <TooltipProvider delayDuration={300}>
@@ -166,6 +170,29 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                             pattern={undefined}
                             open={openFreeTextDialog}
                             setOpen={setOpenFreeTextDialog}
+                        />
+                    </Tooltip>
+                    <Tooltip>
+                        <div className="relative group">
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    className="p-2"
+                                    onClick={() =>
+                                        setOpenBulkCurationDialog(true)
+                                    }
+                                >
+                                    <LuFileStack className="text-lg" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Write a license conclusion for multiple files
+                            </TooltipContent>
+                        </div>
+                        <BulkCurationFormDialog
+                            purl={purl}
+                            open={openBulkCurationDialog}
+                            setOpen={setOpenBulkCurationDialog}
                         />
                     </Tooltip>
                 </TooltipProvider>
