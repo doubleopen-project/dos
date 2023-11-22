@@ -6488,6 +6488,7 @@ declare const userAPI: [
                                     username: string;
                                 }
                             >;
+                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -6497,6 +6498,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
+                            bulkCurationId: number | null;
                             updatedAt: Date;
                             user: {
                                 username: string;
@@ -6509,6 +6511,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
+                            bulkCurationId: number | null;
                             updatedAt: Date;
                             user: {
                                 username: string;
@@ -6529,6 +6532,7 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
+                    bulkCurationId: number | null;
                     updatedAt: Date;
                     user: {
                         username: string;
@@ -6565,6 +6569,7 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
+                    bulkCurationId: number | null;
                     updatedAt: Date;
                     user: {
                         username: string;
@@ -10893,6 +10898,7 @@ declare const dosAPI: [
                                     username: string;
                                 }
                             >;
+                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -10902,6 +10908,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
+                            bulkCurationId: number | null;
                             updatedAt: Date;
                             user: {
                                 username: string;
@@ -10914,6 +10921,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
+                            bulkCurationId: number | null;
                             updatedAt: Date;
                             user: {
                                 username: string;
@@ -10934,6 +10942,7 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
+                    bulkCurationId: number | null;
                     updatedAt: Date;
                     user: {
                         username: string;
@@ -10970,6 +10979,7 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
+                    bulkCurationId: number | null;
                     updatedAt: Date;
                     user: {
                         username: string;

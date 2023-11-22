@@ -352,6 +352,7 @@ export const PostFileRes = z.object({
             user: z.object({
                 username: z.string(),
             }),
+            bulkCurationId: z.nullable(z.number()),
         }),
     ),
 });
