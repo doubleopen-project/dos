@@ -1750,6 +1750,7 @@ export type FileWithRelations = Prisma.FileGetPayload<{
                         username: true;
                     };
                 };
+                bulkCurationId: true;
             };
         };
     };
@@ -1809,6 +1810,7 @@ export const findFileData = async (
                                     username: true,
                                 },
                             },
+                            bulkCurationId: true,
                         },
                     },
                 },
