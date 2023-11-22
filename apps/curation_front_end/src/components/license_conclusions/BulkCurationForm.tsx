@@ -2,14 +2,21 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 //import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
+import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
 import { z } from "zod";
-//import { userHooks } from "@/hooks/zodiosHooks";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     Form,
     FormControl,
@@ -18,11 +25,14 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+//import { userHooks } from "@/hooks/zodiosHooks";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import CurationLicense from "@/components/license_conclusions/CurationLicense";
 import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { cn } from "@/lib/utils";
 
 const bulkCurationFormSchema = z.object({
@@ -54,8 +64,15 @@ type Props = {
 };
 
 const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
-    // This is just to make lint happy
-    console.log(purl);
+    const [glob, setGlob] = useState("");
+    const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
+    // Fetch the package file tree data
+    const { data } = userHooks.useImmutableQuery(
+        "/filetree",
+        { purl: purl as string },
+        { withCredentials: true },
+        { enabled: !!purl },
+    );
     const defaultValues: BulkCurationFormType = {
         pattern: "",
         concludedLicenseSPDX: "",
@@ -88,6 +105,15 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     );
     */
     const { toast } = useToast();
+
+    const handleGlob = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setGlob(event.target.value);
+    };
+
+    useEffect(() => {
+        const paths = data?.filetrees.map((filetree) => filetree.path) || [];
+        setMatchingPaths(findMatchingPaths(paths, glob));
+    }, [glob]);
 
     function onSubmit(data: BulkCurationFormType) {
         // Create an array of fields with values
@@ -154,23 +180,50 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-1"
                 >
-                    <FormField
-                        control={form.control}
-                        name="pattern"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Pattern</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        className="text-xs !min-h-[40px]"
-                                        placeholder="Glob pattern matching to the files to be curated..."
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="flex flex-row items-end justify-between">
+                        <FormField
+                            control={form.control}
+                            name="pattern"
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <FormLabel>Pattern</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="text-xs !min-h-[40px]"
+                                            placeholder="Glob pattern matching to the files to be curated..."
+                                            {...field}
+                                            value={glob}
+                                            onChange={handleGlob}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger
+                                className="rounded-md p-2 ml-1"
+                                type="button"
+                                disabled={glob === ""}
+                            >
+                                <AiOutlineEye
+                                    className={cn(
+                                        "text-gray-400 h-fit w-6",
+                                        glob === ""
+                                            ? "opacity-40"
+                                            : "opacity-100",
+                                    )}
+                                />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-80 max-h-[40vh] overflow-y-auto">
+                                {matchingPaths.map((path) => (
+                                    <DropdownMenuItem key={path}>
+                                        {path}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                     <FormField
                         control={form.control}
                         name="concludedLicenseList"
@@ -209,7 +262,6 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                             </FormItem>
                         )}
                     />
-
                     <FormField
                         control={form.control}
                         name="comment"
@@ -227,6 +279,16 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                             </FormItem>
                         )}
                     />
+                    {form.formState.errors.root && (
+                        <div
+                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            role="alert"
+                        >
+                            <span className="block sm:inline">
+                                {form.formState.errors.root?.message}
+                            </span>
+                        </div>
+                    )}
                     <div className="flex justify-end">
                         <Button
                             type="submit"
