@@ -4,7 +4,8 @@
 
 import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-//import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import isGlob from "is-glob";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
@@ -25,7 +26,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-//import { userHooks } from "@/hooks/zodiosHooks";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,7 +36,12 @@ import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { cn } from "@/lib/utils";
 
 const bulkCurationFormSchema = z.object({
-    pattern: z.string().min(1, "Pattern cannot be empty"),
+    pattern: z
+        .string()
+        .min(1, "Pattern cannot be empty")
+        .refine((pattern) => isGlob(pattern), {
+            message: "Pattern is not a valid glob pattern",
+        }),
     concludedLicenseSPDX: z
         .string()
         .refine(
@@ -67,13 +72,14 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     const [glob, setGlob] = useState("");
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     // Fetch the package file tree data
-    const { data } = userHooks.useImmutableQuery(
+    const { data: fileTreeData } = userHooks.useImmutableQuery(
         "/filetree",
         { purl: purl as string },
         { withCredentials: true },
         { enabled: !!purl },
     );
-    const paths = data?.filetrees.map((filetree) => filetree.path) || [];
+    const paths =
+        fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkCurationFormType = {
         pattern: "",
         concludedLicenseSPDX: "",
@@ -84,27 +90,26 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         resolver: zodResolver(bulkCurationFormSchema),
         defaultValues,
     });
-    /*
+
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const queryClient = useQueryClient();
-
-    const { mutate: addLicenseConclusion } = userHooks.useMutation(
+    const { mutate: addBulkCuration } = userHooks.useMutation(
         "post",
-        "/license-conclusion",
+        "/bulk-curation",
         {
             withCredentials: true,
         },
         {
             onSuccess: () => {
                 setOpen(false);
-                // When a license conclusion is added, invalidate the file and filetree queries to refetch the data
+                // When a bulk curation is added, invalidate the file and filetree queries to refetch the data
                 queryClient.invalidateQueries(keyFile);
                 queryClient.invalidateQueries(keyFiletree);
             },
         },
     );
-    */
+
     const { toast } = useToast();
 
     const handleGlob = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,23 +140,16 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     )} to these files?`,
                 )
             ) {
-                // Temporary
-                setOpen(false);
-                /*
-                addLicenseConclusion({
-                    fileSha256: fileData.sha256,
+                addBulkCuration({
+                    pattern: data.pattern,
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
-                    detectedLicenseExpressionSPDX:
-                        fileData.licenseFindings[0]?.licenseExpressionSPDX ??
-                        "",
                     comment: data.comment ?? "",
-                    contextPurl: purl,
+                    purl: purl,
                 });
-                */
                 toast({
-                    title: "License conclusion",
-                    description: "License conclusion added successfully.",
+                    title: "Bulk curation",
+                    description: "Bulk curation added successfully.",
                 });
             } else {
                 return;
