@@ -338,6 +338,43 @@ userRouter.post("/bulk-curation", async (req, res) => {
     }
 });
 
+userRouter.delete("/bulk-curation/:id", async (req, res) => {
+    try {
+        if (!req.user) throw new CustomError("User not found", 401);
+
+        const bulkCurationId = req.params.id;
+
+        await dbQueries.deleteManyLicenseConclusionsByBulkCurationId(
+            bulkCurationId,
+        );
+
+        const deletedBulkCuration =
+            await dbQueries.deleteBulkCuration(bulkCurationId);
+
+        if (!deletedBulkCuration)
+            throw new CustomError("Bulk curation to delete not found", 404);
+
+        res.status(200).json({ message: "Bulk curation deleted" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk curation with the requested id does not exist",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/path-exclusion", async (req, res) => {
     try {
         const { user } = req;
