@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 //import { useQueryClient } from "@tanstack/react-query";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
 import { z } from "zod";
@@ -73,6 +73,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         { withCredentials: true },
         { enabled: !!purl },
     );
+    const paths = data?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkCurationFormType = {
         pattern: "",
         concludedLicenseSPDX: "",
@@ -112,7 +113,6 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     };
 
     useEffect(() => {
-        const paths = data?.filetrees.map((filetree) => filetree.path) || [];
         setMatchingPaths(findMatchingPaths(paths, glob));
     }, [glob]);
 
