@@ -670,6 +670,69 @@ export const updateLicenseConclusion = async (
     return licenseConclusion;
 };
 
+export const updateManyLicenseConclusions = async (
+    bulkCurationId: number,
+    input: Prisma.LicenseConclusionUpdateInput,
+): Promise<Prisma.BatchPayload> => {
+    let retries = initialRetryCount;
+    let batchUpdate = null;
+
+    while (!batchUpdate && retries > 0) {
+        try {
+            batchUpdate = await prisma.licenseConclusion.updateMany({
+                where: {
+                    bulkCurationId: bulkCurationId,
+                },
+                data: input,
+            });
+        } catch (error) {
+            console.log(
+                "Error with trying to update LicenseConclusions: " + error,
+            );
+
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!batchUpdate)
+        throw new Error("Error: Unable to update LicenseConclusions");
+
+    return batchUpdate;
+};
+
+export const updateBulkCuration = async (
+    id: number,
+    input: Prisma.BulkCurationUpdateInput,
+): Promise<BulkCuration> => {
+    let retries = initialRetryCount;
+    let bulkCuration: BulkCuration | null = null;
+
+    while (!bulkCuration && retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.update({
+                where: {
+                    id: id,
+                },
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error with trying to update BulkCuration: " + error);
+
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!bulkCuration) throw new Error("Error: Unable to update BulkCuration");
+
+    return bulkCuration;
+};
+
 export const updateUser = async (
     id: number,
     input: Prisma.UserUpdateInput,
@@ -1791,6 +1854,162 @@ export const findLicenseConclusionUserId = async (
         }
     }
     return licenseConclusion ? licenseConclusion.userId : null;
+};
+
+export const findBulkCurationById = async (
+    id: number,
+): Promise<BulkCuration | null> => {
+    let bulkCuration: BulkCuration | null = null;
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.findUnique({
+                where: {
+                    id: id,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkCuration: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkCuration;
+};
+
+type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
+    select: {
+        id: true;
+        pattern: true;
+        comment: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        package: {
+            select: {
+                id: true;
+                purl: true;
+            };
+        };
+        licenseConclusions: {
+            select: {
+                id: true;
+                fileSha256: true;
+                file: {
+                    select: {
+                        filetrees: {
+                            select: {
+                                path: true;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        user: {
+            select: {
+                id: true;
+            };
+        };
+    };
+}>;
+
+export const findBulkCurationWithRelationsById = async (
+    bulkCurationId: number,
+    packageId: number,
+): Promise<BulkCurationWithRelations | null> => {
+    let bulkCuration: BulkCurationWithRelations | null = null;
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.findUnique({
+                where: {
+                    id: bulkCurationId,
+                },
+                select: {
+                    id: true,
+                    pattern: true,
+                    comment: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            id: true,
+                            fileSha256: true,
+                            file: {
+                                select: {
+                                    filetrees: {
+                                        where: {
+                                            packageId: packageId,
+                                        },
+                                        select: {
+                                            path: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    user: {
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkCuration: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkCuration;
+};
+
+export const findBulkCurationUserId = async (
+    id: number,
+): Promise<number | null> => {
+    let bulkCuration: { userId: number } | null = null;
+    let retries = initialRetryCount;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            bulkCuration = await prisma.bulkCuration.findUnique({
+                where: {
+                    id: id,
+                },
+                select: {
+                    userId: true,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find BulkCurationUserId: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return bulkCuration?.userId || null;
 };
 
 export const findPathExclusionUserId = async (

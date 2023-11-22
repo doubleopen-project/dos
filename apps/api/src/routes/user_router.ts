@@ -338,11 +338,144 @@ userRouter.post("/bulk-curation", async (req, res) => {
     }
 });
 
+userRouter.put("/bulk-curation/:id", async (req, res) => {
+    try {
+        if (!req.user) throw new CustomError("User not found", 401);
+
+        const bulkCurationId = req.params.id;
+
+        const bulkCuration =
+            await dbQueries.findBulkCurationById(bulkCurationId);
+
+        if (!bulkCuration)
+            throw new CustomError("Bulk curation to update not found", 404);
+
+        if (req.user.role !== "ADMIN") {
+            if (req.user.id !== bulkCuration.userId) {
+                throw new CustomError("Unauthorized", 401);
+            }
+        }
+
+        const bulkCurationWithRelations =
+            await dbQueries.findBulkCurationWithRelationsById(
+                bulkCurationId,
+                bulkCuration.packageId,
+            );
+
+        if (!bulkCurationWithRelations)
+            throw new CustomError("Bulk curation to update not found", 404);
+
+        if (req.user.role !== "ADMIN") {
+            if (req.user.id !== bulkCurationWithRelations?.user.id) {
+                throw new CustomError("Unauthorized", 401);
+            }
+        }
+        const pattern = req.body.pattern;
+        if (pattern && pattern !== bulkCurationWithRelations.pattern) {
+            const newInputs = [];
+            const fileTrees = await dbQueries.findFileTreesByPackageId(
+                bulkCurationWithRelations.package.id,
+            );
+
+            for (const fileTree of fileTrees) {
+                if (
+                    minimatch(fileTree.path, pattern) &&
+                    bulkCurationWithRelations.licenseConclusions.find(
+                        (lc) => lc.fileSha256 === fileTree.fileSha256,
+                    ) === undefined
+                ) {
+                    newInputs.push({
+                        concludedLicenseExpressionSPDX:
+                            req.body.concludedLicenseExpressionSPDX ||
+                            bulkCurationWithRelations.concludedLicenseExpressionSPDX,
+                        detectedLicenseExpressionSPDX:
+                            req.body.detectedLicenseExpressionSPDX ||
+                            bulkCurationWithRelations.detectedLicenseExpressionSPDX,
+                        comment:
+                            req.body.comment ||
+                            bulkCurationWithRelations.comment,
+                        contextPurl: bulkCurationWithRelations.package.purl,
+                        fileSha256: fileTree.fileSha256,
+                        userId: req.user.id,
+                        bulkCurationId: bulkCurationWithRelations.id,
+                    });
+                }
+            }
+
+            await dbQueries.createManyLicenseConclusions(newInputs);
+            0;
+
+            for (const lc of bulkCurationWithRelations.licenseConclusions) {
+                // Using the first filetree only because the file hash is the same,
+                // so the licenseConclusion is the same one for all filetrees
+                if (!minimatch(lc.file.filetrees[0].path, pattern)) {
+                    await dbQueries.deleteLicenseConclusion(lc.id);
+                }
+            }
+        }
+
+        await dbQueries.updateManyLicenseConclusions(bulkCurationId, {
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX,
+            comment: req.body.comment,
+        });
+
+        const updatedBulkCuration = await dbQueries.updateBulkCuration(
+            bulkCurationId,
+            {
+                pattern: req.body.pattern,
+                concludedLicenseExpressionSPDX:
+                    req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX:
+                    req.body.detectedLicenseExpressionSPDX,
+                comment: req.body.comment,
+            },
+        );
+
+        if (!updatedBulkCuration)
+            throw new CustomError("Bulk curation to update not found", 404);
+
+        res.status(200).json({ message: "Bulk curation updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk curation with the requested id does not exist",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.delete("/bulk-curation/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("User not found", 401);
 
         const bulkCurationId = req.params.id;
+
+        if (req.user.role !== "ADMIN") {
+            const bulkCurationUserId =
+                await dbQueries.findBulkCurationUserId(bulkCurationId);
+
+            if (!bulkCurationUserId) {
+                throw new CustomError("Bulk curation to delete not found", 404);
+            }
+
+            if (req.user.id !== bulkCurationUserId) {
+                throw new CustomError("Unauthorized", 401);
+            }
+        }
 
         await dbQueries.deleteManyLicenseConclusionsByBulkCurationId(
             bulkCurationId,

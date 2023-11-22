@@ -62,7 +62,10 @@ export const getErrorCodeAndMessage = async (
                 "Internal server error. Issue with database connection or query.",
         };
     } else if (error instanceof Error) {
-        return { statusCode: 500, message: error.message };
+        return {
+            statusCode: 500,
+            message: "Internal server error. " + error.message,
+        };
     }
     return { statusCode: 500, message: "Internal server error" };
 };
