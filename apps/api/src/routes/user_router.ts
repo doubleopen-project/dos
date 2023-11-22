@@ -344,6 +344,70 @@ userRouter.post("/bulk-curation", async (req, res) => {
     }
 });
 
+userRouter.get("/bulk-curation/:id", async (req, res) => {
+    try {
+        if (!req.user) throw new CustomError("User not found", 401);
+
+        const bulkCurationId = req.params.id;
+
+        const bulkCuration =
+            await dbQueries.findBulkCurationById(bulkCurationId);
+
+        if (!bulkCuration)
+            throw new CustomError(
+                "Bulk curation with the requested id does not exist",
+                404,
+            );
+
+        const bulkCurationWithRelations =
+            await dbQueries.findBulkCurationWithRelationsById(
+                bulkCurationId,
+                bulkCuration.packageId,
+            );
+
+        if (!bulkCurationWithRelations)
+            throw new CustomError("Bulk curation not found", 404);
+
+        const filepaths = [];
+        const licenseConclusions = [];
+
+        for (const lc of bulkCurationWithRelations.licenseConclusions) {
+            for (const filetree of lc.file.filetrees) {
+                filepaths.push({ path: filetree.path });
+            }
+            licenseConclusions.push({ id: lc.id });
+        }
+
+        res.status(200).json({
+            pattern: bulkCuration.pattern,
+            concludedLicenseExpressionSPDX:
+                bulkCuration.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                bulkCuration.detectedLicenseExpressionSPDX,
+            comment: bulkCuration.comment,
+            filePaths: filepaths,
+            licenseConclusions: licenseConclusions,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk curation with the requested id does not exist",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.put("/bulk-curation/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("User not found", 401);
