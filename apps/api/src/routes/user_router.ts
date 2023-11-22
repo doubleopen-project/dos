@@ -254,7 +254,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
 
         if (!packageId) throw new CustomError("Package not found", 404);
 
-        const LicenseConclusionInputs = [];
+        const licenseConclusionInputs = [];
 
         const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
 
@@ -273,21 +273,27 @@ userRouter.post("/bulk-curation", async (req, res) => {
 
         for (const fileTree of fileTrees) {
             if (minimatch(fileTree.path, pattern)) {
-                LicenseConclusionInputs.push({
-                    concludedLicenseExpressionSPDX:
-                        req.body.concludedLicenseExpressionSPDX,
-                    detectedLicenseExpressionSPDX:
-                        req.body.detectedLicenseExpressionSPDX || null,
-                    comment: req.body.comment || null,
-                    contextPurl: req.body.purl,
-                    fileSha256: fileTree.fileSha256,
-                    userId: user.id,
-                    bulkCurationId: bulkCuration.id,
-                });
+                // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
+                if (
+                    licenseConclusionInputs.find(
+                        (lc) => lc.fileSha256 === fileTree.fileSha256,
+                    ) === undefined
+                )
+                    licenseConclusionInputs.push({
+                        concludedLicenseExpressionSPDX:
+                            req.body.concludedLicenseExpressionSPDX,
+                        detectedLicenseExpressionSPDX:
+                            req.body.detectedLicenseExpressionSPDX || null,
+                        comment: req.body.comment || null,
+                        contextPurl: req.body.purl,
+                        fileSha256: fileTree.fileSha256,
+                        userId: user.id,
+                        bulkCurationId: bulkCuration.id,
+                    });
             }
         }
 
-        if (LicenseConclusionInputs.length === 0) {
+        if (licenseConclusionInputs.length === 0) {
             const deletedBulkCuration = await dbQueries.deleteBulkCuration(
                 bulkCuration.id,
             );
@@ -302,10 +308,10 @@ userRouter.post("/bulk-curation", async (req, res) => {
         }
 
         const batchCount = await dbQueries.createManyLicenseConclusions(
-            LicenseConclusionInputs,
+            licenseConclusionInputs,
         );
 
-        if (batchCount.count !== LicenseConclusionInputs.length) {
+        if (batchCount.count !== licenseConclusionInputs.length) {
             const deletedBulkCuration = await dbQueries.deleteBulkCuration(
                 bulkCuration.id,
             );
