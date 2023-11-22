@@ -108,6 +108,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
 
     const handleGlob = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGlob(event.target.value);
+        form.setValue("pattern", event.target.value);
     };
 
     useEffect(() => {
