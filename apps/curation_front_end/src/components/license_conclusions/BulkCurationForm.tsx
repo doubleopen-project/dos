@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import isGlob from "is-glob";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
@@ -41,6 +42,9 @@ const bulkCurationFormSchema = z.object({
         .min(1, "Pattern cannot be empty")
         .refine((pattern) => isGlob(pattern), {
             message: "Pattern is not a valid glob pattern",
+        })
+        .refine((pattern) => pattern !== "**", {
+            message: "You cannot bulk curate all files in a package",
         }),
     concludedLicenseSPDX: z
         .string()
@@ -69,7 +73,6 @@ type Props = {
 };
 
 const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
-    const [glob, setGlob] = useState("");
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useImmutableQuery(
@@ -103,23 +106,47 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         {
             onSuccess: () => {
                 setOpen(false);
+                toast({
+                    title: "Bulk curation",
+                    description: "Bulk curation added successfully.",
+                });
                 // When a bulk curation is added, invalidate the file and filetree queries to refetch the data
                 queryClient.invalidateQueries(keyFile);
                 queryClient.invalidateQueries(keyFiletree);
+            },
+            onError: (error) => {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.data?.path === "pattern") {
+                        form.setError("pattern", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    } else if (error.response?.data?.message) {
+                        form.setError("root", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    }
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.message,
+                    });
+                }
             },
         },
     );
 
     const { toast } = useToast();
 
-    const handleGlob = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setGlob(event.target.value);
-        form.setValue("pattern", event.target.value);
+    // When the dropdown menu is opened, find the matching paths
+    const handleOpen = (open: boolean) => {
+        if (open) {
+            setMatchingPaths(
+                findMatchingPaths(paths, form.getValues("pattern")),
+            );
+        }
     };
-
-    useEffect(() => {
-        setMatchingPaths(findMatchingPaths(paths, glob));
-    }, [glob]);
 
     function onSubmit(data: BulkCurationFormType) {
         // Create an array of fields with values
@@ -147,10 +174,6 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     comment: data.comment ?? "",
                     purl: purl,
                 });
-                toast({
-                    title: "Bulk curation",
-                    description: "Bulk curation added successfully.",
-                });
             } else {
                 return;
             }
@@ -159,7 +182,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                 variant: "destructive",
                 title: "ERROR",
                 description:
-                    "No license conclusion (SPDX expression, from DB, from a license list) are specified. Please specify exactly one.",
+                    "No license conclusion (SPDX expression, or from a license list) are specified. Please specify exactly one.",
             });
         } else {
             toast({
@@ -191,24 +214,22 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                             className="text-xs !min-h-[40px]"
                                             placeholder="Glob pattern matching to the files to be curated..."
                                             {...field}
-                                            value={glob}
-                                            onChange={handleGlob}
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <DropdownMenu>
+                        <DropdownMenu onOpenChange={handleOpen}>
                             <DropdownMenuTrigger
                                 className="rounded-md p-2 ml-1"
                                 type="button"
-                                disabled={glob === ""}
+                                disabled={form.getValues("pattern") === ""}
                             >
                                 <AiOutlineEye
                                     className={cn(
                                         "text-gray-400 h-fit w-6",
-                                        glob === ""
+                                        form.getValues("pattern") === ""
                                             ? "opacity-40"
                                             : "opacity-100",
                                     )}
