@@ -2049,6 +2049,35 @@ export const deleteLicenseConclusionsByFileHashes = async (
     return batchDelete;
 };
 
+export const deleteManyLicenseConclusionsByBulkCurationId = async (
+    bulkCurationId: number,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchDelete = null;
+
+    while (!batchDelete && retries > 0) {
+        try {
+            batchDelete = await prisma.licenseConclusion.deleteMany({
+                where: {
+                    bulkCurationId: bulkCurationId,
+                },
+            });
+        } catch (error) {
+            console.log(
+                "Error with trying to delete LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchDelete)
+        throw new Error("Error: Unable to delete LicenseConclusions");
+
+    return batchDelete;
+};
+
 export const deleteBulkCuration = async (
     id: number,
 ): Promise<BulkCuration | null> => {
