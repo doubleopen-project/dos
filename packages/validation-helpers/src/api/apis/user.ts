@@ -85,6 +85,20 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/bulk-curation/:id",
+        description: "Get bulk curation",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: schemas.PathParamIdInteger,
+            },
+        ],
+        response: schemas.GetBulkCurationRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/bulk-curation",
         description: "Add a new bulk curation",

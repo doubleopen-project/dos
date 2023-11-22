@@ -88,6 +88,24 @@ export const DeleteLicenseConclusionRes = z.object({
     message: z.string(),
 });
 
+//-------------- GET bulk curation --------------
+export const GetBulkCurationRes = z.object({
+    pattern: z.nullable(z.string()),
+    concludedLicenseExpressionSPDX: z.string(),
+    detectedLicenseExpressionSPDX: z.nullable(z.string()),
+    comment: z.nullable(z.string()),
+    filePaths: z.array(
+        z.object({
+            path: z.string(),
+        }),
+    ),
+    licenseConclusions: z.array(
+        z.object({
+            id: z.number(),
+        }),
+    ),
+});
+
 //-------------- POST bulk curation --------------
 
 export const PostBulkCurationReq = z.object({
