@@ -1858,10 +1858,27 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
+type BulkCurationWithPackageRelation = Prisma.BulkCurationGetPayload<{
+    select: {
+        id: true;
+        pattern: true;
+        comment: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        package: {
+            select: {
+                id: true;
+                purl: true;
+            };
+        };
+        userId: true;
+    };
+}>;
+
 export const findBulkCurationById = async (
     id: number,
-): Promise<BulkCuration | null> => {
-    let bulkCuration: BulkCuration | null = null;
+): Promise<BulkCurationWithPackageRelation | null> => {
+    let bulkCuration: BulkCurationWithPackageRelation | null = null;
     let retries = initialRetryCount;
 
     while (retries > 0) {
@@ -1869,6 +1886,20 @@ export const findBulkCurationById = async (
             bulkCuration = await prisma.bulkCuration.findUnique({
                 where: {
                     id: id,
+                },
+                select: {
+                    id: true,
+                    pattern: true,
+                    comment: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
+                    userId: true,
                 },
             });
             break;
@@ -1887,22 +1918,17 @@ export const findBulkCurationById = async (
 type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
     select: {
         id: true;
+        updatedAt: true;
         pattern: true;
         comment: true;
         concludedLicenseExpressionSPDX: true;
         detectedLicenseExpressionSPDX: true;
-        package: {
-            select: {
-                id: true;
-                purl: true;
-            };
-        };
         licenseConclusions: {
             select: {
                 id: true;
-                fileSha256: true;
                 file: {
                     select: {
+                        sha256: true;
                         filetrees: {
                             select: {
                                 path: true;
@@ -1914,7 +1940,7 @@ type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
         };
         user: {
             select: {
-                id: true;
+                username: true;
             };
         };
     };
@@ -1935,6 +1961,7 @@ export const findBulkCurationWithRelationsById = async (
                 },
                 select: {
                     id: true,
+                    updatedAt: true,
                     pattern: true,
                     comment: true,
                     concludedLicenseExpressionSPDX: true,
@@ -1948,9 +1975,9 @@ export const findBulkCurationWithRelationsById = async (
                     licenseConclusions: {
                         select: {
                             id: true,
-                            fileSha256: true,
                             file: {
                                 select: {
+                                    sha256: true,
                                     filetrees: {
                                         where: {
                                             packageId: packageId,
@@ -1965,7 +1992,7 @@ export const findBulkCurationWithRelationsById = async (
                     },
                     user: {
                         select: {
-                            id: true,
+                            username: true,
                         },
                     },
                 },
@@ -1981,6 +2008,67 @@ export const findBulkCurationWithRelationsById = async (
     }
 
     return bulkCuration;
+};
+
+export const findBulkCurationsByPackagePurl = async (
+    packagePurl: string,
+): Promise<BulkCurationWithRelations[]> => {
+    let retries = initialRetryCount;
+    let bulkCurations: BulkCurationWithRelations[] = [];
+
+    while (retries > 0) {
+        try {
+            bulkCurations = await prisma.bulkCuration.findMany({
+                where: {
+                    package: {
+                        purl: packagePurl,
+                    },
+                },
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    pattern: true,
+                    comment: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            id: true,
+                            file: {
+                                select: {
+                                    sha256: true,
+                                    filetrees: {
+                                        where: {
+                                            package: {
+                                                purl: packagePurl,
+                                            },
+                                        },
+                                        select: {
+                                            path: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkCurations: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkCurations;
 };
 
 export const findBulkCurationUserId = async (
