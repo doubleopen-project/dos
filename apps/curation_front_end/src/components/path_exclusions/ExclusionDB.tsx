@@ -137,8 +137,8 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                 <QueryDeleteButton
                                                     id={exclusion.id}
                                                     data={exclusion.pattern}
-                                                    deleteQuery={
-                                                        "/path-exclusion/:id"
+                                                    deleteItemType={
+                                                        "Path exclusion"
                                                     }
                                                 />
                                             )}

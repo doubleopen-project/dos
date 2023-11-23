@@ -24,19 +24,21 @@ import { useToast } from "@/components/ui/use-toast";
 type Props = {
     id: number;
     data: string;
-    deleteQuery: "/path-exclusion/:id" | "/license-conclusion/:id";
+    deleteItemType: "Path exclusion" | "License conclusion" | "Bulk delete";
 };
 
-const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
+const QueryDeleteButton = ({ id, data, deleteItemType }: Props) => {
     const { toast } = useToast();
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
-    const dialogText =
-        deleteQuery === "/path-exclusion/:id"
-            ? "Path exclusion"
-            : "License conclusion";
+    const deleteQuery =
+        deleteItemType === "Path exclusion"
+            ? "/path-exclusion/:id"
+            : "License conclusion"
+              ? "/license-conclusion/:id"
+              : "/bulk-curation/:id";
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -49,7 +51,7 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
             onSuccess: () => {
                 toast({
                     title: "Delete successful",
-                    description: `${dialogText} deleted successfully.`,
+                    description: `${deleteItemType} deleted successfully.`,
                 });
                 if (deleteQuery === "/path-exclusion/:id") {
                     // When a path exclusion deleted, invalidate the query to refetch the data
@@ -63,7 +65,7 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
             onError: () => {
                 toast({
                     variant: "destructive",
-                    title: `${dialogText} deletion failed`,
+                    title: `${deleteItemType} deletion failed`,
                     description: "Something went wrong. Please try again.",
                 });
             },
@@ -89,7 +91,8 @@ const QueryDeleteButton = ({ id, deleteQuery }: Props) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Do you really want to delete this {dialogText}?
+                        Do you really want to delete this {deleteItemType}:{" "}
+                        {data}?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
