@@ -2010,8 +2010,8 @@ export const findBulkCurationWithRelationsById = async (
     return bulkCuration;
 };
 
-export const findBulkCurationsByPackagePurl = async (
-    packagePurl: string,
+export const findBulkCurationsByPackageId = async (
+    packageId: number,
 ): Promise<BulkCurationWithRelations[]> => {
     let retries = initialRetryCount;
     let bulkCurations: BulkCurationWithRelations[] = [];
@@ -2020,9 +2020,7 @@ export const findBulkCurationsByPackagePurl = async (
         try {
             bulkCurations = await prisma.bulkCuration.findMany({
                 where: {
-                    package: {
-                        purl: packagePurl,
-                    },
+                    packageId: packageId,
                 },
                 select: {
                     id: true,
@@ -2044,9 +2042,7 @@ export const findBulkCurationsByPackagePurl = async (
                                     sha256: true,
                                     filetrees: {
                                         where: {
-                                            package: {
-                                                purl: packagePurl,
-                                            },
+                                            packageId: packageId,
                                         },
                                         select: {
                                             path: true,
