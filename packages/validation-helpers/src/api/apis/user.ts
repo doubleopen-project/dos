@@ -147,6 +147,20 @@ export const userAPI = makeApi([
     },
     {
         method: "post",
+        path: "/bulk-curations",
+        description: "Get bulk curations for specified purl",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostBulkCurationsReq,
+            },
+        ],
+        response: schemas.PostBulkCurationsRes,
+        errors,
+    },
+    {
+        method: "post",
         path: "/path-exclusion",
         description: "Add a new path exclusion",
         parameters: [

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { passwordStrength } from "check-password-strength";
+import { PackageURL } from "packageurl-js";
 import { z } from "zod";
 
 export const getUsernameSchema = (required: boolean) => {
@@ -44,3 +45,21 @@ export const getPasswordSchema = (required: boolean) => {
             message: "Password is too weak",
         });
 };
+
+export const purlSchema = z
+    .string({
+        required_error: "Purl is required",
+    })
+    .trim()
+    .min(1, "Purl cannot be empty")
+    .refine(
+        (purl) => {
+            try {
+                PackageURL.fromString(purl);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        { message: "Purl is not valid" },
+    );
