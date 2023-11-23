@@ -154,16 +154,16 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
         if (!req.user) throw new Error("User not found");
 
         const licenseConclusionId = req.params.id;
-        const licenseConclusionUserId =
-            await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
+        const licenseConclusion =
+            await dbQueries.findLicenseConclusionById(licenseConclusionId);
 
-        if (!licenseConclusionUserId)
+        if (!licenseConclusion)
             throw new Error("License conclusion to update not found");
 
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
             req.user.role === "ADMIN" ||
-            req.user.id === licenseConclusionUserId
+            req.user.id === licenseConclusion.userId
         ) {
             await dbQueries.updateLicenseConclusion(licenseConclusionId, {
                 concludedLicenseExpressionSPDX:
@@ -171,6 +171,14 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
                 detectedLicenseExpressionSPDX:
                     req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
+                /*
+                 * The following will detach the license conclusion from a bulk curation if it is connected to one
+                 * (since this endpoint is used to update one license conclusion only, and the bulk curation
+                 * is updated through the PUT /bulk-curation/:id endpoint)
+                 */
+                bulkCurationId: licenseConclusion.bulkCurationId
+                    ? null
+                    : undefined,
             });
 
             res.status(200).json({ message: "License conclusion updated" });

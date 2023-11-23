@@ -639,7 +639,12 @@ export const updatePackagesScanStatusesByPurl = async (
 
 export const updateLicenseConclusion = async (
     id: number,
-    input: Prisma.LicenseConclusionUpdateInput,
+    input: {
+        concludedLicenseExpressionSPDX: string | undefined;
+        detectedLicenseExpressionSPDX: string | null | undefined;
+        comment: string | null | undefined;
+        bulkCurationId: number | null | undefined;
+    },
 ): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
@@ -1825,6 +1830,34 @@ export const findFileData = async (
         }
     }
     return file;
+};
+
+export const findLicenseConclusionById = async (
+    id: number,
+): Promise<LicenseConclusion | null> => {
+    let licenseConclusion: LicenseConclusion | null = null;
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            licenseConclusion = await prisma.licenseConclusion.findUnique({
+                where: {
+                    id: id,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusion: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return licenseConclusion;
 };
 
 export const findLicenseConclusionUserId = async (
