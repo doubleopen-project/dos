@@ -138,6 +138,11 @@ const CurationDB = ({
                                                             d.concludedLicenseExpressionSPDX
                                                         }
                                                     </span>
+                                                    {d.bulkCurationId && (
+                                                        <span className="ml-1 p-1 font-bold bg-blue-400 rounded-sm">
+                                                            BULK
+                                                        </span>
+                                                    )}
                                                 </span>
                                                 <span className="">
                                                     <span className="mr-1">
