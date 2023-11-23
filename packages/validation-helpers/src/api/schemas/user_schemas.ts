@@ -5,7 +5,11 @@
 import isGlob from "is-glob";
 import { PackageURL } from "packageurl-js";
 import { z } from "zod";
-import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
+import {
+    getPasswordSchema,
+    getUsernameSchema,
+    purlSchema,
+} from "./common_schemas";
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -159,6 +163,41 @@ export const DeleteBulkCurationRes = z.object({
     message: z.string(),
 });
 
+//-------------- POST bulk curations --------------
+
+export const PostBulkCurationsReq = z.object({
+    purl: purlSchema,
+});
+
+export const PostBulkCurationsRes = z.object({
+    bulkCurations: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            pattern: z.nullable(z.string()),
+            comment: z.nullable(z.string()),
+            concludedLicenseExpressionSPDX: z.string(),
+            detectedLicenseExpressionSPDX: z.nullable(z.string()),
+            licenseConclusions: z.array(
+                z.object({
+                    id: z.number(),
+                    file: z.object({
+                        sha256: z.string(),
+                        filetrees: z.array(
+                            z.object({
+                                path: z.string(),
+                            }),
+                        ),
+                    }),
+                }),
+            ),
+            user: z.object({
+                username: z.string(),
+            }),
+        }),
+    ),
+});
+
 //------------------ POST path exclusion --------------
 export const validReasons = [
     "BUILD_TOOL_OF",
@@ -213,23 +252,7 @@ export const DeletePathExclusionRes = z.object({
 //------------------ POST path-exclusions -------------------
 
 export const PostPathExclusionsReq = z.object({
-    purl: z
-        .string({
-            required_error: "Purl is required",
-        })
-        .trim()
-        .min(1, "Purl cannot be empty")
-        .refine(
-            (purl) => {
-                try {
-                    PackageURL.fromString(purl);
-                    return true;
-                } catch (error) {
-                    return false;
-                }
-            },
-            { message: "Purl is not valid" },
-        ),
+    purl: purlSchema,
 });
 
 export const PostPathExclusionsRes = z.object({
