@@ -362,7 +362,7 @@ userRouter.get("/bulk-curation/:id", async (req, res) => {
         const bulkCurationWithRelations =
             await dbQueries.findBulkCurationWithRelationsById(
                 bulkCurationId,
-                bulkCuration.packageId,
+                bulkCuration.package.id,
             );
 
         if (!bulkCurationWithRelations)
@@ -429,14 +429,14 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
         const bulkCurationWithRelations =
             await dbQueries.findBulkCurationWithRelationsById(
                 bulkCurationId,
-                bulkCuration.packageId,
+                bulkCuration.package.id,
             );
 
         if (!bulkCurationWithRelations)
             throw new CustomError("Bulk curation to update not found", 404);
 
         if (req.user.role !== "ADMIN") {
-            if (req.user.id !== bulkCurationWithRelations?.user.id) {
+            if (req.user.id !== bulkCuration.userId) {
                 throw new CustomError("Unauthorized", 401);
             }
         }
@@ -444,14 +444,14 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
         if (pattern && pattern !== bulkCurationWithRelations.pattern) {
             const newInputs = [];
             const fileTrees = await dbQueries.findFileTreesByPackageId(
-                bulkCurationWithRelations.package.id,
+                bulkCuration.package.id,
             );
 
             for (const fileTree of fileTrees) {
                 if (
                     minimatch(fileTree.path, pattern) &&
                     bulkCurationWithRelations.licenseConclusions.find(
-                        (lc) => lc.fileSha256 === fileTree.fileSha256,
+                        (lc) => lc.file.sha256 === fileTree.fileSha256,
                     ) === undefined
                 ) {
                     newInputs.push({
@@ -464,7 +464,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
                         comment:
                             req.body.comment ||
                             bulkCurationWithRelations.comment,
-                        contextPurl: bulkCurationWithRelations.package.purl,
+                        contextPurl: bulkCuration.package.purl,
                         fileSha256: fileTree.fileSha256,
                         userId: req.user.id,
                         bulkCurationId: bulkCurationWithRelations.id,
