@@ -42,9 +42,7 @@ const QueryDeleteButton = ({
     const deleteQuery =
         deleteItemType === "Path exclusion"
             ? "/path-exclusion/:id"
-            : "License conclusion"
-              ? "/license-conclusion/:id"
-              : "/bulk-curation/:id";
+            : "/license-conclusion/:id";
 
     // Get possible bulk curation related to this license conclusion
     const { data: bulkCuration } = idBulkCuration
@@ -56,7 +54,7 @@ const QueryDeleteButton = ({
           })
         : { data: undefined };
 
-    // Delete the path exclusion or license conclusion
+    // Delete a path exclusion or license conclusion
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -90,7 +88,37 @@ const QueryDeleteButton = ({
         },
     );
 
-    if (isLoading) {
+    // Delete a bulk curation
+    const { mutate: deleteBulk, isLoading: isBulkLoading } =
+        userHooks.useDelete(
+            "/bulk-curation/:id",
+            {
+                withCredentials: true,
+                params: {
+                    id: idBulkCuration!,
+                },
+            },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: "Delete successful",
+                        description: `Bulk curation deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
+                    });
+                    // When a bulk curation is deleted, invalidate the file and filetree queries to refetch the data
+                    queryClient.invalidateQueries(keyFile);
+                    queryClient.invalidateQueries(keyFiletree);
+                },
+                onError: () => {
+                    toast({
+                        variant: "destructive",
+                        title: "Bulk curation deletion failed",
+                        description: "Something went wrong. Please try again.",
+                    });
+                },
+            },
+        );
+
+    if (isLoading || isBulkLoading) {
         return (
             <div className="flex items-center justify-center h-full">
                 <Loader2 className="w-10 h-10 mr-2 animate-spin" />
@@ -109,25 +137,59 @@ const QueryDeleteButton = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {deleteItemType === "Path exclusion" &&
-                            `Are you sure you want to delete this path exclusion: ${data}?`}
-                        {deleteItemType === "License conclusion" &&
-                            (bulkCuration
-                                ? "This is a bulk curation with pattern " +
-                                  bulkCuration.pattern +
-                                  ", curating " +
-                                  bulkCuration.filePaths.length +
-                                  " files. Do you want to delete only this license conclusion or the whole bulk curation?"
-                                : "Are you sure you want to delete this license conclusion: " +
-                                  data +
-                                  "?")}
+                        {deleteItemType === "Path exclusion" && (
+                            <>
+                                Are you sure you want to delete this path
+                                exclusion: <strong>{data}</strong>?
+                            </>
+                        )}
+                        {deleteItemType === "License conclusion" && (
+                            <>
+                                {bulkCuration ? (
+                                    <>
+                                        This is a bulk curation, curating{" "}
+                                        <strong>
+                                            {bulkCuration.filePaths.length}
+                                        </strong>{" "}
+                                        files as{" "}
+                                        <strong>
+                                            {
+                                                bulkCuration.concludedLicenseExpressionSPDX
+                                            }
+                                        </strong>{" "}
+                                        with the pattern{" "}
+                                        <strong>{bulkCuration.pattern}</strong>.
+                                        <br />
+                                        <br />
+                                        Do you want to delete only the license
+                                        conclusion for this file, or the whole
+                                        bulk curation?
+                                    </>
+                                ) : (
+                                    <>
+                                        Are you sure you want to delete this
+                                        license conclusion:{" "}
+                                        <strong>{data}</strong>?
+                                    </>
+                                )}
+                            </>
+                        )}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={() => deleteItem(undefined)}>
-                        Delete
+                        Delete this
                     </AlertDialogAction>
+                    {bulkCuration && (
+                        <AlertDialogAction
+                            onClick={() => {
+                                deleteBulk(undefined);
+                            }}
+                        >
+                            Delete bulk curation
+                        </AlertDialogAction>
+                    )}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
