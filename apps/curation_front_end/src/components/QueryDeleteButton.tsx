@@ -23,11 +23,17 @@ import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
     id: number;
+    idBulkCuration?: number | null;
     data: string;
-    deleteItemType: "Path exclusion" | "License conclusion" | "Bulk delete";
+    deleteItemType: "Path exclusion" | "License conclusion";
 };
 
-const QueryDeleteButton = ({ id, data, deleteItemType }: Props) => {
+const QueryDeleteButton = ({
+    id,
+    idBulkCuration,
+    data,
+    deleteItemType,
+}: Props) => {
     const { toast } = useToast();
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
@@ -39,6 +45,18 @@ const QueryDeleteButton = ({ id, data, deleteItemType }: Props) => {
             : "License conclusion"
               ? "/license-conclusion/:id"
               : "/bulk-curation/:id";
+
+    // Get possible bulk curation related to this license conclusion
+    const { data: bulkCuration } = idBulkCuration
+        ? userHooks.useGet("/bulk-curation/:id", {
+              withCredentials: true,
+              params: {
+                  id: idBulkCuration,
+              },
+          })
+        : { data: undefined };
+
+    // Delete the path exclusion or license conclusion
     const { mutate: deleteItem, isLoading } = userHooks.useDelete(
         deleteQuery,
         {
@@ -91,8 +109,18 @@ const QueryDeleteButton = ({ id, data, deleteItemType }: Props) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Do you really want to delete this {deleteItemType}:{" "}
-                        {data}?
+                        {deleteItemType === "Path exclusion" &&
+                            `Are you sure you want to delete this path exclusion: ${data}?`}
+                        {deleteItemType === "License conclusion" &&
+                            (bulkCuration
+                                ? "This is a bulk curation with pattern " +
+                                  bulkCuration.pattern +
+                                  ", curating " +
+                                  bulkCuration.filePaths.length +
+                                  " files. Do you want to delete only this license conclusion or the whole bulk curation?"
+                                : "Are you sure you want to delete this license conclusion: " +
+                                  data +
+                                  "?")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

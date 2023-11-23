@@ -186,17 +186,18 @@ const CurationDB = ({
                                     >
                                         {(userName === d.user.username ||
                                             userRole === "ADMIN") && (
-                                            <>
-                                                <QueryDeleteButton
-                                                    id={d.id}
-                                                    data={
-                                                        d.concludedLicenseExpressionSPDX
-                                                    }
-                                                    deleteItemType={
-                                                        "License conclusion"
-                                                    }
-                                                />
-                                            </>
+                                            <QueryDeleteButton
+                                                id={d.id}
+                                                idBulkCuration={
+                                                    d.bulkCurationId
+                                                }
+                                                data={
+                                                    d.concludedLicenseExpressionSPDX
+                                                }
+                                                deleteItemType={
+                                                    "License conclusion"
+                                                }
+                                            />
                                         )}
                                     </CommandItem>
                                 </div>
