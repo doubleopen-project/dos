@@ -192,8 +192,8 @@ const CurationDB = ({
                                                     data={
                                                         d.concludedLicenseExpressionSPDX
                                                     }
-                                                    deleteQuery={
-                                                        "/license-conclusion/:id"
+                                                    deleteItemType={
+                                                        "License conclusion"
                                                     }
                                                 />
                                             </>
