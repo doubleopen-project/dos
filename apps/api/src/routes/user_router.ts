@@ -578,6 +578,46 @@ userRouter.delete("/bulk-curation/:id", async (req, res) => {
     }
 });
 
+userRouter.post("/bulk-curations", async (req, res) => {
+    try {
+        const { user } = req;
+
+        if (!user) throw new CustomError("Unauthorized", 401);
+
+        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + req.body.purl + " not found",
+                404,
+            );
+
+        const bulkCurations =
+            await dbQueries.findBulkCurationsByPackageId(packageId);
+
+        res.status(200).json({
+            bulkCurations: bulkCurations,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with the requested purl does not exist",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/path-exclusion", async (req, res) => {
     try {
         const { user } = req;
