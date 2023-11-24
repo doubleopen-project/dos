@@ -54,10 +54,10 @@ export const columns: ColumnDef<Package>[] = [
         },
         cell: ({ row }) => (
             <TooltipProvider>
-                <Tooltip delayDuration={400}>
+                <Tooltip delayDuration={300}>
                     <TooltipTrigger asChild>
                         <Link
-                            className="hover:text-blue-400"
+                            className="text-blue-400 font-semibold"
                             href={`/packages/${encodeURIComponent(
                                 row.original.purl,
                             )}`}
