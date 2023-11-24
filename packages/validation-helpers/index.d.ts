@@ -5109,6 +5109,10 @@ declare const userAPI: [
         response: zod.ZodObject<
             {
                 bulkCurationId: zod.ZodNumber;
+                matchedPathsCount: zod.ZodNumber;
+                addedLicenseConclusionsCount: zod.ZodNumber;
+                affectedFilesInPackageCount: zod.ZodNumber;
+                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
                 message: zod.ZodString;
             },
             "strip",
@@ -5116,10 +5120,18 @@ declare const userAPI: [
             {
                 message: string;
                 bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
             },
             {
                 message: string;
                 bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
             }
         >;
         errors: [
@@ -9814,6 +9826,10 @@ declare const dosAPI: [
         response: zod.ZodObject<
             {
                 bulkCurationId: zod.ZodNumber;
+                matchedPathsCount: zod.ZodNumber;
+                addedLicenseConclusionsCount: zod.ZodNumber;
+                affectedFilesInPackageCount: zod.ZodNumber;
+                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
                 message: zod.ZodString;
             },
             "strip",
@@ -9821,10 +9837,18 @@ declare const dosAPI: [
             {
                 message: string;
                 bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
             },
             {
                 message: string;
                 bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
             }
         >;
         errors: [
