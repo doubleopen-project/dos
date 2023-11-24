@@ -24,7 +24,7 @@ const Sidebar = ({ children }: SidebarProps) => {
     const user = useUser({});
     return (
         <div className="flex">
-            <div className="flex flex-col items-center h-screen p-4 border-r-[1px] justify-between overflow-auto">
+            <div className="flex flex-col items-center h-screen p-4 border-r-[1px] justify-between overflow-none">
                 <div className="flex flex-col items-center">
                     <Link href="/">
                         <div
