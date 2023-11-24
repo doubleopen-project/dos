@@ -140,6 +140,10 @@ export const PostBulkCurationReq = z.object({
 
 export const PostBulkCurationRes = z.object({
     bulkCurationId: z.number(),
+    matchedPathsCount: z.number(),
+    addedLicenseConclusionsCount: z.number(),
+    affectedFilesInPackageCount: z.number(),
+    affectedFilesAcrossAllPackagesCount: z.number(),
     message: z.string(),
 });
 

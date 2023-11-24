@@ -2651,3 +2651,73 @@ export const countFileTreesByPackageId = async (
 
     return count;
 };
+
+export const bulkCurationAffectedRecords = async (
+    bulkCurationId: number,
+    packageId: number,
+): Promise<{
+    affectedPackageFileTreesCount: number;
+    affectedTotalFileTreesCount: number;
+}> => {
+    let retries = initialRetryCount;
+    let affectedPackageFileTreesCount = 0;
+    let affectedTotalFileTreesCount = 0;
+
+    while (retries > 0) {
+        try {
+            affectedPackageFileTreesCount = await prisma.fileTree.count({
+                where: {
+                    file: {
+                        licenseConclusions: {
+                            some: {
+                                bulkCurationId: bulkCurationId,
+                            },
+                        },
+                    },
+                    packageId: packageId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to count affected FileTrees: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            affectedTotalFileTreesCount = await prisma.fileTree.count({
+                where: {
+                    file: {
+                        licenseConclusions: {
+                            some: {
+                                bulkCurationId: bulkCurationId,
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to count affected FileTrees: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return {
+        affectedPackageFileTreesCount: affectedPackageFileTreesCount,
+        affectedTotalFileTreesCount: affectedTotalFileTreesCount,
+    };
+};

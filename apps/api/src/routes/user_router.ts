@@ -276,8 +276,11 @@ userRouter.post("/bulk-curation", async (req, res) => {
             userId: user.id,
         });
 
+        let mathchedPathsCount = 0;
+
         for (const fileTree of fileTrees) {
             if (minimatch(fileTree.path, pattern)) {
+                mathchedPathsCount++;
                 // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
                 if (
                     licenseConclusionInputs.find(
@@ -331,8 +334,19 @@ userRouter.post("/bulk-curation", async (req, res) => {
             );
         }
 
+        const affectedRecords = await dbQueries.bulkCurationAffectedRecords(
+            bulkCuration.id,
+            packageId,
+        );
+
         res.status(200).json({
             bulkCurationId: bulkCuration.id,
+            matchedPathsCount: mathchedPathsCount,
+            addedLicenseConclusionsCount: licenseConclusionInputs.length,
+            affectedFilesInPackageCount:
+                affectedRecords.affectedPackageFileTreesCount,
+            affectedFilesAcrossAllPackagesCount:
+                affectedRecords.affectedTotalFileTreesCount,
             message: "Bulk curation created and license conclusions added",
         });
     } catch (error) {
