@@ -9,6 +9,7 @@ import isGlob from "is-glob";
 import { minimatch } from "minimatch";
 import * as s3Helpers from "s3-helpers";
 import { userAPI } from "validation-helpers";
+import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { hashPassword } from "../helpers/password_helper";
@@ -244,14 +245,6 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
     }
 });
 
-class CustomError extends Error {
-    statusCode: number;
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.statusCode = statusCode;
-    }
-}
-
 userRouter.post("/bulk-curation", async (req, res) => {
     try {
         const { user } = req;
@@ -260,7 +253,11 @@ userRouter.post("/bulk-curation", async (req, res) => {
 
         const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
 
-        if (!packageId) throw new CustomError("Package not found", 404);
+        if (!packageId)
+            throw new CustomError(
+                "Bad request. No package with the provided purl was found",
+                400,
+            );
 
         const licenseConclusionInputs = [];
 
@@ -312,6 +309,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
             throw new CustomError(
                 "No matching files for the provided pattern were found in the package",
                 400,
+                "pattern",
             );
         }
 
@@ -343,7 +341,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
         if (error instanceof CustomError)
             return res
                 .status(error.statusCode)
-                .json({ message: error.message });
+                .json({ message: error.message, path: error.path });
         else {
             // If error is not a CustomError, it is a Prisma error or an unknown error
             const err = await getErrorCodeAndMessage(error);
@@ -354,7 +352,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
 
 userRouter.get("/bulk-curation/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("User not found", 401);
+        if (!req.user) throw new CustomError("Unauthorized", 401);
 
         const bulkCurationId = req.params.id;
 
@@ -418,7 +416,7 @@ userRouter.get("/bulk-curation/:id", async (req, res) => {
 
 userRouter.put("/bulk-curation/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("User not found", 401);
+        if (!req.user) throw new CustomError("Unauthorized", 401);
 
         const bulkCurationId = req.params.id;
 
@@ -430,8 +428,21 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
 
         if (req.user.role !== "ADMIN") {
             if (req.user.id !== bulkCuration.userId) {
-                throw new CustomError("Unauthorized", 401);
+                throw new CustomError("Forbidden", 403);
             }
+        }
+
+        if (
+            (req.body.pattern && req.body.pattern === bulkCuration.pattern) ||
+            (req.body.concludedLicenseExpressionSPDX &&
+                req.body.concludedLicenseExpressionSPDX ===
+                    bulkCuration.concludedLicenseExpressionSPDX) ||
+            (req.body.detectedLicenseExpressionSPDX &&
+                req.body.detectedLicenseExpressionSPDX ===
+                    bulkCuration.detectedLicenseExpressionSPDX) ||
+            (req.body.comment && req.body.comment === bulkCuration.comment)
+        ) {
+            throw new CustomError("Nothing to update", 400);
         }
 
         const bulkCurationWithRelations =
@@ -443,11 +454,6 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
         if (!bulkCurationWithRelations)
             throw new CustomError("Bulk curation to update not found", 404);
 
-        if (req.user.role !== "ADMIN") {
-            if (req.user.id !== bulkCuration.userId) {
-                throw new CustomError("Unauthorized", 401);
-            }
-        }
         const pattern = req.body.pattern;
         if (pattern && pattern !== bulkCurationWithRelations.pattern) {
             const newInputs = [];
@@ -481,7 +487,6 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
             }
 
             await dbQueries.createManyLicenseConclusions(newInputs);
-            0;
 
             for (const lc of bulkCurationWithRelations.licenseConclusions) {
                 // Using the first filetree only because the file hash is the same,
@@ -492,28 +497,28 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
             }
         }
 
-        await dbQueries.updateManyLicenseConclusions(bulkCurationId, {
+        if (
+            req.body.concludedLicenseExpressionSPDX ||
+            req.body.detectedLicenseExpressionSPDX ||
+            req.body.comment
+        ) {
+            await dbQueries.updateManyLicenseConclusions(bulkCurationId, {
+                concludedLicenseExpressionSPDX:
+                    req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX:
+                    req.body.detectedLicenseExpressionSPDX,
+                comment: req.body.comment,
+            });
+        }
+
+        await dbQueries.updateBulkCuration(bulkCurationId, {
+            pattern: req.body.pattern,
             concludedLicenseExpressionSPDX:
                 req.body.concludedLicenseExpressionSPDX,
             detectedLicenseExpressionSPDX:
                 req.body.detectedLicenseExpressionSPDX,
             comment: req.body.comment,
         });
-
-        const updatedBulkCuration = await dbQueries.updateBulkCuration(
-            bulkCurationId,
-            {
-                pattern: req.body.pattern,
-                concludedLicenseExpressionSPDX:
-                    req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX:
-                    req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-            },
-        );
-
-        if (!updatedBulkCuration)
-            throw new CustomError("Bulk curation to update not found", 404);
 
         res.status(200).json({ message: "Bulk curation updated" });
     } catch (error) {
@@ -527,7 +532,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Bulk curation with the requested id does not exist",
+                message: "Bulk curation to update not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -538,7 +543,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
 
 userRouter.delete("/bulk-curation/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("User not found", 401);
+        if (!req.user) throw new CustomError("Unauthorized", 401);
 
         const bulkCurationId = req.params.id;
 
@@ -551,7 +556,7 @@ userRouter.delete("/bulk-curation/:id", async (req, res) => {
             }
 
             if (req.user.id !== bulkCurationUserId) {
-                throw new CustomError("Unauthorized", 401);
+                throw new CustomError("Forbidden", 403);
             }
         }
 
@@ -577,7 +582,7 @@ userRouter.delete("/bulk-curation/:id", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Bulk curation with the requested id does not exist",
+                message: "Bulk curation to delete not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -617,7 +622,7 @@ userRouter.post("/bulk-curations", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Package with the requested purl does not exist",
+                message: "Package with purl " + req.body.purl + " not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
