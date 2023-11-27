@@ -104,11 +104,28 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
             withCredentials: true,
         },
         {
-            onSuccess: () => {
+            onSuccess: (data) => {
+                const res = {
+                    filesGlob:
+                        "matchedPathsCount" in data
+                            ? data.matchedPathsCount
+                            : 0,
+                    filesPackage:
+                        "affectedFilesInPackageCount" in data
+                            ? data.affectedFilesInPackageCount
+                            : 0,
+                    filesAll:
+                        "affectedFilesAcrossAllPackagesCount" in data
+                            ? data.affectedFilesAcrossAllPackagesCount
+                            : 0,
+                };
                 setOpen(false);
                 toast({
                     title: "Bulk curation",
-                    description: "Bulk curation added successfully.",
+                    description: `Bulk curation added successfully.
+                        ${res.filesGlob} files matched the pattern, 
+                        ${res.filesPackage} identical (SHA256) files affected in this package, 
+                        ${res.filesAll} identical (SHA256) files affected in the database.`,
                 });
                 // When a bulk curation is added, invalidate the file and filetree queries to refetch the data
                 queryClient.invalidateQueries(keyFile);
