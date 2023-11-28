@@ -24,6 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 type Props = {
     id: number;
     idBulkCuration?: number | null;
+    purl?: string;
     data: string;
     deleteItemType: "Path exclusion" | "License conclusion";
 };
