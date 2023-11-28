@@ -192,7 +192,7 @@ export const columns: ColumnDef<Package>[] = [
                         id={0}
                         purl={row.original.purl}
                         data={`${row.original.name}: ${row.original.version}`}
-                        deleteItemType={"Path exclusion"}
+                        deleteItemType={"Package"}
                     />
                 );
         },

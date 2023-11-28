@@ -6,7 +6,7 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { RiDeleteBin6Line as Delete } from "react-icons/ri";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,12 +26,13 @@ type Props = {
     idBulkCuration?: number | null;
     purl?: string;
     data: string;
-    deleteItemType: "Path exclusion" | "License conclusion";
+    deleteItemType: "Path exclusion" | "License conclusion" | "Package";
 };
 
 const QueryDeleteButton = ({
     id,
     idBulkCuration,
+    purl,
     data,
     deleteItemType,
 }: Props) => {
@@ -39,6 +40,7 @@ const QueryDeleteButton = ({
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
+    const keyPackages = userHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
     const deleteQuery =
         deleteItemType === "Path exclusion"
@@ -119,7 +121,34 @@ const QueryDeleteButton = ({
             },
         );
 
-    if (isLoading || isBulkLoading) {
+    // Delete a package
+    const { mutate: deletePackage, isLoading: isPackageLoading } =
+        adminHooks.useDelete(
+            "/scan-results",
+            {
+                withCredentials: true,
+                purl: purl,
+            },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: "Delete successful",
+                        description: `Package deleted successfully.`,
+                    });
+                    // When a package deleted, invalidate the package query to refetch the data
+                    queryClient.invalidateQueries(keyPackages);
+                },
+                onError: () => {
+                    toast({
+                        variant: "destructive",
+                        title: "Package deletion failed",
+                        description: "Something went wrong. Please try again.",
+                    });
+                },
+            },
+        );
+
+    if (isLoading || isBulkLoading || isPackageLoading) {
         return (
             <div className="flex items-center justify-center h-full">
                 <Loader2 className="w-10 h-10 mr-2 animate-spin" />
@@ -175,11 +204,25 @@ const QueryDeleteButton = ({
                                 )}
                             </>
                         )}
+                        {deleteItemType === "Package" && (
+                            <>
+                                Are you sure you want to delete this package:{" "}
+                                <strong>{data}</strong>?
+                            </>
+                        )}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => deleteItem(undefined)}>
+                    <AlertDialogAction
+                        onClick={() => {
+                            if (deleteItemType === "Package" && purl) {
+                                deletePackage({ purl });
+                            } else {
+                                deleteItem(undefined);
+                            }
+                        }}
+                    >
                         Delete this
                     </AlertDialogAction>
                     {bulkCuration && (
