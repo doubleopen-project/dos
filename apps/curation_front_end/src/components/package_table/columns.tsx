@@ -185,13 +185,13 @@ export const columns: ColumnDef<Package>[] = [
             let user = undefined;
             user = useUser({});
             const userRole = user ? user.role : "";
-            console.log("userRole: ", userRole);
 
             if (userRole === "ADMIN")
                 return (
                     <QueryDeleteButton
                         id={0}
-                        data={""}
+                        purl={row.original.purl}
+                        data={`${row.original.name}: ${row.original.version}`}
                         deleteItemType={"Path exclusion"}
                     />
                 );
