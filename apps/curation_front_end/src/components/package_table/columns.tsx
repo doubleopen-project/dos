@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,6 +21,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import QueryDeleteButton from "@/components/QueryDeleteButton";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -174,5 +176,25 @@ export const columns: ColumnDef<Package>[] = [
                 }
             </>
         ),
+    },
+    {
+        id: "actions",
+        cell: ({ row }) => {
+            // Get user from useUser hook, to decide what DB rights the user has for Package Library
+            // and conditionally render the delete button (only for admins)
+            let user = undefined;
+            user = useUser({});
+            const userRole = user ? user.role : "";
+            console.log("userRole: ", userRole);
+
+            if (userRole === "ADMIN")
+                return (
+                    <QueryDeleteButton
+                        id={0}
+                        data={""}
+                        deleteItemType={"Path exclusion"}
+                    />
+                );
+        },
     },
 ];
