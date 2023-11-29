@@ -664,7 +664,7 @@ export const saveJobResults = async (
 };
 
 export const findFilesToBeScanned = async (
-    packageId: number,
+    packageIds: number[],
     files: Map<string, string[]>,
 ): Promise<{ hash: string; path: string }[]> => {
     const filesToBeScanned: { hash: string; path: string }[] = [];
@@ -688,11 +688,13 @@ export const findFilesToBeScanned = async (
                 }
                 // Create FileTrees for file
                 for (const path of paths) {
-                    await dbQueries.createFileTreeIfNotExists({
-                        path: path,
-                        fileSha256: hash,
-                        packageId: packageId,
-                    });
+                    for (const packageId of packageIds) {
+                        await dbQueries.createFileTreeIfNotExists({
+                            path: path,
+                            fileSha256: hash,
+                            packageId: packageId,
+                        });
+                    }
                 }
                 // Push file to be scanned if scanStatus is 'notStarted' or 'failed', with the first path
                 if (
@@ -702,12 +704,13 @@ export const findFilesToBeScanned = async (
                     filesToBeScanned.push({ hash: hash, path: paths[0] });
                 }
             } else if (file) {
-                await dbQueries.createFileTreeIfNotExists({
-                    path: paths[0],
-                    fileSha256: hash,
-                    packageId: packageId,
-                });
-
+                for (const packageId of packageIds) {
+                    await dbQueries.createFileTreeIfNotExists({
+                        path: paths[0],
+                        fileSha256: hash,
+                        packageId: packageId,
+                    });
+                }
                 if (
                     file.scanStatus === "notStarted" ||
                     file.scanStatus === "failed"
@@ -762,4 +765,35 @@ export const getPackageConfiguration = async (
         licenseConclusions: licenseConclusions,
         pathExclusions: packageWithPathExclusions.pathExclusions,
     };
+};
+
+export const copyDataToNewPackages = async (
+    packageId: number,
+    newPackageIds: number[],
+): Promise<void> => {
+    const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
+
+    const CONCURRENCY_LIMIT =
+        parseInt(process.env.DB_CONCURRENCY as string) || 10;
+
+    const promises: Promise<void>[] = [];
+
+    for (const fileTree of fileTrees) {
+        const queryTask = (async () => {
+            for (const newPackageId of newPackageIds) {
+                await dbQueries.createFileTreeIfNotExists({
+                    path: fileTree.path,
+                    fileSha256: fileTree.fileSha256,
+                    packageId: newPackageId,
+                });
+            }
+        })();
+
+        promises.push(queryTask);
+
+        if (promises.length >= CONCURRENCY_LIMIT) {
+            await Promise.all(promises);
+            promises.length = 0;
+        }
+    }
 };
