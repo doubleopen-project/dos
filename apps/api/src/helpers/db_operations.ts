@@ -331,6 +331,11 @@ export const saveJobResults = async (
             scanDuration: result.headers[0].duration,
         });
 
+        const packageId: number = scannerJob.packageId;
+
+        const scannerJobChildren =
+            await dbQueries.findScannerJobsByParentId(jobId);
+
         scannerConfig = "--timeout " + scannerJob.timeout + " " + scannerConfig;
         console.log(jobId + ': Changed state to "savingResults"');
         console.log(
@@ -374,8 +379,18 @@ export const saveJobResults = async (
                         await dbQueries.createFileTreeIfNotExists({
                             path: file.path,
                             fileSha256: file.sha256,
-                            packageId: scannerJob.packageId,
+                            packageId: packageId,
                         });
+
+                        if (scannerJobChildren.length > 0) {
+                            for (const childScannerJob of scannerJobChildren) {
+                                await dbQueries.createFileTreeIfNotExists({
+                                    path: file.path,
+                                    fileSha256: file.sha256,
+                                    packageId: childScannerJob.packageId,
+                                });
+                            }
+                        }
 
                         if (file.detected_license_expression_spdx) {
                             const finding =
@@ -526,9 +541,9 @@ export const saveJobResults = async (
                 console.log(error);
             }
         }
-        const finalFileTreeCount = await dbQueries.countFileTreesByPackageId(
-            scannerJob.packageId,
-        );
+
+        const finalFileTreeCount =
+            await dbQueries.countFileTreesByPackageId(packageId);
 
         console.log(
             jobId + ": Final filetree count for package: " + finalFileTreeCount,
@@ -536,7 +551,7 @@ export const saveJobResults = async (
 
         console.log(jobId + ': Changing Package scanStatus to "scanned"');
         await dbQueries.updatePackage({
-            id: scannerJob.packageId,
+            id: packageId,
             data: { scanStatus: "scanned" },
         });
 
@@ -544,6 +559,17 @@ export const saveJobResults = async (
         await dbQueries.updateScannerJob(scannerJob.id, {
             state: "completed",
         });
+
+        if (scannerJobChildren.length > 0) {
+            await dbQueries.updateManyScannerJobStates(
+                scannerJobChildren.map((job) => job.id),
+                "completed",
+            );
+            await dbQueries.updateManyPackagesScanStatuses(
+                scannerJobChildren.map((job) => job.packageId),
+                "scanned",
+            );
+        }
 
         const reportSuccess = await reportResultState(jobId, "saved");
         if (!reportSuccess) {
@@ -570,6 +596,26 @@ export const saveJobResults = async (
                 id: editedScannerJob.packageId,
                 data: { scanStatus: "failed" },
             });
+
+            const childScannerJobs =
+                await dbQueries.findScannerJobsByParentId(jobId);
+
+            if (childScannerJobs.length > 0) {
+                console.log(
+                    jobId +
+                        ': Changing ScannerJob states and Package scanStatuses to "failed" for child jobs',
+                );
+                await dbQueries.updateManyScannerJobStates(
+                    childScannerJobs.map((job) => job.id),
+                    "failed",
+                );
+
+                await dbQueries.updateManyPackagesScanStatuses(
+                    childScannerJobs.map((job) => job.packageId),
+                    "failed",
+                );
+            }
+
             await dbQueries.createSystemIssue({
                 message: "Saving results failed",
                 severity: "MODERATE",
