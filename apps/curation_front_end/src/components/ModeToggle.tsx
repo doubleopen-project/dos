@@ -5,7 +5,6 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import useSettingsStore from "@/store/settings.store";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -17,8 +16,8 @@ import {
 
 export function ModeToggle() {
     const { setTheme } = useTheme();
-    const appTheme = useSettingsStore((state) => state.appTheme);
-    const setAppTheme = useSettingsStore((state) => state.setAppTheme);
+    //const appTheme = useSettingsStore((state) => state.appTheme);
+    //const setAppTheme = useSettingsStore((state) => state.setAppTheme);
 
     return (
         <DropdownMenu>
@@ -30,10 +29,7 @@ export function ModeToggle() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuRadioGroup
-                    value={appTheme}
-                    onValueChange={(value) => setAppTheme(value)}
-                >
+                <DropdownMenuRadioGroup>
                     <DropdownMenuRadioItem
                         value="light"
                         onClick={() => setTheme("light")}
