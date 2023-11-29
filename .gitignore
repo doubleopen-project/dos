@@ -150,3 +150,6 @@ generated-zod-schemas/
 
 # Clever Cloud CLI config
 .clever.json
+
+# Yarn lockfile
+yarn.lock
