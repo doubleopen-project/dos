@@ -236,7 +236,13 @@ model ScannerJob {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])
 
+  parentId         String?
+  parentScannerJob ScannerJob? @relation("RelatedScannerJobs", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  childScannerJobs ScannerJob[] @relation("RelatedScannerJobs")
+
   @@index([packageId])
+  @@index([parentId])
 }
 
 /// A system issue that can be used to save information about errors in unexpected situations, so that the issue is easier and faster to investigate and fix.

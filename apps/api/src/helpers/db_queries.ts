@@ -59,6 +59,7 @@ export const createScannerJob = async (input: {
     state: string;
     packageId: number;
     objectStorageKey?: string;
+    parentId?: string;
 }): Promise<ScannerJob> => {
     let retries = initialRetryCount;
     let scannerJob: ScannerJob | null = null;
