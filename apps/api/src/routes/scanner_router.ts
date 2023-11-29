@@ -308,6 +308,38 @@ scannerRouter.put("/job-state/:id", authenticateSAToken, async (req, res) => {
                     data: { scanStatus: "failed" },
                 });
             }
+
+            const scannerJobChildren =
+                await dbQueries.findScannerJobsByParentId(req.params.id);
+
+            if (scannerJobChildren.length > 0) {
+                await dbQueries.updateManyScannerJobStates(
+                    scannerJobChildren.map((child) => child.id),
+                    req.body.state,
+                    updatedScannerJob.failureState || undefined,
+                );
+
+                if (req.body.state === "failed") {
+                    await dbQueries.updateManyPackagesScanStatuses(
+                        scannerJobChildren.map((child) => child.packageId),
+                        "failed",
+                    );
+                }
+            }
+
+            for (const child of scannerJobChildren) {
+                await dbQueries.updateScannerJob(child.id, {
+                    state: req.body.state,
+                });
+
+                if (req.body.state === "failed" && child.packageId) {
+                    await dbQueries.updatePackage({
+                        id: child.packageId,
+                        data: { scanStatus: "failed" },
+                    });
+                }
+            }
+
             console.log(
                 req.params.id + ': Changed state to "' + req.body.state + '"',
             );

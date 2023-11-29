@@ -514,6 +514,72 @@ export const updateScannerJob = async (
     return scannerJob;
 };
 
+export const updateManyScannerJobStates = async (
+    ids: string[],
+    state: string,
+    failureState?: string,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchUpdate = null;
+
+    while (!batchUpdate && retries > 0) {
+        try {
+            batchUpdate = await prisma.scannerJob.updateMany({
+                where: {
+                    id: {
+                        in: ids,
+                    },
+                },
+                data: {
+                    state: state,
+                    failureState: failureState,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to update ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchUpdate) throw new Error("Error: Unable to update ScannerJobs");
+
+    return batchUpdate;
+};
+
+export const updateManyPackagesScanStatuses = async (
+    packageIds: number[],
+    scanStatus: string,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchUpdate = null;
+
+    while (!batchUpdate && retries > 0) {
+        try {
+            batchUpdate = await prisma.package.updateMany({
+                where: {
+                    id: {
+                        in: packageIds,
+                    },
+                },
+                data: {
+                    scanStatus: scanStatus,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to update Packages: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchUpdate) throw new Error("Error: Unable to update Packages");
+
+    return batchUpdate;
+};
+
 export const updateFile = async (input: {
     id: number;
     data: Prisma.FileUpdateInput;
@@ -1254,6 +1320,32 @@ export const findScannerJobsWithStates = async (
     }
 
     return scannerJobsMap;
+};
+
+export const findScannerJobsByParentId = async (
+    parentId: string,
+): Promise<ScannerJob[]> => {
+    let retries = initialRetryCount;
+    let scannerJobs: ScannerJob[] = [];
+
+    while (retries > 0) {
+        try {
+            scannerJobs = await prisma.scannerJob.findMany({
+                where: {
+                    parentId: parentId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scannerJobs;
 };
 
 export const findPackageByPurl = async (
