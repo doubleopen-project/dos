@@ -3027,17 +3027,20 @@ declare const scannerAPI: [
                 schema: zod.ZodObject<
                     {
                         zipFileKey: zod.ZodString;
-                        purl: zod.ZodString;
+                        purls: zod.ZodArray<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            "many"
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
                         zipFileKey: string;
+                        purls: string[];
                     },
                     {
-                        purl: string;
                         zipFileKey: string;
+                        purls: string[];
                     }
                 >;
             },
@@ -7747,17 +7750,20 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         zipFileKey: zod.ZodString;
-                        purl: zod.ZodString;
+                        purls: zod.ZodArray<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            "many"
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
                         zipFileKey: string;
+                        purls: string[];
                     },
                     {
-                        purl: string;
                         zipFileKey: string;
+                        purls: string[];
                     }
                 >;
             },

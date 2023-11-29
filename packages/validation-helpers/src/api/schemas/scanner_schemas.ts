@@ -4,6 +4,7 @@
 
 import { z } from "zod";
 import { ScannerJobResultSchema } from "../../scanner_agent/schemas";
+import { purlSchema } from "./common_schemas";
 
 //---------------- POST scan-results ----------------
 
@@ -111,12 +112,7 @@ export const PostJobReq = z.object({
         })
         .trim()
         .min(1, "Zip file key cannot be empty"),
-    purl: z
-        .string({
-            required_error: "Purl is required",
-        })
-        .trim()
-        .min(1, "Purl cannot be empty"),
+    purls: z.array(purlSchema).min(1, "At least one purl is required"),
 });
 
 export const PostJobRes = z.object({

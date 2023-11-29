@@ -1210,6 +1210,60 @@ export const findFilePathsByPackagePurl = async (
     return filepaths;
 };
 
+export const findScannerJobByPackageId = async (
+    packageId: number,
+): Promise<ScannerJob | null> => {
+    let retries = initialRetryCount;
+    let scannerJob: ScannerJob | null = null;
+
+    while (!scannerJob && retries > 0) {
+        try {
+            scannerJob = await prisma.scannerJob.findFirst({
+                where: {
+                    packageId: packageId,
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJob: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return scannerJob;
+};
+
+export const findScannerJobById = async (
+    id: string,
+): Promise<ScannerJob | null> => {
+    let retries = initialRetryCount;
+    let scannerJob: ScannerJob | null = null;
+
+    while (!scannerJob && retries > 0) {
+        try {
+            scannerJob = await prisma.scannerJob.findUnique({
+                where: {
+                    id: id,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJob: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scannerJob;
+};
+
 export const findScannerJobStateById = async (
     id: string,
 ): Promise<{ id: string; state: string } | null> => {
@@ -1280,6 +1334,7 @@ export const findScannerJobsWithStates = async (
         {
             state: string;
             packageId: number;
+            parentId: string | null;
         }
     >
 > => {
@@ -1289,6 +1344,7 @@ export const findScannerJobsWithStates = async (
         {
             state: string;
             packageId: number;
+            parentId: string | null;
         }
     >();
     let querySuccess = false;
@@ -1307,6 +1363,7 @@ export const findScannerJobsWithStates = async (
                 scannerJobsMap.set(scannerJob.id, {
                     state: scannerJob.state,
                     packageId: scannerJob.packageId,
+                    parentId: scannerJob.parentId,
                 });
             }
             querySuccess = true;

@@ -11,24 +11,41 @@ import { sendJobToQueue } from "./sa_queries";
 export const processPackageAndSendToScanner = async (
     zipFileKey: string,
     scannerJobId: string,
-    packageId: number,
-    purl: string,
+    packageIds: number[],
+    purls: string[],
     jobStateMap: Map<string, string>,
 ) => {
     try {
-        if (!process.env.SPACES_BUCKET) {
-            dbQueries.updatePackage({
-                id: packageId,
-                data: { scanStatus: "failed" },
-            });
-            dbQueries.updateScannerJob(scannerJobId, { state: "failed" });
+        if (!process.env.SPACES_BUCKET)
             throw new Error(
                 "Error: SPACES_BUCKET environment variable is not defined",
             );
+
+        console.log(
+            scannerJobId + ": Processing files for purls " + purls.join(", "),
+        );
+
+        const mainScannerJob = await dbQueries.findScannerJobById(scannerJobId);
+
+        if (!mainScannerJob) throw new Error("ScannerJob not found");
+
+        const scannerJobIds: string[] = [scannerJobId];
+        if (packageIds.length > 1) {
+            for (const packageId of packageIds) {
+                if (packageId !== mainScannerJob.packageId) {
+                    const createdScannerJob = await dbQueries.createScannerJob({
+                        packageId: packageId,
+                        state: "created",
+                        parentId: scannerJobId,
+                    });
+                    scannerJobIds.push(createdScannerJob.id);
+                }
+            }
         }
-        console.log(scannerJobId + ": Processing files for purl " + purl);
-        // Update ScannerJob status to 'processing'
-        await dbQueries.updateScannerJob(scannerJobId, { state: "processing" });
+        // Update Package scanStatuses to 'pending'
+        await dbQueries.updateManyPackagesScanStatuses(packageIds, "pending");
+        // Update ScannerJob statuses to 'processing'
+        await dbQueries.updateManyScannerJobStates(scannerJobIds, "processing");
         // Downloading zip file from object storage
         const downloadPath = "/tmp/downloads/" + zipFileKey;
         const downloaded = await fileHelpers.downloadZipFile(
@@ -37,11 +54,8 @@ export const processPackageAndSendToScanner = async (
         );
 
         if (!downloaded) {
-            dbQueries.updatePackage({
-                id: packageId,
-                data: { scanStatus: "failed" },
-            });
-            dbQueries.updateScannerJob(scannerJobId, { state: "failed" });
+            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
+            dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
             throw new Error("Zip file download failed");
         }
 
@@ -58,11 +72,8 @@ export const processPackageAndSendToScanner = async (
         );
 
         if (!fileUnzipped) {
-            dbQueries.updatePackage({
-                id: packageId,
-                data: { scanStatus: "failed" },
-            });
-            dbQueries.updateScannerJob(scannerJobId, { state: "failed" });
+            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
+            dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
             throw new Error("Zip file unzipping failed");
         }
 
@@ -86,7 +97,7 @@ export const processPackageAndSendToScanner = async (
         // Save FileTrees to existing Files (and for files with multiple paths) and get array of files to be scanned
         let filesToBeScanned: { hash: string; path: string }[] | null =
             await findFilesToBeScanned(
-                packageId,
+                packageIds,
                 fileHashesMappedToPaths.fileHashesAndPaths,
             );
         console.log(
@@ -105,13 +116,8 @@ export const processPackageAndSendToScanner = async (
             );
 
             if (!uploadedWithHash) {
-                dbQueries.updatePackage({
-                    id: packageId,
-                    data: { scanStatus: "failed" },
-                });
-                dbQueries.updateScannerJob(scannerJobId, {
-                    state: "failed",
-                });
+                dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
+                dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
                 throw new Error(
                     "Error: Uploading files to object storage failed",
                 );
@@ -142,8 +148,12 @@ export const processPackageAndSendToScanner = async (
                     scannerJobId + ': Updating ScannerJob state to "queued"',
                 );
 
+                await dbQueries.updateManyScannerJobStates(
+                    scannerJobIds,
+                    "queued",
+                );
+
                 await dbQueries.updateScannerJob(scannerJobId, {
-                    state: "queued",
                     fileCount: filesToBeScanned.length,
                     timeout:
                         parseInt(process.env.DEFAULT_TIMEOUT as string) || 120,
@@ -152,12 +162,8 @@ export const processPackageAndSendToScanner = async (
                 throw new Error("Error: Adding to queue was unsuccessful.");
             }
         } else {
-            // Update package scanStatus and ScannerJob to completed
-            dbQueries.updatePackage({
-                id: packageId,
-                data: { scanStatus: "scanned" },
-            });
-            dbQueries.updateScannerJob(scannerJobId, { state: "completed" });
+            dbQueries.updateManyPackagesScanStatuses(packageIds, "scanned");
+            dbQueries.updateManyScannerJobStates(scannerJobIds, "completed");
         }
         fileHashesMappedToPaths.fileHashesAndPaths.clear();
         filesToBeScanned = null;
@@ -171,10 +177,7 @@ export const processPackageAndSendToScanner = async (
             console.log(
                 scannerJobId + ': Changing Package scanStatus to "failed"',
             );
-            dbQueries.updatePackage({
-                id: packageId,
-                data: { scanStatus: "failed" },
-            });
+            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
         } catch (error) {
             console.log(
                 scannerJobId +
