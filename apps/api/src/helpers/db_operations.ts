@@ -10,57 +10,6 @@ import { reportResultState, sendJobToQueue } from "./sa_queries";
 
 // ------------------------- Database operations -------------------------
 
-// Get results for package with purl if exists
-export const getPackageResults = async (
-    purl: string,
-    options: { fetchConcluded?: boolean },
-) => {
-    const queriedPackage = await dbQueries.findPackageByPurl(purl);
-
-    let status = "no-results";
-    let id = null;
-    let results = null;
-
-    if (queriedPackage) {
-        if (queriedPackage.scanStatus === "pending") {
-            const scannerJob =
-                await dbQueries.findMostRecentScannerJobByPackageId(
-                    queriedPackage.id,
-                );
-
-            if (scannerJob) {
-                console.log(
-                    "Package with purl " +
-                        purl +
-                        " has a pending scanner job with id " +
-                        scannerJob.id,
-                );
-                status = "pending";
-                id = scannerJob.id;
-            } else {
-                throw new Error(
-                    "Error: unable to fetch scanner job id from database",
-                );
-            }
-        } else if (queriedPackage.scanStatus === "scanned") {
-            console.log("Found results for package with purl " + purl);
-
-            results = await getScanResults(queriedPackage.id, options);
-            status = "ready";
-        }
-    } else {
-        console.log("No package found with purl " + purl);
-    }
-
-    return {
-        state: {
-            status: status,
-            id: id,
-        },
-        results: results,
-    };
-};
-
 // Get scan results for package
 export const getScanResults = async (
     packageId: number,

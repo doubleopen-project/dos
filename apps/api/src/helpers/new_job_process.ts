@@ -22,7 +22,7 @@ export const processPackageAndSendToScanner = async (
             );
 
         console.log(
-            scannerJobId + ": Processing files for purls " + purls.join(", "),
+            scannerJobId + ": Processing files for purl(s) " + purls.join(", "),
         );
 
         const mainScannerJob = await dbQueries.findScannerJobById(scannerJobId);
