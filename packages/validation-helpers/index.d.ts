@@ -2283,14 +2283,17 @@ declare const scannerAPI: [
     {
         method: "post";
         path: "/scan-results";
-        description: "Get scan results for specified purl";
+        description: string;
         parameters: [
             {
                 name: "body";
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        purl: zod.ZodString;
+                        purls: zod.ZodArray<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            "many"
+                        >;
                         options: zod.ZodOptional<
                             zod.ZodObject<
                                 {
@@ -2310,7 +2313,7 @@ declare const scannerAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
+                        purls: string[];
                         options?:
                             | {
                                   fetchConcluded?: boolean | undefined;
@@ -2318,7 +2321,7 @@ declare const scannerAPI: [
                             | undefined;
                     },
                     {
-                        purl: string;
+                        purls: string[];
                         options?:
                             | {
                                   fetchConcluded?: boolean | undefined;
@@ -2330,20 +2333,24 @@ declare const scannerAPI: [
         ];
         response: zod.ZodObject<
             {
+                purls: zod.ZodArray<
+                    zod.ZodEffects<zod.ZodString, string, string>,
+                    "many"
+                >;
                 state: zod.ZodObject<
                     {
-                        status: zod.ZodString;
-                        id: zod.ZodNullable<zod.ZodString>;
+                        status: zod.ZodEnum<["no-results", "pending", "ready"]>;
+                        jobId: zod.ZodNullable<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        status: string;
-                        id: string | null;
+                        status: "no-results" | "pending" | "ready";
+                        jobId: string | null;
                     },
                     {
-                        status: string;
-                        id: string | null;
+                        status: "no-results" | "pending" | "ready";
+                        jobId: string | null;
                     }
                 >;
                 results: zod.ZodUnion<
@@ -2538,9 +2545,10 @@ declare const scannerAPI: [
             zod.ZodTypeAny,
             {
                 state: {
-                    status: string;
-                    id: string | null;
+                    status: "no-results" | "pending" | "ready";
+                    jobId: string | null;
                 };
+                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -2569,9 +2577,10 @@ declare const scannerAPI: [
             },
             {
                 state: {
-                    status: string;
-                    id: string | null;
+                    status: "no-results" | "pending" | "ready";
+                    jobId: string | null;
                 };
+                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -3019,7 +3028,7 @@ declare const scannerAPI: [
     {
         method: "post";
         path: "/job";
-        description: "Add scanner job for package";
+        description: "Add new scanner job for specified purl(s). Give multiple purls in the case where these purls are all part of the same source.";
         parameters: [
             {
                 name: "body";
@@ -3035,12 +3044,12 @@ declare const scannerAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        zipFileKey: string;
                         purls: string[];
+                        zipFileKey: string;
                     },
                     {
-                        zipFileKey: string;
                         purls: string[];
+                        zipFileKey: string;
                     }
                 >;
             },
@@ -7006,14 +7015,17 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/scan-results";
-        description: "Get scan results for specified purl";
+        description: string;
         parameters: [
             {
                 name: "body";
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        purl: zod.ZodString;
+                        purls: zod.ZodArray<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            "many"
+                        >;
                         options: zod.ZodOptional<
                             zod.ZodObject<
                                 {
@@ -7033,7 +7045,7 @@ declare const dosAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
+                        purls: string[];
                         options?:
                             | {
                                   fetchConcluded?: boolean | undefined;
@@ -7041,7 +7053,7 @@ declare const dosAPI: [
                             | undefined;
                     },
                     {
-                        purl: string;
+                        purls: string[];
                         options?:
                             | {
                                   fetchConcluded?: boolean | undefined;
@@ -7053,20 +7065,24 @@ declare const dosAPI: [
         ];
         response: zod.ZodObject<
             {
+                purls: zod.ZodArray<
+                    zod.ZodEffects<zod.ZodString, string, string>,
+                    "many"
+                >;
                 state: zod.ZodObject<
                     {
-                        status: zod.ZodString;
-                        id: zod.ZodNullable<zod.ZodString>;
+                        status: zod.ZodEnum<["no-results", "pending", "ready"]>;
+                        jobId: zod.ZodNullable<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        status: string;
-                        id: string | null;
+                        status: "no-results" | "pending" | "ready";
+                        jobId: string | null;
                     },
                     {
-                        status: string;
-                        id: string | null;
+                        status: "no-results" | "pending" | "ready";
+                        jobId: string | null;
                     }
                 >;
                 results: zod.ZodUnion<
@@ -7261,9 +7277,10 @@ declare const dosAPI: [
             zod.ZodTypeAny,
             {
                 state: {
-                    status: string;
-                    id: string | null;
+                    status: "no-results" | "pending" | "ready";
+                    jobId: string | null;
                 };
+                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -7292,9 +7309,10 @@ declare const dosAPI: [
             },
             {
                 state: {
-                    status: string;
-                    id: string | null;
+                    status: "no-results" | "pending" | "ready";
+                    jobId: string | null;
                 };
+                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -7742,7 +7760,7 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/job";
-        description: "Add scanner job for package";
+        description: "Add new scanner job for specified purl(s). Give multiple purls in the case where these purls are all part of the same source.";
         parameters: [
             {
                 name: "body";
@@ -7758,12 +7776,12 @@ declare const dosAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        zipFileKey: string;
                         purls: string[];
+                        zipFileKey: string;
                     },
                     {
-                        zipFileKey: string;
                         purls: string[];
+                        zipFileKey: string;
                     }
                 >;
             },

@@ -1432,6 +1432,34 @@ export const findPackageByPurl = async (
     return packageObj;
 };
 
+export const findPackagesByPurls = async (
+    purls: string[],
+): Promise<Package[]> => {
+    let retries = initialRetryCount;
+    let packages: Package[] = [];
+
+    while (retries > 0) {
+        try {
+            packages = await prisma.package.findMany({
+                where: {
+                    purl: {
+                        in: purls,
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find Packages: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return packages;
+};
+
 export const findPackageIdByPurl = async (
     purl: string,
 ): Promise<number | null> => {
