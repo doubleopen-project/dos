@@ -34,7 +34,13 @@ const DeletePathExclusion = ({ data }: Props) => {
                 Are you sure you want to delete this path exclusion:
                 <br />
                 <br />
-                <strong>{data.pattern}</strong>?
+                Pattern: <strong>{data.pattern}</strong>
+                <br />
+                Reason: {data.reason}
+                <br />
+                Comment: {data.comment}
+                <br />
+                Created by: <strong>{data.user.username}</strong>
             </>
         ),
         buttonText: "Delete",

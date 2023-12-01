@@ -20,6 +20,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import QueryDeleteButton from "@/components/QueryDeleteButton";
+import DeletePathExclusion from "../delete_item/DeletePathExclusion";
 
 type Props = {
     purl: string | undefined;
@@ -134,12 +135,8 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                             {(userName ===
                                                 exclusion.user.username ||
                                                 userRole === "ADMIN") && (
-                                                <QueryDeleteButton
-                                                    id={exclusion.id}
-                                                    data={exclusion.pattern}
-                                                    deleteItemType={
-                                                        "Path exclusion"
-                                                    }
+                                                <DeletePathExclusion
+                                                    data={exclusion}
                                                 />
                                             )}
                                         </CommandItem>
