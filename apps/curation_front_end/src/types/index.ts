@@ -32,3 +32,10 @@ export type SelectedNode = Omit<
     NodeApi<TreeNode>,
     "name, hasLicenseFIndings, hasLicenseConclusions"
 >;
+
+// A type for handling the deletion of an item from the database
+export type DeleteAction = {
+    message: string;
+    actionTxt: string;
+    onActionClick: (txt: string) => void;
+};
