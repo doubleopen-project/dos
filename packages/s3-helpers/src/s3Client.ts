@@ -10,7 +10,7 @@ import { loadEnv } from "common-helpers";
 loadEnv("../../.env");
 
 export const s3Client: S3 = new S3({
-    forcePathStyle: false,
+    forcePathStyle: process.env.NODE_ENV !== "production",
     endpoint: process.env.SPACES_ENDPOINT,
     region: "us-east-1",
     credentials: {
