@@ -19,7 +19,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import QueryDeleteButton from "@/components/QueryDeleteButton";
 import DeletePathExclusion from "../delete_item/DeletePathExclusion";
 
 type Props = {

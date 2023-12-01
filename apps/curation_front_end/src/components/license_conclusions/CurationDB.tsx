@@ -27,7 +27,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import QueryDeleteButton from "@/components/QueryDeleteButton";
+import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import { cn } from "@/lib/utils";
 
 type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
@@ -186,18 +186,7 @@ const CurationDB = ({
                                     >
                                         {(userName === d.user.username ||
                                             userRole === "ADMIN") && (
-                                            <QueryDeleteButton
-                                                id={d.id}
-                                                idBulkCuration={
-                                                    d.bulkCurationId
-                                                }
-                                                data={
-                                                    d.concludedLicenseExpressionSPDX
-                                                }
-                                                deleteItemType={
-                                                    "License conclusion"
-                                                }
-                                            />
+                                            <DeleteLicenseConclusion data={d} />
                                         )}
                                     </CommandItem>
                                 </div>
