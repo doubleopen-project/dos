@@ -16,17 +16,17 @@ type ItemType = ZodiosResponseByPath<
     typeof userAPI,
     "post",
     "/path-exclusions"
->;
+>["pathExclusions"][0];
 
 type Props = {
-    data: ItemType["pathExclusions"][0];
+    data: ItemType;
 };
 
 const DeletePathExclusion = ({ data }: Props) => {
     const { toast } = useToast();
     const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
-    let deleteActions: DeleteAction[] = [];
+    const deleteActions: DeleteAction[] = [];
 
     deleteActions.push({
         dialogMessage: (
@@ -36,7 +36,7 @@ const DeletePathExclusion = ({ data }: Props) => {
                 <br />
                 Pattern: <strong>{data.pattern}</strong>
                 <br />
-                Reason: {data.reason}
+                Reason: <strong>{data.reason}</strong>
                 <br />
                 Comment: {data.comment}
                 <br />

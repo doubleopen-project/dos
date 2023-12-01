@@ -12,17 +12,21 @@ import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/delete_item/DeleteDialog";
 import { DeleteAction } from "@/types";
 
-type ItemType = ZodiosResponseByPath<typeof userAPI, "get", "/packages">;
+type ItemType = ZodiosResponseByPath<
+    typeof userAPI,
+    "get",
+    "/packages"
+>["packages"][0];
 
 type Props = {
-    data: ItemType["packages"][0];
+    data: ItemType;
 };
 
 const DeletePackage = ({ data }: Props) => {
     const { toast } = useToast();
     const keyPackages = userHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
-    let deleteActions: DeleteAction[] = [];
+    const deleteActions: DeleteAction[] = [];
 
     deleteActions.push({
         dialogMessage: (
