@@ -20,7 +20,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import QueryDeleteButton from "@/components/QueryDeleteButton";
 import DeletePackage from "../delete_item/DeletePackage";
 
 // Get the table column datatype from the query response
@@ -189,7 +188,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                     <>
                         {userRole === "ADMIN" && (
                             <>
-                                <DeletePackage purl={row.original.purl} />
+                                <DeletePackage data={row.original} />
                             </>
                         )}
                     </>
