@@ -4,17 +4,21 @@
 
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ZodiosResponseByPath } from "@zodios/core";
 import { Loader2 } from "lucide-react";
+import { userAPI } from "validation-helpers";
 import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/delete_item/DeleteDialog";
 import { DeleteAction } from "@/types";
 
+type ItemType = ZodiosResponseByPath<typeof userAPI, "get", "/packages">;
+
 type Props = {
-    purl: string;
+    data: ItemType["packages"][0];
 };
 
-const DeletePackage = ({ purl }: Props) => {
+const DeletePackage = ({ data }: Props) => {
     const { toast } = useToast();
     const keyPackages = userHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
@@ -25,7 +29,10 @@ const DeletePackage = ({ purl }: Props) => {
             <>
                 Are you sure you want to delete this package:
                 <br />
-                <strong>{purl}</strong>?
+                <br />
+                <strong>
+                    {data.name}:{data.version}
+                </strong>
             </>
         ),
         buttonText: "Delete",
@@ -33,7 +40,7 @@ const DeletePackage = ({ purl }: Props) => {
     });
 
     function deleteItem() {
-        deletePackage({ purl });
+        deletePackage({ purl: data.purl });
     }
 
     // Delete a package
@@ -42,7 +49,7 @@ const DeletePackage = ({ purl }: Props) => {
             "/scan-results",
             {
                 withCredentials: true,
-                purl: purl,
+                purl: data.purl,
             },
             {
                 onSuccess: () => {
