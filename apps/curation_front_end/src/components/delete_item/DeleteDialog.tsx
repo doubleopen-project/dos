@@ -34,21 +34,25 @@ const DeleteDialog = ({ deleteActions }: Props) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {deleteActions?.map(({ message }) => (
-                            <div key={message}>{message}</div>
+                        {deleteActions?.map(({ dialogMessage, buttonText }) => (
+                            <span key={buttonText}>
+                                {dialogMessage}
+                                <br />
+                                <br />
+                            </span>
                         ))}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    {deleteActions?.map(({ actionTxt, onActionClick }) => (
+                    {deleteActions?.map(({ buttonText, mutation }) => (
                         <AlertDialogAction
-                            key={actionTxt}
+                            key={buttonText}
                             onClick={() => {
-                                onActionClick(actionTxt);
+                                mutation();
                             }}
                         >
-                            {actionTxt}
+                            {buttonText}
                         </AlertDialogAction>
                     ))}
                 </AlertDialogFooter>

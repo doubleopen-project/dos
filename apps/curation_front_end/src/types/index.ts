@@ -30,12 +30,12 @@ export type LicenseConclusions = {
 // A type for the selected node that is passed to the exclusion form
 export type SelectedNode = Omit<
     NodeApi<TreeNode>,
-    "name, hasLicenseFIndings, hasLicenseConclusions"
+    "name, hasLicenseFindings, hasLicenseConclusions"
 >;
 
 // A type for handling the deletion of an item from the database
 export type DeleteAction = {
-    message: string;
-    actionTxt: string;
-    onActionClick: (txt: string) => void;
+    dialogMessage: string | JSX.Element;
+    buttonText: string;
+    mutation: () => void;
 };

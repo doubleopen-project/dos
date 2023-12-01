@@ -21,13 +21,20 @@ const DeletePackage = ({ purl }: Props) => {
     let deleteActions: DeleteAction[] = [];
 
     deleteActions.push({
-        message: `Do you want to delete the package ${purl}?`,
-        actionTxt: "Delete",
-        onActionClick: (actionTxt) => {
-            console.log(actionTxt);
-            // Handle the action...
-        },
+        dialogMessage: (
+            <>
+                Are you sure you want to delete this package:
+                <br />
+                <strong>{purl}</strong>?
+            </>
+        ),
+        buttonText: "Delete",
+        mutation: deleteItem,
     });
+
+    function deleteItem() {
+        deletePackage({ purl });
+    }
 
     // Delete a package
     const { mutate: deletePackage, isLoading: isPackageLoading } =

@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import QueryDeleteButton from "@/components/QueryDeleteButton";
+import DeletePackage from "../delete_item/DeletePackage";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -187,12 +188,9 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                 return (
                     <>
                         {userRole === "ADMIN" && (
-                            <QueryDeleteButton
-                                id={-1}
-                                purl={row.original.purl}
-                                data={`${row.original.name}: ${row.original.version}`}
-                                deleteItemType={"Package"}
-                            />
+                            <>
+                                <DeletePackage purl={row.original.purl} />
+                            </>
                         )}
                     </>
                 );
