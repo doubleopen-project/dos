@@ -7,6 +7,8 @@ import fs from "fs";
 import path from "path";
 import readline from "readline";
 import { PrismaClient } from "@prisma/client";
+import admZip from "adm-zip";
+import { objectExistsCheck, uploadFile } from "s3-helpers";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +34,43 @@ async function main() {
         },
     });
     console.log(testUser);
+
+    const fileExists = fs.existsSync(
+        path.join(__dirname, "./test_data/files.zip"),
+    );
+
+    if (!fileExists) throw new Error("Error: files.zip does not exist");
+
+    console.log("Uploading test files to object storage");
+
+    const zip = new admZip(path.join(__dirname, "./test_data/files.zip"));
+    zip.extractAllTo("/tmp/extracted/files/", true);
+
+    const files = fs.readdirSync("/tmp/extracted/files/");
+
+    for (const file of files) {
+        const objectExists = await objectExistsCheck(
+            file,
+            process.env.SPACES_BUCKET || "doubleopen",
+        );
+
+        if (objectExists === undefined)
+            throw new Error("Error: Object exists check failed");
+        if (!objectExists) {
+            const fileBuffer: Buffer = fs.readFileSync(
+                path.join(__dirname, `./test_data/files/${file}`),
+            );
+            const result = await uploadFile(
+                process.env.SPACES_BUCKET || "doubleopen",
+                file,
+                fileBuffer,
+            );
+            console.log(result);
+        }
+    }
+
+    // Delete local tmp files
+    fs.rmSync("/tmp/extracted/files/", { recursive: true });
 
     console.log("Upserting File rows from test_data/files.source to database");
 
