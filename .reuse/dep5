@@ -173,3 +173,7 @@ License: CC-BY-4.0
 Files: apps/curation_front_end/tsconfig.eslint.json
 Copyright: 2023 Double Open Oy
 License: CC-BY-4.0
+
+Files: packages/database/src/test_data/*
+Copyright: 2023 Double Open Oy
+License: CC-BY-4.0
