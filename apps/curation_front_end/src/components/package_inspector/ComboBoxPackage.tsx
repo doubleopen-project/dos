@@ -4,11 +4,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Check, ChevronsUpDown, XCircle } from "lucide-react";
-import {
-    parseAsBoolean,
-    parseAsString,
-    useQueryState,
-} from "next-usequerystate";
+import { parseAsBoolean, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,10 +39,9 @@ const ComboBoxPackage = ({
     className,
 }: ComboBoxPackageProps) => {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useQueryState(
-        filterString,
-        parseAsString.withDefault(""),
-    );
+    const [value, setValue] = useQueryState(filterString, {
+        parse: (query: string) => query.toLowerCase(),
+    });
     const [, setFiltering] = useQueryState(
         "filtering",
         parseAsBoolean.withDefault(false),
