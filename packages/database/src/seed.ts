@@ -58,7 +58,7 @@ async function main() {
             throw new Error("Error: Object exists check failed");
         if (!objectExists) {
             const fileBuffer: Buffer = fs.readFileSync(
-                path.join(__dirname, `./test_data/files/${file}`),
+                "/tmp/extracted/files/" + file,
             );
             const result = await uploadFile(
                 process.env.SPACES_BUCKET || "doubleopen",
