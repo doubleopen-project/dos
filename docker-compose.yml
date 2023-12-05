@@ -67,6 +67,10 @@ services:
             exit 0;
             "
 
+    scanner-worker:
+        build:
+            dockerfile: Dockerfile
+
 volumes:
     db-data:
         driver: local
