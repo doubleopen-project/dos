@@ -49,7 +49,11 @@
         "test:api": "turbo run test --filter=api",
         "test:scanner_agent": "turbo run test --filter=scanner-agent",
         "test:cfe": "turbo run test --filter=curation_front_end",
-        "test:cfe:watch": "turbo run test:watch --filter=curation_front_end"
+        "test:cfe:watch": "turbo run test:watch --filter=curation_front_end",
+        "test:cfe:e2e": "turbo run test:e2e --filter=curation_front_end",
+        "test:cfe:e2e:reset": "npm run db:migrate:reset && turbo run test:e2e --filter=curation_front_end --no-cache --force",
+        "test:cfe:e2e:report": "turbo run test:e2e:report --filter=curation_front_end",
+        "test:cfe:e2e:ui": "turbo run test:e2e:ui --filter=curation_front_end"
     },
     "devDependencies": {
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
