@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: 2023 Double Open Oy
+#
+# SPDX-License-Identifier: MIT
+
+name: Playwright Tests
+on:
+    push:
+        branches: [main, master, do-329-install-playwright-and-start-ui-testing]
+    pull_request:
+        branches: [main, master]
+jobs:
+    test:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        environment: test-environment
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: "npm"
+            - name: Install dependencies
+              run: npm ci
+            - name: Create env file
+              run: |
+                  touch .env
+                  echo VARIABLE=${{ secrets.VARIABLE }} >> .env
+                  echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env
+                  echo SPACES_ENDPOINT=${{ vars.SPACES_ENDPOINT }} >> .env
+                  echo SPACES_KEY=${{ vars.SPACES_KEY }} >> .env
+                  echo SPACES_SECRET=${{ vars.SPACES_SECRET }} >> .env
+                  echo SPACES_BUCKET=${{ vars.SPACES_BUCKET }} >> .env
+                  echo REDIS_URL=${{ vars.REDIS_URL }} >> .env
+                  echo REDIS_PW=${{ vars.REDIS_PW }} >> .env
+                  echo SA_TOKEN=token >> .env
+                  echo SESSION_SECRET=token >> .env
+                  echo COOKIE_SECRET=token >> .env
+            - name: Run prisma generate
+              run: npm run db:generate
+            - name: Build project
+              run: npm run build
+            - name: Start the testing environment
+              run: docker compose up -d
+            - name: Seed the database and populate the spaces bucket
+              run: npm run db:migrate:reset
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run API in background
+              working-directory: apps/api
+              run: npm run start &
+            - name: Run front end in the background
+              working-directory: apps/curation_front_end
+              run: npm run start &
+            - name: Run Playwright tests
+              run: npm run test:cfe:e2e
+            - uses: actions/upload-artifact@v3
+              if: always()
+              with:
+                  name: playwright-report
+                  path: apps/curation_front_end/playwright-report/
+                  retention-days: 30
