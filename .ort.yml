@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 excludes:
-    scopes:
-        - pattern: "devDependencies"
-          reason: "DEV_DEPENDENCY_OF"
-          comment: "Packages for development only."
-    paths:
-        - pattern: "apps/curation_front_end/.next/**"
-          reason: "BUILD_TOOL_OF"
-          comment: "This directory is produced by npm build on NextJS projects"
+  scopes:
+  - pattern: "devDependencies"
+    reason: "DEV_DEPENDENCY_OF"
+    comment: "Packages for development only."
+  paths:
+  - pattern: "apps/curation_front_end/.next/**"
+    reason: "BUILD_TOOL_OF"
+    comment: "This directory is produced by npm build on NextJS projects"

@@ -2,6 +2,10 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Double Open Server
 Source: https://github.com/doubleopen-project/dos
 
+Files: .prettierignore
+Copyright: 2023 HH Partners
+License: CC-BY-4.0
+
 Files: package-lock.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
