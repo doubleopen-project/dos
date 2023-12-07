@@ -11,10 +11,12 @@ module.exports = {
         "plugin:jest-dom/recommended",
         "plugin:testing-library/react",
         "plugin:react-hooks/recommended",
+        "plugin:playwright/recommended",
     ],
     rules: {
         "@next/next/no-html-link-for-pages": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
+        "testing-library/prefer-screen-queries": "off",
     },
 };

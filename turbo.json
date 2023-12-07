@@ -4,6 +4,7 @@
     "globalEnv": [
         "ADMIN_TOKEN",
         "ALLOWED_ORIGINS",
+        "CI",
         "COOKIE_SECRET",
         "DATABASE_URL",
         "DB_CONCURRENCY",
@@ -96,6 +97,9 @@
             "dependsOn": ["^db:generate"]
         },
         "test:watch": {},
+        "test:e2e": {},
+        "test:e2e:report": {},
+        "test:e2e:ui": {},
         "worker": {
             "dependsOn": ["^build"]
         }

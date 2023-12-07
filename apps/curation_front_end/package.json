@@ -10,7 +10,10 @@
         "lint": "next lint",
         "start": "next start",
         "test": "jest --verbose",
-        "test:watch": "jest --watchAll --verbose"
+        "test:watch": "jest --watchAll --verbose",
+        "test:e2e": "playwright test",
+        "test:e2e:report": "playwright show-report",
+        "test:e2e:ui": "playwright test --ui"
     },
     "dependencies": {
         "@hookform/resolvers": "3.3.2",
@@ -57,6 +60,7 @@
         "zustand": "^4.4.6"
     },
     "devDependencies": {
+        "@playwright/test": "1.40.1",
         "@testing-library/jest-dom": "5.16.5",
         "@testing-library/react": "^14.0.0",
         "@types/js-yaml": "4.0.8",
