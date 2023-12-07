@@ -9,6 +9,7 @@
     ],
     "scripts": {
         "build": "turbo run build",
+        "build:no-cache": "turbo run build --no-cache --force",
         "build:api": "turbo run build --filter=api --no-daemon",
         "build:cfe": "turbo run build --filter=curation_front_end --no-daemon",
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
@@ -39,6 +40,7 @@
         "dev:curation": "turbo run dev --no-cache --continue --no-daemon --filter=curation_front_end",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
         "lint": "turbo run lint",
+        "lint:api": "turbo run lint --filter=api",
         "lint:cfe": "turbo run lint --filter=curation_front_end",
         "prettier": "prettier --write .",
         "production:curation": "turbo run start --filter=curation_front_end --no-daemon",
@@ -56,11 +58,11 @@
         "test:cfe:e2e:ui": "turbo run test:e2e:ui --filter=curation_front_end"
     },
     "devDependencies": {
-        "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+        "@ianvs/prettier-plugin-sort-imports": "4.1.1",
         "prettier": "3.1.0",
         "rimraf": "5.0.5",
-        "turbo": "1.10.16",
-        "dotenv-cli": "^7.3.0"
+        "turbo": "1.11.0",
+        "dotenv-cli": "7.3.0"
     },
     "engines": {
         "node": "20.10.0",
