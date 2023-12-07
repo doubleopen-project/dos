@@ -11,6 +11,9 @@ excludes:
   - pattern: "apps/curation_front_end/.next/**"
     reason: "BUILD_TOOL_OF"
     comment: "This directory is produced by npm build on NextJS projects"
+  - pattern: "packages/database/src/test_data/**"
+    reason: "TEST_OF"
+    comment: "This directory only contains test data for the database."
 
 license_choices:
   package_license_choices:
