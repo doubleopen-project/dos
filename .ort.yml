@@ -11,3 +11,30 @@ excludes:
   - pattern: "apps/curation_front_end/.next/**"
     reason: "BUILD_TOOL_OF"
     comment: "This directory is produced by npm build on NextJS projects"
+
+license_choices:
+  package_license_choices:
+  - package_id: "NPM::fraction.js:4.3.7"
+    license_choices:
+    - given: GPL-2.0-only OR MIT
+      choice: MIT
+  - package_id: "NPM::lodash:4.17.21"
+    license_choices:
+    - given: MIT OR BSD-3-Clause OR GPL-2.0-only
+      choice: MIT
+  - package_id: "NPM::type-fest:0.6.0"
+    license_choices:
+    - given: CC0-1.0 OR MIT
+      choice: MIT
+  - package_id: "NPM::type-fest:0.8.1"
+    license_choices:
+    - given: CC0-1.0 OR MIT
+      choice: MIT
+  - package_id: "NPM::type-fest:0.16.0"
+    license_choices:
+    - given: CC0-1.0 OR MIT
+      choice: MIT
+  - package_id: "NPM::type-fest:0.21.3"
+    license_choices:
+    - given: CC0-1.0 OR MIT
+      choice: MIT
