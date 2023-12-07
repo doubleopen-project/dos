@@ -34,6 +34,14 @@ license_choices:
     license_choices:
     - given: MIT OR BSD-3-Clause OR GPL-2.0-only
       choice: MIT
+  - package_id: "NPM::lodash.defaults:4.2.0"
+    license_choices:
+    - given: BSD-3-Clause OR GPL-2.0-only OR MIT
+      choice: MIT
+  - package_id: "NPM::lodash.isarguments:3.1.0"
+    license_choices:
+    - given: BSD-3-Clause OR GPL-2.0-only OR MIT
+      choice: MIT
   - package_id: "NPM::type-fest:0.6.0"
     license_choices:
     - given: CC0-1.0 OR MIT
