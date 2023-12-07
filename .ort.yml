@@ -8,6 +8,12 @@ excludes:
     reason: "DEV_DEPENDENCY_OF"
     comment: "Packages for development only."
   paths:
+  - pattern: ".reuse/dep5"
+    reason: "OTHER"
+    comment: "This file declares license information for the REUSE tool."
+  - pattern: "LICENSES/*"
+    reason: "OTHER"
+    comment: "This directory contains license files for the REUSE tool."
   - pattern: "apps/curation_front_end/.next/**"
     reason: "BUILD_TOOL_OF"
     comment: "This directory is produced by npm build on NextJS projects."
