@@ -63,10 +63,10 @@
         "dotenv-cli": "^7.3.0"
     },
     "engines": {
-        "node": "18.15.0",
-        "npm": "9.5.0"
+        "node": "20.10.0",
+        "npm": "10.2.3"
     },
-    "packageManager": "npm@9.5.0",
+    "packageManager": "npm@10.2.3",
     "overrides": {
         "formidable": "1.2.6"
     }
