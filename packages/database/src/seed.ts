@@ -85,11 +85,10 @@ async function main() {
         const obj = JSON.parse(line);
         await prisma.file.upsert({
             where: {
-                id: obj.id,
+                sha256: obj.sha256,
             },
             update: {},
             create: {
-                id: obj.id,
                 sha256: obj.sha256,
                 scanStatus: obj.scanStatus,
             },
@@ -111,11 +110,10 @@ async function main() {
         const obj = JSON.parse(line);
         await prisma.package.upsert({
             where: {
-                id: obj.id,
+                purl: obj.purl,
             },
             update: {},
             create: {
-                id: obj.id,
                 name: obj.name,
                 version: obj.version,
                 type: obj.type,
@@ -140,18 +138,23 @@ async function main() {
 
     rl3.on("line", async (line) => {
         const obj = JSON.parse(line);
-        await prisma.fileTree.upsert({
+
+        const fileTree = await prisma.fileTree.findFirst({
             where: {
-                id: obj.id,
-            },
-            update: {},
-            create: {
-                id: obj.id,
                 fileSha256: obj.fileSha256,
                 packageId: obj.packageId,
                 path: obj.path,
             },
         });
+
+        if (!fileTree)
+            await prisma.fileTree.create({
+                data: {
+                    fileSha256: obj.fileSha256,
+                    packageId: obj.packageId,
+                    path: obj.path,
+                },
+            });
     });
 
     console.log(
@@ -167,19 +170,25 @@ async function main() {
 
     rl4.on("line", async (line) => {
         const obj = JSON.parse(line);
-        await prisma.licenseFinding.upsert({
+
+        const licenseFinding = await prisma.licenseFinding.findFirst({
             where: {
-                id: obj.id,
-            },
-            update: {},
-            create: {
-                id: obj.id,
                 fileSha256: obj.fileSha256,
                 licenseExpressionSPDX: obj.licenseExpressionSPDX,
                 scanner: obj.scanner,
                 scannerConfig: obj.scannerConfig,
             },
         });
+
+        if (!licenseFinding)
+            await prisma.licenseFinding.create({
+                data: {
+                    fileSha256: obj.fileSha256,
+                    licenseExpressionSPDX: obj.licenseExpressionSPDX,
+                    scanner: obj.scanner,
+                    scannerConfig: obj.scannerConfig,
+                },
+            });
     });
 
     console.log(
@@ -195,13 +204,9 @@ async function main() {
 
     rl5.on("line", async (line) => {
         const obj = JSON.parse(line);
-        await prisma.licenseFindingMatch.upsert({
+
+        const licenseFindingMatch = await prisma.licenseFindingMatch.findFirst({
             where: {
-                id: obj.id,
-            },
-            update: {},
-            create: {
-                id: obj.id,
                 licenseFindingId: obj.licenseFindingId,
                 licenseExpression: obj.licenseExpression,
                 startLine: obj.startLine,
@@ -209,6 +214,17 @@ async function main() {
                 score: obj.score,
             },
         });
+
+        if (!licenseFindingMatch)
+            await prisma.licenseFindingMatch.create({
+                data: {
+                    licenseFindingId: obj.licenseFindingId,
+                    licenseExpression: obj.licenseExpression,
+                    startLine: obj.startLine,
+                    endLine: obj.endLine,
+                    score: obj.score,
+                },
+            });
     });
 
     console.log(
@@ -224,13 +240,9 @@ async function main() {
 
     rl6.on("line", async (line) => {
         const obj = JSON.parse(line);
-        await prisma.copyrightFinding.upsert({
+
+        const copyrightFinding = await prisma.copyrightFinding.findFirst({
             where: {
-                id: obj.id,
-            },
-            update: {},
-            create: {
-                id: obj.id,
                 fileSha256: obj.fileSha256,
                 copyright: obj.copyright,
                 scanner: obj.scanner,
@@ -239,6 +251,18 @@ async function main() {
                 endLine: obj.endLine,
             },
         });
+
+        if (!copyrightFinding)
+            await prisma.copyrightFinding.create({
+                data: {
+                    fileSha256: obj.fileSha256,
+                    copyright: obj.copyright,
+                    scanner: obj.scanner,
+                    scannerConfig: obj.scannerConfig,
+                    startLine: obj.startLine,
+                    endLine: obj.endLine,
+                },
+            });
     });
 }
 
