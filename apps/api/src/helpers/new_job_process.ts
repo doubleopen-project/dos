@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as s3Helpers from "s3-helpers";
+import { saveFilesWithHashKey } from "s3-helpers";
 import { findFilesToBeScanned } from "./db_operations";
 import * as dbQueries from "./db_queries";
 import * as fileHelpers from "./file_helpers";
+import { s3Client } from "./s3client";
 import { sendJobToQueue } from "./sa_queries";
 
 export const processPackageAndSendToScanner = async (
@@ -16,11 +17,6 @@ export const processPackageAndSendToScanner = async (
     jobStateMap: Map<string, string>,
 ) => {
     try {
-        if (!process.env.SPACES_BUCKET)
-            throw new Error(
-                "Error: SPACES_BUCKET environment variable is not defined",
-            );
-
         console.log(
             scannerJobId + ": Processing files for purl(s) " + purls.join(", "),
         );
@@ -107,10 +103,11 @@ export const processPackageAndSendToScanner = async (
 
         // Uploading files to object storage with the file hash as the key
         if (filesToBeScanned.length > 0) {
-            const uploadedWithHash = await s3Helpers.saveFilesWithHashKey(
+            const uploadedWithHash = await saveFilesWithHashKey(
+                s3Client,
+                process.env.SPACES_BUCKET || "doubleopen",
                 filesToBeScanned,
                 extractPath,
-                process.env.SPACES_BUCKET,
                 scannerJobId,
                 jobStateMap,
             );

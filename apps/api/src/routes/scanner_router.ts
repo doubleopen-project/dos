@@ -4,7 +4,7 @@
 
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma, ScannerJob } from "database";
-import * as s3Helpers from "s3-helpers";
+import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
 import {
     authenticateORTToken,
@@ -16,6 +16,7 @@ import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { processPackageAndSendToScanner } from "../helpers/new_job_process";
 import { parsePurl } from "../helpers/purl_helpers";
+import { s3Client } from "../helpers/s3client";
 import { stateMap } from "../helpers/state_helpers";
 
 const scannerRouter = zodiosRouter(scannerAPI);
@@ -308,15 +309,10 @@ scannerRouter.post(
 // Request presigned upload url for a file
 scannerRouter.post("/upload-url", authenticateORTToken, async (req, res) => {
     try {
-        if (!process.env.SPACES_BUCKET) {
-            throw new Error(
-                "Error: SPACES_BUCKET environment variable is not defined",
-            );
-        }
-
-        const objectExists = await s3Helpers.objectExistsCheck(
+        const objectExists = await objectExistsCheck(
+            s3Client,
+            process.env.SPACES_BUCKET || "doubleopen",
             req.body.key,
-            process.env.SPACES_BUCKET,
         );
 
         if (objectExists === undefined) {
@@ -339,11 +335,11 @@ scannerRouter.post("/upload-url", authenticateORTToken, async (req, res) => {
             });
         }
 
-        const presignedUrl: string | undefined =
-            await s3Helpers.getPresignedPutUrl(
-                req.body.key,
-                process.env.SPACES_BUCKET,
-            );
+        const presignedUrl: string | undefined = await getPresignedPutUrl(
+            s3Client,
+            process.env.SPACES_BUCKET || "doubleopen",
+            req.body.key,
+        );
 
         if (presignedUrl) {
             res.status(200).json({
@@ -435,7 +431,8 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
                 packagesArray[0].existingJob.state !== "failed"
             ) {
                 // Deleting zip file from object storage
-                await s3Helpers.deleteFile(
+                await deleteFile(
+                    s3Client,
                     process.env.SPACES_BUCKET || "doubleopen",
                     req.body.zipFileKey,
                 );

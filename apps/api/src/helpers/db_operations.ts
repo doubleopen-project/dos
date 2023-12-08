@@ -6,6 +6,7 @@ import { Prisma } from "database";
 import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
+import { s3Client } from "./s3client";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
 
 // ------------------------- Database operations -------------------------
@@ -530,6 +531,7 @@ export const saveJobResults = async (
         // Delete zip file from object storage
         if (scannerJob.objectStorageKey)
             await deleteFile(
+                s3Client,
                 process.env.SPACES_BUCKET || "doubleopen",
                 scannerJob.objectStorageKey,
             );

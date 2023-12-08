@@ -2,56 +2,73 @@
 //
 // SPDX-License-Identifier: MIT
 
+import * as _aws_sdk_client_s3 from "@aws-sdk/client-s3";
 import { S3 } from "@aws-sdk/client-s3";
 
-declare const listBuckets: () => Promise<string | undefined>;
-declare const listObjects: (bucketName: string) => Promise<string | undefined>;
+declare const listBuckets: (s3Client: S3) => Promise<string | undefined>;
+declare const listObjects: (
+    s3Client: S3,
+    bucketName: string,
+) => Promise<string | undefined>;
 declare const downloadFile: (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
     filePath: string,
 ) => Promise<boolean>;
 declare const downloadDirectory: (
+    s3Client: S3,
     bucketName: string,
     dirS3: string,
     baseDir: string,
 ) => Promise<string>;
 declare const objectExistsCheck: (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ) => Promise<boolean | undefined>;
 declare const getPresignedPutUrl: (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ) => Promise<string | undefined>;
 declare const getPresignedGetUrl: (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ) => Promise<string | undefined>;
 declare const uploadFile: (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
     fileContent: string | Buffer,
 ) => Promise<string | undefined>;
 declare const saveFilesWithHashKey: (
+    s3Client: S3,
+    bucketName: string,
     fileHashesAndPaths: Array<{
         hash: string;
         path: string;
     }>,
     baseDir: string,
-    bucketName: string,
     jobId: string,
     jobStateMap: Map<string, string>,
 ) => Promise<boolean>;
 declare const deleteFile: (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
 ) => Promise<boolean>;
 
-declare const client: S3;
+declare const S3Client: (
+    forcePathStyle: boolean,
+    endpoint?: string | undefined,
+    key?: string | undefined,
+    secret?: string | undefined,
+) => _aws_sdk_client_s3.S3;
 
 export {
-    client,
+    S3Client,
     deleteFile,
     downloadDirectory,
     downloadFile,

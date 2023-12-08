@@ -7,17 +7,16 @@ import fs from "fs";
 import path from "path";
 import admZip from "adm-zip";
 import { downloadFile } from "s3-helpers";
+import { s3Client } from "./s3client";
 
 // Fetching zip file from object storage
 export const downloadZipFile = async (
     zipFileKey: string,
     downloadPath: string,
 ): Promise<boolean> => {
-    if (!process.env.SPACES_BUCKET) {
-        throw new Error("SPACES_BUCKET environment variable is missing");
-    }
     return await downloadFile(
-        process.env.SPACES_BUCKET,
+        s3Client,
+        process.env.SPACES_BUCKET || "doubleopen",
         zipFileKey,
         downloadPath,
     );
