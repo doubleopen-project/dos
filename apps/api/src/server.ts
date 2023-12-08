@@ -34,7 +34,9 @@ if (process.env.NODE_ENV === "production") {
     if (!process.env.SPACES_KEY) throw new Error("SPACES_KEY not set");
     if (!process.env.SPACES_SECRET) throw new Error("SPACES_SECRET not set");
     if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
+    if (!process.env.SA_API_TOKEN) throw new Error("SA_API_TOKEN not set");
 }
+
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION
     ? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION)
     : 0;

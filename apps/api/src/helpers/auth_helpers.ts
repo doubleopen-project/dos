@@ -39,13 +39,14 @@ export const authenticateSAToken = (
     next: NextFunction,
 ) => {
     try {
+        const saToken = process.env.SA_API_TOKEN || "token";
         const authHeader = req.headers["authorization"];
         const token = authHeader && authHeader.split(" ")[1];
 
         if (token == null)
             return res.status(401).json({ message: "Unauthorized" });
 
-        if (token === process.env.SA_TOKEN) next();
+        if (token === saToken) next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);

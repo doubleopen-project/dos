@@ -24,6 +24,9 @@ const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";
 const postStateUrl: string = dosUrl + "job-state/";
 const postResultsUrl: string = dosUrl + "job-results";
 
+// Token for communicating with DOS API
+const SA_API_TOKEN: string = process.env.SA_API_TOKEN || "token";
+
 // Create/connect to a named work queue
 const workQueue: Queue.Queue<ScannerJob> = new Queue("scanner", REDIS_URL, {
     redis: { password: REDIS_PW },
@@ -287,7 +290,7 @@ export const createRequestState = (state: string): RequestInit => {
         headers: {
             "Content-Type": "application/json",
             Charset: "utf-8",
-            Authorization: "Bearer " + process.env.SERVER_TOKEN,
+            Authorization: "Bearer " + SA_API_TOKEN,
         },
         body: JSON.stringify(requestBody),
     };
@@ -331,7 +334,7 @@ export const createRequestResults = (
         headers: {
             "Content-Type": "application/json",
             Charset: "utf-8",
-            Authorization: "Bearer " + process.env.SERVER_TOKEN,
+            Authorization: "Bearer " + SA_API_TOKEN,
         },
         body: JSON.stringify(requestBody),
     };
