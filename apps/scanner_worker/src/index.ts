@@ -22,6 +22,8 @@ if (process.env.NODE_ENV === "production") {
     if (!process.env.SPACES_KEY) throw new Error("SPACES_KEY not set");
     if (!process.env.SPACES_SECRET) throw new Error("SPACES_SECRET not set");
     if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
+    if (!process.env.REDIS_URL) throw new Error("REDIS_URL not set");
+    if (!process.env.REDIS_PW) throw new Error("REDIS_PW not set");
 }
 
 // S3 client
@@ -36,10 +38,8 @@ const s3Client = S3Client(
 const baseDir = "/tmp/scanjobs";
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
-const REDIS_URL: string = process.env.REDIS_URL
-    ? process.env.REDIS_URL
-    : "redis://localhost:6379";
-const REDIS_PW: string = process.env.REDIS_PW || "";
+const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
+const REDIS_PW: string = process.env.REDIS_PW || "redis";
 
 // How many workers for ScanCode
 const WORKERS: number = process.env.WEB_CONCURRENCY
