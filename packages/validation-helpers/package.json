@@ -10,12 +10,12 @@
     "dependencies": {
         "@zodios/express": "10.6.0",
         "check-password-strength": "2.0.7",
-        "is-glob": "^4.0.3",
-        "packageurl-js": "^1.2.0",
+        "is-glob": "4.0.3",
+        "packageurl-js": "1.2.1",
         "zod": "3.22.4"
     },
     "devDependencies": {
-        "@types/is-glob": "^4.0.3",
-        "tsup": "7.2.0"
+        "@types/is-glob": "4.0.4",
+        "tsup": "8.0.1"
     }
 }
