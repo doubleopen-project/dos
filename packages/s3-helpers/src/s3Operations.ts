@@ -26,12 +26,14 @@ import {
     PutObjectCommand,
     PutObjectCommandInput,
     PutObjectCommandOutput,
+    S3,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "./s3Client";
 
 // List all buckets in the account
-export const listBuckets = async (): Promise<string | undefined> => {
+export const listBuckets = async (
+    s3Client: S3,
+): Promise<string | undefined> => {
     try {
         const data: ListBucketsCommandOutput = await s3Client.send(
             new ListBucketsCommand({}),
@@ -44,6 +46,7 @@ export const listBuckets = async (): Promise<string | undefined> => {
 
 // List all objects (files, directories) in a bucket
 export const listObjects = async (
+    s3Client: S3,
     bucketName: string,
 ): Promise<string | undefined> => {
     const bucketParams: ListObjectsCommandInput = { Bucket: bucketName };
@@ -69,12 +72,11 @@ const streamToString = (stream: any): Promise<unknown> => {
 
 // Download a file from a bucket
 export const downloadFile = async (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
     filePath: string,
 ): Promise<boolean> => {
-    checkS3ClientEnvs();
-
     const downloadParams: GetObjectRequest = {
         Bucket: bucketName,
         Key: fileName,
@@ -82,7 +84,7 @@ export const downloadFile = async (
 
     try {
         // Check if the file exists in the bucket
-        if (await objectExistsCheck(fileName, bucketName)) {
+        if (await objectExistsCheck(s3Client, bucketName, fileName)) {
             const response: GetObjectCommandOutput = await s3Client.send(
                 new GetObjectCommand(downloadParams),
             );
@@ -116,14 +118,13 @@ export const downloadFile = async (
 
 // Download an entire directory of files from a bucket to a local directory
 export const downloadDirectory = async (
+    s3Client: S3,
     bucketName: string,
     dirS3: string,
     baseDir: string,
 ): Promise<string> => {
-    checkS3ClientEnvs();
-
     // Don't try to retrieve from an empty directory
-    if (await isDirectoryEmpty(bucketName, dirS3)) {
+    if (await isDirectoryEmpty(s3Client, bucketName, dirS3)) {
         console.log(
             "Error: trying to download an empty or non-existing directory from S3",
         );
@@ -181,6 +182,7 @@ export const downloadDirectory = async (
 
 // Is a S3 directory empty?
 const isDirectoryEmpty = async (
+    s3Client: S3,
     bucketName: string,
     directoryName: string,
 ): Promise<boolean> => {
@@ -201,11 +203,10 @@ const isDirectoryEmpty = async (
 
 // Check if object exists in bucket
 export const objectExistsCheck = async (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ): Promise<boolean | undefined> => {
-    checkS3ClientEnvs();
-
     try {
         const headObjCommand: HeadObjectCommand = new HeadObjectCommand({
             Bucket: bucketName,
@@ -259,11 +260,10 @@ interface expectedError {
 
 // Get presigned put url
 export const getPresignedPutUrl = async (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ): Promise<string | undefined> => {
-    checkS3ClientEnvs();
-
     try {
         const command: PutObjectCommand = new PutObjectCommand({
             Bucket: bucketName,
@@ -280,11 +280,10 @@ export const getPresignedPutUrl = async (
 
 // Get presigned get url
 export const getPresignedGetUrl = async (
-    key: string,
+    s3Client: S3,
     bucketName: string,
+    key: string,
 ): Promise<string | undefined> => {
-    checkS3ClientEnvs();
-
     try {
         const command: GetObjectCommand = new GetObjectCommand({
             Bucket: bucketName,
@@ -299,23 +298,12 @@ export const getPresignedGetUrl = async (
     }
 };
 
-const checkS3ClientEnvs = (): void => {
-    if (!process.env.SPACES_ENDPOINT) {
-        throw new Error("SPACES_ENDPOINT environment variable is missing");
-    }
-    if (!process.env.SPACES_KEY) {
-        throw new Error("SPACES_KEY environment variable is missing");
-    }
-    if (!process.env.SPACES_SECRET) {
-        throw new Error("SPACES_SECRET environment variable is missing");
-    }
-};
-
 // The testCounter is used to test the retry functionality
 //let testCounter = 0;
 
 // Upload a file to a bucket
 export const uploadFile = async (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
     fileContent: string | Buffer,
@@ -344,14 +332,14 @@ export const uploadFile = async (
 
 // Upload files to a bucket with their hash as the key
 export const saveFilesWithHashKey = async (
+    s3Client: S3,
+    bucketName: string,
     fileHashesAndPaths: Array<{ hash: string; path: string }>,
     baseDir: string,
-    bucketName: string,
     jobId: string,
     jobStateMap: Map<string, string>,
 ): Promise<boolean> => {
     try {
-        checkS3ClientEnvs();
         let i = 1;
         console.time(jobId + ": Uploading files took");
 
@@ -371,7 +359,12 @@ export const saveFilesWithHashKey = async (
                         const fileBuffer: Buffer = fs.readFileSync(
                             baseDir + file.path,
                         );
-                        await uploadFile(bucketName, file.hash, fileBuffer);
+                        await uploadFile(
+                            s3Client,
+                            bucketName,
+                            file.hash,
+                            fileBuffer,
+                        );
                         uploadSuccess = true;
                     } catch (error) {
                         console.log(error);
@@ -420,11 +413,11 @@ export const saveFilesWithHashKey = async (
 
 // Delete a file from a bucket
 export const deleteFile = async (
+    s3Client: S3,
     bucketName: string,
     fileName: string,
 ): Promise<boolean> => {
     try {
-        checkS3ClientEnvs();
         const deleteParams: DeleteObjectCommandInput = {
             Bucket: bucketName,
             Key: fileName,

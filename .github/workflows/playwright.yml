@@ -5,7 +5,13 @@
 name: Playwright Tests
 on:
     push:
-        branches: [main, master, do-329-install-playwright-and-start-ui-testing]
+        branches:
+            [
+                main,
+                master,
+                do-329-install-playwright-and-start-ui-testing,
+                do-197-env-files-should-be-loaded-in-scripts-not-in-code,
+            ]
     pull_request:
         branches: [main, master]
 jobs:
@@ -26,15 +32,9 @@ jobs:
                   touch .env
                   echo VARIABLE=${{ secrets.VARIABLE }} >> .env
                   echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env
-                  echo SPACES_ENDPOINT=${{ vars.SPACES_ENDPOINT }} >> .env
-                  echo SPACES_KEY=${{ vars.SPACES_KEY }} >> .env
-                  echo SPACES_SECRET=${{ vars.SPACES_SECRET }} >> .env
-                  echo SPACES_BUCKET=${{ vars.SPACES_BUCKET }} >> .env
                   echo REDIS_URL=${{ vars.REDIS_URL }} >> .env
                   echo REDIS_PW=${{ vars.REDIS_PW }} >> .env
                   echo SA_TOKEN=token >> .env
-                  echo SESSION_SECRET=token >> .env
-                  echo COOKIE_SECRET=token >> .env
             - name: Run prisma generate
               run: npm run db:generate
             - name: Build project

@@ -7,7 +7,7 @@ import * as path from "path";
 import Queue, { Job } from "bull";
 import { getCurrentDateTime, loadEnv } from "common-helpers";
 import { rimraf } from "rimraf";
-import { downloadFile } from "s3-helpers";
+import { downloadFile, S3Client } from "s3-helpers";
 import throng from "throng";
 
 //////////////////////////
@@ -15,6 +15,22 @@ import throng from "throng";
 //////////////////////////
 
 loadEnv("../../.env");
+
+if (process.env.NODE_ENV === "production") {
+    if (!process.env.SPACES_ENDPOINT)
+        throw new Error("SPACES_ENDPOINT not set");
+    if (!process.env.SPACES_KEY) throw new Error("SPACES_KEY not set");
+    if (!process.env.SPACES_SECRET) throw new Error("SPACES_SECRET not set");
+    if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
+}
+
+// S3 client
+const s3Client = S3Client(
+    process.env.NODE_ENV !== "production",
+    process.env.SPACES_ENDPOINT,
+    process.env.SPACES_KEY,
+    process.env.SPACES_SECRET,
+);
 
 // Base directory for ScanCode input files
 const baseDir = "/tmp/scanjobs";
@@ -36,9 +52,7 @@ const DL_CONCURRENCY: number = process.env.DL_CONCURRENCY
     : 1;
 
 // Spaces bucket
-const SPACES_BUCKET: string = process.env.SPACES_BUCKET
-    ? process.env.SPACES_BUCKET
-    : "doubleopen2";
+const SPACES_BUCKET: string = process.env.SPACES_BUCKET || "doubleopen";
 
 // The maximum number of OS processes to use for ScanCode
 const SCANCODE_PROCESSES: number = process.env.SCANCODE_PROCESSES
@@ -120,6 +134,7 @@ const start = (): void => {
         const concurrentDownloads: Promise<boolean>[] = [];
         for (const file of job.data.files) {
             const downloadPromise = downloadFile(
+                s3Client,
                 SPACES_BUCKET,
                 file.hash,
                 path.join(localJobDir, file.path),

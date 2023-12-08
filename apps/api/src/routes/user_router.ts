@@ -7,12 +7,13 @@ import { zodiosRouter } from "@zodios/express";
 import { Prisma } from "database";
 import isGlob from "is-glob";
 import { minimatch } from "minimatch";
-import * as s3Helpers from "s3-helpers";
+import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { hashPassword } from "../helpers/password_helper";
+import { s3Client } from "../helpers/s3client";
 
 const userRouter = zodiosRouter(userAPI);
 
@@ -801,9 +802,10 @@ userRouter.post("/file", async (req, res) => {
         console.log("Searching data for file sha256: ", sha256);
 
         const fileData = await dbQueries.findFileData(sha256);
-        const presignedGetUrl = await s3Helpers.getPresignedGetUrl(
+        const presignedGetUrl = await getPresignedGetUrl(
+            s3Client,
+            process.env.SPACES_BUCKET || "doubleopen",
             sha256,
-            process.env.SPACES_BUCKET as string,
         );
 
         if (!presignedGetUrl) {

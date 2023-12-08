@@ -8,7 +8,17 @@ import path from "path";
 import readline from "readline";
 import { PrismaClient } from "@prisma/client";
 import admZip from "adm-zip";
-import { objectExistsCheck, uploadFile } from "s3-helpers";
+import { objectExistsCheck, S3Client, uploadFile } from "s3-helpers";
+
+if (process.env.NODE_ENV === "production")
+    throw new Error("Don't run this in production");
+
+const s3Client = S3Client(
+    true,
+    process.env.SPACES_ENDPOINT,
+    process.env.SPACES_KEY,
+    process.env.SPACES_SECRET,
+);
 
 const prisma = new PrismaClient();
 
@@ -50,8 +60,9 @@ async function main() {
 
     for (const file of files) {
         const objectExists = await objectExistsCheck(
-            file,
+            s3Client,
             process.env.SPACES_BUCKET || "doubleopen",
+            file,
         );
 
         if (objectExists === undefined)
@@ -61,6 +72,7 @@ async function main() {
                 "/tmp/extracted/files/" + file,
             );
             const result = await uploadFile(
+                s3Client,
                 process.env.SPACES_BUCKET || "doubleopen",
                 file,
                 fileBuffer,
