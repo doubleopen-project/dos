@@ -17,7 +17,7 @@ const router = zodiosRouter(scannerAgentApi);
 
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
-const REDIS_PW: string = process.env.REDIS_PW || "";
+const REDIS_PW: string = process.env.REDIS_PW || "redis";
 
 // URL address and node of DOS to send job status updates to
 const dosUrl: string = process.env.DOS_URL || "http://localhost:5000/api/";

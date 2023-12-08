@@ -13,6 +13,11 @@ import router from "./routes/router";
 
 loadEnv("../../.env");
 
+if (process.env.NODE_ENV === "production") {
+    if (!process.env.REDIS_URL) throw new Error("REDIS_URL not set");
+    if (!process.env.REDIS_PW) throw new Error("REDIS_PW not set");
+}
+
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION
     ? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION)
     : 0;
