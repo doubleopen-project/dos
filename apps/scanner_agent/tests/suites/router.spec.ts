@@ -15,6 +15,8 @@ import app from "../../src/server";
 chai.use(chaiHttp);
 loadEnv("../../.env");
 
+const serverToken = process.env.SA_API_TOKEN || "token";
+
 export default function suite(): void {
     it("GET / should return 200 and respond properly", (done) => {
         // Define the mock response
@@ -45,7 +47,7 @@ export default function suite(): void {
         expect(requestInit.headers).to.deep.equal({
             "Content-Type": "application/json",
             Charset: "utf-8",
-            Authorization: "Bearer " + process.env.SERVER_TOKEN,
+            Authorization: "Bearer " + serverToken,
         });
         expect(requestInit.body).to.equal(JSON.stringify({ state }));
     });
@@ -63,7 +65,7 @@ export default function suite(): void {
         expect(requestInit.headers).to.deep.equal({
             "Content-Type": "application/json",
             Charset: "utf-8",
-            Authorization: "Bearer " + process.env.SERVER_TOKEN,
+            Authorization: "Bearer " + serverToken,
         });
         expect(requestInit.body).to.equal(
             JSON.stringify({ id, result: "scanresult" }),

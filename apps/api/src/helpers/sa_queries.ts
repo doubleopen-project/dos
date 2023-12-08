@@ -12,6 +12,8 @@ const scannerUrl: string = process.env.SCANNER_URL
 
 const scannerAgentClient = new Zodios(scannerUrl, scannerAgentApi);
 
+const saToken = process.env.SA_API_TOKEN || "token";
+
 export const sendJobToQueue = async (
     jobId: string,
     files: { hash: string; path: string }[],
@@ -36,7 +38,7 @@ export const sendJobToQueue = async (
                 },
                 {
                     headers: {
-                        Authorization: "Bearer " + process.env.SA_TOKEN,
+                        Authorization: "Bearer " + saToken,
                     },
                 },
             );
@@ -87,7 +89,7 @@ export const reportResultState = async (
                     params: { id: jobId },
 
                     headers: {
-                        Authorization: "Bearer " + process.env.SA_TOKEN,
+                        Authorization: "Bearer " + saToken,
                     },
                 },
             );
@@ -129,7 +131,7 @@ export const queryJobDetails = async (
         const jobDetails = await scannerAgentClient.getJobDetails({
             params: { id: jobId },
             headers: {
-                Authorization: "Bearer " + process.env.SA_TOKEN,
+                Authorization: "Bearer " + saToken,
             },
         });
 
