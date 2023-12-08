@@ -12,17 +12,17 @@ test("sees DOS monorepo in package library and chooses the package to curation U
 
     await page.goto("http://localhost:3000/packages");
 
-    // Expect to see the Package Library title.
+    // Expect to see the Package Library title
     await expect(
         page.getByRole("heading", { name: "Package Library" }),
     ).toBeVisible();
 
-    // Expect to see the DOS monorepo.
+    // Expect to see the DOS monorepo
     await expect(
         page.getByRole("link", { name: "dos-monorepo" }),
     ).toBeVisible();
 
-    // Click the DOS monorepo and check that it opens up in the curation UI view.
+    // Click the DOS monorepo and check that it opens up in the curation UI view
     await Promise.all([
         page.waitForNavigation(),
         page.click("a:has-text('dos-monorepo')"),
