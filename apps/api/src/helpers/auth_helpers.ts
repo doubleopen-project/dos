@@ -67,11 +67,7 @@ export const authenticateAdminToken = async (
             return res.status(401).json({ message: "Unauthorized" });
 
         const user = await findUser(token);
-        if (
-            token === process.env.ADMIN_TOKEN ||
-            (user && user.role === "ADMIN")
-        )
-            next();
+        if (user && user.role === "ADMIN") next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);
@@ -86,11 +82,7 @@ export const authorizeAdmin = async (
 ) => {
     try {
         const { user } = req;
-        if (
-            (user && user.role === "ADMIN") ||
-            req.body.token === process.env.ADMIN_TOKEN
-        )
-            next();
+        if (user && user.role === "ADMIN") next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);
