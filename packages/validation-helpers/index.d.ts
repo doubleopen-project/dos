@@ -5191,6 +5191,363 @@ declare const userAPI: [
     },
     {
         method: "get";
+        path: "/bulk-curation";
+        description: "Get all bulk curations";
+        response: zod.ZodObject<
+            {
+                bulkCurations: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodNullable<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            package: zod.ZodObject<
+                                {
+                                    id: zod.ZodNumber;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    id: number;
+                                    purl: string;
+                                },
+                                {
+                                    id: number;
+                                    purl: string;
+                                }
+                            >;
+                            licenseConclusions: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        sha256: zod.ZodString;
+                                        affectedPaths: zod.ZodObject<
+                                            {
+                                                inContextPurl: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                                additionalMatches: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                            purl: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                            purl: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                            purl: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                inContextPurl: {
+                                                    path: string;
+                                                }[];
+                                                additionalMatches: {
+                                                    path: string;
+                                                    purl: string;
+                                                }[];
+                                            },
+                                            {
+                                                inContextPurl: {
+                                                    path: string;
+                                                }[];
+                                                additionalMatches: {
+                                                    path: string;
+                                                    purl: string;
+                                                }[];
+                                            }
+                                        >;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        sha256: string;
+                                        affectedPaths: {
+                                            inContextPurl: {
+                                                path: string;
+                                            }[];
+                                            additionalMatches: {
+                                                path: string;
+                                                purl: string;
+                                            }[];
+                                        };
+                                    },
+                                    {
+                                        id: number;
+                                        sha256: string;
+                                        affectedPaths: {
+                                            inContextPurl: {
+                                                path: string;
+                                            }[];
+                                            additionalMatches: {
+                                                path: string;
+                                                purl: string;
+                                            }[];
+                                        };
+                                    }
+                                >,
+                                "many"
+                            >;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                sha256: string;
+                                affectedPaths: {
+                                    inContextPurl: {
+                                        path: string;
+                                    }[];
+                                    additionalMatches: {
+                                        path: string;
+                                        purl: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                sha256: string;
+                                affectedPaths: {
+                                    inContextPurl: {
+                                        path: string;
+                                    }[];
+                                    additionalMatches: {
+                                        path: string;
+                                        purl: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        sha256: string;
+                        affectedPaths: {
+                            inContextPurl: {
+                                path: string;
+                            }[];
+                            additionalMatches: {
+                                path: string;
+                                purl: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
+            },
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        sha256: string;
+                        affectedPaths: {
+                            inContextPurl: {
+                                path: string;
+                            }[];
+                            additionalMatches: {
+                                path: string;
+                                purl: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
         path: "/bulk-curation/:id";
         description: "Get bulk curation";
         parameters: [
@@ -10107,6 +10464,363 @@ declare const dosAPI: [
             },
             {
                 message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/bulk-curation";
+        description: "Get all bulk curations";
+        response: zod.ZodObject<
+            {
+                bulkCurations: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodNullable<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            package: zod.ZodObject<
+                                {
+                                    id: zod.ZodNumber;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    id: number;
+                                    purl: string;
+                                },
+                                {
+                                    id: number;
+                                    purl: string;
+                                }
+                            >;
+                            licenseConclusions: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        sha256: zod.ZodString;
+                                        affectedPaths: zod.ZodObject<
+                                            {
+                                                inContextPurl: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                                additionalMatches: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                            purl: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                            purl: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                            purl: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                inContextPurl: {
+                                                    path: string;
+                                                }[];
+                                                additionalMatches: {
+                                                    path: string;
+                                                    purl: string;
+                                                }[];
+                                            },
+                                            {
+                                                inContextPurl: {
+                                                    path: string;
+                                                }[];
+                                                additionalMatches: {
+                                                    path: string;
+                                                    purl: string;
+                                                }[];
+                                            }
+                                        >;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        sha256: string;
+                                        affectedPaths: {
+                                            inContextPurl: {
+                                                path: string;
+                                            }[];
+                                            additionalMatches: {
+                                                path: string;
+                                                purl: string;
+                                            }[];
+                                        };
+                                    },
+                                    {
+                                        id: number;
+                                        sha256: string;
+                                        affectedPaths: {
+                                            inContextPurl: {
+                                                path: string;
+                                            }[];
+                                            additionalMatches: {
+                                                path: string;
+                                                purl: string;
+                                            }[];
+                                        };
+                                    }
+                                >,
+                                "many"
+                            >;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                sha256: string;
+                                affectedPaths: {
+                                    inContextPurl: {
+                                        path: string;
+                                    }[];
+                                    additionalMatches: {
+                                        path: string;
+                                        purl: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                sha256: string;
+                                affectedPaths: {
+                                    inContextPurl: {
+                                        path: string;
+                                    }[];
+                                    additionalMatches: {
+                                        path: string;
+                                        purl: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        sha256: string;
+                        affectedPaths: {
+                            inContextPurl: {
+                                path: string;
+                            }[];
+                            additionalMatches: {
+                                path: string;
+                                purl: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
+            },
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        sha256: string;
+                        affectedPaths: {
+                            inContextPurl: {
+                                path: string;
+                            }[];
+                            additionalMatches: {
+                                path: string;
+                                purl: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
             }
         >;
         errors: [

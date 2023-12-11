@@ -122,6 +122,46 @@ export const DeleteLicenseConclusionRes = z.object({
     message: z.string(),
 });
 
+//------------------ GET all bulk curations -------------------
+export const GetBulkCurationsRes = z.object({
+    bulkCurations: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            pattern: z.nullable(z.string()),
+            concludedLicenseExpressionSPDX: z.string(),
+            detectedLicenseExpressionSPDX: z.nullable(z.string()),
+            comment: z.nullable(z.string()),
+            package: z.object({
+                id: z.number(),
+                purl: z.string(),
+            }),
+            licenseConclusions: z.array(
+                z.object({
+                    id: z.number(),
+                    sha256: z.string(),
+                    affectedPaths: z.object({
+                        inContextPurl: z.array(
+                            z.object({
+                                path: z.string(),
+                            }),
+                        ),
+                        additionalMatches: z.array(
+                            z.object({
+                                path: z.string(),
+                                purl: z.string(),
+                            }),
+                        ),
+                    }),
+                }),
+            ),
+            user: z.object({
+                username: z.string(),
+            }),
+        }),
+    ),
+});
+
 //-------------- GET bulk curation --------------
 export const GetBulkCurationRes = z.object({
     pattern: z.nullable(z.string()),

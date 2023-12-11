@@ -2222,6 +2222,12 @@ type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
         comment: true;
         concludedLicenseExpressionSPDX: true;
         detectedLicenseExpressionSPDX: true;
+        package: {
+            select: {
+                id: true;
+                purl: true;
+            };
+        };
         licenseConclusions: {
             select: {
                 id: true;
@@ -2231,6 +2237,11 @@ type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
                         filetrees: {
                             select: {
                                 path: true;
+                                package: {
+                                    select: {
+                                        purl: true;
+                                    };
+                                };
                             };
                         };
                     };
@@ -2328,6 +2339,12 @@ export const findBulkCurationsByPackageId = async (
                     comment: true,
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
                     user: {
                         select: {
                             username: true,
@@ -2345,6 +2362,68 @@ export const findBulkCurationsByPackageId = async (
                                         },
                                         select: {
                                             path: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkCurations: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkCurations;
+};
+
+export const findBulkCurationsWithRelations = async (): Promise<
+    BulkCurationWithRelations[]
+> => {
+    let retries = initialRetryCount;
+    let bulkCurations: BulkCurationWithRelations[] = [];
+
+    while (retries > 0) {
+        try {
+            bulkCurations = await prisma.bulkCuration.findMany({
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    pattern: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            id: true,
+                            file: {
+                                select: {
+                                    sha256: true,
+                                    filetrees: {
+                                        select: {
+                                            path: true,
+                                            package: {
+                                                select: {
+                                                    purl: true,
+                                                },
+                                            },
                                         },
                                     },
                                 },
