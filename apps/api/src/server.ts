@@ -4,7 +4,6 @@
 
 import { zodiosApp } from "@zodios/express";
 import { openApiBuilder } from "@zodios/openapi";
-import { loadEnv } from "common-helpers";
 import compression from "compression";
 import genFunc from "connect-pg-simple";
 import cookieParser from "cookie-parser";
@@ -21,8 +20,6 @@ import { authorizeAdmin, authorizeUser } from "./helpers/auth_helpers";
 import * as dbQueries from "./helpers/db_queries";
 import { localStrategy } from "./passport_strategies/local_strategy";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
-
-loadEnv("../../.env");
 
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set");
 

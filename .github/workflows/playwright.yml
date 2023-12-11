@@ -30,11 +30,7 @@ jobs:
             - name: Create env file
               run: |
                   touch .env
-                  echo VARIABLE=${{ secrets.VARIABLE }} >> .env
                   echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env
-                  echo REDIS_URL=${{ vars.REDIS_URL }} >> .env
-                  echo REDIS_PW=${{ vars.REDIS_PW }} >> .env
-                  echo SA_TOKEN=token >> .env
             - name: Run prisma generate
               run: npm run db:generate
             - name: Build project

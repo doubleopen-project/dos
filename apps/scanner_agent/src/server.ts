@@ -4,14 +4,11 @@
 
 import { zodiosApp } from "@zodios/express";
 import { openApiBuilder } from "@zodios/openapi";
-import { loadEnv } from "common-helpers";
 import compression from "compression";
 import express from "express";
 import { serve, setup } from "swagger-ui-express";
 import { scannerAgentApi } from "validation-helpers";
 import router from "./routes/router";
-
-loadEnv("../../.env");
 
 if (process.env.NODE_ENV === "production") {
     if (!process.env.REDIS_URL) throw new Error("REDIS_URL not set");

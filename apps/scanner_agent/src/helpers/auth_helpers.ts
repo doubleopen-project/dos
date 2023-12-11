@@ -1,10 +1,7 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
-import { loadEnv } from "common-helpers";
 import { NextFunction, Request, Response } from "express";
-
-loadEnv("../../.env");
 
 const SA_API_TOKEN = process.env.SA_API_TOKEN || "token";
 

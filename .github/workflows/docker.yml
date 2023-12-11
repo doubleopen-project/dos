@@ -9,7 +9,7 @@ on:
         branches:
             - main
             - worker-deployment
-            - do-216-separate-scanner-agent-and-worker-to-different-apps
+            - do-197-env-files-should-be-loaded-in-scripts-not-in-code
 
 jobs:
     build:
