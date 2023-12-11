@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
-import { loadEnv } from "common-helpers";
 import { NextFunction, Request, Response } from "express";
 
-loadEnv("../../.env");
+const SA_API_TOKEN = process.env.SA_API_TOKEN || "token";
 
 export const authenticateAPIToken = (
     req: Request,
@@ -19,7 +18,7 @@ export const authenticateAPIToken = (
     //console.log('Token: ' + token);
     //console.log('API_TOKEN: ' + process.env.SERVER_TOKEN);
 
-    if (token === process.env.SERVER_TOKEN) {
+    if (token === SA_API_TOKEN) {
         next();
     } else {
         return res.status(403).json({ message: "Forbidden" });

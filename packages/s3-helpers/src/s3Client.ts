@@ -5,18 +5,20 @@
 // This is the Digital Ocean Spaces S3 client
 
 import { S3 } from "@aws-sdk/client-s3";
-import { loadEnv } from "common-helpers";
 
-loadEnv("../../.env");
-
-export const s3Client: S3 = new S3({
-    forcePathStyle: process.env.NODE_ENV !== "production",
-    endpoint: process.env.SPACES_ENDPOINT,
-    region: "us-east-1",
-    credentials: {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        accessKeyId: process.env.SPACES_KEY!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        secretAccessKey: process.env.SPACES_SECRET!,
-    },
-});
+export const getS3Client = (
+    forcePathStyle: boolean,
+    endpoint?: string,
+    key?: string,
+    secret?: string,
+): S3 => {
+    return new S3({
+        forcePathStyle: forcePathStyle,
+        endpoint: endpoint || "http://localhost:9000",
+        region: "us-east-1",
+        credentials: {
+            accessKeyId: key || "miniouser",
+            secretAccessKey: secret || "miniopassword",
+        },
+    });
+};

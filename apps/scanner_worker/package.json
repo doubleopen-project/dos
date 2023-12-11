@@ -5,7 +5,7 @@
     "scripts": {
         "build": "tsup --format cjs",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
-        "start": "node dist/index.js"
+        "start": "dotenv -e ../../.env node dist/index.js"
     },
     "dependencies": {
         "bull": "4.11.5",
@@ -15,6 +15,7 @@
     },
     "devDependencies": {
         "@types/node": "20.10.4",
-        "@types/throng": "5.0.7"
+        "@types/throng": "5.0.7",
+        "dotenv-cli": "7.3.0"
     }
 }

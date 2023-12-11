@@ -39,13 +39,14 @@ export const authenticateSAToken = (
     next: NextFunction,
 ) => {
     try {
+        const saToken = process.env.SA_API_TOKEN || "token";
         const authHeader = req.headers["authorization"];
         const token = authHeader && authHeader.split(" ")[1];
 
         if (token == null)
             return res.status(401).json({ message: "Unauthorized" });
 
-        if (token === process.env.SA_TOKEN) next();
+        if (token === saToken) next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);
@@ -66,11 +67,7 @@ export const authenticateAdminToken = async (
             return res.status(401).json({ message: "Unauthorized" });
 
         const user = await findUser(token);
-        if (
-            token === process.env.ADMIN_TOKEN ||
-            (user && user.role === "ADMIN")
-        )
-            next();
+        if (user && user.role === "ADMIN") next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);
@@ -85,11 +82,7 @@ export const authorizeAdmin = async (
 ) => {
     try {
         const { user } = req;
-        if (
-            (user && user.role === "ADMIN") ||
-            req.body.token === process.env.ADMIN_TOKEN
-        )
-            next();
+        if (user && user.role === "ADMIN") next();
         else return res.status(403).json({ message: "Forbidden" });
     } catch (error) {
         console.log(error);

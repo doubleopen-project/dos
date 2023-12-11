@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { S3 } from "@aws-sdk/client-s3";
-import { s3Client } from "./s3Client";
+import { getS3Client } from "./s3Client";
 
-export const client: S3 = s3Client;
-
+export const S3Client = getS3Client;
 export * from "./s3Operations";

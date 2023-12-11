@@ -4,7 +4,6 @@
 
 import { zodiosApp } from "@zodios/express";
 import { openApiBuilder } from "@zodios/openapi";
-import { loadEnv } from "common-helpers";
 import compression from "compression";
 import genFunc from "connect-pg-simple";
 import cookieParser from "cookie-parser";
@@ -22,12 +21,18 @@ import * as dbQueries from "./helpers/db_queries";
 import { localStrategy } from "./passport_strategies/local_strategy";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
-loadEnv("../../.env");
-
-if (!process.env.SESSION_SECRET) throw new Error("SESSION_SECRET not set");
-if (!process.env.COOKIE_SECRET) throw new Error("COOKIE_SECRET not set");
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set");
-if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
+
+if (process.env.NODE_ENV === "production") {
+    if (!process.env.SESSION_SECRET) throw new Error("SESSION_SECRET not set");
+    if (!process.env.COOKIE_SECRET) throw new Error("COOKIE_SECRET not set");
+    if (!process.env.SPACES_ENDPOINT)
+        throw new Error("SPACES_ENDPOINT not set");
+    if (!process.env.SPACES_KEY) throw new Error("SPACES_KEY not set");
+    if (!process.env.SPACES_SECRET) throw new Error("SPACES_SECRET not set");
+    if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
+    if (!process.env.SA_API_TOKEN) throw new Error("SA_API_TOKEN not set");
+}
 
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION
     ? parseInt(process.env.SIZE_LIMIT_FOR_COMPRESSION)
@@ -65,7 +70,7 @@ const corsOptions = {
     },
 };
 
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET || "secret"));
 
 // Use User from database package in serialization and deserialization
 declare global {
@@ -86,7 +91,7 @@ if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 
 app.use(
     session({
-        secret: process.env.SESSION_SECRET,
+        secret: process.env.SESSION_SECRET || "secret",
         resave: false,
         saveUninitialized: false,
         store: sessionStore,

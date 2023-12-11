@@ -5,9 +5,9 @@
     "scripts": {
         "build": "tsup --format cjs",
         "clever-logs": "clever logs",
-        "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node dist/server.js\"",
+        "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node --env-file ../../.env dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
-        "start": "node dist/src/server.js",
+        "start": "node --env-file ../../.env dist/src/server.js",
         "test": "mocha dist/tests --exit --timeout 10000"
     },
     "dependencies": {
@@ -15,7 +15,6 @@
         "@zodios/openapi": "10.5.0",
         "body-parser": "1.20.2",
         "bull": "4.11.5",
-        "common-helpers": "*",
         "compression": "1.7.4",
         "cross-fetch": "4.0.0",
         "express": "4.18.2",
