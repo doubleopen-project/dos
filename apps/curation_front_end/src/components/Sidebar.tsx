@@ -43,10 +43,10 @@ const Sidebar = ({ children }: SidebarProps) => {
                             <GrCatalog size={20} />
                         </div>
                     </Link>
-                    <Link href="/curation">
+                    <Link href="/curations">
                         <div
                             className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                            title="Package Curations"
+                            title="Curations Library"
                         >
                             <GrInspect size={20} />
                         </div>
