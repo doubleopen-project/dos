@@ -5,9 +5,6 @@
 // This is the Digital Ocean Spaces S3 client
 
 import { S3 } from "@aws-sdk/client-s3";
-import { loadEnv } from "common-helpers";
-
-loadEnv("../../.env");
 
 export const getS3Client = (
     forcePathStyle: boolean,

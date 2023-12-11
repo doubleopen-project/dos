@@ -4,7 +4,6 @@
 
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import { loadEnv } from "common-helpers";
 import nock from "nock";
 import {
     createRequestResults,
@@ -13,7 +12,6 @@ import {
 import app from "../../src/server";
 
 chai.use(chaiHttp);
-loadEnv("../../.env");
 
 const serverToken = process.env.SA_API_TOKEN || "token";
 

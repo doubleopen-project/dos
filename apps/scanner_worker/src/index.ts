@@ -5,7 +5,7 @@
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import * as path from "path";
 import Queue, { Job } from "bull";
-import { getCurrentDateTime, loadEnv } from "common-helpers";
+import { getCurrentDateTime } from "common-helpers";
 import { rimraf } from "rimraf";
 import { downloadFile, S3Client } from "s3-helpers";
 import throng from "throng";
@@ -13,8 +13,6 @@ import throng from "throng";
 //////////////////////////
 // Environment variables
 //////////////////////////
-
-loadEnv("../../.env");
 
 if (process.env.NODE_ENV === "production") {
     if (!process.env.SPACES_ENDPOINT)

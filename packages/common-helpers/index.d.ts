@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-declare const loadEnv: (envPath: string) => void;
-
 declare const getCurrentDateTime: () => string;
 
-export { getCurrentDateTime, loadEnv };
+export { getCurrentDateTime };
