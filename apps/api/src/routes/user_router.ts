@@ -101,6 +101,67 @@ userRouter.put("/token", async (req, res) => {
     }
 });
 
+userRouter.get("/license-conclusion", async (req, res) => {
+    try {
+        // TODO: return only license conclusions that belong to the user
+        // or to a group that the user belongs to
+
+        const licenseConclusionsWithRelations =
+            await dbQueries.findAllLicenseConclusions();
+
+        const licenseConclusions = [];
+
+        for (const lc of licenseConclusionsWithRelations) {
+            const inContextPurl = [];
+            const additionalMatches = [];
+
+            for (const ft of lc.file.filetrees) {
+                if (ft.package.purl === lc.contextPurl) {
+                    inContextPurl.push({
+                        path: ft.path,
+                    });
+                } else {
+                    additionalMatches.push({
+                        path: ft.path,
+                        purl: ft.package.purl,
+                    });
+                }
+            }
+
+            licenseConclusions.push({
+                id: lc.id,
+                updatedAt: lc.updatedAt,
+                concludedLicenseExpressionSPDX:
+                    lc.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX: lc.detectedLicenseExpressionSPDX,
+                comment: lc.comment,
+                user: lc.user,
+                bulkCurationId: lc.bulkCurationId,
+                sha256: lc.file.sha256,
+                contextPurl: lc.contextPurl,
+                affectedPaths: {
+                    inContextPurl: inContextPurl,
+                    additionalMatches: additionalMatches,
+                },
+            });
+        }
+        res.status(200).json({
+            licenseConclusions: licenseConclusions,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/license-conclusion", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");

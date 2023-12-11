@@ -29,6 +29,36 @@ export const PutUserRes = z.object({
     message: z.string(),
 });
 
+//------------------ GET license conclusion -------------------
+export const GetLicenseConclusionsRes = z.object({
+    licenseConclusions: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            concludedLicenseExpressionSPDX: z.string(),
+            detectedLicenseExpressionSPDX: z.nullable(z.string()),
+            comment: z.nullable(z.string()),
+            user: z.object({ username: z.string() }),
+            bulkCurationId: z.nullable(z.number()),
+            sha256: z.string(),
+            contextPurl: z.string(),
+            affectedPaths: z.object({
+                inContextPurl: z.array(
+                    z.object({
+                        path: z.string(),
+                    }),
+                ),
+                additionalMatches: z.array(
+                    z.object({
+                        path: z.string(),
+                        purl: z.string(),
+                    }),
+                ),
+            }),
+        }),
+    ),
+});
+
 //-------------- POST license conclusion --------------
 
 export const PostLicenseConclusionReq = z.object({

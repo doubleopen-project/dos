@@ -38,6 +38,13 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/license-conclusion",
+        description: "Get all license conclusions",
+        response: schemas.GetLicenseConclusionsRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/license-conclusion",
         description: "Add a new license conclusion",
