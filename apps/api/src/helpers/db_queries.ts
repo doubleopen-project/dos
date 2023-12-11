@@ -2069,6 +2069,94 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
+type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
+    select: {
+        id: true;
+        updatedAt: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        comment: true;
+        contextPurl: true;
+        user: {
+            select: {
+                username: true;
+            };
+        };
+        bulkCurationId: true;
+        file: {
+            select: {
+                sha256: true;
+                filetrees: {
+                    select: {
+                        path: true;
+                        package: {
+                            select: {
+                                id: true;
+                                purl: true;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+}>;
+
+export const findAllLicenseConclusions = async (): Promise<
+    LicenseConclusionWithRelations[]
+> => {
+    let licenseConclusions: LicenseConclusionWithRelations[] = [];
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            licenseConclusions = await prisma.licenseConclusion.findMany({
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    contextPurl: true,
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    bulkCurationId: true,
+                    file: {
+                        select: {
+                            sha256: true,
+                            filetrees: {
+                                select: {
+                                    path: true,
+                                    package: {
+                                        select: {
+                                            id: true,
+                                            purl: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return licenseConclusions;
+};
+
 type BulkCurationWithPackageRelation = Prisma.BulkCurationGetPayload<{
     select: {
         id: true;
