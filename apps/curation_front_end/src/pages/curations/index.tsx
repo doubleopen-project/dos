@@ -4,6 +4,7 @@
 
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PackageList from "@/components/package_table/PackageList";
 
 export default function CurationsLibrary() {
@@ -32,9 +33,32 @@ export default function CurationsLibrary() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="flex-1 py-1 m-1 overflow-auto border rounded-lg shadow">
-                <PackageList data={{ packages }} />
-            </div>
+
+            <Tabs defaultValue="license_conclusions">
+                <TabsList className="p-2 ml-1 mt-2">
+                    <TabsTrigger value="license_conclusions">
+                        License Conclusions
+                    </TabsTrigger>
+                    <TabsTrigger value="bulk_curations">
+                        Bulk Curations
+                    </TabsTrigger>
+                    <TabsTrigger value="path_exclusions">
+                        Path Exclusions
+                    </TabsTrigger>
+                </TabsList>
+                <div className="flex-1 mx-1 overflow-auto border rounded-lg shadow">
+                    <TabsContent value="license_conclusions">
+                        License Conclusions
+                        <PackageList data={{ packages }} />
+                    </TabsContent>
+                    <TabsContent value="bulk_curations">
+                        Bulk Curations
+                    </TabsContent>
+                    <TabsContent value="path_exclusions">
+                        Path Exclusions
+                    </TabsContent>
+                </div>
+            </Tabs>
         </div>
     );
 }
