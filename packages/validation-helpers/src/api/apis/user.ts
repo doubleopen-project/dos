@@ -174,6 +174,13 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/path-exclusion",
+        description: "Get all path exclusions",
+        response: schemas.GetPathExclusionsRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/path-exclusion",
         description: "Add a new path exclusion",

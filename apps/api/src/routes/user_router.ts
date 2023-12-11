@@ -324,9 +324,7 @@ userRouter.get("/bulk-curation", async (req, res) => {
 
                 for (const ft of lc.file.filetrees) {
                     if (ft.package.purl === bc.package.purl) {
-                        inContextPurl.push({
-                            path: ft.path,
-                        });
+                        inContextPurl.push(ft.path);
                     } else {
                         additionalMatches.push({
                             path: ft.path,
@@ -410,7 +408,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
         let mathchedPathsCount = 0;
 
         for (const fileTree of fileTrees) {
-            if (minimatch(fileTree.path, pattern)) {
+            if (minimatch(fileTree.path, pattern, { dot: true })) {
                 mathchedPathsCount++;
                 // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
                 if (
@@ -524,7 +522,7 @@ userRouter.get("/bulk-curation/:id", async (req, res) => {
 
         for (const lc of bulkCurationWithRelations.licenseConclusions) {
             for (const filetree of lc.file.filetrees) {
-                filepaths.push({ path: filetree.path });
+                filepaths.push(filetree.path);
             }
             licenseConclusions.push({ id: lc.id });
         }
@@ -608,7 +606,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
 
             for (const fileTree of fileTrees) {
                 if (
-                    minimatch(fileTree.path, pattern) &&
+                    minimatch(fileTree.path, pattern, { dot: true }) &&
                     bulkCurationWithRelations.licenseConclusions.find(
                         (lc) => lc.file.sha256 === fileTree.fileSha256,
                     ) === undefined
@@ -636,7 +634,11 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
             for (const lc of bulkCurationWithRelations.licenseConclusions) {
                 // Using the first filetree only because the file hash is the same,
                 // so the licenseConclusion is the same one for all filetrees
-                if (!minimatch(lc.file.filetrees[0].path, pattern)) {
+                if (
+                    !minimatch(lc.file.filetrees[0].path, pattern, {
+                        dot: true,
+                    })
+                ) {
                     await dbQueries.deleteLicenseConclusion(lc.id);
                 }
             }
@@ -776,6 +778,53 @@ userRouter.post("/bulk-curations", async (req, res) => {
     }
 });
 
+userRouter.get("/path-exclusion", async (req, res) => {
+    try {
+        const pathExclusionsWithRelations =
+            await dbQueries.findPathExclusions();
+
+        const pathExclusions = [];
+        for (const pe of pathExclusionsWithRelations) {
+            const affectedPaths = [];
+
+            for (const ft of pe.package.fileTrees) {
+                if (minimatch(ft.path, pe.pattern, { dot: true })) {
+                    affectedPaths.push(ft.path);
+                }
+            }
+
+            pathExclusions.push({
+                id: pe.id,
+                updatedAt: pe.updatedAt,
+                pattern: pe.pattern,
+                reason: pe.reason,
+                comment: pe.comment,
+                user: pe.user,
+                package: {
+                    id: pe.package.id,
+                    purl: pe.package.purl,
+                },
+                affectedPaths: affectedPaths,
+            });
+        }
+
+        return res.status(200).json({
+            pathExclusions: pathExclusions,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/path-exclusion", async (req, res) => {
     try {
         const { user } = req;
@@ -797,7 +846,9 @@ userRouter.post("/path-exclusion", async (req, res) => {
                 const filePath = filePaths.pop();
 
                 if (!filePath) break;
-                if (minimatch(filePath, req.body.pattern.trim())) {
+                if (
+                    minimatch(filePath, req.body.pattern.trim(), { dot: true })
+                ) {
                     match = true;
                 }
             }

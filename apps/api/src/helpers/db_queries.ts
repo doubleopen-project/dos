@@ -2507,6 +2507,78 @@ export const findPathExclusionUserId = async (
     return pathExclusion ? pathExclusion.userId : null;
 };
 
+type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
+    select: {
+        id: true;
+        updatedAt: true;
+        pattern: true;
+        reason: true;
+        comment: true;
+        user: {
+            select: {
+                username: true;
+            };
+        };
+        package: {
+            select: {
+                id: true;
+                purl: true;
+                fileTrees: {
+                    select: {
+                        path: true;
+                    };
+                };
+            };
+        };
+    };
+}>;
+
+export const findPathExclusions = async (): Promise<
+    PathExclusionWithRelations[]
+> => {
+    let retries = initialRetryCount;
+    let pathExclusions: PathExclusionWithRelations[] = [];
+
+    while (retries > 0) {
+        try {
+            pathExclusions = await prisma.pathExclusion.findMany({
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    pattern: true,
+                    reason: true,
+                    comment: true,
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                            fileTrees: {
+                                select: {
+                                    path: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusions;
+};
+
 export const findLicenseConclusionsByPackageId = async (
     id: number,
 ): Promise<
