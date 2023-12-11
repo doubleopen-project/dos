@@ -141,11 +141,7 @@ export const GetBulkCurationsRes = z.object({
                     id: z.number(),
                     sha256: z.string(),
                     affectedPaths: z.object({
-                        inContextPurl: z.array(
-                            z.object({
-                                path: z.string(),
-                            }),
-                        ),
+                        inContextPurl: z.array(z.string()),
                         additionalMatches: z.array(
                             z.object({
                                 path: z.string(),
@@ -168,11 +164,7 @@ export const GetBulkCurationRes = z.object({
     concludedLicenseExpressionSPDX: z.string(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()),
     comment: z.nullable(z.string()),
-    filePaths: z.array(
-        z.object({
-            path: z.string(),
-        }),
-    ),
+    filePaths: z.array(z.string()),
     licenseConclusions: z.array(
         z.object({
             id: z.number(),
@@ -268,6 +260,27 @@ export const PostBulkCurationsRes = z.object({
             user: z.object({
                 username: z.string(),
             }),
+        }),
+    ),
+});
+
+//------------------ GET path exclusions -------------------
+export const GetPathExclusionsRes = z.object({
+    pathExclusions: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            pattern: z.string(),
+            reason: z.string(),
+            comment: z.nullable(z.string()),
+            user: z.object({
+                username: z.string(),
+            }),
+            package: z.object({
+                id: z.number(),
+                purl: z.string(),
+            }),
+            affectedPaths: z.array(z.string()),
         }),
     ),
 });

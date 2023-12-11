@@ -5228,19 +5228,7 @@ declare const userAPI: [
                                         affectedPaths: zod.ZodObject<
                                             {
                                                 inContextPurl: zod.ZodArray<
-                                                    zod.ZodObject<
-                                                        {
-                                                            path: zod.ZodString;
-                                                        },
-                                                        "strip",
-                                                        zod.ZodTypeAny,
-                                                        {
-                                                            path: string;
-                                                        },
-                                                        {
-                                                            path: string;
-                                                        }
-                                                    >,
+                                                    zod.ZodString,
                                                     "many"
                                                 >;
                                                 additionalMatches: zod.ZodArray<
@@ -5266,18 +5254,14 @@ declare const userAPI: [
                                             "strip",
                                             zod.ZodTypeAny,
                                             {
-                                                inContextPurl: {
-                                                    path: string;
-                                                }[];
+                                                inContextPurl: string[];
                                                 additionalMatches: {
                                                     path: string;
                                                     purl: string;
                                                 }[];
                                             },
                                             {
-                                                inContextPurl: {
-                                                    path: string;
-                                                }[];
+                                                inContextPurl: string[];
                                                 additionalMatches: {
                                                     path: string;
                                                     purl: string;
@@ -5291,9 +5275,7 @@ declare const userAPI: [
                                         id: number;
                                         sha256: string;
                                         affectedPaths: {
-                                            inContextPurl: {
-                                                path: string;
-                                            }[];
+                                            inContextPurl: string[];
                                             additionalMatches: {
                                                 path: string;
                                                 purl: string;
@@ -5304,9 +5286,7 @@ declare const userAPI: [
                                         id: number;
                                         sha256: string;
                                         affectedPaths: {
-                                            inContextPurl: {
-                                                path: string;
-                                            }[];
+                                            inContextPurl: string[];
                                             additionalMatches: {
                                                 path: string;
                                                 purl: string;
@@ -5338,9 +5318,7 @@ declare const userAPI: [
                                 id: number;
                                 sha256: string;
                                 affectedPaths: {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
+                                    inContextPurl: string[];
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
@@ -5366,9 +5344,7 @@ declare const userAPI: [
                                 id: number;
                                 sha256: string;
                                 affectedPaths: {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
+                                    inContextPurl: string[];
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
@@ -5401,9 +5377,7 @@ declare const userAPI: [
                         id: number;
                         sha256: string;
                         affectedPaths: {
-                            inContextPurl: {
-                                path: string;
-                            }[];
+                            inContextPurl: string[];
                             additionalMatches: {
                                 path: string;
                                 purl: string;
@@ -5431,9 +5405,7 @@ declare const userAPI: [
                         id: number;
                         sha256: string;
                         affectedPaths: {
-                            inContextPurl: {
-                                path: string;
-                            }[];
+                            inContextPurl: string[];
                             additionalMatches: {
                                 path: string;
                                 purl: string;
@@ -5563,22 +5535,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: zod.ZodString;
                 detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                 comment: zod.ZodNullable<zod.ZodString>;
-                filePaths: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            path: zod.ZodString;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            path: string;
-                        },
-                        {
-                            path: string;
-                        }
-                    >,
-                    "many"
-                >;
+                filePaths: zod.ZodArray<zod.ZodString, "many">;
                 licenseConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
@@ -5606,9 +5563,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
-                filePaths: {
-                    path: string;
-                }[];
+                filePaths: string[];
             },
             {
                 licenseConclusions: {
@@ -5618,9 +5573,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
-                filePaths: {
-                    path: string;
-                }[];
+                filePaths: string[];
             }
         >;
         errors: [
@@ -6332,6 +6285,215 @@ declare const userAPI: [
                     updatedAt: Date;
                     user: {
                         username: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/path-exclusion";
+        description: "Get all path exclusions";
+        response: zod.ZodObject<
+            {
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                            package: zod.ZodObject<
+                                {
+                                    id: zod.ZodNumber;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    id: number;
+                                    purl: string;
+                                },
+                                {
+                                    id: number;
+                                    purl: string;
+                                }
+                            >;
+                            affectedPaths: zod.ZodArray<zod.ZodString, "many">;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            affectedPaths: string[];
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            affectedPaths: string[];
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    affectedPaths: string[];
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
+            },
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    affectedPaths: string[];
+                    package: {
+                        id: number;
+                        purl: string;
                     };
                 }[];
             }
@@ -10596,19 +10758,7 @@ declare const dosAPI: [
                                         affectedPaths: zod.ZodObject<
                                             {
                                                 inContextPurl: zod.ZodArray<
-                                                    zod.ZodObject<
-                                                        {
-                                                            path: zod.ZodString;
-                                                        },
-                                                        "strip",
-                                                        zod.ZodTypeAny,
-                                                        {
-                                                            path: string;
-                                                        },
-                                                        {
-                                                            path: string;
-                                                        }
-                                                    >,
+                                                    zod.ZodString,
                                                     "many"
                                                 >;
                                                 additionalMatches: zod.ZodArray<
@@ -10634,18 +10784,14 @@ declare const dosAPI: [
                                             "strip",
                                             zod.ZodTypeAny,
                                             {
-                                                inContextPurl: {
-                                                    path: string;
-                                                }[];
+                                                inContextPurl: string[];
                                                 additionalMatches: {
                                                     path: string;
                                                     purl: string;
                                                 }[];
                                             },
                                             {
-                                                inContextPurl: {
-                                                    path: string;
-                                                }[];
+                                                inContextPurl: string[];
                                                 additionalMatches: {
                                                     path: string;
                                                     purl: string;
@@ -10659,9 +10805,7 @@ declare const dosAPI: [
                                         id: number;
                                         sha256: string;
                                         affectedPaths: {
-                                            inContextPurl: {
-                                                path: string;
-                                            }[];
+                                            inContextPurl: string[];
                                             additionalMatches: {
                                                 path: string;
                                                 purl: string;
@@ -10672,9 +10816,7 @@ declare const dosAPI: [
                                         id: number;
                                         sha256: string;
                                         affectedPaths: {
-                                            inContextPurl: {
-                                                path: string;
-                                            }[];
+                                            inContextPurl: string[];
                                             additionalMatches: {
                                                 path: string;
                                                 purl: string;
@@ -10706,9 +10848,7 @@ declare const dosAPI: [
                                 id: number;
                                 sha256: string;
                                 affectedPaths: {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
+                                    inContextPurl: string[];
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
@@ -10734,9 +10874,7 @@ declare const dosAPI: [
                                 id: number;
                                 sha256: string;
                                 affectedPaths: {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
+                                    inContextPurl: string[];
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
@@ -10769,9 +10907,7 @@ declare const dosAPI: [
                         id: number;
                         sha256: string;
                         affectedPaths: {
-                            inContextPurl: {
-                                path: string;
-                            }[];
+                            inContextPurl: string[];
                             additionalMatches: {
                                 path: string;
                                 purl: string;
@@ -10799,9 +10935,7 @@ declare const dosAPI: [
                         id: number;
                         sha256: string;
                         affectedPaths: {
-                            inContextPurl: {
-                                path: string;
-                            }[];
+                            inContextPurl: string[];
                             additionalMatches: {
                                 path: string;
                                 purl: string;
@@ -10931,22 +11065,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: zod.ZodString;
                 detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                 comment: zod.ZodNullable<zod.ZodString>;
-                filePaths: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            path: zod.ZodString;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            path: string;
-                        },
-                        {
-                            path: string;
-                        }
-                    >,
-                    "many"
-                >;
+                filePaths: zod.ZodArray<zod.ZodString, "many">;
                 licenseConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
@@ -10974,9 +11093,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
-                filePaths: {
-                    path: string;
-                }[];
+                filePaths: string[];
             },
             {
                 licenseConclusions: {
@@ -10986,9 +11103,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
-                filePaths: {
-                    path: string;
-                }[];
+                filePaths: string[];
             }
         >;
         errors: [
@@ -11700,6 +11815,215 @@ declare const dosAPI: [
                     updatedAt: Date;
                     user: {
                         username: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/path-exclusion";
+        description: "Get all path exclusions";
+        response: zod.ZodObject<
+            {
+                pathExclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodString;
+                            reason: zod.ZodString;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                            package: zod.ZodObject<
+                                {
+                                    id: zod.ZodNumber;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    id: number;
+                                    purl: string;
+                                },
+                                {
+                                    id: number;
+                                    purl: string;
+                                }
+                            >;
+                            affectedPaths: zod.ZodArray<zod.ZodString, "many">;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            affectedPaths: string[];
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
+                            updatedAt: Date;
+                            user: {
+                                username: string;
+                            };
+                            affectedPaths: string[];
+                            package: {
+                                id: number;
+                                purl: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    affectedPaths: string[];
+                    package: {
+                        id: number;
+                        purl: string;
+                    };
+                }[];
+            },
+            {
+                pathExclusions: {
+                    id: number;
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                    updatedAt: Date;
+                    user: {
+                        username: string;
+                    };
+                    affectedPaths: string[];
+                    package: {
+                        id: number;
+                        purl: string;
                     };
                 }[];
             }
