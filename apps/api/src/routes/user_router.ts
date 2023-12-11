@@ -307,6 +307,75 @@ userRouter.delete("/license-conclusion/:id", async (req, res) => {
     }
 });
 
+userRouter.get("/bulk-curation", async (req, res) => {
+    try {
+        const bulkCurationsWithRelations =
+            await dbQueries.findBulkCurationsWithRelations();
+        const bulkCurations = [];
+
+        for (const bc of bulkCurationsWithRelations) {
+            const licenseConclusions = [];
+
+            console.log(bc);
+
+            for (const lc of bc.licenseConclusions) {
+                const inContextPurl = [];
+                const additionalMatches = [];
+
+                for (const ft of lc.file.filetrees) {
+                    if (ft.package.purl === bc.package.purl) {
+                        inContextPurl.push({
+                            path: ft.path,
+                        });
+                    } else {
+                        additionalMatches.push({
+                            path: ft.path,
+                            purl: ft.package.purl,
+                        });
+                    }
+                }
+
+                licenseConclusions.push({
+                    id: lc.id,
+                    sha256: lc.file.sha256,
+                    affectedPaths: {
+                        inContextPurl: inContextPurl,
+                        additionalMatches: additionalMatches,
+                    },
+                });
+            }
+
+            bulkCurations.push({
+                id: bc.id,
+                updatedAt: bc.updatedAt,
+                pattern: bc.pattern,
+                concludedLicenseExpressionSPDX:
+                    bc.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX: bc.detectedLicenseExpressionSPDX,
+                comment: bc.comment,
+                package: bc.package,
+                user: bc.user,
+                licenseConclusions: licenseConclusions,
+            });
+        }
+
+        res.status(200).json({
+            bulkCurations: bulkCurations,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/bulk-curation", async (req, res) => {
     try {
         const { user } = req;
