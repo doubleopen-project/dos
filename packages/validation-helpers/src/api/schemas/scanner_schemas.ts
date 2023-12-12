@@ -9,7 +9,7 @@ import { purlSchema } from "./common_schemas";
 //---------------- POST scan-results ----------------
 
 export const PostScanResultsReq = z.object({
-    purls: z.array(purlSchema).min(1, "At least one purl is required"),
+    purls: z.array(purlSchema(true)).min(1, "At least one purl is required"),
     options: z
         .object({
             fetchConcluded: z.boolean().optional(),
@@ -18,7 +18,7 @@ export const PostScanResultsReq = z.object({
 });
 
 export const PostScanResultsRes = z.object({
-    purls: z.array(purlSchema).min(1, "At least one purl is required"),
+    purls: z.array(purlSchema(false)).min(1, "At least one purl is required"),
     state: z.object({
         status: z.enum(["no-results", "pending", "ready"]),
         jobId: z.nullable(z.string()),
@@ -111,7 +111,7 @@ export const PostJobReq = z.object({
         })
         .trim()
         .min(1, "Zip file key cannot be empty"),
-    purls: z.array(purlSchema).min(1, "At least one purl is required"),
+    purls: z.array(purlSchema(true)).min(1, "At least one purl is required"),
 });
 
 export const PostJobRes = z.object({

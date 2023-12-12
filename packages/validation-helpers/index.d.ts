@@ -4775,6 +4775,200 @@ declare const userAPI: [
         ];
     },
     {
+        method: "get";
+        path: "/packages/:purl/files/:sha256/license-conclusions/";
+        description: "Get license conclusions for specified file";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodEffects<zod.ZodString, string, string>;
+            },
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodEffects<zod.ZodString, string, string>;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseConclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                            bulkCurationId: number | null;
+                        },
+                        {
+                            id: number;
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                            bulkCurationId: number | null;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseConclusions: {
+                    id: number;
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                    bulkCurationId: number | null;
+                }[];
+            },
+            {
+                licenseConclusions: {
+                    id: number;
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                    bulkCurationId: number | null;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "post";
         path: "/license-conclusion";
         description: "Add a new license conclusion";
@@ -4791,7 +4985,11 @@ declare const userAPI: [
                         comment: zod.ZodOptional<zod.ZodString>;
                         local: zod.ZodOptional<zod.ZodBoolean>;
                         contextPurl: zod.ZodString;
-                        fileSha256: zod.ZodString;
+                        fileSha256: zod.ZodEffects<
+                            zod.ZodString,
+                            string,
+                            string
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -7429,7 +7627,9 @@ declare const userAPI: [
                         {
                             purl: zod.ZodOptional<zod.ZodString>;
                             path: zod.ZodOptional<zod.ZodString>;
-                            sha256: zod.ZodOptional<zod.ZodString>;
+                            sha256: zod.ZodOptional<
+                                zod.ZodEffects<zod.ZodString, string, string>
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -10278,6 +10478,200 @@ declare const dosAPI: [
         ];
     },
     {
+        method: "get";
+        path: "/user/packages/:purl/files/:sha256/license-conclusions";
+        description: "Get license conclusions for specified file";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodEffects<zod.ZodString, string, string>;
+            },
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodEffects<zod.ZodString, string, string>;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseConclusions: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                            bulkCurationId: number | null;
+                        },
+                        {
+                            id: number;
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                            bulkCurationId: number | null;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseConclusions: {
+                    id: number;
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                    bulkCurationId: number | null;
+                }[];
+            },
+            {
+                licenseConclusions: {
+                    id: number;
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                    bulkCurationId: number | null;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "post";
         path: "/user/license-conclusion";
         description: "Add a new license conclusion";
@@ -10294,7 +10688,11 @@ declare const dosAPI: [
                         comment: zod.ZodOptional<zod.ZodString>;
                         local: zod.ZodOptional<zod.ZodBoolean>;
                         contextPurl: zod.ZodString;
-                        fileSha256: zod.ZodString;
+                        fileSha256: zod.ZodEffects<
+                            zod.ZodString,
+                            string,
+                            string
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -12932,7 +13330,9 @@ declare const dosAPI: [
                         {
                             purl: zod.ZodOptional<zod.ZodString>;
                             path: zod.ZodOptional<zod.ZodString>;
-                            sha256: zod.ZodOptional<zod.ZodString>;
+                            sha256: zod.ZodOptional<
+                                zod.ZodEffects<zod.ZodString, string, string>
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,

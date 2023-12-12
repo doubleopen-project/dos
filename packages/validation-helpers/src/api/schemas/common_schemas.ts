@@ -46,20 +46,43 @@ export const getPasswordSchema = (required: boolean) => {
         });
 };
 
-export const purlSchema = z
-    .string({
-        required_error: "Purl is required",
-    })
-    .trim()
-    .min(1, "Purl cannot be empty")
-    .refine(
-        (purl) => {
-            try {
-                PackageURL.fromString(purl);
-                return true;
-            } catch (error) {
-                return false;
-            }
-        },
-        { message: "Purl is not valid" },
-    );
+export const sha256Schema = (required: boolean) => {
+    const requiredObject = required
+        ? { required_error: "Sha256 is required" }
+        : undefined;
+    return z
+        .string(requiredObject)
+        .trim()
+        .min(64, "Sha256 has to be 64 characters long")
+        .max(64, "Sha256 has to be 64 characters long")
+        .refine((sha256) => sha256.match(/^[a-f0-9]+$/i), {
+            message: "Sha256 must be hexadecimal",
+        });
+};
+
+export const purlSchema = (required: boolean) => {
+    const requiredObject = required
+        ? { required_error: "Purl is required" }
+        : undefined;
+    return z
+        .string(requiredObject)
+        .trim()
+        .min(1, "Purl cannot be empty")
+        .refine(
+            (purl) => {
+                try {
+                    PackageURL.fromString(purl.replace(/%2F/g, "/"));
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            },
+            { message: "Purl is not valid" },
+        );
+};
+
+//------------------ General path params -------------------
+
+export const PathParamIdInteger = z.number({
+    required_error: "Id is required",
+});

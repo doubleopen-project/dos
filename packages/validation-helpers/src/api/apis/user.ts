@@ -4,6 +4,11 @@
 
 import { makeApi } from "@zodios/core";
 import { errors } from "../errors";
+import {
+    PathParamIdInteger,
+    purlSchema,
+    sha256Schema,
+} from "../schemas/common_schemas";
 import * as schemas from "../schemas/user_schemas";
 
 export const userAPI = makeApi([
@@ -45,6 +50,25 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/packages/:purl/files/:sha256/license-conclusions/",
+        description: "Get license conclusions for specified file",
+        parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: purlSchema(true),
+            },
+            {
+                name: "sha256",
+                type: "Path",
+                schema: sha256Schema(true),
+            },
+        ],
+        response: schemas.GetLicenseConclusionsForFileRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/license-conclusion",
         description: "Add a new license conclusion",
@@ -66,7 +90,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
             {
                 name: "body",
@@ -85,7 +109,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
         ],
         response: schemas.DeleteLicenseConclusionRes,
@@ -106,7 +130,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
         ],
         response: schemas.GetBulkCurationRes,
@@ -134,7 +158,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
             {
                 name: "body",
@@ -153,7 +177,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
         ],
         response: schemas.DeleteBulkCurationRes,
@@ -202,7 +226,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: schemas.PathParamIdInteger,
+                schema: PathParamIdInteger,
             },
         ],
         response: schemas.DeletePathExclusionRes,

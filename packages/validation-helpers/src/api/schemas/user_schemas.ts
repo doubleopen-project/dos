@@ -8,6 +8,7 @@ import {
     getPasswordSchema,
     getUsernameSchema,
     purlSchema,
+    sha256Schema,
 } from "./common_schemas";
 
 export const GetUserRes = z.object({
@@ -59,6 +60,23 @@ export const GetLicenseConclusionsRes = z.object({
     ),
 });
 
+//-------------- GET license conclusions for file --------------
+
+export const GetLicenseConclusionsForFileRes = z.object({
+    licenseConclusions: z.array(
+        z.object({
+            id: z.number(),
+            updatedAt: z.coerce.date(),
+            concludedLicenseExpressionSPDX: z.string(),
+            detectedLicenseExpressionSPDX: z.nullable(z.string()),
+            comment: z.nullable(z.string()),
+            local: z.boolean(),
+            user: z.object({ username: z.string() }),
+            bulkCurationId: z.nullable(z.number()),
+        }),
+    ),
+});
+
 //-------------- POST license conclusion --------------
 
 export const PostLicenseConclusionReq = z.object({
@@ -77,12 +95,7 @@ export const PostLicenseConclusionReq = z.object({
         })
         .trim()
         .min(1, "Context purl cannot be empty"),
-    fileSha256: z
-        .string({
-            required_error: "File SHA256 is required",
-        })
-        .trim()
-        .min(1, "File SHA256 cannot be empty"),
+    fileSha256: sha256Schema(true),
 });
 
 export const PostLicenseConclusionRes = z.object({
@@ -234,7 +247,7 @@ export const DeleteBulkCurationRes = z.object({
 //-------------- POST bulk curations --------------
 
 export const PostBulkCurationsReq = z.object({
-    purl: purlSchema,
+    purl: purlSchema(true),
 });
 
 export const PostBulkCurationsRes = z.object({
@@ -339,7 +352,7 @@ export const DeletePathExclusionRes = z.object({
 //------------------ POST path-exclusions -------------------
 
 export const PostPathExclusionsReq = z.object({
-    purl: purlSchema,
+    purl: purlSchema(true),
 });
 
 export const PostPathExclusionsRes = z.object({
@@ -412,7 +425,7 @@ export const PostFileReq = z
     .object({
         purl: z.string(),
         path: z.string(),
-        sha256: z.string(),
+        sha256: sha256Schema(false),
     })
     .partial()
     .refine(
@@ -471,10 +484,4 @@ export const PostFileRes = z.object({
 
 export const PutTokenRes = z.object({
     token: z.string(),
-});
-
-//------------------ General path params -------------------
-
-export const PathParamIdInteger = z.number({
-    required_error: "Id is required",
 });
