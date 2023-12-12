@@ -97,27 +97,16 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const queryClient = useQueryClient();
-    const { mutate: addBulkCuration } = userHooks.useMutation(
-        "post",
-        "/bulk-curation",
+    const { mutate: addBulkCuration } = userHooks.usePostBulkCuration(
         {
             withCredentials: true,
         },
         {
             onSuccess: (data) => {
                 const res = {
-                    filesGlob:
-                        "matchedPathsCount" in data
-                            ? data.matchedPathsCount
-                            : 0,
-                    filesPackage:
-                        "affectedFilesInPackageCount" in data
-                            ? data.affectedFilesInPackageCount
-                            : 0,
-                    filesAll:
-                        "affectedFilesAcrossAllPackagesCount" in data
-                            ? data.affectedFilesAcrossAllPackagesCount
-                            : 0,
+                    filesGlob: data.matchedPathsCount,
+                    filesPackage: data.affectedFilesInPackageCount,
+                    filesAll: data.affectedFilesAcrossAllPackagesCount,
                 };
                 setOpen(false);
                 toast({
@@ -189,7 +178,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
                     comment: data.comment ?? "",
-                    purl: purl,
+                    purl: purl as string,
                 });
             } else {
                 return;
@@ -239,7 +228,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                         />
                         <DropdownMenu onOpenChange={handleOpen}>
                             <DropdownMenuTrigger
-                                className="rounded-md p-2 ml-1"
+                                className="p-2 ml-1 rounded-md"
                                 type="button"
                                 disabled={form.getValues("pattern") === ""}
                             >
@@ -329,7 +318,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     <div className="flex justify-end">
                         <Button
                             type="submit"
-                            className="text-xs rounded-md p-1 mt-2"
+                            className="p-1 mt-2 text-xs rounded-md"
                             variant={"outline"}
                         >
                             Add bulk curation

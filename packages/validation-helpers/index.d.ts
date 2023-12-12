@@ -4489,7 +4489,7 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/license-conclusion";
+        path: "/license-conclusions";
         description: "Get all license conclusions";
         response: zod.ZodObject<
             {
@@ -4782,12 +4782,12 @@ declare const userAPI: [
             {
                 name: "purl";
                 type: "Path";
-                schema: zod.ZodEffects<zod.ZodString, string, string>;
+                schema: zod.ZodString;
             },
             {
                 name: "sha256";
                 type: "Path";
-                schema: zod.ZodEffects<zod.ZodString, string, string>;
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -4970,9 +4970,20 @@ declare const userAPI: [
     },
     {
         method: "post";
-        path: "/license-conclusion";
+        path: "/packages/:purl/files/:sha256/license-conclusions";
         description: "Add a new license conclusion";
+        alias: "PostLicenseConclusion";
         parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodString;
+            },
             {
                 name: "body";
                 type: "Body";
@@ -4984,19 +4995,11 @@ declare const userAPI: [
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
                         local: zod.ZodOptional<zod.ZodBoolean>;
-                        contextPurl: zod.ZodString;
-                        fileSha256: zod.ZodEffects<
-                            zod.ZodString,
-                            string,
-                            string
-                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         concludedLicenseExpressionSPDX: string;
-                        contextPurl: string;
-                        fileSha256: string;
                         detectedLicenseExpressionSPDX?:
                             | string
                             | null
@@ -5006,8 +5009,6 @@ declare const userAPI: [
                     },
                     {
                         concludedLicenseExpressionSPDX: string;
-                        contextPurl: string;
-                        fileSha256: string;
                         detectedLicenseExpressionSPDX?:
                             | string
                             | null
@@ -5858,6 +5859,7 @@ declare const userAPI: [
         method: "post";
         path: "/bulk-curation";
         description: "Add a new bulk curation";
+        alias: "PostBulkCuration";
         parameters: [
             {
                 name: "body";
@@ -6764,6 +6766,7 @@ declare const userAPI: [
         method: "post";
         path: "/path-exclusion";
         description: "Add a new path exclusion";
+        alias: "PostPathExclusion";
         parameters: [
             {
                 name: "body";
@@ -7298,7 +7301,6 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
-                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -7308,10 +7310,10 @@ declare const userAPI: [
                                 }[];
                             };
                             packageId: number;
+                            fileSha256: string;
                         },
                         {
                             path: string;
-                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -7321,6 +7323,7 @@ declare const userAPI: [
                                 }[];
                             };
                             packageId: number;
+                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -7331,7 +7334,6 @@ declare const userAPI: [
             {
                 filetrees: {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -7341,12 +7343,12 @@ declare const userAPI: [
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 }[];
             },
             {
                 filetrees: {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -7356,6 +7358,7 @@ declare const userAPI: [
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 }[];
             }
         >;
@@ -10192,7 +10195,7 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/license-conclusion";
+        path: "/user/license-conclusions";
         description: "Get all license conclusions";
         response: zod.ZodObject<
             {
@@ -10485,12 +10488,12 @@ declare const dosAPI: [
             {
                 name: "purl";
                 type: "Path";
-                schema: zod.ZodEffects<zod.ZodString, string, string>;
+                schema: zod.ZodString;
             },
             {
                 name: "sha256";
                 type: "Path";
-                schema: zod.ZodEffects<zod.ZodString, string, string>;
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -10673,9 +10676,20 @@ declare const dosAPI: [
     },
     {
         method: "post";
-        path: "/user/license-conclusion";
+        path: "/user/packages/:purl/files/:sha256/license-conclusions";
         description: "Add a new license conclusion";
+        alias: "PostLicenseConclusion";
         parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodString;
+            },
             {
                 name: "body";
                 type: "Body";
@@ -10687,19 +10701,11 @@ declare const dosAPI: [
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
                         local: zod.ZodOptional<zod.ZodBoolean>;
-                        contextPurl: zod.ZodString;
-                        fileSha256: zod.ZodEffects<
-                            zod.ZodString,
-                            string,
-                            string
-                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         concludedLicenseExpressionSPDX: string;
-                        contextPurl: string;
-                        fileSha256: string;
                         detectedLicenseExpressionSPDX?:
                             | string
                             | null
@@ -10709,8 +10715,6 @@ declare const dosAPI: [
                     },
                     {
                         concludedLicenseExpressionSPDX: string;
-                        contextPurl: string;
-                        fileSha256: string;
                         detectedLicenseExpressionSPDX?:
                             | string
                             | null
@@ -11561,6 +11565,7 @@ declare const dosAPI: [
         method: "post";
         path: "/user/bulk-curation";
         description: "Add a new bulk curation";
+        alias: "PostBulkCuration";
         parameters: [
             {
                 name: "body";
@@ -12467,6 +12472,7 @@ declare const dosAPI: [
         method: "post";
         path: "/user/path-exclusion";
         description: "Add a new path exclusion";
+        alias: "PostPathExclusion";
         parameters: [
             {
                 name: "body";
@@ -13001,7 +13007,6 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
-                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -13011,10 +13016,10 @@ declare const dosAPI: [
                                 }[];
                             };
                             packageId: number;
+                            fileSha256: string;
                         },
                         {
                             path: string;
-                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -13024,6 +13029,7 @@ declare const dosAPI: [
                                 }[];
                             };
                             packageId: number;
+                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -13034,7 +13040,6 @@ declare const dosAPI: [
             {
                 filetrees: {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -13044,12 +13049,12 @@ declare const dosAPI: [
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 }[];
             },
             {
                 filetrees: {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -13059,6 +13064,7 @@ declare const dosAPI: [
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 }[];
             }
         >;
@@ -14409,7 +14415,6 @@ declare const FileTree: z.ZodObject<
     z.ZodTypeAny,
     {
         path: string;
-        fileSha256: string;
         file: {
             licenseConclusions: {
                 concludedLicenseExpressionSPDX: string;
@@ -14419,10 +14424,10 @@ declare const FileTree: z.ZodObject<
             }[];
         };
         packageId: number;
+        fileSha256: string;
     },
     {
         path: string;
-        fileSha256: string;
         file: {
             licenseConclusions: {
                 concludedLicenseExpressionSPDX: string;
@@ -14432,6 +14437,7 @@ declare const FileTree: z.ZodObject<
             }[];
         };
         packageId: number;
+        fileSha256: string;
     }
 >;
 type FileTreeType = z.infer<typeof FileTree>;
@@ -14502,7 +14508,6 @@ declare const PostFileTreeRes: z.ZodObject<
                 z.ZodTypeAny,
                 {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -14512,10 +14517,10 @@ declare const PostFileTreeRes: z.ZodObject<
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 },
                 {
                     path: string;
-                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -14525,6 +14530,7 @@ declare const PostFileTreeRes: z.ZodObject<
                         }[];
                     };
                     packageId: number;
+                    fileSha256: string;
                 }
             >,
             "many"
@@ -14535,7 +14541,6 @@ declare const PostFileTreeRes: z.ZodObject<
     {
         filetrees: {
             path: string;
-            fileSha256: string;
             file: {
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
@@ -14545,12 +14550,12 @@ declare const PostFileTreeRes: z.ZodObject<
                 }[];
             };
             packageId: number;
+            fileSha256: string;
         }[];
     },
     {
         filetrees: {
             path: string;
-            fileSha256: string;
             file: {
                 licenseConclusions: {
                     concludedLicenseExpressionSPDX: string;
@@ -14560,6 +14565,7 @@ declare const PostFileTreeRes: z.ZodObject<
                 }[];
             };
             packageId: number;
+            fileSha256: string;
         }[];
     }
 >;

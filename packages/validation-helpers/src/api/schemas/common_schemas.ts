@@ -86,3 +86,16 @@ export const purlSchema = (required: boolean) => {
 export const PathParamIdInteger = z.number({
     required_error: "Id is required",
 });
+
+export const PathParamString = (name: string) =>
+    z.string({
+        required_error: `${name} is required`,
+    });
+
+export const PathParamSha256 = z.string({
+    required_error: "Sha256 is required",
+});
+
+export const PathParamPurl = z.string({
+    required_error: "Purl is required",
+});
