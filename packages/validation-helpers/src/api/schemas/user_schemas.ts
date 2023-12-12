@@ -37,6 +37,7 @@ export const GetLicenseConclusionsRes = z.object({
             concludedLicenseExpressionSPDX: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
+            local: z.boolean(),
             user: z.object({ username: z.string() }),
             bulkCurationId: z.nullable(z.number()),
             sha256: z.string(),
@@ -133,6 +134,7 @@ export const GetBulkCurationsRes = z.object({
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
             contextPurl: z.string(),
+            local: z.boolean(),
             licenseConclusions: z.array(
                 z.object({
                     id: z.number(),
@@ -161,6 +163,7 @@ export const GetBulkCurationRes = z.object({
     concludedLicenseExpressionSPDX: z.string(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()),
     comment: z.nullable(z.string()),
+    local: z.boolean(),
     filePaths: z.array(z.string()),
     licenseConclusions: z.array(
         z.object({
@@ -243,6 +246,7 @@ export const PostBulkCurationsRes = z.object({
             comment: z.nullable(z.string()),
             concludedLicenseExpressionSPDX: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
+            local: z.boolean(),
             licenseConclusions: z.array(
                 z.object({
                     id: z.number(),

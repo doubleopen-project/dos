@@ -2077,6 +2077,7 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
         concludedLicenseExpressionSPDX: true;
         detectedLicenseExpressionSPDX: true;
         comment: true;
+        local: true;
         contextPurl: true;
         user: {
             select: {
@@ -2118,6 +2119,7 @@ export const findAllLicenseConclusions = async (): Promise<
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
                     comment: true,
+                    local: true,
                     contextPurl: true,
                     user: {
                         select: {
