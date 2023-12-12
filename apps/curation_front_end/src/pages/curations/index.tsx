@@ -2,21 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { userHooks } from "@/hooks/zodiosHooks";
+import { useUser } from "@/hooks/useUser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PackageList from "@/components/package_table/PackageList";
+import LicenseConclusionList from "@/components/license_conclusion_table/LicenseConclusionList";
 
 export default function CurationsLibrary() {
-    const { data, isLoading, error } = userHooks.useGet("/packages", {
-        withCredentials: true,
-    });
-    if (isLoading) {
-        return <div>Loading package list...</div>;
-    }
-    if (error) return <div>{error.message}</div>;
-    if (!data) return <div>No data</div>;
-    const packages = data.packages;
+    const user = useUser({});
 
     return (
         <div className="flex flex-col h-screen p-2">
@@ -34,22 +26,22 @@ export default function CurationsLibrary() {
                 </Card>
             </div>
 
-            <Tabs defaultValue="license_conclusions">
-                <TabsList className="p-2 ml-1 mt-2">
-                    <TabsTrigger value="license_conclusions">
-                        License Conclusions
-                    </TabsTrigger>
-                    <TabsTrigger value="bulk_curations">
-                        Bulk Curations
-                    </TabsTrigger>
-                    <TabsTrigger value="path_exclusions">
-                        Path Exclusions
-                    </TabsTrigger>
-                </TabsList>
-                <div className="flex-1 mx-1 overflow-auto border rounded-lg shadow">
+            <div className="flex-1 mx-1 overflow-auto border rounded-lg shadow">
+                <Tabs defaultValue="license_conclusions">
+                    <TabsList className="p-2 ml-8 mt-2">
+                        <TabsTrigger value="license_conclusions">
+                            License Conclusions
+                        </TabsTrigger>
+                        <TabsTrigger value="bulk_curations">
+                            Bulk Curations
+                        </TabsTrigger>
+                        <TabsTrigger value="path_exclusions">
+                            Path Exclusions
+                        </TabsTrigger>
+                    </TabsList>
+
                     <TabsContent value="license_conclusions">
-                        License Conclusions
-                        <PackageList data={{ packages }} />
+                        {user && <LicenseConclusionList user={user} />}
                     </TabsContent>
                     <TabsContent value="bulk_curations">
                         Bulk Curations
@@ -57,8 +49,8 @@ export default function CurationsLibrary() {
                     <TabsContent value="path_exclusions">
                         Path Exclusions
                     </TabsContent>
-                </div>
-            </Tabs>
+                </Tabs>
+            </div>
         </div>
     );
 }

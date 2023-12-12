@@ -19,13 +19,17 @@ type ItemType = ZodiosResponseByPath<
 >["licenseConclusions"][0];
 
 type Props = {
-    data: ItemType;
+    data: Omit<ItemType, "createdAt">;
 };
 
 const DeleteLicenseConclusion = ({ data }: Props) => {
     const { toast } = useToast();
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
+    const keyLicenseConclusion = userHooks.getKeyByPath(
+        "post",
+        "/license-conclusion",
+    );
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
@@ -100,9 +104,10 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                     title: "Delete successful",
                     description: "License conclusion deleted succesfully",
                 });
-                // When a license conclusion is deleted, invalidate the file and filetree queries to refetch the data
+                // When a license conclusion is deleted, invalidate the "/file", "/filetree" and "/license-conclusion" queries to refetch the data
                 queryClient.invalidateQueries(keyFile);
                 queryClient.invalidateQueries(keyFiletree);
+                queryClient.invalidateQueries(keyLicenseConclusion);
             },
             onError: () => {
                 toast({
