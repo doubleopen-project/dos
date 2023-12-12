@@ -4784,6 +4784,7 @@ declare const userAPI: [
                             zod.ZodNullable<zod.ZodString>
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                         contextPurl: zod.ZodString;
                         fileSha256: zod.ZodString;
                     },
@@ -4798,6 +4799,7 @@ declare const userAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX: string;
@@ -4808,6 +4810,7 @@ declare const userAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -4938,7 +4941,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             comment: zod.ZodOptional<zod.ZodString>;
-                            contextPurl: zod.ZodOptional<zod.ZodString>;
+                            local: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -4946,26 +4949,26 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
                             comment?: string | undefined;
-                            contextPurl?: string | undefined;
+                            local?: boolean | undefined;
                         },
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
                             comment?: string | undefined;
-                            contextPurl?: string | undefined;
+                            local?: boolean | undefined;
                         }
                     >,
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
-                        contextPurl?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
-                        contextPurl?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -5656,6 +5659,7 @@ declare const userAPI: [
                             zod.ZodNullable<zod.ZodString>
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                         purl: zod.ZodString;
                     },
                     "strip",
@@ -5669,6 +5673,7 @@ declare const userAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         purl: string;
@@ -5679,6 +5684,7 @@ declare const userAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -10260,6 +10266,7 @@ declare const dosAPI: [
                             zod.ZodNullable<zod.ZodString>
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                         contextPurl: zod.ZodString;
                         fileSha256: zod.ZodString;
                     },
@@ -10274,6 +10281,7 @@ declare const dosAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX: string;
@@ -10284,6 +10292,7 @@ declare const dosAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -10414,7 +10423,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             comment: zod.ZodOptional<zod.ZodString>;
-                            contextPurl: zod.ZodOptional<zod.ZodString>;
+                            local: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -10422,26 +10431,26 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
                             comment?: string | undefined;
-                            contextPurl?: string | undefined;
+                            local?: boolean | undefined;
                         },
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
                             comment?: string | undefined;
-                            contextPurl?: string | undefined;
+                            local?: boolean | undefined;
                         }
                     >,
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
-                        contextPurl?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
-                        contextPurl?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -11132,6 +11141,7 @@ declare const dosAPI: [
                             zod.ZodNullable<zod.ZodString>
                         >;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                         purl: zod.ZodString;
                     },
                     "strip",
@@ -11145,6 +11155,7 @@ declare const dosAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         purl: string;
@@ -11155,6 +11166,7 @@ declare const dosAPI: [
                             | null
                             | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },

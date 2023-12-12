@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import isGlob from "is-glob";
-import { PackageURL } from "packageurl-js";
 import { z } from "zod";
 import {
     getPasswordSchema,
@@ -70,6 +69,7 @@ export const PostLicenseConclusionReq = z.object({
         .min(1, "Concluded license expression (SPDX) cannot be empty"),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
+    local: z.boolean().optional(),
     contextPurl: z
         .string({
             required_error: "Context purl is required",
@@ -95,7 +95,7 @@ export const PutLicenseConclusionReq = z
         concludedLicenseExpressionSPDX: z.string(),
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.string(),
-        contextPurl: z.string(),
+        local: z.boolean(),
     })
     .partial()
     .refine(
@@ -103,12 +103,12 @@ export const PutLicenseConclusionReq = z
             concludedLicenseExpressionSPDX,
             detectedLicenseExpressionSPDX,
             comment,
-            contextPurl,
+            local,
         }) =>
             concludedLicenseExpressionSPDX !== undefined ||
             detectedLicenseExpressionSPDX !== undefined ||
             comment !== undefined ||
-            contextPurl !== undefined,
+            local !== undefined,
         { message: "At least one field is required" },
     );
 
@@ -189,6 +189,7 @@ export const PostBulkCurationReq = z.object({
         .min(1, "Concluded license expression (SPDX) cannot be empty"),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
+    local: z.boolean().optional(),
     purl: z
         .string({
             required_error: "Purl is required",

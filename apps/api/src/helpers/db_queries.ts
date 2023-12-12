@@ -229,6 +229,7 @@ export const createLicenseConclusion = async (input: {
     concludedLicenseExpressionSPDX: string;
     detectedLicenseExpressionSPDX: string | null;
     comment: string | null;
+    local: boolean | undefined;
     contextPurl: string;
     fileSha256: string;
     userId: number;
@@ -286,6 +287,7 @@ export const createBulkCuration = async (input: {
     concludedLicenseExpressionSPDX: string;
     detectedLicenseExpressionSPDX: string | null;
     comment: string | null;
+    local: boolean | undefined;
     packageId: number;
     userId: number;
 }): Promise<BulkCuration> => {
@@ -710,6 +712,7 @@ export const updateLicenseConclusion = async (
         concludedLicenseExpressionSPDX: string | undefined;
         detectedLicenseExpressionSPDX: string | null | undefined;
         comment: string | null | undefined;
+        local: boolean | undefined;
         bulkCurationId: number | null | undefined;
     },
 ): Promise<LicenseConclusion> => {
