@@ -6,8 +6,9 @@ import { makeApi } from "@zodios/core";
 import { errors } from "../errors";
 import {
     PathParamIdInteger,
-    purlSchema,
-    sha256Schema,
+    PathParamPurl,
+    PathParamSha256,
+    PathParamString,
 } from "../schemas/common_schemas";
 import * as schemas from "../schemas/user_schemas";
 
@@ -44,7 +45,7 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
-        path: "/license-conclusion",
+        path: "/license-conclusions",
         description: "Get all license conclusions",
         response: schemas.GetLicenseConclusionsRes,
         errors,
@@ -57,12 +58,12 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: purlSchema(true),
+                schema: PathParamString("purl"),
             },
             {
                 name: "sha256",
                 type: "Path",
-                schema: sha256Schema(true),
+                schema: PathParamString("sha256"),
             },
         ],
         response: schemas.GetLicenseConclusionsForFileRes,
@@ -70,9 +71,20 @@ export const userAPI = makeApi([
     },
     {
         method: "post",
-        path: "/license-conclusion",
+        path: "/packages/:purl/files/:sha256/license-conclusions",
         description: "Add a new license conclusion",
+        alias: "PostLicenseConclusion",
         parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
+            },
+            {
+                name: "sha256",
+                type: "Path",
+                schema: PathParamSha256,
+            },
             {
                 name: "body",
                 type: "Body",
@@ -140,6 +152,7 @@ export const userAPI = makeApi([
         method: "post",
         path: "/bulk-curation",
         description: "Add a new bulk curation",
+        alias: "PostBulkCuration",
         parameters: [
             {
                 name: "body",
@@ -208,6 +221,7 @@ export const userAPI = makeApi([
         method: "post",
         path: "/path-exclusion",
         description: "Add a new path exclusion",
+        alias: "PostPathExclusion",
         parameters: [
             {
                 name: "body",

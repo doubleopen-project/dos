@@ -89,13 +89,6 @@ export const PostLicenseConclusionReq = z.object({
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
-    contextPurl: z
-        .string({
-            required_error: "Context purl is required",
-        })
-        .trim()
-        .min(1, "Context purl cannot be empty"),
-    fileSha256: sha256Schema(true),
 });
 
 export const PostLicenseConclusionRes = z.object({

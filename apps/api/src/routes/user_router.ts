@@ -13,6 +13,7 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { hashPassword } from "../helpers/password_helper";
+import { formatPurl } from "../helpers/purl_helpers";
 import { s3Client } from "../helpers/s3client";
 
 const userRouter = zodiosRouter(userAPI);
@@ -101,7 +102,7 @@ userRouter.put("/token", async (req, res) => {
     }
 });
 
-userRouter.get("/license-conclusion", async (req, res) => {
+userRouter.get("/license-conclusions", async (req, res) => {
     try {
         // TODO: return only license conclusions that belong to the user
         // or to a group that the user belongs to
@@ -200,56 +201,69 @@ userRouter.get(
     },
 );
 
-userRouter.post("/license-conclusion", async (req, res) => {
-    try {
-        if (!req.user) throw new Error("User not found");
+userRouter.post(
+    "/packages/:purl/files/:sha256/license-conclusions",
+    async (req, res) => {
+        try {
+            if (!req.user) throw new CustomError("Unauthorized", 401);
 
-        // Make sure that a package with purl exists
-        const packageId = await dbQueries.findPackageIdByPurl(
-            req.body.contextPurl,
-        );
+            const contextPurl = formatPurl(req.params.purl);
 
-        if (!packageId)
-            throw new Error("Package with specified purl not found");
+            // Make sure that a package with purl exists
+            const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
 
-        // Make sure that a file with sha256 exists in package with purl
-        const filetree = await dbQueries.findFiletreeByPackageIdAndFileSha256(
-            packageId,
-            req.body.fileSha256,
-        );
+            if (!packageId)
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
 
-        if (!filetree)
-            throw new Error(
-                "File with specified sha256 does not exist in the specified context package",
-            );
+            // Make sure that a file with sha256 exists in package with purl
+            const filetree =
+                await dbQueries.findFiletreeByPackageIdAndFileSha256(
+                    packageId,
+                    req.params.sha256,
+                );
 
-        const licenseConclusion = await dbQueries.createLicenseConclusion({
-            concludedLicenseExpressionSPDX:
-                req.body.concludedLicenseExpressionSPDX,
-            detectedLicenseExpressionSPDX:
-                req.body.detectedLicenseExpressionSPDX || null,
-            comment: req.body.comment || null,
-            local: req.body.local,
-            contextPurl: req.body.contextPurl,
-            fileSha256: req.body.fileSha256,
-            userId: req.user.id,
-        });
+            if (!filetree)
+                throw new CustomError(
+                    "File with specified sha256 does not exist in the specified context package",
+                    400,
+                    "sha256",
+                );
 
-        res.status(200).json({
-            licenseConclusionId: licenseConclusion.id,
-            message: "License conclusion created",
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            return res
-                .status(400)
-                .json({ message: "Bad request. " + error.message });
-        } else {
+            const licenseConclusion = await dbQueries.createLicenseConclusion({
+                concludedLicenseExpressionSPDX:
+                    req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX:
+                    req.body.detectedLicenseExpressionSPDX || null,
+                comment: req.body.comment || null,
+                local: req.body.local,
+                contextPurl: contextPurl,
+                fileSha256: req.params.sha256,
+                userId: req.user.id,
+            });
+
+            res.status(200).json({
+                licenseConclusionId: licenseConclusion.id,
+                message: "License conclusion created",
+            });
+        } catch (error) {
             console.log("Error: ", error);
-            res.status(500).json({ message: "Internal server error" });
+
+            if (error instanceof CustomError) {
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message, path: error.path });
+            } else {
+                // If error is not a CustomError, it is a Prisma error or an unknown error
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
-    }
-});
+    },
+);
 
 userRouter.put("/license-conclusion/:id", async (req, res) => {
     try {

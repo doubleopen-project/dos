@@ -6,6 +6,7 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import parse from "spdx-expression-parse";
 import { userAPI } from "validation-helpers";
@@ -45,6 +46,7 @@ const curationFormSchema = z.object({
     concludedLicenseDB: z.string(),
     concludedLicenseList: z.string(),
     comment: z.string(),
+    local: z.boolean(),
 });
 
 type CurationFormType = z.infer<typeof curationFormSchema>;
@@ -63,6 +65,7 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
         concludedLicenseDB: "",
         concludedLicenseList: "",
         comment: "",
+        local: false,
     };
     const form = useForm<CurationFormType>({
         resolver: zodResolver(curationFormSchema),
@@ -71,10 +74,16 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const queryClient = useQueryClient();
-    const { mutate: addLicenseConclusion } = userHooks.useMutation(
-        "post",
-        "/license-conclusion",
+
+    const pathPurl = purl.replace(/\//g, "%2F");
+    const sha256 = fileData.sha256;
+
+    const { mutate: addLicenseConclusion } = userHooks.usePostLicenseConclusion(
         {
+            params: {
+                purl: pathPurl,
+                sha256: sha256,
+            },
             withCredentials: true,
         },
         {
@@ -82,6 +91,21 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                 // When a license conclusion is added, invalidate the file and filetree queries to refetch the data
                 queryClient.invalidateQueries(keyFile);
                 queryClient.invalidateQueries(keyFiletree);
+                toast({
+                    title: "License conclusion",
+                    description: "License conclusion added successfully.",
+                });
+            },
+            onError: (error) => {
+                const msg = axios.isAxiosError(error)
+                    ? error.response?.data?.message
+                    : error.message;
+
+                toast({
+                    variant: "destructive",
+                    title: "ERROR",
+                    description: msg,
+                });
             },
         },
     );
@@ -108,18 +132,12 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                 )
             ) {
                 addLicenseConclusion({
-                    fileSha256: fileData.sha256,
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
                     detectedLicenseExpressionSPDX:
                         fileData.licenseFindings[0]?.licenseExpressionSPDX ??
                         "",
                     comment: data.comment ?? "",
-                    contextPurl: purl,
-                });
-                toast({
-                    title: "License conclusion",
-                    description: "License conclusion added successfully.",
                 });
             } else {
                 return;
