@@ -163,6 +163,43 @@ userRouter.get("/license-conclusion", async (req, res) => {
     }
 });
 
+userRouter.get(
+    "/packages/:purl/files/:sha256/license-conclusions/",
+    async (req, res) => {
+        try {
+            const fileSha256 = req.params.sha256;
+            const purl = req.params.purl.replace(/%2F/g, "/");
+
+            let licenseConclusions =
+                await dbQueries.findLicenseConclusionsByFileSha256(fileSha256);
+
+            // Filter out license conclusions that have been marked as local
+            // if the context package purl does not match the requested purl
+            licenseConclusions = licenseConclusions.filter((lc) => {
+                if (lc.local) {
+                    return lc.contextPurl === purl;
+                } else {
+                    return true;
+                }
+            });
+            res.status(200).json({
+                licenseConclusions: licenseConclusions,
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError)
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message, path: error.path });
+            else {
+                // If error is not a CustomError, it is a Prisma error or an unknown error
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
+
 userRouter.post("/license-conclusion", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");

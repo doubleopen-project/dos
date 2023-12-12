@@ -2657,6 +2657,67 @@ export const findLicenseConclusionsByPackageId = async (
     return licenseConclusions;
 };
 
+type LicenseConclusionWithUserRelation = Prisma.LicenseConclusionGetPayload<{
+    select: {
+        id: true;
+        updatedAt: true;
+        detectedLicenseExpressionSPDX: true;
+        concludedLicenseExpressionSPDX: true;
+        comment: true;
+        local: true;
+        contextPurl: true;
+        user: {
+            select: {
+                username: true;
+            };
+        };
+        bulkCurationId: true;
+    };
+}>;
+
+export const findLicenseConclusionsByFileSha256 = async (
+    sha256: string,
+): Promise<LicenseConclusionWithUserRelation[]> => {
+    let licenseConclusions: LicenseConclusionWithUserRelation[] = [];
+    let retries = initialRetryCount;
+    let querySuccess = false;
+
+    while (!querySuccess && retries > 0) {
+        try {
+            licenseConclusions = await prisma.licenseConclusion.findMany({
+                where: {
+                    fileSha256: sha256,
+                },
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    detectedLicenseExpressionSPDX: true,
+                    concludedLicenseExpressionSPDX: true,
+                    comment: true,
+                    local: true,
+                    contextPurl: true,
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    bulkCurationId: true,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return licenseConclusions;
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
