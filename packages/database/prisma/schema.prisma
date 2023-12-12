@@ -117,6 +117,7 @@ model BulkCuration {
   concludedLicenseExpressionSPDX String
   detectedLicenseExpressionSPDX  String?
   comment                        String?
+  local                          Boolean  @default(false)
 
   packageId Int
   package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
@@ -139,6 +140,7 @@ model LicenseConclusion {
   detectedLicenseExpressionSPDX  String?
   comment                        String?
   contextPurl                    String
+  local                          Boolean  @default(false)
 
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])

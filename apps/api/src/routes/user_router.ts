@@ -191,6 +191,7 @@ userRouter.post("/license-conclusion", async (req, res) => {
             detectedLicenseExpressionSPDX:
                 req.body.detectedLicenseExpressionSPDX || null,
             comment: req.body.comment || null,
+            local: req.body.local,
             contextPurl: req.body.contextPurl,
             fileSha256: req.body.fileSha256,
             userId: req.user.id,
@@ -234,6 +235,7 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
                 detectedLicenseExpressionSPDX:
                     req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
+                local: req.body.local,
                 /*
                  * The following will detach the license conclusion from a bulk curation if it is connected to one
                  * (since this endpoint is used to update one license conclusion only, and the bulk curation
@@ -401,6 +403,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
             detectedLicenseExpressionSPDX:
                 req.body.detectedLicenseExpressionSPDX || null,
             comment: req.body.comment || null,
+            local: req.body.local,
             packageId: packageId,
             userId: user.id,
         });
