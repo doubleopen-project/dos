@@ -4501,6 +4501,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
                             user: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
@@ -4586,6 +4587,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -4608,6 +4610,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -4637,6 +4640,7 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -4661,6 +4665,7 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -5208,6 +5213,7 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             contextPurl: zod.ZodString;
+                            local: zod.ZodBoolean;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -5318,6 +5324,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -5341,6 +5348,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -5371,6 +5379,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -5396,6 +5405,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -5511,6 +5521,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: zod.ZodString;
                 detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                 comment: zod.ZodNullable<zod.ZodString>;
+                local: zod.ZodBoolean;
                 filePaths: zod.ZodArray<zod.ZodString, "many">;
                 licenseConclusions: zod.ZodArray<
                     zod.ZodObject<
@@ -5539,6 +5550,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
+                local: boolean;
                 filePaths: string[];
             },
             {
@@ -5549,6 +5561,7 @@ declare const userAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
+                local: boolean;
                 filePaths: string[];
             }
         >;
@@ -6101,6 +6114,7 @@ declare const userAPI: [
                             comment: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -6196,6 +6210,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -6216,6 +6231,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -6243,6 +6259,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -6265,6 +6282,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -9986,6 +10004,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
                             user: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
@@ -10071,6 +10090,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -10093,6 +10113,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -10122,6 +10143,7 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -10146,6 +10168,7 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -10693,6 +10716,7 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             contextPurl: zod.ZodString;
+                            local: zod.ZodBoolean;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -10803,6 +10827,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -10826,6 +10851,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -10856,6 +10882,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -10881,6 +10908,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -10996,6 +11024,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: zod.ZodString;
                 detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                 comment: zod.ZodNullable<zod.ZodString>;
+                local: zod.ZodBoolean;
                 filePaths: zod.ZodArray<zod.ZodString, "many">;
                 licenseConclusions: zod.ZodArray<
                     zod.ZodObject<
@@ -11024,6 +11053,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
+                local: boolean;
                 filePaths: string[];
             },
             {
@@ -11034,6 +11064,7 @@ declare const dosAPI: [
                 concludedLicenseExpressionSPDX: string;
                 comment: string | null;
                 pattern: string | null;
+                local: boolean;
                 filePaths: string[];
             }
         >;
@@ -11586,6 +11617,7 @@ declare const dosAPI: [
                             comment: zod.ZodNullable<zod.ZodString>;
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -11681,6 +11713,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -11701,6 +11734,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             updatedAt: Date;
+                            local: boolean;
                             user: {
                                 username: string;
                             };
@@ -11728,6 +11762,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };
@@ -11750,6 +11785,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     updatedAt: Date;
+                    local: boolean;
                     user: {
                         username: string;
                     };

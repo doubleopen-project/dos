@@ -135,6 +135,7 @@ userRouter.get("/license-conclusion", async (req, res) => {
                     lc.concludedLicenseExpressionSPDX,
                 detectedLicenseExpressionSPDX: lc.detectedLicenseExpressionSPDX,
                 comment: lc.comment,
+                local: lc.local,
                 user: lc.user,
                 bulkCurationId: lc.bulkCurationId,
                 sha256: lc.file.sha256,
@@ -352,6 +353,7 @@ userRouter.get("/bulk-curation", async (req, res) => {
                 detectedLicenseExpressionSPDX: bc.detectedLicenseExpressionSPDX,
                 comment: bc.comment,
                 contextPurl: bc.package.purl,
+                local: bc.local,
                 user: bc.user,
                 licenseConclusions: licenseConclusions,
             });
@@ -535,6 +537,7 @@ userRouter.get("/bulk-curation/:id", async (req, res) => {
             detectedLicenseExpressionSPDX:
                 bulkCuration.detectedLicenseExpressionSPDX,
             comment: bulkCuration.comment,
+            local: bulkCuration.local,
             filePaths: filepaths,
             licenseConclusions: licenseConclusions,
         });
