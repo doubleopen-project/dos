@@ -5827,6 +5827,7 @@ declare const userAPI: [
                         concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -5835,12 +5836,14 @@ declare const userAPI: [
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },
@@ -11309,6 +11312,7 @@ declare const dosAPI: [
                         concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -11317,12 +11321,14 @@ declare const dosAPI: [
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
                         comment?: string | undefined;
+                        local?: boolean | undefined;
                     }
                 >;
             },

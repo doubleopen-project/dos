@@ -214,6 +214,7 @@ export const PutBulkCurationReq = z
         concludedLicenseExpressionSPDX: z.string(),
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.string(),
+        local: z.boolean(),
     })
     .partial();
 

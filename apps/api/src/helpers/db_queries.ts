@@ -660,8 +660,6 @@ export const updatePackage = async (input: {
                 data: input.data,
             });
         } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError)
-                console.log(error.code);
             console.log("Error with trying to update Package: " + error);
             handleError(error);
             retries--;
@@ -2167,6 +2165,7 @@ type BulkCurationWithPackageRelation = Prisma.BulkCurationGetPayload<{
         comment: true;
         concludedLicenseExpressionSPDX: true;
         detectedLicenseExpressionSPDX: true;
+        local: true;
         package: {
             select: {
                 id: true;
@@ -2195,6 +2194,7 @@ export const findBulkCurationById = async (
                     comment: true,
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
+                    local: true,
                     package: {
                         select: {
                             id: true,
@@ -2225,6 +2225,7 @@ type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
         comment: true;
         concludedLicenseExpressionSPDX: true;
         detectedLicenseExpressionSPDX: true;
+        local: true;
         package: {
             select: {
                 id: true;
@@ -2279,6 +2280,7 @@ export const findBulkCurationWithRelationsById = async (
                     comment: true,
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
+                    local: true,
                     package: {
                         select: {
                             id: true,
@@ -2342,6 +2344,7 @@ export const findBulkCurationsByPackageId = async (
                     comment: true,
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
+                    local: true,
                     package: {
                         select: {
                             id: true,
@@ -2402,6 +2405,7 @@ export const findBulkCurationsWithRelations = async (): Promise<
                     concludedLicenseExpressionSPDX: true,
                     detectedLicenseExpressionSPDX: true,
                     comment: true,
+                    local: true,
                     package: {
                         select: {
                             id: true,

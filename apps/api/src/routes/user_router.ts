@@ -318,8 +318,6 @@ userRouter.get("/bulk-curation", async (req, res) => {
         for (const bc of bulkCurationsWithRelations) {
             const licenseConclusions = [];
 
-            console.log(bc);
-
             for (const lc of bc.licenseConclusions) {
                 const inContextPurl = [];
                 const additionalMatches = [];
@@ -564,67 +562,88 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
+        const reqPattern = req.body.pattern;
+        const reqCLESPDX = req.body.concludedLicenseExpressionSPDX;
+        const reqDLESPDX = req.body.detectedLicenseExpressionSPDX;
+        const reqComment = req.body.comment;
+        const reqLocal = req.body.local;
+
+        if (
+            !reqPattern &&
+            !reqCLESPDX &&
+            !reqDLESPDX &&
+            !reqComment &&
+            !reqLocal
+        ) {
+            throw new CustomError(
+                "At least one field is required",
+                400,
+                "root",
+            );
+        }
+
         const bulkCurationId = req.params.id;
 
-        const bulkCuration =
+        const origBulkCur =
             await dbQueries.findBulkCurationById(bulkCurationId);
 
-        if (!bulkCuration)
+        if (!origBulkCur)
             throw new CustomError("Bulk curation to update not found", 404);
 
         if (req.user.role !== "ADMIN") {
-            if (req.user.id !== bulkCuration.userId) {
+            if (req.user.id !== origBulkCur.userId) {
                 throw new CustomError("Forbidden", 403);
             }
         }
 
         if (
-            (req.body.pattern && req.body.pattern === bulkCuration.pattern) ||
-            (req.body.concludedLicenseExpressionSPDX &&
-                req.body.concludedLicenseExpressionSPDX ===
-                    bulkCuration.concludedLicenseExpressionSPDX) ||
-            (req.body.detectedLicenseExpressionSPDX &&
-                req.body.detectedLicenseExpressionSPDX ===
-                    bulkCuration.detectedLicenseExpressionSPDX) ||
-            (req.body.comment && req.body.comment === bulkCuration.comment)
+            (!reqPattern || reqPattern === origBulkCur.pattern) &&
+            (!reqCLESPDX ||
+                reqCLESPDX === origBulkCur.concludedLicenseExpressionSPDX) &&
+            (!reqDLESPDX ||
+                reqDLESPDX === origBulkCur.detectedLicenseExpressionSPDX) &&
+            (!reqComment || reqComment === origBulkCur.comment) &&
+            (!reqLocal || reqLocal === origBulkCur.local)
         ) {
-            throw new CustomError("Nothing to update", 400);
+            throw new CustomError("Nothing to update", 400, "root");
         }
 
         const bulkCurationWithRelations =
             await dbQueries.findBulkCurationWithRelationsById(
                 bulkCurationId,
-                bulkCuration.package.id,
+                origBulkCur.package.id,
             );
 
         if (!bulkCurationWithRelations)
             throw new CustomError("Bulk curation to update not found", 404);
 
-        const pattern = req.body.pattern;
-        if (pattern && pattern !== bulkCurationWithRelations.pattern) {
+        if (reqPattern && reqPattern !== bulkCurationWithRelations.pattern) {
             const newInputs = [];
             const fileTrees = await dbQueries.findFileTreesByPackageId(
-                bulkCuration.package.id,
+                origBulkCur.package.id,
             );
 
             for (const fileTree of fileTrees) {
                 if (
-                    minimatch(fileTree.path, pattern, { dot: true }) &&
+                    minimatch(fileTree.path, reqPattern, { dot: true }) &&
                     bulkCurationWithRelations.licenseConclusions.find(
                         (lc) => lc.file.sha256 === fileTree.fileSha256,
+                    ) === undefined &&
+                    newInputs.find(
+                        (lc) => lc.fileSha256 === fileTree.fileSha256,
                     ) === undefined
                 ) {
                     newInputs.push({
                         concludedLicenseExpressionSPDX:
-                            req.body.concludedLicenseExpressionSPDX ||
+                            reqCLESPDX ||
                             bulkCurationWithRelations.concludedLicenseExpressionSPDX,
                         detectedLicenseExpressionSPDX:
-                            req.body.detectedLicenseExpressionSPDX ||
+                            reqDLESPDX ||
                             bulkCurationWithRelations.detectedLicenseExpressionSPDX,
                         comment:
-                            req.body.comment ||
-                            bulkCurationWithRelations.comment,
-                        contextPurl: bulkCuration.package.purl,
+                            reqComment || bulkCurationWithRelations.comment,
+                        local: reqLocal || bulkCurationWithRelations.local,
+                        contextPurl: origBulkCur.package.purl,
                         fileSha256: fileTree.fileSha256,
                         userId: req.user.id,
                         bulkCurationId: bulkCurationWithRelations.id,
@@ -635,39 +654,43 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
             await dbQueries.createManyLicenseConclusions(newInputs);
 
             for (const lc of bulkCurationWithRelations.licenseConclusions) {
-                // Using the first filetree only because the file hash is the same,
-                // so the licenseConclusion is the same one for all filetrees
-                if (
-                    !minimatch(lc.file.filetrees[0].path, pattern, {
-                        dot: true,
-                    })
-                ) {
+                let noMatches = true;
+                for (const ft of lc.file.filetrees) {
+                    // If one of the paths match with the new pattern, don't delete the license conclusion
+                    if (minimatch(ft.path, reqPattern, { dot: true })) {
+                        noMatches = false;
+                        break;
+                    }
+                }
+
+                if (noMatches) {
                     await dbQueries.deleteLicenseConclusion(lc.id);
                 }
             }
         }
 
         if (
-            req.body.concludedLicenseExpressionSPDX ||
-            req.body.detectedLicenseExpressionSPDX ||
-            req.body.comment
+            (reqCLESPDX &&
+                reqCLESPDX !== origBulkCur.concludedLicenseExpressionSPDX) ||
+            (reqDLESPDX &&
+                reqDLESPDX !== origBulkCur.detectedLicenseExpressionSPDX) ||
+            (reqComment && reqComment !== origBulkCur.comment) ||
+            (reqLocal && reqLocal !== origBulkCur.local)
         ) {
             await dbQueries.updateManyLicenseConclusions(bulkCurationId, {
-                concludedLicenseExpressionSPDX:
-                    req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX:
-                    req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
+                concludedLicenseExpressionSPDX: reqCLESPDX,
+                detectedLicenseExpressionSPDX: reqDLESPDX,
+                comment: reqComment,
+                local: reqLocal,
             });
         }
 
         await dbQueries.updateBulkCuration(bulkCurationId, {
-            pattern: req.body.pattern,
-            concludedLicenseExpressionSPDX:
-                req.body.concludedLicenseExpressionSPDX,
-            detectedLicenseExpressionSPDX:
-                req.body.detectedLicenseExpressionSPDX,
-            comment: req.body.comment,
+            pattern: reqPattern,
+            concludedLicenseExpressionSPDX: reqCLESPDX,
+            detectedLicenseExpressionSPDX: reqDLESPDX,
+            comment: reqComment,
+            local: reqLocal,
         });
 
         res.status(200).json({ message: "Bulk curation updated" });
@@ -676,7 +699,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
         if (error instanceof CustomError)
             return res
                 .status(error.statusCode)
-                .json({ message: error.message });
+                .json({ message: error.message, path: error.path });
         else if (
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2025"
