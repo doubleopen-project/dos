@@ -265,7 +265,7 @@ userRouter.post(
     },
 );
 
-userRouter.put("/license-conclusion/:id", async (req, res) => {
+userRouter.put("/license-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
 
@@ -320,7 +320,7 @@ userRouter.put("/license-conclusion/:id", async (req, res) => {
     }
 });
 
-userRouter.delete("/license-conclusion/:id", async (req, res) => {
+userRouter.delete("/license-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
 
