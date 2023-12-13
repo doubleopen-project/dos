@@ -53,7 +53,8 @@ export const userAPI = makeApi([
     {
         method: "get",
         path: "/packages/:purl/files/:sha256/license-conclusions/",
-        description: "Get license conclusions for specified file",
+        description:
+            "Get license conclusions for specified file in specified package",
         parameters: [
             {
                 name: "purl",
@@ -96,8 +97,9 @@ export const userAPI = makeApi([
     },
     {
         method: "put",
-        path: "/license-conclusion/:id",
-        description: "Update a license conclusion",
+        path: "/license-conclusions/:id",
+        description: "Edit a license conclusion",
+        alias: "PutLicenseConclusion",
         parameters: [
             {
                 name: "id",
@@ -115,8 +117,9 @@ export const userAPI = makeApi([
     },
     {
         method: "delete",
-        path: "/license-conclusion/:id",
+        path: "/license-conclusions/:id",
         description: "Delete a license conclusion",
+        alias: "DeleteLicenseConclusion",
         parameters: [
             {
                 name: "id",

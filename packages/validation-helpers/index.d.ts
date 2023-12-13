@@ -4777,7 +4777,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/:purl/files/:sha256/license-conclusions/";
-        description: "Get license conclusions for specified file";
+        description: "Get license conclusions for specified file in specified package";
         parameters: [
             {
                 name: "purl";
@@ -5128,8 +5128,9 @@ declare const userAPI: [
     },
     {
         method: "put";
-        path: "/license-conclusion/:id";
-        description: "Update a license conclusion";
+        path: "/license-conclusions/:id";
+        description: "Edit a license conclusion";
+        alias: "PutLicenseConclusion";
         parameters: [
             {
                 name: "id";
@@ -5283,8 +5284,9 @@ declare const userAPI: [
     },
     {
         method: "delete";
-        path: "/license-conclusion/:id";
+        path: "/license-conclusions/:id";
         description: "Delete a license conclusion";
+        alias: "DeleteLicenseConclusion";
         parameters: [
             {
                 name: "id";
@@ -10483,7 +10485,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/:purl/files/:sha256/license-conclusions";
-        description: "Get license conclusions for specified file";
+        description: "Get license conclusions for specified file in specified package";
         parameters: [
             {
                 name: "purl";
@@ -10834,8 +10836,9 @@ declare const dosAPI: [
     },
     {
         method: "put";
-        path: "/user/license-conclusion/:id";
-        description: "Update a license conclusion";
+        path: "/user/license-conclusions/:id";
+        description: "Edit a license conclusion";
+        alias: "PutLicenseConclusion";
         parameters: [
             {
                 name: "id";
@@ -10989,8 +10992,9 @@ declare const dosAPI: [
     },
     {
         method: "delete";
-        path: "/user/license-conclusion/:id";
+        path: "/user/license-conclusions/:id";
         description: "Delete a license conclusion";
+        alias: "DeleteLicenseConclusion";
         parameters: [
             {
                 name: "id";

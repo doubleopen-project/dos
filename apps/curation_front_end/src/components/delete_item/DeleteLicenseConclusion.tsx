@@ -27,8 +27,8 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyLicenseConclusion = userHooks.getKeyByPath(
-        "post",
-        "/license-conclusion",
+        "get",
+        "/license-conclusions",
     );
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
@@ -90,34 +90,34 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
     }
 
     // Delete a path exclusion or license conclusion
-    const { mutate: deleteLicenseConclusion, isLoading } = userHooks.useDelete(
-        "/license-conclusion/:id",
-        {
-            withCredentials: true,
-            params: {
-                id: data.id,
+    const { mutate: deleteLicenseConclusion, isLoading } =
+        userHooks.useDeleteLicenseConclusion(
+            {
+                withCredentials: true,
+                params: {
+                    id: data.id,
+                },
             },
-        },
-        {
-            onSuccess: () => {
-                toast({
-                    title: "Delete successful",
-                    description: "License conclusion deleted succesfully",
-                });
-                // When a license conclusion is deleted, invalidate the "/file", "/filetree" and "/license-conclusion" queries to refetch the data
-                queryClient.invalidateQueries(keyFile);
-                queryClient.invalidateQueries(keyFiletree);
-                queryClient.invalidateQueries(keyLicenseConclusion);
+            {
+                onSuccess: () => {
+                    toast({
+                        title: "Delete successful",
+                        description: "License conclusion deleted succesfully",
+                    });
+                    // When a license conclusion is deleted, invalidate the "/file", "/filetree" and "/license-conclusions" queries to refetch the data
+                    queryClient.invalidateQueries(keyFile);
+                    queryClient.invalidateQueries(keyFiletree);
+                    queryClient.invalidateQueries(keyLicenseConclusion);
+                },
+                onError: () => {
+                    toast({
+                        variant: "destructive",
+                        title: "License conclusion deletion failed",
+                        description: "Something went wrong. Please try again.",
+                    });
+                },
             },
-            onError: () => {
-                toast({
-                    variant: "destructive",
-                    title: "License conclusion deletion failed",
-                    description: "Something went wrong. Please try again.",
-                });
-            },
-        },
-    );
+        );
 
     // Delete a bulk curation
     const { mutate: deleteBulkCuration, isLoading: isBulkLoading } =
