@@ -3142,6 +3142,7 @@ export const countFileTreesByPackageId = async (
 export const bulkCurationAffectedRecords = async (
     bulkCurationId: number,
     packageId: number,
+    local: boolean,
 ): Promise<{
     affectedPackageFileTreesCount: number;
     affectedTotalFileTreesCount: number;
@@ -3178,28 +3179,30 @@ export const bulkCurationAffectedRecords = async (
 
     retries = initialRetryCount;
 
-    while (retries > 0) {
-        try {
-            affectedTotalFileTreesCount = await prisma.fileTree.count({
-                where: {
-                    file: {
-                        licenseConclusions: {
-                            some: {
-                                bulkCurationId: bulkCurationId,
+    if (!local) {
+        while (retries > 0) {
+            try {
+                affectedTotalFileTreesCount = await prisma.fileTree.count({
+                    where: {
+                        file: {
+                            licenseConclusions: {
+                                some: {
+                                    bulkCurationId: bulkCurationId,
+                                },
                             },
                         },
                     },
-                },
-            });
-            break;
-        } catch (error) {
-            console.log(
-                "Error with trying to count affected FileTrees: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
+                });
+                break;
+            } catch (error) {
+                console.log(
+                    "Error with trying to count affected FileTrees: " + error,
+                );
+                handleError(error);
+                retries--;
+                if (retries > 0) await waitToRetry();
+                else throw error;
+            }
         }
     }
 

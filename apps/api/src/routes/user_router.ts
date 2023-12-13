@@ -361,7 +361,7 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
     }
 });
 
-userRouter.get("/bulk-curation", async (req, res) => {
+userRouter.get("/bulk-curations", async (req, res) => {
     try {
         const bulkCurationsWithRelations =
             await dbQueries.findBulkCurationsWithRelations();
@@ -377,7 +377,7 @@ userRouter.get("/bulk-curation", async (req, res) => {
                 for (const ft of lc.file.filetrees) {
                     if (ft.package.purl === bc.package.purl) {
                         inContextPurl.push(ft.path);
-                    } else {
+                    } else if (!bc.local) {
                         additionalMatches.push({
                             path: ft.path,
                             purl: ft.package.purl,
@@ -427,13 +427,15 @@ userRouter.get("/bulk-curation", async (req, res) => {
     }
 });
 
-userRouter.post("/bulk-curation", async (req, res) => {
+userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
     try {
         const { user } = req;
 
         if (!user) throw new CustomError("Unauthorized", 401);
 
-        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+        const contextPurl = formatPurl(req.params.purl);
+
+        const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
 
         if (!packageId)
             throw new CustomError(
@@ -476,7 +478,8 @@ userRouter.post("/bulk-curation", async (req, res) => {
                         detectedLicenseExpressionSPDX:
                             req.body.detectedLicenseExpressionSPDX || null,
                         comment: req.body.comment || null,
-                        contextPurl: req.body.purl,
+                        local: req.body.local,
+                        contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
                         userId: user.id,
                         bulkCurationId: bulkCuration.id,
@@ -520,6 +523,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
         const affectedRecords = await dbQueries.bulkCurationAffectedRecords(
             bulkCuration.id,
             packageId,
+            req.body.local || false,
         );
 
         res.status(200).json({
@@ -547,7 +551,7 @@ userRouter.post("/bulk-curation", async (req, res) => {
     }
 });
 
-userRouter.get("/bulk-curation/:id", async (req, res) => {
+userRouter.get("/bulk-curations/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -612,7 +616,7 @@ userRouter.get("/bulk-curation/:id", async (req, res) => {
     }
 });
 
-userRouter.put("/bulk-curation/:id", async (req, res) => {
+userRouter.put("/bulk-curations/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -768,7 +772,7 @@ userRouter.put("/bulk-curation/:id", async (req, res) => {
     }
 });
 
-userRouter.delete("/bulk-curation/:id", async (req, res) => {
+userRouter.delete("/bulk-curations/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -818,17 +822,18 @@ userRouter.delete("/bulk-curation/:id", async (req, res) => {
     }
 });
 
-userRouter.post("/bulk-curations", async (req, res) => {
+userRouter.get("/packages/:purl/bulk-curations", async (req, res) => {
     try {
         const { user } = req;
-
         if (!user) throw new CustomError("Unauthorized", 401);
 
-        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+        const purl = formatPurl(req.params.purl);
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
 
         if (!packageId)
             throw new CustomError(
-                "Package with purl " + req.body.purl + " not found",
+                "Package with purl " + purl + " not found",
                 404,
             );
 
@@ -849,7 +854,10 @@ userRouter.post("/bulk-curations", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Package with purl " + req.body.purl + " not found",
+                message:
+                    "Package with purl " +
+                    formatPurl(req.params.purl) +
+                    " not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);

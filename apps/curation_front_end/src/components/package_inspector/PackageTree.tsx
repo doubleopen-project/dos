@@ -33,7 +33,7 @@ import type { SelectedNode, TreeNode } from "@/types/index";
 import { Button } from "../ui/button";
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
 };
 
 const PackageTree = ({ purl }: Props) => {
@@ -56,7 +56,7 @@ const PackageTree = ({ purl }: Props) => {
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useImmutableQuery(
         "/filetree",
-        { purl: purl as string },
+        { purl: purl },
         { withCredentials: true },
         { enabled: !!purl },
     );
@@ -64,7 +64,7 @@ const PackageTree = ({ purl }: Props) => {
     // Fetch the path exclusions for the package
     const { data: pathExclusions } = userHooks.useImmutableQuery(
         "/path-exclusions",
-        { purl: purl as string },
+        { purl: purl },
         { withCredentials: true },
         { enabled: !!purl },
     );
@@ -173,7 +173,7 @@ const PackageTree = ({ purl }: Props) => {
                                 onPressedChange={() => setFiltering(!filtering)}
                             >
                                 {filtering ? (
-                                    <span className="text-red-500 font-bold">
+                                    <span className="font-bold text-red-500">
                                         Filtering
                                     </span>
                                 ) : (

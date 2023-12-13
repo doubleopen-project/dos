@@ -199,12 +199,6 @@ export const PostBulkCurationReq = z.object({
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
-    purl: z
-        .string({
-            required_error: "Purl is required",
-        })
-        .trim()
-        .min(1, "Purl cannot be empty"),
 });
 
 export const PostBulkCurationRes = z.object({

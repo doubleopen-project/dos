@@ -5400,8 +5400,466 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/bulk-curation";
+        path: "/packages/:purl/bulk-curations";
+        description: "Get bulk curations for specified purl";
+        alias: "GetBulkCurationsByPurl";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                bulkCurations: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
+                            licenseConclusions: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        file: zod.ZodObject<
+                                            {
+                                                sha256: zod.ZodString;
+                                                filetrees: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                sha256: string;
+                                                filetrees: {
+                                                    path: string;
+                                                }[];
+                                            },
+                                            {
+                                                sha256: string;
+                                                filetrees: {
+                                                    path: string;
+                                                }[];
+                                            }
+                                        >;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        file: {
+                                            sha256: string;
+                                            filetrees: {
+                                                path: string;
+                                            }[];
+                                        };
+                                    },
+                                    {
+                                        id: number;
+                                        file: {
+                                            sha256: string;
+                                            filetrees: {
+                                                path: string;
+                                            }[];
+                                        };
+                                    }
+                                >,
+                                "many"
+                            >;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                file: {
+                                    sha256: string;
+                                    filetrees: {
+                                        path: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                file: {
+                                    sha256: string;
+                                    filetrees: {
+                                        path: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        file: {
+                            sha256: string;
+                            filetrees: {
+                                path: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                }[];
+            },
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        file: {
+                            sha256: string;
+                            filetrees: {
+                                path: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/packages/:purl/bulk-curations";
+        description: "Add a new bulk curation";
+        alias: "PostBulkCuration";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        detectedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
+                        comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        concludedLicenseExpressionSPDX: string;
+                        pattern: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
+                        comment?: string | undefined;
+                        local?: boolean | undefined;
+                    },
+                    {
+                        concludedLicenseExpressionSPDX: string;
+                        pattern: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
+                        comment?: string | undefined;
+                        local?: boolean | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                bulkCurationId: zod.ZodNumber;
+                matchedPathsCount: zod.ZodNumber;
+                addedLicenseConclusionsCount: zod.ZodNumber;
+                affectedFilesInPackageCount: zod.ZodNumber;
+                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+                bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
+            },
+            {
+                message: string;
+                bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/bulk-curations";
         description: "Get all bulk curations";
+        alias: "GetBulkCurations";
         response: zod.ZodObject<
             {
                 bulkCurations: zod.ZodArray<
@@ -5707,8 +6165,9 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/bulk-curation/:id";
-        description: "Get bulk curation";
+        path: "/bulk-curations/:id";
+        description: "Get bulk curation by id";
+        alias: "GetBulkCurationById";
         parameters: [
             {
                 name: "id";
@@ -5858,175 +6317,10 @@ declare const userAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/bulk-curation";
-        description: "Add a new bulk curation";
-        alias: "PostBulkCuration";
-        parameters: [
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        concludedLicenseExpressionSPDX: zod.ZodString;
-                        detectedLicenseExpressionSPDX: zod.ZodOptional<
-                            zod.ZodNullable<zod.ZodString>
-                        >;
-                        comment: zod.ZodOptional<zod.ZodString>;
-                        local: zod.ZodOptional<zod.ZodBoolean>;
-                        purl: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                        concludedLicenseExpressionSPDX: string;
-                        pattern: string;
-                        detectedLicenseExpressionSPDX?:
-                            | string
-                            | null
-                            | undefined;
-                        comment?: string | undefined;
-                        local?: boolean | undefined;
-                    },
-                    {
-                        purl: string;
-                        concludedLicenseExpressionSPDX: string;
-                        pattern: string;
-                        detectedLicenseExpressionSPDX?:
-                            | string
-                            | null
-                            | undefined;
-                        comment?: string | undefined;
-                        local?: boolean | undefined;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                bulkCurationId: zod.ZodNumber;
-                matchedPathsCount: zod.ZodNumber;
-                addedLicenseConclusionsCount: zod.ZodNumber;
-                affectedFilesInPackageCount: zod.ZodNumber;
-                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
-                message: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                message: string;
-                bulkCurationId: number;
-                matchedPathsCount: number;
-                addedLicenseConclusionsCount: number;
-                affectedFilesInPackageCount: number;
-                affectedFilesAcrossAllPackagesCount: number;
-            },
-            {
-                message: string;
-                bulkCurationId: number;
-                matchedPathsCount: number;
-                addedLicenseConclusionsCount: number;
-                affectedFilesInPackageCount: number;
-                affectedFilesAcrossAllPackagesCount: number;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
         method: "put";
-        path: "/bulk-curation/:id";
-        description: "Update bulk curation";
+        path: "/bulk-curations/:id";
+        description: "Edit bulk curation";
+        alias: "PutBulkCuration";
         parameters: [
             {
                 name: "id";
@@ -6169,8 +6463,9 @@ declare const userAPI: [
     },
     {
         method: "delete";
-        path: "/bulk-curation/:id";
+        path: "/bulk-curations/:id";
         description: "Delete a bulk curation";
+        alias: "DeleteBulkCuration";
         parameters: [
             {
                 name: "id";
@@ -6189,306 +6484,6 @@ declare const userAPI: [
             },
             {
                 message: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "post";
-        path: "/bulk-curations";
-        description: "Get bulk curations for specified purl";
-        parameters: [
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodEffects<zod.ZodString, string, string>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                bulkCurations: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodNumber;
-                            updatedAt: zod.ZodDate;
-                            pattern: zod.ZodNullable<zod.ZodString>;
-                            comment: zod.ZodNullable<zod.ZodString>;
-                            concludedLicenseExpressionSPDX: zod.ZodString;
-                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
-                            local: zod.ZodBoolean;
-                            licenseConclusions: zod.ZodArray<
-                                zod.ZodObject<
-                                    {
-                                        id: zod.ZodNumber;
-                                        file: zod.ZodObject<
-                                            {
-                                                sha256: zod.ZodString;
-                                                filetrees: zod.ZodArray<
-                                                    zod.ZodObject<
-                                                        {
-                                                            path: zod.ZodString;
-                                                        },
-                                                        "strip",
-                                                        zod.ZodTypeAny,
-                                                        {
-                                                            path: string;
-                                                        },
-                                                        {
-                                                            path: string;
-                                                        }
-                                                    >,
-                                                    "many"
-                                                >;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                sha256: string;
-                                                filetrees: {
-                                                    path: string;
-                                                }[];
-                                            },
-                                            {
-                                                sha256: string;
-                                                filetrees: {
-                                                    path: string;
-                                                }[];
-                                            }
-                                        >;
-                                    },
-                                    "strip",
-                                    zod.ZodTypeAny,
-                                    {
-                                        id: number;
-                                        file: {
-                                            sha256: string;
-                                            filetrees: {
-                                                path: string;
-                                            }[];
-                                        };
-                                    },
-                                    {
-                                        id: number;
-                                        file: {
-                                            sha256: string;
-                                            filetrees: {
-                                                path: string;
-                                            }[];
-                                        };
-                                    }
-                                >,
-                                "many"
-                            >;
-                            user: zod.ZodObject<
-                                {
-                                    username: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    username: string;
-                                },
-                                {
-                                    username: string;
-                                }
-                            >;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: number;
-                            licenseConclusions: {
-                                id: number;
-                                file: {
-                                    sha256: string;
-                                    filetrees: {
-                                        path: string;
-                                    }[];
-                                };
-                            }[];
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            pattern: string | null;
-                            updatedAt: Date;
-                            local: boolean;
-                            user: {
-                                username: string;
-                            };
-                        },
-                        {
-                            id: number;
-                            licenseConclusions: {
-                                id: number;
-                                file: {
-                                    sha256: string;
-                                    filetrees: {
-                                        path: string;
-                                    }[];
-                                };
-                            }[];
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            pattern: string | null;
-                            updatedAt: Date;
-                            local: boolean;
-                            user: {
-                                username: string;
-                            };
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                bulkCurations: {
-                    id: number;
-                    licenseConclusions: {
-                        id: number;
-                        file: {
-                            sha256: string;
-                            filetrees: {
-                                path: string;
-                            }[];
-                        };
-                    }[];
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    pattern: string | null;
-                    updatedAt: Date;
-                    local: boolean;
-                    user: {
-                        username: string;
-                    };
-                }[];
-            },
-            {
-                bulkCurations: {
-                    id: number;
-                    licenseConclusions: {
-                        id: number;
-                        file: {
-                            sha256: string;
-                            filetrees: {
-                                path: string;
-                            }[];
-                        };
-                    }[];
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    pattern: string | null;
-                    updatedAt: Date;
-                    local: boolean;
-                    user: {
-                        username: string;
-                    };
-                }[];
             }
         >;
         errors: [
@@ -11108,8 +11103,466 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/bulk-curation";
+        path: "/user/packages/:purl/bulk-curations";
+        description: "Get bulk curations for specified purl";
+        alias: "GetBulkCurationsByPurl";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                bulkCurations: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            updatedAt: zod.ZodDate;
+                            pattern: zod.ZodNullable<zod.ZodString>;
+                            comment: zod.ZodNullable<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodString;
+                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                            local: zod.ZodBoolean;
+                            licenseConclusions: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        file: zod.ZodObject<
+                                            {
+                                                sha256: zod.ZodString;
+                                                filetrees: zod.ZodArray<
+                                                    zod.ZodObject<
+                                                        {
+                                                            path: zod.ZodString;
+                                                        },
+                                                        "strip",
+                                                        zod.ZodTypeAny,
+                                                        {
+                                                            path: string;
+                                                        },
+                                                        {
+                                                            path: string;
+                                                        }
+                                                    >,
+                                                    "many"
+                                                >;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                sha256: string;
+                                                filetrees: {
+                                                    path: string;
+                                                }[];
+                                            },
+                                            {
+                                                sha256: string;
+                                                filetrees: {
+                                                    path: string;
+                                                }[];
+                                            }
+                                        >;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        file: {
+                                            sha256: string;
+                                            filetrees: {
+                                                path: string;
+                                            }[];
+                                        };
+                                    },
+                                    {
+                                        id: number;
+                                        file: {
+                                            sha256: string;
+                                            filetrees: {
+                                                path: string;
+                                            }[];
+                                        };
+                                    }
+                                >,
+                                "many"
+                            >;
+                            user: zod.ZodObject<
+                                {
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                },
+                                {
+                                    username: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                file: {
+                                    sha256: string;
+                                    filetrees: {
+                                        path: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                        },
+                        {
+                            id: number;
+                            licenseConclusions: {
+                                id: number;
+                                file: {
+                                    sha256: string;
+                                    filetrees: {
+                                        path: string;
+                                    }[];
+                                };
+                            }[];
+                            detectedLicenseExpressionSPDX: string | null;
+                            concludedLicenseExpressionSPDX: string;
+                            comment: string | null;
+                            pattern: string | null;
+                            updatedAt: Date;
+                            local: boolean;
+                            user: {
+                                username: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        file: {
+                            sha256: string;
+                            filetrees: {
+                                path: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                }[];
+            },
+            {
+                bulkCurations: {
+                    id: number;
+                    licenseConclusions: {
+                        id: number;
+                        file: {
+                            sha256: string;
+                            filetrees: {
+                                path: string;
+                            }[];
+                        };
+                    }[];
+                    detectedLicenseExpressionSPDX: string | null;
+                    concludedLicenseExpressionSPDX: string;
+                    comment: string | null;
+                    pattern: string | null;
+                    updatedAt: Date;
+                    local: boolean;
+                    user: {
+                        username: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/user/packages/:purl/bulk-curations";
+        description: "Add a new bulk curation";
+        alias: "PostBulkCuration";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        detectedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
+                        comment: zod.ZodOptional<zod.ZodString>;
+                        local: zod.ZodOptional<zod.ZodBoolean>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        concludedLicenseExpressionSPDX: string;
+                        pattern: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
+                        comment?: string | undefined;
+                        local?: boolean | undefined;
+                    },
+                    {
+                        concludedLicenseExpressionSPDX: string;
+                        pattern: string;
+                        detectedLicenseExpressionSPDX?:
+                            | string
+                            | null
+                            | undefined;
+                        comment?: string | undefined;
+                        local?: boolean | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                bulkCurationId: zod.ZodNumber;
+                matchedPathsCount: zod.ZodNumber;
+                addedLicenseConclusionsCount: zod.ZodNumber;
+                affectedFilesInPackageCount: zod.ZodNumber;
+                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+                bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
+            },
+            {
+                message: string;
+                bulkCurationId: number;
+                matchedPathsCount: number;
+                addedLicenseConclusionsCount: number;
+                affectedFilesInPackageCount: number;
+                affectedFilesAcrossAllPackagesCount: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/bulk-curations";
         description: "Get all bulk curations";
+        alias: "GetBulkCurations";
         response: zod.ZodObject<
             {
                 bulkCurations: zod.ZodArray<
@@ -11415,8 +11868,9 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/bulk-curation/:id";
-        description: "Get bulk curation";
+        path: "/user/bulk-curations/:id";
+        description: "Get bulk curation by id";
+        alias: "GetBulkCurationById";
         parameters: [
             {
                 name: "id";
@@ -11566,175 +12020,10 @@ declare const dosAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/user/bulk-curation";
-        description: "Add a new bulk curation";
-        alias: "PostBulkCuration";
-        parameters: [
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        concludedLicenseExpressionSPDX: zod.ZodString;
-                        detectedLicenseExpressionSPDX: zod.ZodOptional<
-                            zod.ZodNullable<zod.ZodString>
-                        >;
-                        comment: zod.ZodOptional<zod.ZodString>;
-                        local: zod.ZodOptional<zod.ZodBoolean>;
-                        purl: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                        concludedLicenseExpressionSPDX: string;
-                        pattern: string;
-                        detectedLicenseExpressionSPDX?:
-                            | string
-                            | null
-                            | undefined;
-                        comment?: string | undefined;
-                        local?: boolean | undefined;
-                    },
-                    {
-                        purl: string;
-                        concludedLicenseExpressionSPDX: string;
-                        pattern: string;
-                        detectedLicenseExpressionSPDX?:
-                            | string
-                            | null
-                            | undefined;
-                        comment?: string | undefined;
-                        local?: boolean | undefined;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                bulkCurationId: zod.ZodNumber;
-                matchedPathsCount: zod.ZodNumber;
-                addedLicenseConclusionsCount: zod.ZodNumber;
-                affectedFilesInPackageCount: zod.ZodNumber;
-                affectedFilesAcrossAllPackagesCount: zod.ZodNumber;
-                message: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                message: string;
-                bulkCurationId: number;
-                matchedPathsCount: number;
-                addedLicenseConclusionsCount: number;
-                affectedFilesInPackageCount: number;
-                affectedFilesAcrossAllPackagesCount: number;
-            },
-            {
-                message: string;
-                bulkCurationId: number;
-                matchedPathsCount: number;
-                addedLicenseConclusionsCount: number;
-                affectedFilesInPackageCount: number;
-                affectedFilesAcrossAllPackagesCount: number;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
         method: "put";
-        path: "/user/bulk-curation/:id";
-        description: "Update bulk curation";
+        path: "/user/bulk-curations/:id";
+        description: "Edit bulk curation";
+        alias: "PutBulkCuration";
         parameters: [
             {
                 name: "id";
@@ -11877,8 +12166,9 @@ declare const dosAPI: [
     },
     {
         method: "delete";
-        path: "/user/bulk-curation/:id";
+        path: "/user/bulk-curations/:id";
         description: "Delete a bulk curation";
+        alias: "DeleteBulkCuration";
         parameters: [
             {
                 name: "id";
@@ -11897,306 +12187,6 @@ declare const dosAPI: [
             },
             {
                 message: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "post";
-        path: "/user/bulk-curations";
-        description: "Get bulk curations for specified purl";
-        parameters: [
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodEffects<zod.ZodString, string, string>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                bulkCurations: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodNumber;
-                            updatedAt: zod.ZodDate;
-                            pattern: zod.ZodNullable<zod.ZodString>;
-                            comment: zod.ZodNullable<zod.ZodString>;
-                            concludedLicenseExpressionSPDX: zod.ZodString;
-                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
-                            local: zod.ZodBoolean;
-                            licenseConclusions: zod.ZodArray<
-                                zod.ZodObject<
-                                    {
-                                        id: zod.ZodNumber;
-                                        file: zod.ZodObject<
-                                            {
-                                                sha256: zod.ZodString;
-                                                filetrees: zod.ZodArray<
-                                                    zod.ZodObject<
-                                                        {
-                                                            path: zod.ZodString;
-                                                        },
-                                                        "strip",
-                                                        zod.ZodTypeAny,
-                                                        {
-                                                            path: string;
-                                                        },
-                                                        {
-                                                            path: string;
-                                                        }
-                                                    >,
-                                                    "many"
-                                                >;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                sha256: string;
-                                                filetrees: {
-                                                    path: string;
-                                                }[];
-                                            },
-                                            {
-                                                sha256: string;
-                                                filetrees: {
-                                                    path: string;
-                                                }[];
-                                            }
-                                        >;
-                                    },
-                                    "strip",
-                                    zod.ZodTypeAny,
-                                    {
-                                        id: number;
-                                        file: {
-                                            sha256: string;
-                                            filetrees: {
-                                                path: string;
-                                            }[];
-                                        };
-                                    },
-                                    {
-                                        id: number;
-                                        file: {
-                                            sha256: string;
-                                            filetrees: {
-                                                path: string;
-                                            }[];
-                                        };
-                                    }
-                                >,
-                                "many"
-                            >;
-                            user: zod.ZodObject<
-                                {
-                                    username: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    username: string;
-                                },
-                                {
-                                    username: string;
-                                }
-                            >;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: number;
-                            licenseConclusions: {
-                                id: number;
-                                file: {
-                                    sha256: string;
-                                    filetrees: {
-                                        path: string;
-                                    }[];
-                                };
-                            }[];
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            pattern: string | null;
-                            updatedAt: Date;
-                            local: boolean;
-                            user: {
-                                username: string;
-                            };
-                        },
-                        {
-                            id: number;
-                            licenseConclusions: {
-                                id: number;
-                                file: {
-                                    sha256: string;
-                                    filetrees: {
-                                        path: string;
-                                    }[];
-                                };
-                            }[];
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            pattern: string | null;
-                            updatedAt: Date;
-                            local: boolean;
-                            user: {
-                                username: string;
-                            };
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                bulkCurations: {
-                    id: number;
-                    licenseConclusions: {
-                        id: number;
-                        file: {
-                            sha256: string;
-                            filetrees: {
-                                path: string;
-                            }[];
-                        };
-                    }[];
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    pattern: string | null;
-                    updatedAt: Date;
-                    local: boolean;
-                    user: {
-                        username: string;
-                    };
-                }[];
-            },
-            {
-                bulkCurations: {
-                    id: number;
-                    licenseConclusions: {
-                        id: number;
-                        file: {
-                            sha256: string;
-                            filetrees: {
-                                path: string;
-                            }[];
-                        };
-                    }[];
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    pattern: string | null;
-                    updatedAt: Date;
-                    local: boolean;
-                    user: {
-                        username: string;
-                    };
-                }[];
             }
         >;
         errors: [

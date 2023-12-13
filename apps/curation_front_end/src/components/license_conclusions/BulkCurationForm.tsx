@@ -67,7 +67,7 @@ const bulkCurationFormSchema = z.object({
 type BulkCurationFormType = z.infer<typeof bulkCurationFormSchema>;
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     className?: string;
     setOpen: (open: boolean) => void;
 };
@@ -77,7 +77,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useImmutableQuery(
         "/filetree",
-        { purl: purl as string },
+        { purl: purl },
         { withCredentials: true },
         { enabled: !!purl },
     );
@@ -93,6 +93,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         resolver: zodResolver(bulkCurationFormSchema),
         defaultValues,
     });
+    const pathPurl = purl.replace(/\//g, "%2F");
 
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
@@ -100,6 +101,9 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     const { mutate: addBulkCuration } = userHooks.usePostBulkCuration(
         {
             withCredentials: true,
+            params: {
+                purl: pathPurl,
+            },
         },
         {
             onSuccess: (data) => {
@@ -178,7 +182,6 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
                     comment: data.comment ?? "",
-                    purl: purl as string,
                 });
             } else {
                 return;

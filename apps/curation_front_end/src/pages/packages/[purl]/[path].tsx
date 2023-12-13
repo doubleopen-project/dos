@@ -21,7 +21,7 @@ export default function PackageAndFile() {
 
     return (
         <div className="h-screen">
-            <CurationUI purl={purl} path={path} />
+            {purl && <CurationUI purl={purl} path={path} />}
         </div>
     );
 }

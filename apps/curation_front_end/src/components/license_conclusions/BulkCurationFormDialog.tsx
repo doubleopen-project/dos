@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import BulkCurationForm from "@/components/license_conclusions/BulkCurationForm";
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     open: boolean;
     setOpen: (open: boolean) => void;
 };
