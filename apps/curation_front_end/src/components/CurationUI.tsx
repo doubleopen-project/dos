@@ -8,7 +8,7 @@ import CodeInspector from "@/components/file_inspector/CodeInspector";
 import PackageTree from "@/components/package_inspector/PackageTree";
 
 type CurationUIProps = {
-    purl: string | undefined;
+    purl: string;
     path: string | undefined;
 };
 

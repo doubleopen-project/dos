@@ -132,31 +132,30 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
-        path: "/bulk-curation",
-        description: "Get all bulk curations",
-        response: schemas.GetBulkCurationsRes,
-        errors,
-    },
-    {
-        method: "get",
-        path: "/bulk-curation/:id",
-        description: "Get bulk curation",
+        path: "/packages/:purl/bulk-curations",
+        description: "Get bulk curations for specified purl",
+        alias: "GetBulkCurationsByPurl",
         parameters: [
             {
-                name: "id",
+                name: "purl",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: PathParamPurl,
             },
         ],
-        response: schemas.GetBulkCurationRes,
+        response: schemas.PostBulkCurationsRes,
         errors,
     },
     {
         method: "post",
-        path: "/bulk-curation",
+        path: "/packages/:purl/bulk-curations",
         description: "Add a new bulk curation",
         alias: "PostBulkCuration",
         parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
+            },
             {
                 name: "body",
                 type: "Body",
@@ -167,9 +166,35 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/bulk-curations",
+        description: "Get all bulk curations",
+        alias: "GetBulkCurations",
+        response: schemas.GetBulkCurationsRes,
+        errors,
+    },
+
+    {
+        method: "get",
+        path: "/bulk-curations/:id",
+        description: "Get bulk curation by id",
+        alias: "GetBulkCurationById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: PathParamIdInteger,
+            },
+        ],
+        response: schemas.GetBulkCurationRes,
+        errors,
+    },
+
+    {
         method: "put",
-        path: "/bulk-curation/:id",
-        description: "Update bulk curation",
+        path: "/bulk-curations/:id",
+        description: "Edit bulk curation",
+        alias: "PutBulkCuration",
         parameters: [
             {
                 name: "id",
@@ -187,8 +212,9 @@ export const userAPI = makeApi([
     },
     {
         method: "delete",
-        path: "/bulk-curation/:id",
+        path: "/bulk-curations/:id",
         description: "Delete a bulk curation",
+        alias: "DeleteBulkCuration",
         parameters: [
             {
                 name: "id",
@@ -197,20 +223,6 @@ export const userAPI = makeApi([
             },
         ],
         response: schemas.DeleteBulkCurationRes,
-        errors,
-    },
-    {
-        method: "post",
-        path: "/bulk-curations",
-        description: "Get bulk curations for specified purl",
-        parameters: [
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostBulkCurationsReq,
-            },
-        ],
-        response: schemas.PostBulkCurationsRes,
         errors,
     },
     {

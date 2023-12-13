@@ -35,7 +35,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
 
     // Get possible bulk curation related to this license conclusion
     const { data: bulkCuration } = data.bulkCurationId
-        ? userHooks.useGet("/bulk-curation/:id", {
+        ? userHooks.useGetBulkCurationById({
               withCredentials: true,
               params: {
                   id: data.bulkCurationId,
@@ -121,8 +121,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
 
     // Delete a bulk curation
     const { mutate: deleteBulkCuration, isLoading: isBulkLoading } =
-        userHooks.useDelete(
-            "/bulk-curation/:id",
+        userHooks.useDeleteBulkCuration(
             {
                 withCredentials: true,
                 params: {

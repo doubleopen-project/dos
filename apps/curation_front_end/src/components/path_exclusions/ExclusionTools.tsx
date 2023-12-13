@@ -25,7 +25,7 @@ import type { SelectedNode } from "@/types/index";
 
 type Props = {
     selectedNode: SelectedNode | undefined;
-    purl: string | undefined;
+    purl: string;
     className?: string;
 };
 

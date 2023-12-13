@@ -71,7 +71,9 @@ export const purlSchema = (required: boolean) => {
         .refine(
             (purl) => {
                 try {
-                    PackageURL.fromString(purl.replace(/%2F/g, "/"));
+                    PackageURL.fromString(
+                        purl.replace(/%2F/g, "/").replace(/\/@/g, "/%40"),
+                    );
                     return true;
                 } catch (error) {
                     return false;
