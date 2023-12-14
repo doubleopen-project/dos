@@ -91,7 +91,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                 );
             },
             cell: ({ row }) => (
-                <div className="text-sm">{row.original.purl}</div>
+                <div className="text-sm">{row.getValue("purl")}</div>
             ),
         },
         {

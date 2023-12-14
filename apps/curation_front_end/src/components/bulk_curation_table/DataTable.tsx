@@ -58,12 +58,13 @@ export function DataTable<TData, TValue>({
                 <Input
                     placeholder="Search packages by purl"
                     value={
-                        (table.getColumn("purl")?.getFilterValue() as string) ??
-                        ""
+                        (table
+                            .getColumn("contextPurl")
+                            ?.getFilterValue() as string) ?? ""
                     }
                     onChange={(event) =>
                         table
-                            .getColumn("purl")
+                            .getColumn("contextPurl")
                             ?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
