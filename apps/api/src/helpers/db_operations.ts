@@ -13,10 +13,10 @@ import { reportResultState, sendJobToQueue } from "./sa_queries";
 
 // Get scan results for package
 export const getScanResults = async (
-    packageId: number,
+    purl: string,
     options: { fetchConcluded?: boolean },
 ) => {
-    const queriedScanResults = await dbQueries.getPackageScanResults(packageId);
+    const queriedScanResults = await dbQueries.getPackageScanResults(purl);
 
     if (queriedScanResults) {
         const licenses = [];
