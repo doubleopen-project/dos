@@ -709,9 +709,7 @@ export const getPackageConfiguration = async (
     if (!packageWithPathExclusions) throw new Error("Package not found");
 
     const licenseConclusions =
-        await dbQueries.findLicenseConclusionsByPackageId(
-            packageWithPathExclusions.id,
-        );
+        await dbQueries.findLicenseConclusionsByPackagePurl(purl);
     return {
         licenseConclusions: licenseConclusions,
         pathExclusions: packageWithPathExclusions.pathExclusions,

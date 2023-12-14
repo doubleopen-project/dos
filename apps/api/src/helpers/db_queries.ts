@@ -2565,8 +2565,8 @@ export const findPathExclusions = async (): Promise<
     return pathExclusions;
 };
 
-export const findLicenseConclusionsByPackageId = async (
-    id: number,
+export const findLicenseConclusionsByPackagePurl = async (
+    purl: string,
 ): Promise<
     {
         path: string;
@@ -2584,7 +2584,7 @@ export const findLicenseConclusionsByPackageId = async (
             filetrees = await prisma.fileTree.findMany({
                 where: {
                     package: {
-                        id: id,
+                        purl: purl,
                     },
                 },
                 select: {
@@ -2592,6 +2592,12 @@ export const findLicenseConclusionsByPackageId = async (
                     file: {
                         select: {
                             licenseConclusions: {
+                                where: {
+                                    OR: [
+                                        { local: true, contextPurl: purl },
+                                        { local: false },
+                                    ],
+                                },
                                 select: {
                                     detectedLicenseExpressionSPDX: true,
                                     concludedLicenseExpressionSPDX: true,
