@@ -7,12 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
+import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import parse from "spdx-expression-parse";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -22,6 +24,12 @@ import {
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import CurationDB from "@/components/license_conclusions/CurationDB";
 import CurationLicense from "@/components/license_conclusions/CurationLicense";
@@ -138,6 +146,7 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                         fileData.licenseFindings[0]?.licenseExpressionSPDX ??
                         "",
                     comment: data.comment ?? "",
+                    local: data.local,
                 });
             } else {
                 return;
@@ -223,7 +232,7 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                             </FormItem>
                         )}
                     />
-                    <div className="flex justify-between">
+                    <div className="flex items-stretch justify-between">
                         <FormField
                             control={form.control}
                             name="comment"
@@ -240,7 +249,56 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                                 </FormItem>
                             )}
                         />
-                        <div className="flex items-center">
+
+                        <div className="flex flex-col items-stretch">
+                            <FormField
+                                control={form.control}
+                                name="local"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start p-2 ml-1 space-x-3 space-y-0 rounded-md">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1 leading-none">
+                                            <Label className="text-xs">
+                                                Local
+                                            </Label>
+                                        </div>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger
+                                                    className="ml-1"
+                                                    type="button"
+                                                >
+                                                    <Info size={"15px"} />
+                                                </TooltipTrigger>
+                                                <TooltipContent side="right">
+                                                    <p>
+                                                        By checking this box,
+                                                        this curation will only
+                                                        apply to the files in
+                                                        this version of this
+                                                        package.
+                                                    </p>
+                                                    <p>
+                                                        If you want to apply
+                                                        this curation across all
+                                                        packages that have the
+                                                        same file (identified by
+                                                        the file's sha256),
+                                                        leave this box
+                                                        unchecked.
+                                                    </p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <Button
                                 type="submit"
                                 className="text-xs text-left"
