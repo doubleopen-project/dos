@@ -30,7 +30,11 @@ import {
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import { cn } from "@/lib/utils";
 
-type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type DataType = ZodiosResponseByPath<
+    typeof userAPI,
+    "get",
+    "/packages/:purl/files/:sha256/license-conclusions/"
+>;
 
 type Props = {
     data?: DataType;
@@ -139,7 +143,7 @@ const CurationDB = ({
                                                         }
                                                     </span>
                                                     {d.bulkCurationId && (
-                                                        <span className="ml-1 p-1 font-bold bg-blue-400 rounded-sm">
+                                                        <span className="p-1 ml-1 font-bold bg-blue-400 rounded-sm">
                                                             BULK
                                                         </span>
                                                     )}

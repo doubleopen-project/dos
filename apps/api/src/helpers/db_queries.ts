@@ -1920,23 +1920,6 @@ export type FileWithRelations = Prisma.FileGetPayload<{
                 endLine: true;
             };
         };
-        licenseConclusions: {
-            select: {
-                id: true;
-                createdAt: true;
-                updatedAt: true;
-                detectedLicenseExpressionSPDX: true;
-                concludedLicenseExpressionSPDX: true;
-                comment: true;
-                contextPurl: true;
-                user: {
-                    select: {
-                        username: true;
-                    };
-                };
-                bulkCurationId: true;
-            };
-        };
     };
 }>;
 
@@ -1978,23 +1961,6 @@ export const findFileData = async (
                             copyright: true,
                             startLine: true,
                             endLine: true,
-                        },
-                    },
-                    licenseConclusions: {
-                        select: {
-                            id: true,
-                            createdAt: true,
-                            updatedAt: true,
-                            detectedLicenseExpressionSPDX: true,
-                            concludedLicenseExpressionSPDX: true,
-                            comment: true,
-                            contextPurl: true,
-                            user: {
-                                select: {
-                                    username: true,
-                                },
-                            },
-                            bulkCurationId: true,
                         },
                     },
                 },

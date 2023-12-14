@@ -14,8 +14,8 @@ import { DeleteAction } from "@/types";
 
 type ItemType = ZodiosResponseByPath<
     typeof userAPI,
-    "post",
-    "/file"
+    "get",
+    "/packages/:purl/files/:sha256/license-conclusions/"
 >["licenseConclusions"][0];
 
 type Props = {
@@ -24,7 +24,10 @@ type Props = {
 
 const DeleteLicenseConclusion = ({ data }: Props) => {
     const { toast } = useToast();
-    const keyFile = userHooks.getKeyByPath("post", "/file");
+    const keyLCs = userHooks.getKeyByPath(
+        "get",
+        "/packages/:purl/files/:sha256/license-conclusions/",
+    );
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyLicenseConclusion = userHooks.getKeyByPath(
         "get",
@@ -104,8 +107,8 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                         title: "Delete successful",
                         description: "License conclusion deleted succesfully",
                     });
-                    // When a license conclusion is deleted, invalidate the "/file", "/filetree" and "/license-conclusions" queries to refetch the data
-                    queryClient.invalidateQueries(keyFile);
+                    // When a license conclusion is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", "/filetree" and "/license-conclusions" queries to refetch the data
+                    queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                 },
@@ -134,8 +137,8 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                         title: "Delete successful",
                         description: `Bulk curation deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
                     });
-                    // When a bulk curation is deleted, invalidate the file and filetree queries to refetch the data
-                    queryClient.invalidateQueries(keyFile);
+                    // When a bulk curation is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", and filetree queries to refetch the data
+                    queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                 },
                 onError: () => {

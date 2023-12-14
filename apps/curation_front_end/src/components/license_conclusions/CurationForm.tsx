@@ -59,15 +59,22 @@ const curationFormSchema = z.object({
 
 type CurationFormType = z.infer<typeof curationFormSchema>;
 
-type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type FileDataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+
+type LCDataType = ZodiosResponseByPath<
+    typeof userAPI,
+    "get",
+    "/packages/:purl/files/:sha256/license-conclusions/"
+>;
 
 type Props = {
     purl: string;
-    fileData: DataType;
+    lcData: LCDataType;
+    fileData: FileDataType;
     className?: string;
 };
 
-const CurationForm = ({ purl, fileData, className }: Props) => {
+const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
     const defaultValues: CurationFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseDB: "",
@@ -79,25 +86,27 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
         resolver: zodResolver(curationFormSchema),
         defaultValues,
     });
-    const keyFile = userHooks.getKeyByPath("post", "/file");
+    const keyLCs = userHooks.getKeyByPath(
+        "get",
+        "/packages/:purl/files/:sha256/license-conclusions/",
+    );
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const queryClient = useQueryClient();
 
     const pathPurl = purl.replace(/\//g, "%2F");
-    const sha256 = fileData.sha256;
 
     const { mutate: addLicenseConclusion } = userHooks.usePostLicenseConclusion(
         {
             params: {
                 purl: pathPurl,
-                sha256: sha256,
+                sha256: fileData.sha256,
             },
             withCredentials: true,
         },
         {
             onSuccess: () => {
                 // When a license conclusion is added, invalidate the file and filetree queries to refetch the data
-                queryClient.invalidateQueries(keyFile);
+                queryClient.invalidateQueries(keyLCs);
                 queryClient.invalidateQueries(keyFiletree);
                 toast({
                     title: "License conclusion",
@@ -183,7 +192,7 @@ const CurationForm = ({ purl, fileData, className }: Props) => {
                             <FormItem>
                                 <FormControl>
                                     <CurationDB
-                                        data={fileData}
+                                        data={lcData}
                                         concludedLicenseExpressionSPDX={
                                             field.value
                                         }

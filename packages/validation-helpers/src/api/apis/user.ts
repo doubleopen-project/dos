@@ -55,6 +55,7 @@ export const userAPI = makeApi([
         path: "/packages/:purl/files/:sha256/license-conclusions/",
         description:
             "Get license conclusions for specified file in specified package",
+        alias: "GetLicenseConclusionsForFileInPackage",
         parameters: [
             {
                 name: "purl",

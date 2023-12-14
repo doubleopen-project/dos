@@ -12,7 +12,7 @@ import CodeEditor from "@/components/file_inspector/CodeEditor";
 import CurationForm from "@/components/license_conclusions/CurationForm";
 
 type CodeInspectorProps = {
-    purl: string | undefined;
+    purl: string;
     path: string | undefined;
 };
 
@@ -21,10 +21,23 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         undefined,
     );
     const { data, isLoading, error } = userHooks.useGetFileData(
-        { purl: purl as string, path: path as string },
+        { purl: purl, path: path as string },
         { withCredentials: true },
         { enabled: !!path && !!purl },
     );
+    const fileSha256 = data?.sha256;
+    const pathPurl = purl.replace(/\//g, "%2F");
+    const { data: licenseConclusions } =
+        userHooks.useGetLicenseConclusionsForFileInPackage(
+            {
+                params: {
+                    purl: pathPurl,
+                    sha256: fileSha256 as string,
+                },
+                withCredentials: true,
+            },
+            { enabled: !!fileSha256 },
+        );
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL
@@ -83,23 +96,26 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 </div>
             )}
 
-            {data?.licenseConclusions[0] && (
+            {fileSha256 && licenseConclusions?.licenseConclusions[0] && (
                 <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
                     <Label className="font-semibold">Curations</Label>
                     <p className="p-1 text-xs border rounded-md">
-                        {data.licenseConclusions.map((license) => (
-                            <span key={license.id}>
-                                <>
-                                    {
-                                        new Date(license.updatedAt)
-                                            .toISOString()
-                                            .split("T")[0]
-                                    }
-                                    : {license.concludedLicenseExpressionSPDX}
-                                    <br />
-                                </>
-                            </span>
-                        ))}
+                        {licenseConclusions.licenseConclusions.map(
+                            (license) => (
+                                <span key={license.id}>
+                                    <>
+                                        {
+                                            new Date(license.updatedAt)
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
+                                        :{" "}
+                                        {license.concludedLicenseExpressionSPDX}
+                                        <br />
+                                    </>
+                                </span>
+                            ),
+                        )}
                     </p>
                 </div>
             )}
@@ -127,9 +143,10 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     </div>
                 )}
             </div>
-            {data && purl && (
+            {data && purl && licenseConclusions && (
                 <CurationForm
                     purl={purl}
+                    lcData={licenseConclusions}
                     fileData={data}
                     className="p-1 mt-2 text-sm border rounded-md shadow-lg"
                 />
