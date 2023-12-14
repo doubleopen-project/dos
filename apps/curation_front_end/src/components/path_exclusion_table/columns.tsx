@@ -20,7 +20,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
+import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
@@ -29,8 +29,8 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 export type LicenseConclusion = ZodiosResponseByPath<
     typeof userAPI,
     "get",
-    "/license-conclusion"
->["licenseConclusions"][0];
+    "/path-exclusion"
+>["pathExclusions"][0];
 
 export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
     return [
@@ -69,7 +69,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
             ),
         },
         {
-            accessorKey: "contextPurl",
+            accessorKey: "purl",
             header: ({ column }) => {
                 return (
                     <Button
@@ -79,9 +79,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
-                            Context PURL
-                        </Label>
+                        <Label className="font-bold cursor-pointer">PURL</Label>
                         {column.getIsSorted() === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
@@ -93,7 +91,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                 );
             },
             cell: ({ row }) => (
-                <div className="text-sm">{row.getValue("contextPurl")}</div>
+                <div className="text-sm">{row.original.package.purl}</div>
             ),
         },
         {
@@ -127,68 +125,54 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
             ),
         },
         {
-            accessorKey: "licenseExpressionSPDX",
-            header: () => (
-                <Label className="font-bold cursor-pointer">
-                    SPDX License Expression
-                </Label>
-            ),
-            columns: [
-                {
-                    accessorKey: "detectedLicenseExpressionSPDX",
-                    header: ({ column }) => {
-                        return (
-                            <Button
-                                variant="ghost"
-                                className="px-0"
-                                onClick={() =>
-                                    column.toggleSorting(
-                                        column.getIsSorted() === "asc",
-                                    )
-                                }
-                            >
-                                <Label className="font-bold cursor-pointer">
-                                    Detected
-                                </Label>
-                                {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
-                                ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
-                                ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                                )}
-                            </Button>
-                        );
-                    },
-                },
-                {
-                    accessorKey: "concludedLicenseExpressionSPDX",
-                    header: ({ column }) => {
-                        return (
-                            <Button
-                                variant="ghost"
-                                className="px-0"
-                                onClick={() =>
-                                    column.toggleSorting(
-                                        column.getIsSorted() === "asc",
-                                    )
-                                }
-                            >
-                                <Label className="font-bold cursor-pointer">
-                                    Concluded
-                                </Label>
-                                {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
-                                ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
-                                ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                                )}
-                            </Button>
-                        );
-                    },
-                },
-            ],
+            accessorKey: "pattern",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === "asc")
+                        }
+                    >
+                        <Label className="font-bold cursor-pointer">
+                            Pattern
+                        </Label>
+                        {column.getIsSorted() === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : column.getIsSorted() === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
+            },
+        },
+        {
+            accessorKey: "reason",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === "asc")
+                        }
+                    >
+                        <Label className="font-bold cursor-pointer">
+                            Reason
+                        </Label>
+                        {column.getIsSorted() === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : column.getIsSorted() === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
+            },
         },
         {
             accessorKey: "affectedPaths",
@@ -197,80 +181,26 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     Affected Files
                 </Label>
             ),
-            columns: [
-                {
-                    accessorKey: "affectedPathsThisPurl",
-                    header: () => {
-                        return (
-                            <Label className="font-bold cursor-pointer">
-                                This
-                            </Label>
-                        );
-                    },
-                    cell: ({ row }) => (
-                        <TooltipProvider>
-                            <Tooltip delayDuration={300}>
-                                <TooltipTrigger>
-                                    <Badge className="text-sm bg-blue-400">
-                                        {
-                                            row.original.affectedPaths
-                                                .inContextPurl.length
-                                        }
-                                    </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <div className="text-sm">
-                                        {row.original.affectedPaths.inContextPurl.map(
-                                            (aff, index) => (
-                                                <div key={index}>
-                                                    {aff.path}
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ),
-                },
-                {
-                    accessorKey: "affectedPathsTotal",
-                    header: () => {
-                        return (
-                            <Label className="font-bold cursor-pointer">
-                                Other
-                            </Label>
-                        );
-                    },
-                    cell: ({ row }) =>
-                        row.original.affectedPaths.additionalMatches.length >
-                            0 && (
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger>
-                                        <Badge className="text-sm bg-orange-400">
-                                            {
-                                                row.original.affectedPaths
-                                                    .additionalMatches.length
-                                            }
-                                        </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <div className="text-sm">
-                                            {row.original.affectedPaths.additionalMatches.map(
-                                                (aff, index) => (
-                                                    <div key={index}>
-                                                        {aff.purl} : {aff.path}
-                                                    </div>
-                                                ),
-                                            )}
-                                        </div>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        ),
-                },
-            ],
+            cell: ({ row }) => (
+                <TooltipProvider>
+                    <Tooltip delayDuration={300}>
+                        <TooltipTrigger>
+                            <Badge className="text-sm bg-blue-400">
+                                {row.original.affectedPaths.length}
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <div className="text-sm">
+                                {row.original.affectedPaths.map(
+                                    (aff, index) => (
+                                        <div key={index}>{aff}</div>
+                                    ),
+                                )}
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            ),
         },
         {
             accessorKey: "comment",
@@ -304,7 +234,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     <>
                         {(user.role === "ADMIN" ||
                             user.username === row.original.user.username) && (
-                            <DeleteLicenseConclusion data={row.original} />
+                            <DeletePathExclusion data={row.original} />
                         )}
                     </>
                 );
