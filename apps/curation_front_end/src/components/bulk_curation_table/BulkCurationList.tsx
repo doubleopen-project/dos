@@ -18,7 +18,11 @@ const BulkCurationList = ({ user }: BulkCurationListProps) => {
         withCredentials: true,
     });
     if (isLoading) {
-        return <div>Loading bulk curations...</div>;
+        return (
+            <div className="flex items-center justify-center h-full">
+                Loading bulk curations...
+            </div>
+        );
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;

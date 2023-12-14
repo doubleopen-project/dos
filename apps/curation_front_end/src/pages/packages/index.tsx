@@ -11,7 +11,11 @@ export default function PackageLibrary() {
         withCredentials: true,
     });
     if (isLoading) {
-        return <div>Loading package list...</div>;
+        return (
+            <div className="flex items-center justify-center h-full">
+                Loading packages...
+            </div>
+        );
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;

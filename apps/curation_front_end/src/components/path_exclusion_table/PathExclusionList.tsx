@@ -18,7 +18,11 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
         withCredentials: true,
     });
     if (isLoading) {
-        return <div>Loading path exclusions...</div>;
+        return (
+            <div className="flex items-center justify-center h-full align-middle">
+                Loading path exclusions...
+            </div>
+        );
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
