@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BulkCurationList from "@/components/bulk_curation_table/BulkCurationList";
 import LicenseConclusionList from "@/components/license_conclusion_table/LicenseConclusionList";
+import PathExclusionList from "@/components/path_exclusion_table/PathExclusionList";
 
 export default function CurationsLibrary() {
     const user = useUser({});
@@ -48,7 +49,7 @@ export default function CurationsLibrary() {
                         {user && <BulkCurationList user={user} />}
                     </TabsContent>
                     <TabsContent value="path_exclusions">
-                        Path Exclusions
+                        {user && <PathExclusionList user={user} />}
                     </TabsContent>
                 </Tabs>
             </div>
