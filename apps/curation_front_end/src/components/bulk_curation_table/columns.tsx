@@ -69,7 +69,7 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
             ),
         },
         {
-            accessorKey: "purl",
+            accessorKey: "contextPurl",
             header: ({ column }) => {
                 return (
                     <Button
@@ -91,7 +91,7 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                 );
             },
             cell: ({ row }) => (
-                <div className="text-sm">{row.original.contextPurl}</div>
+                <div className="text-sm">{row.getValue("contextPurl")}</div>
             ),
         },
         {
