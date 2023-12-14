@@ -10,6 +10,8 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -79,7 +81,9 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">PURL</Label>
+                        <Label className="font-bold cursor-pointer">
+                            Package
+                        </Label>
                         {column.getIsSorted() === "desc" ? (
                             <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
@@ -90,9 +94,31 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <div className="text-sm">{row.getValue("purl")}</div>
-            ),
+            cell: ({ row }) => {
+                const pkg = PackageURL.fromString(row.original.purl);
+                const pkgName = pkg.name + ":" + pkg.version;
+                return (
+                    <TooltipProvider>
+                        <Tooltip delayDuration={300}>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    className="text-blue-400 font-semibold"
+                                    href={`/packages/${encodeURIComponent(
+                                        row.original.purl,
+                                    )}`}
+                                >
+                                    {pkgName}
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <div className="text-sm">
+                                    {row.original.purl}
+                                </div>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                );
+            },
         },
         {
             accessorKey: "username",

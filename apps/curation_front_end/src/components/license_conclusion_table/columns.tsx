@@ -10,6 +10,8 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -80,7 +82,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                         }
                     >
                         <Label className="font-bold cursor-pointer">
-                            Context PURL
+                            Package
                         </Label>
                         {column.getIsSorted() === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
@@ -92,9 +94,31 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <div className="text-sm">{row.getValue("contextPurl")}</div>
-            ),
+            cell: ({ row }) => {
+                const pkg = PackageURL.fromString(row.original.contextPurl);
+                const pkgName = pkg.name + ":" + pkg.version;
+                return (
+                    <TooltipProvider>
+                        <Tooltip delayDuration={300}>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    className="text-blue-400 font-semibold"
+                                    href={`/packages/${encodeURIComponent(
+                                        row.original.contextPurl,
+                                    )}`}
+                                >
+                                    {pkgName}
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <div className="text-sm">
+                                    {row.original.contextPurl}
+                                </div>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                );
+            },
         },
         {
             accessorKey: "username",
@@ -260,7 +284,18 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                                             {row.original.affectedPaths.additionalMatches.map(
                                                 (aff, index) => (
                                                     <div key={index}>
-                                                        {aff.purl} : {aff.path}
+                                                        {
+                                                            PackageURL.fromString(
+                                                                aff.purl,
+                                                            ).name
+                                                        }
+                                                        :
+                                                        {
+                                                            PackageURL.fromString(
+                                                                aff.purl,
+                                                            ).version
+                                                        }{" "}
+                                                        : {aff.path}
                                                     </div>
                                                 ),
                                             )}
