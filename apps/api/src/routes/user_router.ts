@@ -122,10 +122,12 @@ userRouter.get("/license-conclusions", async (req, res) => {
                         path: ft.path,
                     });
                 } else {
-                    additionalMatches.push({
-                        path: ft.path,
-                        purl: ft.package.purl,
-                    });
+                    if (!lc.local) {
+                        additionalMatches.push({
+                            path: ft.path,
+                            purl: ft.package.purl,
+                        });
+                    }
                 }
             }
 
