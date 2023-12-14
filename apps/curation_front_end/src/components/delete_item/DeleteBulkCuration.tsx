@@ -22,6 +22,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
         "post",
         "/license-conclusion",
     );
+    const keyBulkCuration = userHooks.getKeyByPath("get", "/bulk-curation");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
@@ -72,9 +73,11 @@ const DeleteBulkCuration = ({ id }: Props) => {
                         title: "Delete successful",
                         description: `Bulk curation deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
                     });
-                    // When a bulk curation is deleted, invalidate the file and filetree queries to refetch the data
+                    // When a bulk curation is deleted, invalidate queries to refetch the data
                     queryClient.invalidateQueries(keyFile);
                     queryClient.invalidateQueries(keyFiletree);
+                    queryClient.invalidateQueries(keyLicenseConclusion);
+                    queryClient.invalidateQueries(keyBulkCuration);
                 },
                 onError: () => {
                     toast({
