@@ -31,7 +31,7 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 export type LicenseConclusion = ZodiosResponseByPath<
     typeof userAPI,
     "get",
-    "/license-conclusion"
+    "/license-conclusions"
 >["licenseConclusions"][0];
 
 export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
@@ -51,11 +51,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             Updated
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -85,11 +85,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             Package
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -102,7 +102,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                         <Tooltip delayDuration={300}>
                             <TooltipTrigger asChild>
                                 <Link
-                                    className="text-blue-400 font-semibold"
+                                    className="font-semibold text-blue-400"
                                     href={`/packages/${encodeURIComponent(
                                         row.original.contextPurl,
                                     )}`}
@@ -135,11 +135,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             Creator
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -175,11 +175,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                                     Detected
                                 </Label>
                                 {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
                                 ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                    <ChevronUpIcon className="w-4 h-4 ml-2" />
                                 ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                                 )}
                             </Button>
                         );
@@ -202,11 +202,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                                     Concluded
                                 </Label>
                                 {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
                                 ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                    <ChevronUpIcon className="w-4 h-4 ml-2" />
                                 ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                                 )}
                             </Button>
                         );
@@ -323,11 +323,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             Comment
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );

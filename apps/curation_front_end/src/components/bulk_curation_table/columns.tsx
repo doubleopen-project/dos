@@ -31,7 +31,7 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 export type BulkCuration = ZodiosResponseByPath<
     typeof userAPI,
     "get",
-    "/bulk-curation"
+    "/bulk-curations"
 >["bulkCurations"][0];
 
 export const columns = (user: User): ColumnDef<BulkCuration>[] => {
@@ -102,7 +102,7 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                         <Tooltip delayDuration={300}>
                             <TooltipTrigger asChild>
                                 <Link
-                                    className="text-blue-400 font-semibold"
+                                    className="font-semibold text-blue-400"
                                     href={`/packages/${encodeURIComponent(
                                         row.original.contextPurl,
                                     )}`}

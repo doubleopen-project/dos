@@ -14,7 +14,7 @@ type BulkCurationListProps = {
 };
 
 const BulkCurationList = ({ user }: BulkCurationListProps) => {
-    const { data, isLoading, error } = userHooks.useGet("/bulk-curation", {
+    const { data, isLoading, error } = userHooks.useGet("/bulk-curations", {
         withCredentials: true,
     });
     if (isLoading) {
