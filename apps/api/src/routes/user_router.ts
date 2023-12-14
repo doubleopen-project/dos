@@ -351,7 +351,7 @@ userRouter.get("/bulk-curation", async (req, res) => {
                     bc.concludedLicenseExpressionSPDX,
                 detectedLicenseExpressionSPDX: bc.detectedLicenseExpressionSPDX,
                 comment: bc.comment,
-                package: bc.package,
+                contextPurl: bc.package.purl,
                 user: bc.user,
                 licenseConclusions: licenseConclusions,
             });
@@ -800,10 +800,7 @@ userRouter.get("/path-exclusion", async (req, res) => {
                 reason: pe.reason,
                 comment: pe.comment,
                 user: pe.user,
-                package: {
-                    id: pe.package.id,
-                    purl: pe.package.purl,
-                },
+                purl: pe.package.purl,
                 affectedPaths: affectedPaths,
             });
         }

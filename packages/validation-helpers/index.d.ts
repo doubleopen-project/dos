@@ -5204,22 +5204,7 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            package: zod.ZodObject<
-                                {
-                                    id: zod.ZodNumber;
-                                    purl: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    id: number;
-                                    purl: string;
-                                },
-                                {
-                                    id: number;
-                                    purl: string;
-                                }
-                            >;
+                            contextPurl: zod.ZodString;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -5333,10 +5318,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
+                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -5359,10 +5341,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
+                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -5392,10 +5371,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
+                    contextPurl: string;
                 }[];
             },
             {
@@ -5420,10 +5396,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
+                    contextPurl: string;
                 }[];
             }
         >;
@@ -6407,28 +6380,14 @@ declare const userAPI: [
                                     username: string;
                                 }
                             >;
-                            package: zod.ZodObject<
-                                {
-                                    id: zod.ZodNumber;
-                                    purl: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    id: number;
-                                    purl: string;
-                                },
-                                {
-                                    id: number;
-                                    purl: string;
-                                }
-                            >;
+                            purl: zod.ZodString;
                             affectedPaths: zod.ZodArray<zod.ZodString, "many">;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -6437,13 +6396,10 @@ declare const userAPI: [
                                 username: string;
                             };
                             affectedPaths: string[];
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
                         },
                         {
                             id: number;
+                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -6452,10 +6408,6 @@ declare const userAPI: [
                                 username: string;
                             };
                             affectedPaths: string[];
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
                         }
                     >,
                     "many"
@@ -6466,6 +6418,7 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -6474,15 +6427,12 @@ declare const userAPI: [
                         username: string;
                     };
                     affectedPaths: string[];
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
+                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -6491,10 +6441,6 @@ declare const userAPI: [
                         username: string;
                     };
                     affectedPaths: string[];
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
                 }[];
             }
         >;
@@ -10734,22 +10680,7 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            package: zod.ZodObject<
-                                {
-                                    id: zod.ZodNumber;
-                                    purl: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    id: number;
-                                    purl: string;
-                                },
-                                {
-                                    id: number;
-                                    purl: string;
-                                }
-                            >;
+                            contextPurl: zod.ZodString;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -10863,10 +10794,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
+                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -10889,10 +10817,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
+                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -10922,10 +10847,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
+                    contextPurl: string;
                 }[];
             },
             {
@@ -10950,10 +10872,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
+                    contextPurl: string;
                 }[];
             }
         >;
@@ -11937,28 +11856,14 @@ declare const dosAPI: [
                                     username: string;
                                 }
                             >;
-                            package: zod.ZodObject<
-                                {
-                                    id: zod.ZodNumber;
-                                    purl: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    id: number;
-                                    purl: string;
-                                },
-                                {
-                                    id: number;
-                                    purl: string;
-                                }
-                            >;
+                            purl: zod.ZodString;
                             affectedPaths: zod.ZodArray<zod.ZodString, "many">;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -11967,13 +11872,10 @@ declare const dosAPI: [
                                 username: string;
                             };
                             affectedPaths: string[];
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
                         },
                         {
                             id: number;
+                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -11982,10 +11884,6 @@ declare const dosAPI: [
                                 username: string;
                             };
                             affectedPaths: string[];
-                            package: {
-                                id: number;
-                                purl: string;
-                            };
                         }
                     >,
                     "many"
@@ -11996,6 +11894,7 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -12004,15 +11903,12 @@ declare const dosAPI: [
                         username: string;
                     };
                     affectedPaths: string[];
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
+                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -12021,10 +11917,6 @@ declare const dosAPI: [
                         username: string;
                     };
                     affectedPaths: string[];
-                    package: {
-                        id: number;
-                        purl: string;
-                    };
                 }[];
             }
         >;

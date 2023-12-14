@@ -132,10 +132,7 @@ export const GetBulkCurationsRes = z.object({
             concludedLicenseExpressionSPDX: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
-            package: z.object({
-                id: z.number(),
-                purl: z.string(),
-            }),
+            contextPurl: z.string(),
             licenseConclusions: z.array(
                 z.object({
                     id: z.number(),
@@ -276,10 +273,7 @@ export const GetPathExclusionsRes = z.object({
             user: z.object({
                 username: z.string(),
             }),
-            package: z.object({
-                id: z.number(),
-                purl: z.string(),
-            }),
+            purl: z.string(),
             affectedPaths: z.array(z.string()),
         }),
     ),

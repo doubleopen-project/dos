@@ -49,11 +49,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             Updated
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -81,17 +81,17 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                     >
                         <Label className="font-bold cursor-pointer">PURL</Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="text-sm">{row.original.package.purl}</div>
+                <div className="text-sm">{row.original.contextPurl}</div>
             ),
         },
         {
@@ -109,11 +109,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             Creator
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -139,11 +139,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             Pattern
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -174,11 +174,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                                     Detected
                                 </Label>
                                 {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
                                 ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                    <ChevronUpIcon className="w-4 h-4 ml-2" />
                                 ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                                 )}
                             </Button>
                         );
@@ -201,11 +201,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                                     Concluded
                                 </Label>
                                 {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
                                 ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                    <ChevronUpIcon className="w-4 h-4 ml-2" />
                                 ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                    <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                                 )}
                             </Button>
                         );
@@ -328,11 +328,11 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             Comment
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
