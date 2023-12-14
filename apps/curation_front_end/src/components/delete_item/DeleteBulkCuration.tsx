@@ -19,14 +19,18 @@ const DeleteBulkCuration = ({ id }: Props) => {
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
     const keyLicenseConclusion = userHooks.getKeyByPath(
-        "post",
-        "/license-conclusion",
+        "get",
+        "/license-conclusions",
     );
-    const keyBulkCuration = userHooks.getKeyByPath("get", "/bulk-curation");
+    const keyLCs = userHooks.getKeyByPath(
+        "get",
+        "/packages/:purl/files/:sha256/license-conclusions/",
+    );
+    const keyBulkCuration = userHooks.getKeyByPath("get", "/bulk-curations");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
-    const { data: bulkCuration } = userHooks.useGet("/bulk-curation/:id", {
+    const { data: bulkCuration } = userHooks.useGet("/bulk-curations/:id", {
         withCredentials: true,
         params: {
             id: id,
@@ -60,7 +64,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
     // Delete a bulk curation
     const { mutate: deleteBulkCuration, isLoading: isBulkLoading } =
         userHooks.useDelete(
-            "/bulk-curation/:id",
+            "/bulk-curations/:id",
             {
                 withCredentials: true,
                 params: {
@@ -78,6 +82,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                     queryClient.invalidateQueries(keyBulkCuration);
+                    queryClient.invalidateQueries(keyLCs);
                 },
                 onError: () => {
                     toast({
