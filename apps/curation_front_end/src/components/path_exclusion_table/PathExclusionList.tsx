@@ -14,7 +14,7 @@ type PathExclusionListProps = {
 };
 
 const PathExclusionList = ({ user }: PathExclusionListProps) => {
-    const { data, isLoading, error } = userHooks.useGet("/license-conclusion", {
+    const { data, isLoading, error } = userHooks.useGet("/path-exclusion", {
         withCredentials: true,
     });
     if (isLoading) {
@@ -33,10 +33,7 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
     return (
         <div className="container mx-auto">
             {user && (
-                <DataTable
-                    columns={tableColumns}
-                    data={data.licenseConclusions}
-                />
+                <DataTable columns={tableColumns} data={data.pathExclusions} />
             )}
         </div>
     );
