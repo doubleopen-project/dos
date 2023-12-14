@@ -277,15 +277,15 @@ export const userAPI = makeApi([
         errors,
     },
     {
-        method: "post",
-        path: "/filetree",
+        method: "get",
+        path: "/packages/:purl/filetrees",
         alias: "GetFileTree",
         description: "Get file tree for specified purl",
         parameters: [
             {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostFileTreeReq,
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
             },
         ],
         response: schemas.PostFileTreeRes,

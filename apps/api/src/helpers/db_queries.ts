@@ -1061,6 +1061,17 @@ export const findFileTreesByPackagePurl = async (
                                 },
                             },
                             licenseConclusions: {
+                                where: {
+                                    OR: [
+                                        {
+                                            local: true,
+                                            contextPurl: purl,
+                                        },
+                                        {
+                                            local: false,
+                                        },
+                                    ],
+                                },
                                 select: {
                                     concludedLicenseExpressionSPDX: true,
                                 },

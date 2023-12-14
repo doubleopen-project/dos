@@ -7214,27 +7214,15 @@ declare const userAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/filetree";
+        method: "get";
+        path: "/packages/:purl/filetrees";
         alias: "GetFileTree";
         description: "Get file tree for specified purl";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -12841,27 +12829,15 @@ declare const dosAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/user/filetree";
+        method: "get";
+        path: "/user/packages/:purl/filetrees";
         alias: "GetFileTree";
         description: "Get file tree for specified purl";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
