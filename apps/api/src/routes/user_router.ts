@@ -1084,7 +1084,6 @@ userRouter.post("/file", async (req, res) => {
                 downloadUrl: presignedGetUrl,
                 licenseFindings: fileData.licenseFindings,
                 copyrightFindings: fileData.copyrightFindings,
-                licenseConclusions: fileData.licenseConclusions,
             });
         } else {
             res.status(400).json({

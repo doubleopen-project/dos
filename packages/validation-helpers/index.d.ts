@@ -4778,6 +4778,7 @@ declare const userAPI: [
         method: "get";
         path: "/packages/:purl/files/:sha256/license-conclusions/";
         description: "Get license conclusions for specified file in specified package";
+        alias: "GetLicenseConclusionsForFileInPackage";
         parameters: [
             {
                 name: "purl";
@@ -4801,6 +4802,7 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
+                            contextPurl: zod.ZodString;
                             user: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
@@ -4829,6 +4831,7 @@ declare const userAPI: [
                                 username: string;
                             };
                             bulkCurationId: number | null;
+                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -4841,6 +4844,7 @@ declare const userAPI: [
                                 username: string;
                             };
                             bulkCurationId: number | null;
+                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -4860,6 +4864,7 @@ declare const userAPI: [
                         username: string;
                     };
                     bulkCurationId: number | null;
+                    contextPurl: string;
                 }[];
             },
             {
@@ -4874,6 +4879,7 @@ declare const userAPI: [
                         username: string;
                     };
                     bulkCurationId: number | null;
+                    contextPurl: string;
                 }[];
             }
         >;
@@ -7758,80 +7764,11 @@ declare const userAPI: [
                     >,
                     "many"
                 >;
-                licenseConclusions: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodNumber;
-                            createdAt: zod.ZodDate;
-                            updatedAt: zod.ZodDate;
-                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
-                            concludedLicenseExpressionSPDX: zod.ZodString;
-                            comment: zod.ZodNullable<zod.ZodString>;
-                            contextPurl: zod.ZodString;
-                            user: zod.ZodObject<
-                                {
-                                    username: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    username: string;
-                                },
-                                {
-                                    username: string;
-                                }
-                            >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: number;
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            updatedAt: Date;
-                            user: {
-                                username: string;
-                            };
-                            bulkCurationId: number | null;
-                            contextPurl: string;
-                            createdAt: Date;
-                        },
-                        {
-                            id: number;
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            updatedAt: Date;
-                            user: {
-                                username: string;
-                            };
-                            bulkCurationId: number | null;
-                            contextPurl: string;
-                            createdAt: Date;
-                        }
-                    >,
-                    "many"
-                >;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 sha256: string;
-                licenseConclusions: {
-                    id: number;
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    updatedAt: Date;
-                    user: {
-                        username: string;
-                    };
-                    bulkCurationId: number | null;
-                    contextPurl: string;
-                    createdAt: Date;
-                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -7856,19 +7793,6 @@ declare const userAPI: [
             },
             {
                 sha256: string;
-                licenseConclusions: {
-                    id: number;
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    updatedAt: Date;
-                    user: {
-                        username: string;
-                    };
-                    bulkCurationId: number | null;
-                    contextPurl: string;
-                    createdAt: Date;
-                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -10481,6 +10405,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/packages/:purl/files/:sha256/license-conclusions";
         description: "Get license conclusions for specified file in specified package";
+        alias: "GetLicenseConclusionsForFileInPackage";
         parameters: [
             {
                 name: "purl";
@@ -10504,6 +10429,7 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
+                            contextPurl: zod.ZodString;
                             user: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
@@ -10532,6 +10458,7 @@ declare const dosAPI: [
                                 username: string;
                             };
                             bulkCurationId: number | null;
+                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -10544,6 +10471,7 @@ declare const dosAPI: [
                                 username: string;
                             };
                             bulkCurationId: number | null;
+                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -10563,6 +10491,7 @@ declare const dosAPI: [
                         username: string;
                     };
                     bulkCurationId: number | null;
+                    contextPurl: string;
                 }[];
             },
             {
@@ -10577,6 +10506,7 @@ declare const dosAPI: [
                         username: string;
                     };
                     bulkCurationId: number | null;
+                    contextPurl: string;
                 }[];
             }
         >;
@@ -13461,80 +13391,11 @@ declare const dosAPI: [
                     >,
                     "many"
                 >;
-                licenseConclusions: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodNumber;
-                            createdAt: zod.ZodDate;
-                            updatedAt: zod.ZodDate;
-                            detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
-                            concludedLicenseExpressionSPDX: zod.ZodString;
-                            comment: zod.ZodNullable<zod.ZodString>;
-                            contextPurl: zod.ZodString;
-                            user: zod.ZodObject<
-                                {
-                                    username: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    username: string;
-                                },
-                                {
-                                    username: string;
-                                }
-                            >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: number;
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            updatedAt: Date;
-                            user: {
-                                username: string;
-                            };
-                            bulkCurationId: number | null;
-                            contextPurl: string;
-                            createdAt: Date;
-                        },
-                        {
-                            id: number;
-                            detectedLicenseExpressionSPDX: string | null;
-                            concludedLicenseExpressionSPDX: string;
-                            comment: string | null;
-                            updatedAt: Date;
-                            user: {
-                                username: string;
-                            };
-                            bulkCurationId: number | null;
-                            contextPurl: string;
-                            createdAt: Date;
-                        }
-                    >,
-                    "many"
-                >;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 sha256: string;
-                licenseConclusions: {
-                    id: number;
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    updatedAt: Date;
-                    user: {
-                        username: string;
-                    };
-                    bulkCurationId: number | null;
-                    contextPurl: string;
-                    createdAt: Date;
-                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
@@ -13559,19 +13420,6 @@ declare const dosAPI: [
             },
             {
                 sha256: string;
-                licenseConclusions: {
-                    id: number;
-                    detectedLicenseExpressionSPDX: string | null;
-                    concludedLicenseExpressionSPDX: string;
-                    comment: string | null;
-                    updatedAt: Date;
-                    user: {
-                        username: string;
-                    };
-                    bulkCurationId: number | null;
-                    contextPurl: string;
-                    createdAt: Date;
-                }[];
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;

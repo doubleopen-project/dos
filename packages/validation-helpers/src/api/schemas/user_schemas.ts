@@ -71,6 +71,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
             local: z.boolean(),
+            contextPurl: z.string(),
             user: z.object({ username: z.string() }),
             bulkCurationId: z.nullable(z.number()),
         }),
@@ -448,21 +449,6 @@ export const PostFileRes = z.object({
             copyright: z.string(),
             startLine: z.number(),
             endLine: z.number(),
-        }),
-    ),
-    licenseConclusions: z.array(
-        z.object({
-            id: z.number(),
-            createdAt: z.coerce.date(),
-            updatedAt: z.coerce.date(),
-            detectedLicenseExpressionSPDX: z.nullable(z.string()),
-            concludedLicenseExpressionSPDX: z.string(),
-            comment: z.nullable(z.string()),
-            contextPurl: z.string(),
-            user: z.object({
-                username: z.string(),
-            }),
-            bulkCurationId: z.nullable(z.number()),
         }),
     ),
 });
