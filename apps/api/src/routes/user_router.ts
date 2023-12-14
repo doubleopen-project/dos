@@ -1107,11 +1107,10 @@ userRouter.get("/packages", async (req, res) => {
     }
 });
 
-userRouter.post("/filetree", async (req, res) => {
+userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     try {
-        const filetrees = await dbQueries.findFileTreesByPackagePurl(
-            req.body.purl,
-        );
+        const purl = formatPurl(req.params.purl);
+        const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
         if (filetrees) {
             res.status(200).json({

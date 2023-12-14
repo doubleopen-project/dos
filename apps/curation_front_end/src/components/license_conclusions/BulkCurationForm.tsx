@@ -74,13 +74,14 @@ type Props = {
 
 const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
+    const pathPurl = purl.replace(/\//g, "%2F");
     // Fetch the package file tree data
-    const { data: fileTreeData } = userHooks.useImmutableQuery(
-        "/filetree",
-        { purl: purl },
-        { withCredentials: true },
-        { enabled: !!purl },
-    );
+    const { data: fileTreeData } = userHooks.useGetFileTree({
+        withCredentials: true,
+        params: {
+            purl: pathPurl,
+        },
+    });
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkCurationFormType = {
@@ -93,10 +94,11 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         resolver: zodResolver(bulkCurationFormSchema),
         defaultValues,
     });
-    const pathPurl = purl.replace(/\//g, "%2F");
 
-    const keyFile = userHooks.getKeyByPath("post", "/file");
-    const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
+    const keyLCs = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsForFileInPackage",
+    );
+    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const queryClient = useQueryClient();
     const { mutate: addBulkCuration } = userHooks.usePostBulkCuration(
         {
@@ -120,8 +122,8 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                         ${res.filesPackage} identical (SHA256) files affected in this package, 
                         ${res.filesAll} identical (SHA256) files affected in the database.`,
                 });
-                // When a bulk curation is added, invalidate the file and filetree queries to refetch the data
-                queryClient.invalidateQueries(keyFile);
+                // When a bulk curation is added, invalidate the queries to refetch the data
+                queryClient.invalidateQueries(keyLCs);
                 queryClient.invalidateQueries(keyFiletree);
             },
             onError: (error) => {

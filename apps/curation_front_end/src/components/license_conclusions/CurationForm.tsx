@@ -90,7 +90,10 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
         "get",
         "/packages/:purl/files/:sha256/license-conclusions/",
     );
-    const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
+    const keyFiletree = userHooks.getKeyByPath(
+        "get",
+        "/packages/:purl/filetrees",
+    );
     const queryClient = useQueryClient();
 
     const pathPurl = purl.replace(/\//g, "%2F");

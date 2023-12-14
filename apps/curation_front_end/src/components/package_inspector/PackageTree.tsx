@@ -53,13 +53,15 @@ const PackageTree = ({ purl }: Props) => {
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const treeRef = useRef<HTMLDivElement>(null);
 
+    const pathPurl = purl.replace(/\//g, "%2F");
+
     // Fetch the package file tree data
-    const { data, isLoading, error } = userHooks.useImmutableQuery(
-        "/filetree",
-        { purl: purl },
-        { withCredentials: true },
-        { enabled: !!purl },
-    );
+    const { data, isLoading, error } = userHooks.useGetFileTree({
+        withCredentials: true,
+        params: {
+            purl: pathPurl,
+        },
+    });
 
     // Fetch the path exclusions for the package
     const { data: pathExclusions } = userHooks.useImmutableQuery(

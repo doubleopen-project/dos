@@ -17,7 +17,10 @@ type Props = {
 const DeleteBulkCuration = ({ id }: Props) => {
     const { toast } = useToast();
     const keyFile = userHooks.getKeyByPath("post", "/file");
-    const keyFiletree = userHooks.getKeyByPath("post", "/filetree");
+    const keyFiletree = userHooks.getKeyByPath(
+        "get",
+        "/packages/:purl/filetrees",
+    );
     const keyLicenseConclusion = userHooks.getKeyByPath(
         "get",
         "/license-conclusions",
