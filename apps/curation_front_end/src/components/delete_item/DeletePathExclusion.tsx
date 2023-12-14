@@ -24,7 +24,11 @@ type Props = {
 
 const DeletePathExclusion = ({ data }: Props) => {
     const { toast } = useToast();
-    const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
+    const keyPathExclusions = userHooks.getKeyByPath(
+        "post",
+        "/path-exclusions",
+    );
+    const keyPathExclusion = userHooks.getKeyByPath("get", "/path-exclusion");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
@@ -68,6 +72,7 @@ const DeletePathExclusion = ({ data }: Props) => {
                 });
 
                 // When a path exclusion deleted, invalidate the query to refetch the data
+                queryClient.invalidateQueries(keyPathExclusions);
                 queryClient.invalidateQueries(keyPathExclusion);
             },
             onError: () => {
