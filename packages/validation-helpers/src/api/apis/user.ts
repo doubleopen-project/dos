@@ -46,6 +46,7 @@ export const userAPI = makeApi([
     {
         method: "get",
         path: "/license-conclusions",
+        alias: "GetLicenseConclusions",
         description: "Get all license conclusions",
         response: schemas.GetLicenseConclusionsRes,
         errors,

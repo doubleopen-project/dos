@@ -7,12 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import isGlob from "is-glob";
+import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,6 +32,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import CurationLicense from "@/components/license_conclusions/CurationLicense";
 import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
@@ -62,6 +70,7 @@ const bulkCurationFormSchema = z.object({
         .or(z.enum(["", "NONE", "NOASSERTION"])),
     concludedLicenseList: z.string(),
     comment: z.string(),
+    local: z.boolean(),
 });
 
 type BulkCurationFormType = z.infer<typeof bulkCurationFormSchema>;
@@ -89,6 +98,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
         comment: "",
+        local: false,
     };
     const form = useForm<BulkCurationFormType>({
         resolver: zodResolver(bulkCurationFormSchema),
@@ -99,6 +109,10 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         "GetLicenseConclusionsForFileInPackage",
     );
     const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
+    const keyLicenseConclusions = userHooks.getKeyByAlias(
+        "GetLicenseConclusions",
+    );
+
     const queryClient = useQueryClient();
     const { mutate: addBulkCuration } = userHooks.usePostBulkCuration(
         {
@@ -125,6 +139,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                 // When a bulk curation is added, invalidate the queries to refetch the data
                 queryClient.invalidateQueries(keyLCs);
                 queryClient.invalidateQueries(keyFiletree);
+                queryClient.invalidateQueries(keyLicenseConclusions);
             },
             onError: (error) => {
                 if (axios.isAxiosError(error)) {
@@ -184,6 +199,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
                     comment: data.comment ?? "",
+                    local: data.local,
                 });
             } else {
                 return;
@@ -306,6 +322,53 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                         {...field}
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="local"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-end ml-1 space-x-3 space-y-2 rounded-md">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                    <Label>Mark as local</Label>
+                                </div>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger
+                                            className="ml-1"
+                                            type="button"
+                                        >
+                                            <Info size={"15px"} />
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                            <p>
+                                                By checking this box, this
+                                                curation will only apply <br />{" "}
+                                                to the files in this version of
+                                                this package.
+                                            </p>
+                                            <br />
+                                            <p>
+                                                If you want to apply this
+                                                curation across all packages
+                                                <br />
+                                                that have the one or more of the
+                                                affected files (identified{" "}
+                                                <br />
+                                                by the file's sha256's), leave
+                                                this box unchecked.
+                                            </p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                                 <FormMessage />
                             </FormItem>
                         )}

@@ -4490,6 +4490,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/license-conclusions";
+        alias: "GetLicenseConclusions";
         description: "Get all license conclusions";
         response: zod.ZodObject<
             {
@@ -10105,6 +10106,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/license-conclusions";
+        alias: "GetLicenseConclusions";
         description: "Get all license conclusions";
         response: zod.ZodObject<
             {
