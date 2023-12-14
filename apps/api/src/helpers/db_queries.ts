@@ -1614,7 +1614,7 @@ export const getPathExclusionsByPackagePurl = async (
     return packageObj.pathExclusions;
 };
 
-export const getPackageScanResults = async (packageId: number) => {
+export const getPackageScanResults = async (purl: string) => {
     let retries = initialRetryCount;
     let results = null;
     let querySuccess = false;
@@ -1623,19 +1623,52 @@ export const getPackageScanResults = async (packageId: number) => {
         try {
             results = await prisma.fileTree.findMany({
                 where: {
-                    packageId: packageId,
+                    package: {
+                        purl: purl,
+                    },
                 },
-                include: {
+                select: {
+                    path: true,
                     file: {
-                        include: {
+                        select: {
                             licenseFindings: {
-                                include: {
-                                    licenseFindingMatches: true,
+                                select: {
+                                    licenseExpressionSPDX: true,
+                                    licenseFindingMatches: {
+                                        select: {
+                                            startLine: true,
+                                            endLine: true,
+                                            score: true,
+                                        },
+                                    },
                                 },
                             },
-                            licenseConclusions: true,
-                            copyrightFindings: true,
-                            scanIssues: true,
+                            licenseConclusions: {
+                                where: {
+                                    OR: [
+                                        { local: true, contextPurl: purl },
+                                        { local: false },
+                                    ],
+                                },
+                                select: {
+                                    concludedLicenseExpressionSPDX: true,
+                                },
+                            },
+                            copyrightFindings: {
+                                select: {
+                                    copyright: true,
+                                    startLine: true,
+                                    endLine: true,
+                                },
+                            },
+                            scanIssues: {
+                                select: {
+                                    createdAt: true,
+                                    scannerConfig: true,
+                                    message: true,
+                                    severity: true,
+                                },
+                            },
                         },
                     },
                 },

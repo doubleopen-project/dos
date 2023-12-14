@@ -76,7 +76,7 @@ scannerRouter.post("/scan-results", authenticateORTToken, async (req, res) => {
                 console.log("Found scan results");
                 // The results will be the same for all packages, so we can just get the results for the first one
                 const results = await dbOperations.getScanResults(
-                    scannedPackages[0].id,
+                    scannedPackages[0].purl,
                     options,
                 );
 
