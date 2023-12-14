@@ -181,26 +181,29 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     Affected Files
                 </Label>
             ),
-            cell: ({ row }) => (
-                <TooltipProvider>
-                    <Tooltip delayDuration={300}>
-                        <TooltipTrigger>
-                            <Badge className="text-sm bg-blue-400">
-                                {row.original.affectedPaths.length}
-                            </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <div className="text-sm">
-                                {row.original.affectedPaths.map(
-                                    (aff, index) => (
-                                        <div key={index}>{aff}</div>
-                                    ),
-                                )}
-                            </div>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            ),
+            cell: ({ row }) => {
+                const affectedPaths = row.original.affectedPaths.length;
+                return affectedPaths > 0 ? (
+                    <TooltipProvider>
+                        <Tooltip delayDuration={300}>
+                            <TooltipTrigger>
+                                <Badge className="text-sm bg-blue-400">
+                                    {affectedPaths}
+                                </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <div className="text-sm">
+                                    {row.original.affectedPaths.map(
+                                        (aff, index) => (
+                                            <div key={index}>{aff}</div>
+                                        ),
+                                    )}
+                                </div>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                ) : null;
+            },
         },
         {
             accessorKey: "comment",

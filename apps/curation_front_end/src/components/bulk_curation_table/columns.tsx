@@ -222,7 +222,7 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
             ),
             columns: [
                 {
-                    accessorKey: "affectedPathsThisPurl",
+                    accessorKey: "affectedPathsThis",
                     header: () => {
                         return (
                             <Label className="font-bold cursor-pointer">
@@ -230,43 +230,48 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             </Label>
                         );
                     },
-                    cell: ({ row }) => (
-                        <TooltipProvider>
-                            <Tooltip delayDuration={300}>
-                                <TooltipTrigger>
-                                    <Badge className="text-sm bg-blue-400">
-                                        {row.original.licenseConclusions
-                                            .map(
-                                                (lc) =>
-                                                    lc.affectedPaths
-                                                        .inContextPurl.length,
-                                            )
-                                            .reduce((a, b) => a + b, 0)}
-                                    </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <div className="text-sm">
-                                        {row.original.licenseConclusions.map(
-                                            (lc) => (
-                                                <div key={lc.id}>
-                                                    {lc.affectedPaths.inContextPurl.map(
-                                                        (aff, index) => (
-                                                            <div key={index}>
-                                                                {aff}
-                                                            </div>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ),
+                    cell: ({ row }) => {
+                        const affectedPathsThis =
+                            row.original.licenseConclusions
+                                .map(
+                                    (lc) =>
+                                        lc.affectedPaths.inContextPurl.length,
+                                )
+                                .reduce((a, b) => a + b, 0);
+                        return affectedPathsThis > 0 ? (
+                            <TooltipProvider>
+                                <Tooltip delayDuration={300}>
+                                    <TooltipTrigger>
+                                        <Badge className="text-sm bg-blue-400">
+                                            {affectedPathsThis}
+                                        </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <div className="text-sm">
+                                            {row.original.licenseConclusions.map(
+                                                (lc) => (
+                                                    <div key={lc.id}>
+                                                        {lc.affectedPaths.inContextPurl.map(
+                                                            (aff, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                >
+                                                                    {aff}
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        ) : null;
+                    },
                 },
                 {
-                    accessorKey: "affectedPathsTotal",
+                    accessorKey: "affectedPathsOther",
                     header: () => {
                         return (
                             <Label className="font-bold cursor-pointer">
@@ -274,42 +279,47 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                             </Label>
                         );
                     },
-                    cell: ({ row }) => (
-                        <TooltipProvider>
-                            <Tooltip delayDuration={300}>
-                                <TooltipTrigger>
-                                    <Badge className="text-sm bg-orange-400">
-                                        {row.original.licenseConclusions
-                                            .map(
-                                                (lc) =>
-                                                    lc.affectedPaths
-                                                        .additionalMatches
-                                                        .length,
-                                            )
-                                            .reduce((a, b) => a + b, 0)}
-                                    </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <div className="text-sm">
-                                        {row.original.licenseConclusions.map(
-                                            (lc) => (
-                                                <div key={lc.id}>
-                                                    {lc.affectedPaths.additionalMatches.map(
-                                                        (aff, index) => (
-                                                            <div key={index}>
-                                                                {aff.purl} :{" "}
-                                                                {aff.path}
-                                                            </div>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ),
+                    cell: ({ row }) => {
+                        const affectedPathsOther =
+                            row.original.licenseConclusions
+                                .map(
+                                    (lc) =>
+                                        lc.affectedPaths.additionalMatches
+                                            .length,
+                                )
+                                .reduce((a, b) => a + b, 0);
+                        return affectedPathsOther > 0 ? (
+                            <TooltipProvider>
+                                <Tooltip delayDuration={300}>
+                                    <TooltipTrigger>
+                                        <Badge className="text-sm bg-orange-400">
+                                            {affectedPathsOther}
+                                        </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <div className="text-sm">
+                                            {row.original.licenseConclusions.map(
+                                                (lc) => (
+                                                    <div key={lc.id}>
+                                                        {lc.affectedPaths.additionalMatches.map(
+                                                            (aff, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                >
+                                                                    {aff.purl} :{" "}
+                                                                    {aff.path}
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        ) : null;
+                    },
                 },
             ],
         },
