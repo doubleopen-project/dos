@@ -18,7 +18,11 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
         withCredentials: true,
     });
     if (isLoading) {
-        return <div>Loading license conclusions...</div>;
+        return (
+            <div className="flex items-center justify-center h-full">
+                Loading license conclusions...
+            </div>
+        );
     }
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
