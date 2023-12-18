@@ -7,6 +7,7 @@
         "clever-cfe-prebuild": "npm i --also-dev next",
         "clever-logs": "clever logs",
         "dev": "next dev",
+        "dev:prod": "next dev",
         "lint": "next lint",
         "start": "next start",
         "test": "jest --verbose",
