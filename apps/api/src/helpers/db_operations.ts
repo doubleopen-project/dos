@@ -30,16 +30,22 @@ export const getScanResults = async (
             ) {
                 for (const licenseConclusion of filetree.file
                     .licenseConclusions) {
-                    licenses.push({
-                        license:
-                            licenseConclusion.concludedLicenseExpressionSPDX,
-                        location: {
-                            path: filetree.path,
-                            start_line: undefined,
-                            end_line: undefined,
-                        },
-                        score: undefined,
-                    });
+                    if (
+                        !licenseConclusion.local ||
+                        (licenseConclusion.local &&
+                            licenseConclusion.contextPurl === purl)
+                    ) {
+                        licenses.push({
+                            license:
+                                licenseConclusion.concludedLicenseExpressionSPDX,
+                            location: {
+                                path: filetree.path,
+                                start_line: undefined,
+                                end_line: undefined,
+                            },
+                            score: undefined,
+                        });
+                    }
                 }
             } else if (filetree.file.licenseFindings.length > 0) {
                 let startLine = 0;
