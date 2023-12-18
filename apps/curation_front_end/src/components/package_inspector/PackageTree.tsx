@@ -37,6 +37,7 @@ type Props = {
 };
 
 const PackageTree = ({ purl }: Props) => {
+    console.log(purl);
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
         "licenseFilter",
@@ -53,15 +54,18 @@ const PackageTree = ({ purl }: Props) => {
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const treeRef = useRef<HTMLDivElement>(null);
 
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = purl.replace(/\//g, "%2F").replace(/#/g, "%23");
 
     // Fetch the package file tree data
-    const { data, isLoading, error } = userHooks.useGetFileTree({
-        withCredentials: true,
-        params: {
-            purl: pathPurl,
+    const { data, isLoading, error } = userHooks.useGetFileTree(
+        {
+            withCredentials: true,
+            params: {
+                purl: pathPurl,
+            },
         },
-    });
+        { enabled: !!pathPurl },
+    );
 
     // Fetch the path exclusions for the package
     const { data: pathExclusions } = userHooks.useImmutableQuery(

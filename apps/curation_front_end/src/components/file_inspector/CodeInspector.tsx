@@ -26,7 +26,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         { enabled: !!path && !!purl },
     );
     const fileSha256 = data?.sha256;
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = purl.replace(/\//g, "%2F").replace(/#/g, "%23");
     const { data: licenseConclusions } =
         userHooks.useGetLicenseConclusionsForFileInPackage(
             {
@@ -36,7 +36,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 },
                 withCredentials: true,
             },
-            { enabled: !!fileSha256 },
+            { enabled: !!fileSha256 && !!pathPurl },
         );
     const fileUrl = data?.downloadUrl;
 
