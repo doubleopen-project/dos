@@ -42,6 +42,7 @@ import { useToast } from "@/components/ui/use-toast";
 import CurationLicense from "@/components/license_conclusions/CurationLicense";
 import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
 const bulkCurationFormSchema = z.object({
@@ -83,7 +84,7 @@ type Props = {
 
 const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useGetFileTree({
         withCredentials: true,

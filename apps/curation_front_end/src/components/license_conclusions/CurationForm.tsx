@@ -34,6 +34,7 @@ import { useToast } from "@/components/ui/use-toast";
 import CurationDB from "@/components/license_conclusions/CurationDB";
 import CurationLicense from "@/components/license_conclusions/CurationLicense";
 import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
 const curationFormSchema = z.object({
@@ -96,7 +97,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
     );
     const queryClient = useQueryClient();
 
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = toPathPurl(purl);
 
     const { mutate: addLicenseConclusion } = userHooks.usePostLicenseConclusion(
         {

@@ -28,6 +28,7 @@ import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
 import { Button } from "../ui/button";
@@ -53,15 +54,18 @@ const PackageTree = ({ purl }: Props) => {
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const treeRef = useRef<HTMLDivElement>(null);
 
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = toPathPurl(purl);
 
     // Fetch the package file tree data
-    const { data, isLoading, error } = userHooks.useGetFileTree({
-        withCredentials: true,
-        params: {
-            purl: pathPurl,
+    const { data, isLoading, error } = userHooks.useGetFileTree(
+        {
+            withCredentials: true,
+            params: {
+                purl: pathPurl,
+            },
         },
-    });
+        { enabled: !!pathPurl },
+    );
 
     // Fetch the path exclusions for the package
     const { data: pathExclusions } = userHooks.useImmutableQuery(
