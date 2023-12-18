@@ -108,7 +108,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                 onSuccess: () => {
                     toast({
                         title: "Delete successful",
-                        description: "License conclusion deleted succesfully",
+                        description: "License conclusion deleted successfully.",
                     });
                     // When a license conclusion is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", "/filetree" and "/license-conclusions" queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
@@ -118,7 +118,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                 onError: () => {
                     toast({
                         variant: "destructive",
-                        title: "License conclusion deletion failed",
+                        title: "Delete failed",
                         description: "Something went wrong. Please try again.",
                     });
                 },
@@ -147,7 +147,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                 onError: () => {
                     toast({
                         variant: "destructive",
-                        title: "Bulk curation deletion failed",
+                        title: "Delete failed",
                         description: "Something went wrong. Please try again.",
                     });
                 },

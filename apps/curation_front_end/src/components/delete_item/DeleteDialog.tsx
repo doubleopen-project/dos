@@ -26,7 +26,11 @@ const DeleteDialog = ({ deleteActions }: Props) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="outline" className="px-2">
+                <Button
+                    data-testid="delete-license-conclusion"
+                    variant="outline"
+                    className="px-2"
+                >
                     <Delete></Delete>
                 </Button>
             </AlertDialogTrigger>

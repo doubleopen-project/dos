@@ -48,13 +48,12 @@ test.describe("create and delete license conclusions from the main UI", () => {
         await page.getByRole("button", { name: "Delete" }).click();
         expect(
             await page.waitForSelector(
-                ':has-text("License conclusion deleted succesfully")',
+                ':has-text("License conclusion deleted successfully.")',
             ),
         ).not.toBeNull();
     });
 });
 
-/*
 test.describe("create license conclusion, but delete it from Clearance Library", () => {
     test("creates license conclusion 2", async ({ page }) => {
         await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
@@ -93,7 +92,7 @@ test.describe("create license conclusion, but delete it from Clearance Library",
         const rows = await page.$$('tr:has-text("Test comment 2")');
         const row = rows[0];
         const button = row
-            ? await row.waitForSelector('css=td[id="actions"] >> css=button')
+            ? await row.$('[data-testid="delete-license-conclusion"]')
             : null;
         if (button) {
             await button.click();
@@ -104,9 +103,8 @@ test.describe("create license conclusion, but delete it from Clearance Library",
         await page.getByRole("button", { name: "Delete" }).click();
         expect(
             await page.waitForSelector(
-                ':has-text("License conclusion deleted succesfully")',
+                ':has-text("License conclusion deleted successfully.")',
             ),
         ).not.toBeNull();
     });
 });
-*/
