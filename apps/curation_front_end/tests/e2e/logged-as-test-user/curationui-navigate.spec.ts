@@ -3,13 +3,15 @@
 // SPDX-License-Identifier: MIT
 
 import { expect, test } from "@playwright/test";
-import { login } from "./login";
+
+test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+})
 
 test("navigates in Curation UI", async ({ page }) => {
-    await login(page);
 
     await page.goto(
-        "http://localhost:3000/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0",
+        "/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0",
     );
 
     expect(page.getByText("pkg:generic/dos-monorepo@"));
