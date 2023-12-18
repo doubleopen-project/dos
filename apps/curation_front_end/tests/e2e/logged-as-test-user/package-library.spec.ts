@@ -3,14 +3,16 @@
 // SPDX-License-Identifier: MIT
 
 import { expect, test } from "@playwright/test";
-import { login } from "./login";
+
+test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+})
 
 test("sees DOS monorepo in package library and chooses the package to curation UI", async ({
     page,
 }) => {
-    await login(page);
-
-    await page.goto("http://localhost:3000/packages");
+    // Navigate to the package library
+    await page.goto("/packages");
 
     // Expect to see the Package Library title
     await expect(
