@@ -67,7 +67,7 @@ const DeletePackage = ({ data }: Props) => {
                 onError: () => {
                     toast({
                         variant: "destructive",
-                        title: "Package deletion failed",
+                        title: "Delete failed",
                         description: "Something went wrong. Please try again.",
                     });
                 },

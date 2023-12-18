@@ -68,7 +68,7 @@ const DeletePathExclusion = ({ data }: Props) => {
             onSuccess: () => {
                 toast({
                     title: "Delete successful",
-                    description: "Path exclusion deleted succesfully",
+                    description: "Path exclusion deleted successfully.",
                 });
 
                 // When a path exclusion deleted, invalidate the query to refetch the data
@@ -78,7 +78,7 @@ const DeletePathExclusion = ({ data }: Props) => {
             onError: () => {
                 toast({
                     variant: "destructive",
-                    title: "Path exclusion deletion failed",
+                    title: "Delete failed",
                     description: "Something went wrong. Please try again.",
                 });
             },

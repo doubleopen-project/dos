@@ -90,7 +90,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
                 onError: () => {
                     toast({
                         variant: "destructive",
-                        title: "Bulk curation deletion failed",
+                        title: "Delete failed",
                         description: "Something went wrong. Please try again.",
                     });
                 },
