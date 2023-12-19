@@ -1026,7 +1026,10 @@ export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
                 };
                 licenseConclusions: {
                     select: {
+                        id: true;
                         concludedLicenseExpressionSPDX: true;
+                        contextPurl: true;
+                        local: true;
                     };
                 };
             };
@@ -1061,19 +1064,11 @@ export const findFileTreesByPackagePurl = async (
                                 },
                             },
                             licenseConclusions: {
-                                where: {
-                                    OR: [
-                                        {
-                                            local: true,
-                                            contextPurl: purl,
-                                        },
-                                        {
-                                            local: false,
-                                        },
-                                    ],
-                                },
                                 select: {
+                                    id: true,
                                     concludedLicenseExpressionSPDX: true,
+                                    contextPurl: true,
+                                    local: true,
                                 },
                             },
                         },
@@ -1644,14 +1639,10 @@ export const getPackageScanResults = async (purl: string) => {
                                 },
                             },
                             licenseConclusions: {
-                                where: {
-                                    OR: [
-                                        { local: true, contextPurl: purl },
-                                        { local: false },
-                                    ],
-                                },
                                 select: {
                                     concludedLicenseExpressionSPDX: true,
+                                    local: true,
+                                    contextPurl: true,
                                 },
                             },
                             copyrightFindings: {
@@ -2625,16 +2616,12 @@ export const findLicenseConclusionsByPackagePurl = async (
                     file: {
                         select: {
                             licenseConclusions: {
-                                where: {
-                                    OR: [
-                                        { local: true, contextPurl: purl },
-                                        { local: false },
-                                    ],
-                                },
                                 select: {
                                     detectedLicenseExpressionSPDX: true,
                                     concludedLicenseExpressionSPDX: true,
                                     comment: true,
+                                    local: true,
+                                    contextPurl: true,
                                 },
                             },
                         },
@@ -2659,14 +2646,19 @@ export const findLicenseConclusionsByPackagePurl = async (
 
     for (const filetree of filetrees) {
         for (const licenseConclusion of filetree.file.licenseConclusions) {
-            licenseConclusions.push({
-                path: filetree.path,
-                detectedLicenseExpressionSPDX:
-                    licenseConclusion.detectedLicenseExpressionSPDX,
-                concludedLicenseExpressionSPDX:
-                    licenseConclusion.concludedLicenseExpressionSPDX,
-                comment: licenseConclusion.comment,
-            });
+            if (
+                !licenseConclusion.local ||
+                (licenseConclusion.local &&
+                    licenseConclusion.contextPurl === purl)
+            )
+                licenseConclusions.push({
+                    path: filetree.path,
+                    detectedLicenseExpressionSPDX:
+                        licenseConclusion.detectedLicenseExpressionSPDX,
+                    concludedLicenseExpressionSPDX:
+                        licenseConclusion.concludedLicenseExpressionSPDX,
+                    comment: licenseConclusion.comment,
+                });
         }
     }
 

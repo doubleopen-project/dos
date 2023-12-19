@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import CurationForm from "@/components/license_conclusions/CurationForm";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type CodeInspectorProps = {
     purl: string;
@@ -26,7 +27,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         { enabled: !!path && !!purl },
     );
     const fileSha256 = data?.sha256;
-    const pathPurl = purl.replace(/\//g, "%2F");
+    const pathPurl = toPathPurl(purl);
     const { data: licenseConclusions } =
         userHooks.useGetLicenseConclusionsForFileInPackage(
             {
@@ -36,7 +37,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 },
                 withCredentials: true,
             },
-            { enabled: !!fileSha256 },
+            { enabled: !!fileSha256 && !!pathPurl },
         );
     const fileUrl = data?.downloadUrl;
 
