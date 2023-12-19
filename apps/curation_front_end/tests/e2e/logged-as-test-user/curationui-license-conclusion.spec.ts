@@ -34,13 +34,10 @@ test.describe("create and delete license conclusions from the main UI", () => {
     });
 
     test("deletes license conclusion 1", async ({ page }) => {
-        await page
-            .locator("button")
-            .filter({ hasText: "Select curation from DB..." })
-            .click();
-        await expect(
-            page.getByRole("group").getByText("MIT", { exact: true }).first(),
-        ).toHaveText("MIT");
+        await page.getByTestId("curation-db-button").click();
+        await expect(page.getByTestId("concluded-license").first()).toHaveText(
+            "MIT",
+        );
         await page.getByRole("group").getByRole("button").first().click();
         await expect(page.getByLabel("Delete").getByText("MIT")).toHaveText(
             "MIT",
