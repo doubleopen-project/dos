@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto("/");
 });
 
-test("navigates in Curation UI", async ({ page }) => {
+test("navigates in Clearance UI", async ({ page }) => {
     await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
 
     expect(page.getByText("pkg:generic/dos-monorepo@"));
@@ -19,7 +19,7 @@ test("navigates in Curation UI", async ({ page }) => {
     expect(page.locator("label").filter({ hasText: "README.md" }));
 
     // Basic navigation
-    await page.getByRole("button", { name: ": mit" }).click();
+    await page.getByRole("button", { name: ": mit" }).first().click();
     // TODO: Expect line 5 to become topmost in the editor
     await page.getByRole("button", { name: "RESET" }).click();
     // TODO: Expect line 1 to become topmost in the editor
