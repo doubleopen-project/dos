@@ -91,6 +91,7 @@ const CurationDB = ({
                 <PopoverTrigger asChild>
                     <Button
                         ref={buttonRef}
+                        data-testid="curation-db-button"
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
@@ -137,7 +138,10 @@ const CurationDB = ({
                                                     <span className="mr-1">
                                                         Curated:
                                                     </span>
-                                                    <span className="p-1 font-bold bg-green-400 rounded-sm">
+                                                    <span
+                                                        data-testid="concluded-license"
+                                                        className="p-1 font-bold bg-green-400 rounded-sm"
+                                                    >
                                                         {
                                                             d.concludedLicenseExpressionSPDX
                                                         }
