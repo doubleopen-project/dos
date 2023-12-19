@@ -6,13 +6,10 @@ import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
     await page.goto("/");
-})
+});
 
 test("navigates in Curation UI", async ({ page }) => {
-
-    await page.goto(
-        "/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0",
-    );
+    await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
 
     expect(page.getByText("pkg:generic/dos-monorepo@"));
     expect(page.locator("label").filter({ hasText: "No file opened" }));

@@ -6,7 +6,7 @@ import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
     await page.goto("/");
-})
+});
 
 test("sees DOS monorepo in package library and chooses the package to curation UI", async ({
     page,
