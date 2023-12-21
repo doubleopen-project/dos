@@ -12,7 +12,7 @@ import BulkCurationList from "@/components/bulk_curation_table/BulkCurationList"
 import LicenseConclusionList from "@/components/license_conclusion_table/LicenseConclusionList";
 import PathExclusionList from "@/components/path_exclusion_table/PathExclusionList";
 
-export default function CurationsLibrary() {
+export default function ClearanceLibrary() {
     const router = useRouter();
     const {
         data: user,
@@ -44,11 +44,12 @@ export default function CurationsLibrary() {
                     <div className="flex-none m-1 rounded-md shadow">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Curations Library</CardTitle>
+                                <CardTitle>Clearance Library</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <p className="text-sm">
-                                    This page shows all curations that have been
+                                    This page shows all clearances (license
+                                    conclusions, path exclusions) that have been
                                     created for packages in the Package Library.
                                 </p>
                             </CardContent>
