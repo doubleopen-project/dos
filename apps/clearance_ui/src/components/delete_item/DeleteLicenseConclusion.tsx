@@ -70,7 +70,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
         deleteActions.push({
             dialogMessage: (
                 <>
-                    This is a bulk curation, curating{" "}
+                    This is a bulk license conclusion, concluding{" "}
                     <strong>{bulkCuration.filePaths.length}</strong> files as{" "}
                     <strong>
                         {bulkCuration.concludedLicenseExpressionSPDX}
@@ -79,10 +79,10 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                     <br />
                     <br />
                     Do you want to delete only the license conclusion for this
-                    file, or the whole bulk curation?
+                    file, or the whole bulk conclusion?
                 </>
             ),
-            buttonText: "Delete bulk curation",
+            buttonText: "Delete bulk conclusion",
             mutation: deleteManyItems,
         });
     }
@@ -138,7 +138,7 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                 onSuccess: () => {
                     toast({
                         title: "Delete successful",
-                        description: `Bulk curation deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
+                        description: `Bulk license conclusion deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
                     });
                     // When a bulk curation is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", and filetree queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
