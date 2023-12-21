@@ -62,7 +62,7 @@
             "dependsOn": ["^build"],
             "outputs": [".next/**", "!.next/cache/**"]
         },
-        "clever-cfe-prebuild": {},
+        "clever-cui-prebuild": {},
         "clever-logs": {},
         "copy-types": {},
         "db:format": {},
