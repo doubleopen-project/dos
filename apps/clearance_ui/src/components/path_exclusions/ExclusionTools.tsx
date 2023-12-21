@@ -48,17 +48,17 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     return (
         <div
             className={cn(
-                "relative flex items-center p-1 mb-2 text-sm border rounded-md shadow-lg",
+                "relative mb-2 flex items-center rounded-md border p-1 text-sm shadow-lg",
                 className,
             )}
         >
-            <span className="absolute text-gray-500 top-[-10px] left-2 text-xs font-bold">
+            <span className="absolute left-2 top-[-10px] text-xs font-bold text-gray-500">
                 Clearance tools
             </span>
             <>
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -81,7 +81,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -104,7 +104,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -125,7 +125,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -151,7 +151,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -173,7 +173,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         />
                     </Tooltip>
                     <Tooltip>
-                        <div className="relative group">
+                        <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"

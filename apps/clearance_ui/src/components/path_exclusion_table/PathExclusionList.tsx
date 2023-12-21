@@ -19,7 +19,7 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
     });
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-full align-middle">
+            <div className="flex h-full items-center justify-center align-middle">
                 Loading path exclusions...
             </div>
         );

@@ -158,7 +158,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
         <div className="flex flex-col">
             {editMode && (
                 <Button
-                    className="p-2 mx-4 mt-8 ml-auto bg-gray-200 border rounded-lg border-violet-950"
+                    className="mx-4 ml-auto mt-8 rounded-lg border border-violet-950 bg-gray-200 p-2"
                     variant={"outline"}
                     disabled
                 >
@@ -168,7 +168,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
 
             {!editMode && (
                 <Button
-                    className="p-2 mx-4 mt-8 ml-auto rounded-lg"
+                    className="mx-4 ml-auto mt-8 rounded-lg p-2"
                     variant={"outline"}
                     onClick={() => setEditMode(true)}
                 >
@@ -181,7 +181,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     onReset={onDiscard}
                     onChange={onInputChange}
-                    className="flex flex-col p-4 space-y-8"
+                    className="flex flex-col space-y-8 p-4"
                 >
                     <FormField
                         control={form.control}
@@ -254,7 +254,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     />
                     {form.formState.errors.root && (
                         <div
-                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            className="relative rounded-md border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"
                             role="alert"
                         >
                             <span className="block sm:inline">
@@ -270,7 +270,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                     >
                         <Button
                             className={cn(
-                                "flex-1 mr-1",
+                                "mr-1 flex-1",
                                 isSuccess ? "!opacity-100" : undefined,
                             )}
                             type="submit"
@@ -281,7 +281,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
 
                             {isLoading && (
                                 <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     <span>Please wait</span>
                                 </>
                             )}
@@ -292,7 +292,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                         </Button>
                         <Button
                             className={cn(
-                                "flex-1 ml-1 border",
+                                "ml-1 flex-1 border",
                                 isLoading || isSuccess
                                     ? "bg-gray-400 hover:bg-gray-400"
                                     : undefined,

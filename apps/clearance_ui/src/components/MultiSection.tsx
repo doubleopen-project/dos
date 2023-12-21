@@ -29,10 +29,10 @@ const MultiSection = ({
 
     return (
         <div className={cn("p-2 md:h-screen", className)}>
-            <div className="w-full h-full p-10 m-1 border rounded-md shadow-lg sm:p-20">
+            <div className="m-1 h-full w-full rounded-md border p-10 shadow-lg sm:p-20">
                 <h1 className="pb-2">{title}</h1>
                 <Separator />
-                <div className="flex flex-col pt-4 space-y-8 md:h-full lg:flex-row lg:space-x-12 lg:space-y-0">
+                <div className="flex flex-col space-y-8 pt-4 md:h-full lg:flex-row lg:space-x-12 lg:space-y-0">
                     <aside className="lg:w-1/5">
                         <MultiSectionNavBar
                             defaultSection={defaultSection}
@@ -48,7 +48,7 @@ const MultiSection = ({
                             <div
                                 key={section.title}
                                 className={cn(
-                                    "w-full p-10 overflow-auto border rounded-md shadow-lg h-5/6 lg:h-full md:h-full sm:h-5/6 lg:p-20",
+                                    "h-5/6 w-full overflow-auto rounded-md border p-10 shadow-lg sm:h-5/6 md:h-full lg:h-full lg:p-20",
                                     searchParamSection === section.tag
                                         ? "visible"
                                         : "hidden",

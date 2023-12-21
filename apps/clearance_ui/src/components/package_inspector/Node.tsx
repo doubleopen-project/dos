@@ -74,7 +74,7 @@ const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
 
     return (
         <div
-            className="flex items-center cursor-pointer"
+            className="flex cursor-pointer items-center"
             style={style}
             onClick={() => {
                 if (!isLeaf) {
@@ -83,7 +83,7 @@ const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
             }}
         >
             <span className="flex items-center">{icon}</span>
-            <span className="flex-grow ml-1 font-mono text-xs truncate">
+            <span className="ml-1 flex-grow truncate font-mono text-xs">
                 {isLeaf ? (
                     <Link
                         href={{

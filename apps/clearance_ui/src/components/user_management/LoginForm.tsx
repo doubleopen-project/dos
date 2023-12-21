@@ -92,11 +92,11 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="border rounded-md shadow-lg w-72 h-min">
+        <div className="h-min w-72 rounded-md border shadow-lg">
             <Form {...form}>
                 <div
                     className={cn(
-                        "text-xs text-red-500 pt-4 pr-4 pl-4",
+                        "pl-4 pr-4 pt-4 text-xs text-red-500",
                         errMsg ? "visible" : "hidden",
                     )}
                 >
@@ -107,7 +107,7 @@ const LoginForm = () => {
                     onChange={() => {
                         if (errMsg) setErrMsg(undefined);
                     }}
-                    className="flex flex-col p-4 space-y-8"
+                    className="flex flex-col space-y-8 p-4"
                 >
                     <FormField
                         control={form.control}
@@ -164,7 +164,7 @@ const LoginForm = () => {
                     >
                         {isLoading && (
                             <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 <span>Please wait</span>
                             </>
                         )}

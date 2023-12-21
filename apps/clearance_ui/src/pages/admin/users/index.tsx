@@ -58,12 +58,12 @@ export default function UserManagement() {
                 />
             )}
             {isLoading && (
-                <div className="flex items-center justify-center h-full">
-                    <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                <div className="flex h-full items-center justify-center">
+                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>
             )}
             {errMsg && (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex h-full items-center justify-center">
                     <p className="text-red-500">{errMsg}</p>
                 </div>
             )}

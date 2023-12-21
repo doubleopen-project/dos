@@ -26,7 +26,7 @@ const ExclusionFormDialog = ({ purl, pattern, open, setOpen }: Props) => {
                 <DialogFooter className="flex justify-end">
                     <Button
                         variant="outline"
-                        className="p-1 text-xs rounded-md"
+                        className="rounded-md p-1 text-xs"
                         onClick={() => setOpen(false)}
                     >
                         Cancel

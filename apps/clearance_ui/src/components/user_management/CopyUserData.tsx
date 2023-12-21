@@ -38,7 +38,7 @@ const CopyUserData = ({ copyContent }: CopyUserDataProps) => {
                         <span className="sr-only">Copy</span>
                         <Copy
                             className={cn(
-                                "w-4 h-4",
+                                "h-4 w-4",
                                 copied ? "hidden" : "visible",
                             )}
                         />

@@ -40,8 +40,8 @@ export default function Settings() {
             <>
                 {user && <UserDataForm user={user} />}
                 {isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                    <div className="flex h-full items-center justify-center">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
             </>
@@ -55,14 +55,14 @@ export default function Settings() {
                     Here you can create a token you will need for running ORT
                     with DOS Scanner, or to use the scanner via the API.
                 </p>
-                <p className="pt-4 pb-8">
+                <p className="pb-8 pt-4">
                     Please note that your previous token will be invalidated
                     when you create a new one.
                 </p>
                 {user && <TokenDialog />}
                 {isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                    <div className="flex h-full items-center justify-center">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
             </>
@@ -92,7 +92,7 @@ export default function Settings() {
                 />
             )}
             {errMsg && (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex h-full items-center justify-center">
                     <p className="text-red-500">{errMsg}</p>
                 </div>
             )}

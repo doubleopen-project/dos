@@ -43,7 +43,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">Name</Label>
+                        <Label className="cursor-pointer font-bold">Name</Label>
                         {column.getIsSorted() === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
@@ -59,7 +59,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                     <Tooltip delayDuration={300}>
                         <TooltipTrigger asChild>
                             <Link
-                                className="text-blue-400 font-semibold"
+                                className="font-semibold text-blue-400"
                                 href={`/packages/${encodeURIComponent(
                                     row.original.purl,
                                 )}`}
@@ -85,7 +85,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Version
                         </Label>
                         {column.getIsSorted() === "desc" ? (
@@ -110,7 +110,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">Type</Label>
+                        <Label className="cursor-pointer font-bold">Type</Label>
                         {column.getIsSorted() === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
@@ -133,7 +133,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Namespace
                         </Label>
                         {column.getIsSorted() === "desc" ? (
@@ -158,7 +158,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Updated
                         </Label>
                         {column.getIsSorted() === "desc" ? (

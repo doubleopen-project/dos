@@ -182,7 +182,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
     }
 
     return (
-        <div className={cn("flex flex-col w-full", className)}>
+        <div className={cn("flex w-full flex-col", className)}>
             <Label className="mb-1 font-bold">License conclusion:</Label>
             <Form {...form}>
                 <form
@@ -250,10 +250,10 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                             control={form.control}
                             name="comment"
                             render={({ field }) => (
-                                <FormItem className="flex-1 mr-1">
+                                <FormItem className="mr-1 flex-1">
                                     <FormControl>
                                         <Textarea
-                                            className="text-xs !min-h-[40px]"
+                                            className="!min-h-[40px] text-xs"
                                             placeholder="Comment on your license conclusion..."
                                             {...field}
                                         />
@@ -268,7 +268,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                                 control={form.control}
                                 name="local"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-row items-start p-2 ml-1 space-x-3 space-y-0 rounded-md">
+                                    <FormItem className="ml-1 flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value}
@@ -314,7 +314,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                             />
                             <Button
                                 type="submit"
-                                className="text-xs text-left"
+                                className="text-left text-xs"
                                 variant={"outline"}
                             >
                                 Submit
