@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -50,13 +50,9 @@ type LoginFormType = z.infer<typeof loginFormSchema>;
 const LoginForm = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
-    let errMsg: string | undefined;
+    const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
 
-    const {
-        isLoading,
-        reset,
-        mutate: loginUser,
-    } = authHooks.useMutation(
+    const { isLoading, mutate: loginUser } = authHooks.useMutation(
         "post",
         "/login/password",
         {
@@ -78,7 +74,7 @@ const LoginForm = () => {
                 }
             },
             onError: (error: unknown) => {
-                errMsg = parseError(error);
+                setErrMsg(parseError(error));
             },
         },
     );
@@ -109,7 +105,7 @@ const LoginForm = () => {
                 <form
                     onSubmit={form.handleSubmit(submitForm)}
                     onChange={() => {
-                        if (errMsg) reset();
+                        if (errMsg) setErrMsg(undefined);
                     }}
                     className="flex flex-col p-4 space-y-8"
                 >
