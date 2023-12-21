@@ -20,7 +20,7 @@ const BulkCurationList = ({ user }: BulkCurationListProps) => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-full">
-                Loading bulk curations...
+                Loading bulk conclusions...
             </div>
         );
     }
