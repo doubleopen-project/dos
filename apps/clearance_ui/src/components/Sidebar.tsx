@@ -45,7 +45,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                                     <GrCatalog size={20} />
                                 </div>
                             </Link>
-                            <Link href="/curations">
+                            <Link href="/clearances">
                                 <div
                                     className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
                                     title="Curations Library"
