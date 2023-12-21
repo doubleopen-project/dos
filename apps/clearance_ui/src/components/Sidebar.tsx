@@ -39,7 +39,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                         <>
                             <Link href="/packages">
                                 <div
-                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
                                     title="Package Library"
                                 >
                                     <GrCatalog size={20} />
@@ -47,8 +47,8 @@ const Sidebar = ({ children }: SidebarProps) => {
                             </Link>
                             <Link href="/clearances">
                                 <div
-                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                                    title="Curations Library"
+                                    className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    title="Clearance Library"
                                 >
                                     <GrInspect size={20} />
                                 </div>
@@ -56,7 +56,7 @@ const Sidebar = ({ children }: SidebarProps) => {
 
                             <Link href="/settings">
                                 <div
-                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
                                     title="Settings"
                                 >
                                     <GrUserSettings size={20} />
@@ -67,7 +67,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     {user?.role === "ADMIN" && (
                         <Link href="/admin/users">
                             <div
-                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
                                 title="User Management"
                             >
                                 <GrUserManager size={20} />
@@ -77,7 +77,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     {!user && (
                         <Link href="/login">
                             <div
-                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
                                 title="Login"
                             >
                                 <GrLogin size={20} />
@@ -87,7 +87,7 @@ const Sidebar = ({ children }: SidebarProps) => {
                     {user && (
                         <Link href="/logout">
                             <div
-                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                className="inline-block p-3 my-4 text-black bg-gray-200 rounded-lg hover:bg-gray-400"
                                 title="Logout"
                             >
                                 <GrLogout size={20} />
