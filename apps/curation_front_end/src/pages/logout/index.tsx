@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { authHooks, userHooks } from "@/hooks/zodiosHooks";
+import { authHooks } from "@/hooks/zodiosHooks";
 
 export default function Logout() {
     const [counter, setCounter] = useState(3);
@@ -23,8 +23,7 @@ export default function Logout() {
         { withCredentials: true },
         {
             onSuccess: () => {
-                const key = userHooks.getKeyByPath("get", "/user");
-                queryClient.invalidateQueries(key);
+                queryClient.removeQueries();
             },
         },
     );
