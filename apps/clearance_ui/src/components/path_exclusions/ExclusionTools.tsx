@@ -52,8 +52,8 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                 className,
             )}
         >
-            <span className="absolute text-gray-500 top-[-10px] left-2 text-xs">
-                Curation tools
+            <span className="absolute text-gray-500 top-[-10px] left-2 text-xs font-bold">
+                Clearance tools
             </span>
             <>
                 <TooltipProvider delayDuration={300}>
@@ -162,7 +162,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                Write a freetext exclusion pattern
+                                Write a freetext path exclusion pattern
                             </TooltipContent>
                         </div>
                         <ExclusionFormDialog
