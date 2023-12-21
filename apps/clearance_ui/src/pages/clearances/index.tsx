@@ -63,7 +63,7 @@ export default function ClearanceLibrary() {
                                     License Conclusions
                                 </TabsTrigger>
                                 <TabsTrigger value="bulk_curations">
-                                    Bulk Curations
+                                    Bulk Conclusions
                                 </TabsTrigger>
                                 <TabsTrigger value="path_exclusions">
                                     Path Exclusions
