@@ -104,7 +104,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
     const { toast } = useToast();
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex w-full flex-col">
             <Label className="mb-1 font-bold">Add path exclusion</Label>
             <Form {...form}>
                 <form
@@ -180,7 +180,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                     />
                     {form.formState.errors.root && (
                         <div
-                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            className="relative rounded-md border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"
                             role="alert"
                         >
                             <span className="block sm:inline">
@@ -192,7 +192,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                         <Button
                             variant="outline"
                             type="submit"
-                            className="p-1 mt-2 text-xs rounded-md"
+                            className="mt-2 rounded-md p-1 text-xs"
                         >
                             Add path exclusion
                         </Button>

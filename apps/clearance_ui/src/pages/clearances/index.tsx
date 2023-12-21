@@ -38,10 +38,10 @@ export default function ClearanceLibrary() {
     }
 
     return (
-        <div className="flex flex-col h-screen p-2">
+        <div className="flex h-screen flex-col p-2">
             {user && (
                 <>
-                    <div className="flex-none m-1 rounded-md shadow">
+                    <div className="m-1 flex-none rounded-md shadow">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Clearance Library</CardTitle>
@@ -56,9 +56,9 @@ export default function ClearanceLibrary() {
                         </Card>
                     </div>
 
-                    <div className="flex-1 mx-1 overflow-auto border rounded-lg shadow">
+                    <div className="mx-1 flex-1 overflow-auto rounded-lg border shadow">
                         <Tabs defaultValue="license_conclusions">
-                            <TabsList className="p-2 mt-2 ml-8">
+                            <TabsList className="ml-8 mt-2 p-2">
                                 <TabsTrigger value="license_conclusions">
                                     License Conclusions
                                 </TabsTrigger>
@@ -84,12 +84,12 @@ export default function ClearanceLibrary() {
                 </>
             )}
             {isLoading && (
-                <div className="flex items-center justify-center h-full">
-                    <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                <div className="flex h-full items-center justify-center">
+                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>
             )}
             {errMsg && (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex h-full items-center justify-center">
                     <p className="text-red-500">{errMsg}</p>
                 </div>
             )}

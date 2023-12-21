@@ -224,7 +224,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     }
 
     return (
-        <div className={cn("flex flex-col w-full", className)}>
+        <div className={cn("flex w-full flex-col", className)}>
             <Label className="mb-3 font-bold">
                 Add bulk license conclusion
             </Label>
@@ -242,7 +242,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                     <FormLabel>Pattern</FormLabel>
                                     <FormControl>
                                         <Input
-                                            className="text-xs !min-h-[40px]"
+                                            className="!min-h-[40px] text-xs"
                                             placeholder="Glob pattern matching to the files to be concluded..."
                                             {...field}
                                         />
@@ -253,20 +253,20 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                         />
                         <DropdownMenu onOpenChange={handleOpen}>
                             <DropdownMenuTrigger
-                                className="p-2 ml-1 rounded-md"
+                                className="ml-1 rounded-md p-2"
                                 type="button"
                                 disabled={form.getValues("pattern") === ""}
                             >
                                 <AiOutlineEye
                                     className={cn(
-                                        "text-gray-400 h-fit w-6",
+                                        "h-fit w-6 text-gray-400",
                                         form.getValues("pattern") === ""
                                             ? "opacity-40"
                                             : "opacity-100",
                                     )}
                                 />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-80 max-h-[40vh] overflow-y-auto">
+                            <DropdownMenuContent className="max-h-[40vh] w-80 overflow-y-auto">
                                 {matchingPaths.map((path) => (
                                     <DropdownMenuItem key={path}>
                                         {path}
@@ -317,11 +317,11 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                         control={form.control}
                         name="comment"
                         render={({ field }) => (
-                            <FormItem className="flex-1 mr-1">
+                            <FormItem className="mr-1 flex-1">
                                 <FormLabel>Comment</FormLabel>
                                 <FormControl>
                                     <Textarea
-                                        className="text-xs !min-h-[40px]"
+                                        className="!min-h-[40px] text-xs"
                                         placeholder="Comment on your bulk conclusion..."
                                         {...field}
                                     />
@@ -334,7 +334,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                         control={form.control}
                         name="local"
                         render={({ field }) => (
-                            <FormItem className="flex flex-row items-end ml-1 space-x-3 space-y-2 rounded-md">
+                            <FormItem className="ml-1 flex flex-row items-end space-x-3 space-y-2 rounded-md">
                                 <FormControl>
                                     <Checkbox
                                         checked={field.value}
@@ -380,7 +380,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     />
                     {form.formState.errors.root && (
                         <div
-                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            className="relative rounded-md border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"
                             role="alert"
                         >
                             <span className="block sm:inline">
@@ -391,7 +391,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     <div className="flex justify-end">
                         <Button
                             type="submit"
-                            className="p-1 mt-2 text-xs rounded-md"
+                            className="mt-2 rounded-md p-1 text-xs"
                             variant={"outline"}
                         >
                             Add bulk conclusion

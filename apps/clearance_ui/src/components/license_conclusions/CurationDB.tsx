@@ -95,7 +95,7 @@ const CurationDB = ({
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="justify-between w-full h-fit"
+                        className="h-fit w-full justify-between"
                     >
                         <div className="text-xs">
                             {router.isReady
@@ -106,7 +106,7 @@ const CurationDB = ({
                                     : "Select existing license conclusion from DB..."
                                 : null}
                         </div>
-                        <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" style={{ width: listWidth }}>
@@ -123,7 +123,7 @@ const CurationDB = ({
                                 >
                                     <CommandItem
                                         key={d.id}
-                                        className="items-start flex-1 text-left"
+                                        className="flex-1 items-start text-left"
                                         onSelect={() => handleSelect(d)}
                                     >
                                         <Check
@@ -134,22 +134,22 @@ const CurationDB = ({
                                                     : "opacity-0",
                                             )}
                                         />
-                                        <div className="flex flex-col w-full ml-2 text-xs">
-                                            <span className="flex justify-between mb-2">
+                                        <div className="ml-2 flex w-full flex-col text-xs">
+                                            <span className="mb-2 flex justify-between">
                                                 <span>
                                                     <span className="mr-1">
                                                         Concluded:
                                                     </span>
                                                     <span
                                                         data-testid="concluded-license"
-                                                        className="p-1 font-bold bg-green-400 rounded-sm"
+                                                        className="rounded-sm bg-green-400 p-1 font-bold"
                                                     >
                                                         {
                                                             d.concludedLicenseExpressionSPDX
                                                         }
                                                     </span>
                                                     {d.bulkCurationId && (
-                                                        <span className="p-1 ml-1 font-bold bg-blue-400 rounded-sm">
+                                                        <span className="ml-1 rounded-sm bg-blue-400 p-1 font-bold">
                                                             BULK
                                                         </span>
                                                     )}
@@ -164,7 +164,7 @@ const CurationDB = ({
                                                                 .split("T")[0]
                                                         }
                                                     </span>
-                                                    <span className="p-1 font-bold bg-orange-400 rounded-sm">
+                                                    <span className="rounded-sm bg-orange-400 p-1 font-bold">
                                                         {d.user.username}
                                                     </span>
                                                 </span>
@@ -185,7 +185,7 @@ const CurationDB = ({
                                                 </span>
                                                 {d.contextPurl}
                                             </span>
-                                            <span className="italic text-smaller">
+                                            <span className="text-smaller italic">
                                                 {d.comment}
                                             </span>
                                         </div>
@@ -218,7 +218,7 @@ const CurationDB = ({
                     >
                         <XCircle
                             className={cn(
-                                "mx-2 text-gray-400 h-fit",
+                                "mx-2 h-fit text-gray-400",
                                 !value || value.length === 0
                                     ? "opacity-40"
                                     : "opacity-100",

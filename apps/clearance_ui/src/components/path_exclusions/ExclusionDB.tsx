@@ -53,8 +53,8 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
     return (
         <>
             {isLoading && (
-                <div className="flex items-center justify-center h-full">
-                    <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                <div className="flex h-full items-center justify-center">
+                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>
             )}
             {error && <div>{error.message}</div>}
@@ -66,12 +66,12 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                             variant="outline"
                             role="combobox"
                             aria-expanded={open}
-                            className="justify-between w-full h-fit"
+                            className="h-fit w-full justify-between"
                         >
                             <div className="text-xs">
                                 List/delete path exclusions
                             </div>
-                            <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent
@@ -91,10 +91,10 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                     >
                                         <CommandItem
                                             key={exclusion.id}
-                                            className="items-start flex-1 text-left"
+                                            className="flex-1 items-start text-left"
                                         >
-                                            <div className="flex flex-col w-full text-xs">
-                                                <div className="flex items-center justify-between mb-1">
+                                            <div className="flex w-full flex-col text-xs">
+                                                <div className="mb-1 flex items-center justify-between">
                                                     <span className="mr-1">
                                                         {
                                                             new Date(
@@ -104,14 +104,14 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                                 .split("T")[0]
                                                         }
                                                     </span>
-                                                    <span className="p-1 font-bold bg-orange-400 rounded-sm">
+                                                    <span className="rounded-sm bg-orange-400 p-1 font-bold">
                                                         {
                                                             exclusion.user
                                                                 .username
                                                         }
                                                     </span>
                                                 </div>
-                                                <div className="p-1 mb-1 font-bold rounded-sm bg-slate-500">
+                                                <div className="mb-1 rounded-sm bg-slate-500 p-1 font-bold">
                                                     {exclusion.pattern}
                                                 </div>
                                                 <span className="text-smaller">
@@ -122,14 +122,14 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                         {exclusion.reason}
                                                     </span>
                                                 </span>
-                                                <span className="italic text-smaller">
+                                                <span className="text-smaller italic">
                                                     {exclusion.comment}
                                                 </span>
                                             </div>
                                         </CommandItem>
                                         <CommandItem
                                             key={`delete-${exclusion.id}`}
-                                            className="items-start mr-1 text-left"
+                                            className="mr-1 items-start text-left"
                                         >
                                             {(userName ===
                                                 exclusion.user.username ||

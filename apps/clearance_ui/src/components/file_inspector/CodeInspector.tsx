@@ -54,8 +54,8 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
     }, [fileUrl]);
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
+        <div className="flex h-full flex-col">
+            <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                 <Label className="font-bold">File: </Label>
                 {path ? (
                     <Badge className="rounded-md">{path}</Badge>
@@ -65,9 +65,9 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             </div>
 
             {data?.licenseFindings[0] && (
-                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
+                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                     <Label className="font-semibold">Detected SPDX</Label>
-                    <p className="p-1 text-xs border rounded-md">
+                    <p className="rounded-md border p-1 text-xs">
                         {data.licenseFindings.map((license) => (
                             <span key={license.id}>
                                 <>
@@ -86,21 +86,21 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
             )}
 
             {data?.licenseFindings[0]?.licenseFindingMatches && (
-                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
+                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                     <Label className="font-semibold">
                         Individual license matches
                     </Label>
                     <ButtonGroup
                         data={data.licenseFindings[0].licenseFindingMatches}
-                        className="p-1 rounded-md border w-full max-h-[8vh] overflow-y-auto"
+                        className="max-h-[8vh] w-full overflow-y-auto rounded-md border p-1"
                     />
                 </div>
             )}
 
             {fileSha256 && licenseConclusions?.licenseConclusions[0] && (
-                <div className="flex-row items-center p-1 mb-2 border rounded-md shadow-lg">
+                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                     <Label className="font-semibold">Curations</Label>
-                    <p className="p-1 text-xs border rounded-md">
+                    <p className="rounded-md border p-1 text-xs">
                         {licenseConclusions.licenseConclusions.map(
                             (license) => (
                                 <span key={license.id}>
@@ -121,15 +121,15 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 </div>
             )}
 
-            <div className="flex items-center justify-center flex-1 overflow-auto">
+            <div className="flex flex-1 items-center justify-center overflow-auto">
                 {!path && (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex h-full items-center justify-center">
                         No file opened
                     </div>
                 )}
                 {path && isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                    <div className="flex h-full items-center justify-center">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
                 {data && fileContents && (
@@ -139,7 +139,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     />
                 )}
                 {error && (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex h-full items-center justify-center">
                         Unable to fetch file data
                     </div>
                 )}
@@ -149,7 +149,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     purl={purl}
                     lcData={licenseConclusions}
                     fileData={data}
-                    className="p-1 mt-2 text-sm border rounded-md shadow-lg"
+                    className="mt-2 rounded-md border p-1 text-sm shadow-lg"
                 />
             )}
         </div>

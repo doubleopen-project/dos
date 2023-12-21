@@ -19,7 +19,7 @@ const PasswordTooltip = () => {
                 </TooltipTrigger>
                 <TooltipContent side="right">
                     Password should have:
-                    <ul className="list-disc list-inside">
+                    <ul className="list-inside list-disc">
                         <li>at least 8 characters</li>
                         <li>at least one uppercase letter</li>
                         <li>at least one lowercase letter</li>

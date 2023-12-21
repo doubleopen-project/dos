@@ -63,16 +63,16 @@ const ComboBoxPackage = ({
     }, [value]);
 
     return (
-        <div className={cn("flex flex-row justify-between w-full", className)}>
+        <div className={cn("flex w-full flex-row justify-between", className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="justify-between w-5/6 h-fit"
+                        className="h-fit w-5/6 justify-between"
                     >
-                        <span className="text-xs truncate">
+                        <span className="truncate text-xs">
                             {router.isReady
                                 ? value
                                     ? licenses.find(
@@ -81,7 +81,7 @@ const ComboBoxPackage = ({
                                     : "Select license..."
                                 : null}
                         </span>
-                        <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0">
@@ -110,7 +110,7 @@ const ComboBoxPackage = ({
                                                 : "opacity-0",
                                         )}
                                     />
-                                    <span className="text-xs w-11/12">
+                                    <span className="w-11/12 text-xs">
                                         {license.label}
                                     </span>
                                 </CommandItem>
@@ -132,7 +132,7 @@ const ComboBoxPackage = ({
                     >
                         <XCircle
                             className={cn(
-                                "mx-2 text-gray-400 h-fit",
+                                "mx-2 h-fit text-gray-400",
                                 !value ? "opacity-40" : "opacity-100",
                             )}
                         />

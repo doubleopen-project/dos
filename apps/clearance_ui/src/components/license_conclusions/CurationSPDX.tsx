@@ -26,7 +26,7 @@ const CurationSPDX = ({ value, setValue }: Props) => {
     return (
         <div className="flex">
             <Input
-                className="w-full text-xs rounded-md"
+                className="w-full rounded-md text-xs"
                 type="text"
                 placeholder="Write your SPDX expression here..."
                 value={value}
@@ -42,7 +42,7 @@ const CurationSPDX = ({ value, setValue }: Props) => {
                     >
                         <XCircle
                             className={cn(
-                                "mx-2 text-gray-400 h-fit",
+                                "mx-2 h-fit text-gray-400",
                                 !value || value.length === 0
                                     ? "opacity-40"
                                     : "opacity-100",

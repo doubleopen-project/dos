@@ -62,8 +62,8 @@ const TokenDialog = () => {
                     </DialogDescription>
                 </DialogHeader>
                 {isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                    <div className="flex h-full items-center justify-center">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
                 {isSuccess && (
@@ -92,7 +92,7 @@ const TokenDialog = () => {
                                 <span className="sr-only">Copy</span>
                                 <Copy
                                     className={cn(
-                                        "w-4 h-4",
+                                        "h-4 w-4",
                                         copied ? "hidden" : "visible",
                                     )}
                                 />

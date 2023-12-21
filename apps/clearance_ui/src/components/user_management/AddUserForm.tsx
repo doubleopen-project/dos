@@ -112,7 +112,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     onReset={onDiscard}
                     onChange={onchange}
-                    className="flex flex-col p-4 space-y-8"
+                    className="flex flex-col space-y-8 p-4"
                 >
                     <FormField
                         control={form.control}
@@ -141,7 +141,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                                         <Input placeholder="" {...field} />
                                     </FormControl>
                                     <Button
-                                        className="ml-2 gen-pass-btn"
+                                        className="gen-pass-btn ml-2"
                                         variant={"outline"}
                                         onClick={() => {
                                             const password = generator.generate(
@@ -223,7 +223,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     />
                     {error && (
                         <div
-                            className="relative px-4 py-3 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md"
+                            className="relative rounded-md border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"
                             role="alert"
                         >
                             <span className="block sm:inline">
@@ -240,11 +240,11 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                                 variant={"outline"}
                                 disabled
                             >
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Please wait
                             </Button>
                             <Button
-                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
+                                className="ml-1 flex-1 border bg-gray-400 hover:bg-gray-400"
                                 type="reset"
                                 disabled
                             >
@@ -255,14 +255,14 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     {!isLoading && !isSuccess && (
                         <div className="flex flex-row">
                             <Button
-                                className="flex-1 mr-1"
+                                className="mr-1 flex-1"
                                 type="submit"
                                 variant={"outline"}
                             >
                                 Add user
                             </Button>
                             <Button
-                                className="flex-1 ml-1 border"
+                                className="ml-1 flex-1 border"
                                 variant={"destructive"}
                                 type="reset"
                             >
@@ -280,7 +280,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                                 <Check />
                             </Button>
                             <Button
-                                className="flex-1 ml-1 bg-gray-400 border hover:bg-gray-400"
+                                className="ml-1 flex-1 border bg-gray-400 hover:bg-gray-400"
                                 type="reset"
                                 disabled
                             >

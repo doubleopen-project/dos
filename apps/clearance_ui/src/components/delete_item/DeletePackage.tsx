@@ -76,8 +76,8 @@ const DeletePackage = ({ data }: Props) => {
 
     if (isPackageLoading) {
         return (
-            <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-10 h-10 mr-2 animate-spin" />
+            <div className="flex h-full items-center justify-center">
+                <Loader2 className="mr-2 h-10 w-10 animate-spin" />
             </div>
         );
     }

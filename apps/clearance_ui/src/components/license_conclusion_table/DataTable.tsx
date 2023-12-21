@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
                 />
                 <DataTablePagination table={table} />
             </div>
-            <div className="border rounded-md">
+            <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (

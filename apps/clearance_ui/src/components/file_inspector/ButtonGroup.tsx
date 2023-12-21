@@ -50,7 +50,7 @@ const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
         <div className={cn("flex flex-wrap", className)}>
             <Button
                 key="reset"
-                className="p-0.5 m-0.5 text-xs h-fit"
+                className="m-0.5 h-fit p-0.5 text-xs"
                 onClick={() => {
                     setLicenseMatchId(null);
                 }}
@@ -63,7 +63,7 @@ const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
                         <TooltipTrigger asChild>
                             <Button
                                 key={d.id}
-                                className={`p-0.5 m-0.5 text-xs h-fit ${
+                                className={`m-0.5 h-fit p-0.5 text-xs ${
                                     licenseMatchId === d.id
                                         ? "bg-red-300 hover:bg-red-300"
                                         : "hover:bg-gray-400"
