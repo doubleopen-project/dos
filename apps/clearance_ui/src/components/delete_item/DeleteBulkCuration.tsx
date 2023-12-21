@@ -44,7 +44,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
         deleteActions.push({
             dialogMessage: (
                 <>
-                    This is a bulk curation, curating{" "}
+                    This is a bulk license conclusion, concluding{" "}
                     <strong>{bulkCuration.filePaths.length}</strong> files as{" "}
                     <strong>
                         {bulkCuration.concludedLicenseExpressionSPDX}
@@ -52,10 +52,10 @@ const DeleteBulkCuration = ({ id }: Props) => {
                     with the pattern <strong>{bulkCuration.pattern}</strong>.
                     <br />
                     <br />
-                    Do you want to delete this bulk curation?
+                    Do you want to delete this bulk conclusion?
                 </>
             ),
-            buttonText: "Delete bulk curation",
+            buttonText: "Delete bulk conclusion",
             mutation: deleteManyItems,
         });
     }
@@ -78,7 +78,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
                 onSuccess: () => {
                     toast({
                         title: "Delete successful",
-                        description: `Bulk curation deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
+                        description: `Bulk license conclusion deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
                     });
                     // When a bulk curation is deleted, invalidate queries to refetch the data
                     queryClient.invalidateQueries(keyFile);
