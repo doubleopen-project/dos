@@ -183,7 +183,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
 
     return (
         <div className={cn("flex flex-col w-full", className)}>
-            <Label className="mb-1 font-bold">Curation:</Label>
+            <Label className="mb-1 font-bold">License conclusion:</Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -254,7 +254,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                                     <FormControl>
                                         <Textarea
                                             className="text-xs !min-h-[40px]"
-                                            placeholder="Comment on your curation..."
+                                            placeholder="Comment on your license conclusion..."
                                             {...field}
                                         />
                                     </FormControl>
@@ -291,19 +291,19 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                                                 <TooltipContent side="right">
                                                     <p>
                                                         By checking this box,
-                                                        this curation will only
-                                                        apply to the files in
-                                                        this version of this
-                                                        package.
+                                                        this license conclusion
+                                                        will only apply to the
+                                                        files in this version of
+                                                        this package.
                                                     </p>
                                                     <p>
                                                         If you want to apply
-                                                        this curation across all
-                                                        packages that have the
-                                                        same file (identified by
-                                                        the file's sha256),
-                                                        leave this box
-                                                        unchecked.
+                                                        this license conclusion
+                                                        across all packages that
+                                                        have the same file
+                                                        (identified by the
+                                                        file's sha256), leave
+                                                        this box unchecked.
                                                     </p>
                                                 </TooltipContent>
                                             </Tooltip>
