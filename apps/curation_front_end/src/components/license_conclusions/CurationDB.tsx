@@ -57,7 +57,7 @@ const CurationDB = ({
 
     // Get user from useUser hook, to decide what DB rights the user has for curations
     let user = undefined;
-    user = useUser({});
+    user = useUser();
     const userName = user ? user.username : "Guest";
     const userRole = user ? user.role : "";
 

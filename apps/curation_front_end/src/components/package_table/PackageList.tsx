@@ -16,7 +16,7 @@ type PackageListProps = {
 const PackageList = ({ data }: PackageListProps) => {
     // Get user from useUser hook, to decide what DB rights the user has for Package Library
     // and conditionally show the delete button (only for admins)
-    const user = useUser({});
+    const user = useUser();
     if (!user) return null;
     const tableColumns = columns(user.role);
 
