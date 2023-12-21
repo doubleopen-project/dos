@@ -20,7 +20,7 @@ describe("Home", () => {
         );
 
         const heading = screen.getByRole("heading", {
-            name: /Welcome to DoubleOpen Front End/i,
+            name: /Welcome to Double Open Clearance UI/i,
         });
 
         expect(heading).toBeInTheDocument();
