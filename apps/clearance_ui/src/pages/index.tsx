@@ -8,7 +8,9 @@ export default function Home() {
     return (
         <main className="min-h-screen">
             <Header />
-            <h1>Welcome to DoubleOpen Front End</h1>
+            <div className="flex flex-col items-center justify-center py-2">
+                <h1>Welcome to Double Open Clearance UI</h1>
+            </div>
         </main>
     );
 }
