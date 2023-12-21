@@ -103,7 +103,7 @@ const CurationDB = ({
                                     ? data?.licenseConclusions.find(
                                           (d) => d.id === parseInt(value, 10),
                                       )?.concludedLicenseExpressionSPDX
-                                    : "Select curation from DB..."
+                                    : "Select existing license conclusion from DB..."
                                 : null}
                         </div>
                         <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
@@ -111,8 +111,10 @@ const CurationDB = ({
                 </PopoverTrigger>
                 <PopoverContent className="p-0" style={{ width: listWidth }}>
                     <Command>
-                        <CommandInput placeholder="Search curation..." />
-                        <CommandEmpty>No curations found.</CommandEmpty>
+                        <CommandInput placeholder="Search license conclusion..." />
+                        <CommandEmpty>
+                            No license conclusions found.
+                        </CommandEmpty>
                         <CommandGroup className="max-h-[70vh] min-h-[1px] overflow-y-auto">
                             {data?.licenseConclusions.map((d) => (
                                 <div
@@ -136,7 +138,7 @@ const CurationDB = ({
                                             <span className="flex justify-between mb-2">
                                                 <span>
                                                     <span className="mr-1">
-                                                        Curated:
+                                                        Concluded:
                                                     </span>
                                                     <span
                                                         data-testid="concluded-license"
