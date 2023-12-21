@@ -142,23 +142,23 @@ Files: design.excalidraw.png
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/package.json
+Files: apps/clearance_ui/package.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/tsconfig.json
+Files: apps/clearance_ui/tsconfig.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/src/public/icons/Double_Open_logo.png
+Files: apps/clearance_ui/src/public/icons/Double_Open_logo.png
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/components.json
+Files: apps/clearance_ui/components.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/favicon.ico
+Files: apps/clearance_ui/favicon.ico
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
@@ -174,7 +174,7 @@ Files: apps/scanner_worker/tsconfig.json
 Copyright: 2023 Double Open Oy
 License: CC-BY-4.0
 
-Files: apps/curation_front_end/tsconfig.eslint.json
+Files: apps/clearance_ui/tsconfig.eslint.json
 Copyright: 2023 Double Open Oy
 License: CC-BY-4.0
 
