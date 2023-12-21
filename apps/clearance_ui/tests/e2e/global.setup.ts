@@ -17,7 +17,9 @@ setup("logs in", async ({ page }) => {
 
     // Expect to be redirected to the home page
     await expect(
-        page.getByRole("heading", { name: "Welcome to DoubleOpen Front End" }),
+        page.getByRole("heading", {
+            name: "Welcome to Double Open Clearance UI",
+        }),
     ).toBeVisible();
 
     // Store the login state

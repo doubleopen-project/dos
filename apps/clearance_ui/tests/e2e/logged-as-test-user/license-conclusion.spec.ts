@@ -18,9 +18,11 @@ test("create license conclusion, delete from Main UI", async ({ page }) => {
     await page.getByPlaceholder("Search license...").click();
     await page.getByPlaceholder("Search license...").fill("MIT");
     await page.getByRole("option", { name: "MIT", exact: true }).click();
-    await page.getByPlaceholder("Comment on your curation...").click();
     await page
-        .getByPlaceholder("Comment on your curation...")
+        .getByPlaceholder("Comment on your license conclusion...")
+        .click();
+    await page
+        .getByPlaceholder("Comment on your license conclusion...")
         .fill("Test comment 1");
     page.once("dialog", (dialog) => {
         dialog.accept().catch(() => {});
@@ -66,9 +68,11 @@ test("create license conclusion, delete from Clearance Library", async ({
     await page
         .getByPlaceholder("Write your SPDX expression")
         .fill("Apache-2.0");
-    await page.getByPlaceholder("Comment on your curation...").click();
     await page
-        .getByPlaceholder("Comment on your curation...")
+        .getByPlaceholder("Comment on your license conclusion...")
+        .click();
+    await page
+        .getByPlaceholder("Comment on your license conclusion...")
         .fill("Test comment 2");
     page.once("dialog", (dialog) => {
         dialog.accept().catch(() => {});
