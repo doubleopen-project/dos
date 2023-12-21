@@ -84,7 +84,7 @@ test("create license conclusion, delete from Clearance Library", async ({
     console.log("license conclusion created");
 
     // Delete the same conclusion
-    await page.goto("/curations");
+    await page.goto("/clearances");
     await expect(
         page.getByRole("cell", { name: "Apache-" }).first(),
     ).toContainText("Apache-2.0");
