@@ -2,17 +2,48 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useEffect } from "react";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/router";
+import { userHooks } from "@/hooks/zodiosHooks";
 import MultiSection from "@/components/MultiSection";
 import RegisterUser from "@/components/user_management/RegisterUser";
 
 export default function UserManagement() {
-    const user = useUser({ redirectTo: "/login", admin: true });
+    const router = useRouter();
+    const {
+        data: user,
+        error,
+        isLoading,
+    } = userHooks.useGetUser(
+        {
+            withCredentials: true,
+        },
+        { retry: false },
+    );
+    let errMsg;
+
+    if (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 403) {
+            router.push({
+                pathname: "/login",
+                query: { redirectToPath: router.asPath },
+            });
+        } else {
+            errMsg = error.message;
+        }
+    }
+
+    useEffect(() => {
+        if (user && user.role !== "ADMIN") {
+            router.push("/");
+        }
+    }, [user, router]);
 
     return (
         <>
-            {user && (
+            {user && user.role === "ADMIN" && (
                 <MultiSection
                     title="User Management"
                     defaultSection="adduser"
@@ -26,9 +57,14 @@ export default function UserManagement() {
                     ]}
                 />
             )}
-            {!user && (
+            {isLoading && (
                 <div className="flex items-center justify-center h-full">
                     <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                </div>
+            )}
+            {errMsg && (
+                <div className="flex items-center justify-center h-full">
+                    <p className="text-red-500">{errMsg}</p>
                 </div>
             )}
         </>
