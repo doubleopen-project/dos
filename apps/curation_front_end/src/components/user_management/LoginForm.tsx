@@ -4,10 +4,14 @@
 
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { RiLockPasswordFill, RiUser3Fill } from "react-icons/ri";
 import z from "zod";
+import { authHooks, userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -19,6 +23,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
+const parseError = (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+        return error.response?.status === 401
+            ? "Invalid username or password"
+            : error.response?.data.message || error.response?.statusText;
+    } else {
+        return error;
+    }
+};
 
 const loginFormSchema = z.object({
     username: z
@@ -33,19 +47,42 @@ const loginFormSchema = z.object({
 
 type LoginFormType = z.infer<typeof loginFormSchema>;
 
-interface LoginFormProps {
-    onSubmit: (data: LoginFormType) => void;
-    errMsg?: string;
-    isLoading?: boolean;
-    onReset: () => void;
-}
+const LoginForm = () => {
+    const router = useRouter();
+    const queryClient = useQueryClient();
+    let errMsg: string | undefined;
 
-const LoginForm: React.FC<LoginFormProps> = ({
-    onSubmit,
-    errMsg,
-    isLoading,
-    onReset,
-}) => {
+    const {
+        isLoading,
+        reset,
+        mutate: loginUser,
+    } = authHooks.useMutation(
+        "post",
+        "/login/password",
+        {
+            withCredentials: true,
+        },
+        {
+            onSuccess: () => {
+                const key = userHooks.getKeyByPath("get", "/user");
+                queryClient.invalidateQueries(key);
+                const redirectToPath = router.query.redirectToPath as string;
+                if (
+                    redirectToPath &&
+                    !redirectToPath.includes("[") &&
+                    !redirectToPath.includes("]")
+                ) {
+                    router.push(redirectToPath);
+                } else {
+                    router.push("/");
+                }
+            },
+            onError: (error: unknown) => {
+                errMsg = parseError(error);
+            },
+        },
+    );
+
     const form = useForm<LoginFormType>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -53,6 +90,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
             password: "",
         },
     });
+
+    const submitForm = (loginData: LoginFormType) => {
+        loginUser(loginData);
+    };
 
     return (
         <div className="border rounded-md shadow-lg w-72 h-min">
@@ -66,9 +107,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     {errMsg}
                 </div>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={form.handleSubmit(submitForm)}
                     onChange={() => {
-                        if (errMsg) onReset();
+                        if (errMsg) reset();
                     }}
                     className="flex flex-col p-4 space-y-8"
                 >
