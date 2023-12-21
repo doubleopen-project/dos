@@ -53,7 +53,8 @@ const bulkCurationFormSchema = z.object({
             message: "Pattern is not a valid glob pattern",
         })
         .refine((pattern) => pattern !== "**", {
-            message: "You cannot bulk curate all files in a package",
+            message:
+                "You cannot do a bulk conclusion for all files in a package",
         }),
     concludedLicenseSPDX: z
         .string()
@@ -131,8 +132,8 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                 };
                 setOpen(false);
                 toast({
-                    title: "Bulk curation",
-                    description: `Bulk curation added successfully.
+                    title: "Bulk conclusion",
+                    description: `Bulk license conclusion added successfully.
                         ${res.filesGlob} files matched the pattern, 
                         ${res.filesPackage} identical (SHA256) files affected in this package, 
                         ${res.filesAll} identical (SHA256) files affected in the database.`,
@@ -224,7 +225,9 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
 
     return (
         <div className={cn("flex flex-col w-full", className)}>
-            <Label className="mb-3 font-bold">Add bulk curation</Label>
+            <Label className="mb-3 font-bold">
+                Add bulk license conclusion
+            </Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -240,7 +243,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                     <FormControl>
                                         <Input
                                             className="text-xs !min-h-[40px]"
-                                            placeholder="Glob pattern matching to the files to be curated..."
+                                            placeholder="Glob pattern matching to the files to be concluded..."
                                             {...field}
                                         />
                                     </FormControl>
@@ -319,7 +322,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                 <FormControl>
                                     <Textarea
                                         className="text-xs !min-h-[40px]"
-                                        placeholder="Comment on your curation..."
+                                        placeholder="Comment on your bulk conclusion..."
                                         {...field}
                                     />
                                 </FormControl>
@@ -351,15 +354,16 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                                         </TooltipTrigger>
                                         <TooltipContent side="right">
                                             <p>
-                                                By checking this box, this
-                                                curation will only apply <br />{" "}
-                                                to the files in this version of
-                                                this package.
+                                                By checking this box, this bulk
+                                                license conclusion will only
+                                                apply <br /> to the files in
+                                                this version of this package.
                                             </p>
                                             <br />
                                             <p>
-                                                If you want to apply this
-                                                curation across all packages
+                                                If you want to apply this bulk
+                                                license conclusion across all
+                                                packages
                                                 <br />
                                                 that have the one or more of the
                                                 affected files (identified{" "}
@@ -390,7 +394,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                             className="p-1 mt-2 text-xs rounded-md"
                             variant={"outline"}
                         >
-                            Add bulk curation
+                            Add bulk conclusion
                         </Button>
                     </div>
                 </form>
