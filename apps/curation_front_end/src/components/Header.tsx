@@ -8,7 +8,7 @@ import { useUser } from "@/hooks/useUser";
 import logo from "@/public/icons/Double_Open_logo.png";
 
 const Header = () => {
-    const user = useUser({});
+    const user = useUser();
     const username = user ? user.username : user === null ? "Guest" : undefined;
     return (
         <div className="flex justify-between p-4">

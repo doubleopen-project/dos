@@ -46,7 +46,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
 
     // Get user from useUser hook, to decide what DB rights the user has for curations
     let user = undefined;
-    user = useUser({});
+    user = useUser();
     const userName = user ? user.username : "Guest";
     const userRole = user ? user.role : "";
 
@@ -94,7 +94,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                             className="items-start flex-1 text-left"
                                         >
                                             <div className="flex flex-col w-full text-xs">
-                                                <div className="flex justify-between items-center mb-1">
+                                                <div className="flex items-center justify-between mb-1">
                                                     <span className="mr-1">
                                                         {
                                                             new Date(
@@ -111,7 +111,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                         }
                                                     </span>
                                                 </div>
-                                                <div className="p-1 font-bold bg-slate-500 rounded-sm mb-1">
+                                                <div className="p-1 mb-1 font-bold rounded-sm bg-slate-500">
                                                     {exclusion.pattern}
                                                 </div>
                                                 <span className="text-smaller">
@@ -129,7 +129,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                         </CommandItem>
                                         <CommandItem
                                             key={`delete-${exclusion.id}`}
-                                            className="items-start text-left mr-1"
+                                            className="items-start mr-1 text-left"
                                         >
                                             {(userName ===
                                                 exclusion.user.username ||

@@ -21,7 +21,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ children }: SidebarProps) => {
-    const user = useUser({});
+    const user = useUser();
     return (
         <div className="flex">
             <div className="flex flex-col items-center h-screen p-4 border-r-[1px] justify-between overflow-none">
@@ -35,42 +35,34 @@ const Sidebar = ({ children }: SidebarProps) => {
                         </div>
                     </Link>
                     <span className="border-b-[1px] border-gray-200 w-full p-2"></span>
-                    <Link href="/packages">
-                        <div
-                            className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                            title="Package Library"
-                        >
-                            <GrCatalog size={20} />
-                        </div>
-                    </Link>
-                    <Link href="/curations">
-                        <div
-                            className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                            title="Curations Library"
-                        >
-                            <GrInspect size={20} />
-                        </div>
-                    </Link>
-
-                    {!user && (
-                        <Link href="/login">
-                            <div
-                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                                title="Login"
-                            >
-                                <GrLogin size={20} />
-                            </div>
-                        </Link>
-                    )}
                     {user && (
-                        <Link href="/settings">
-                            <div
-                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
-                                title="Settings"
-                            >
-                                <GrUserSettings size={20} />
-                            </div>
-                        </Link>
+                        <>
+                            <Link href="/packages">
+                                <div
+                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    title="Package Library"
+                                >
+                                    <GrCatalog size={20} />
+                                </div>
+                            </Link>
+                            <Link href="/curations">
+                                <div
+                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    title="Curations Library"
+                                >
+                                    <GrInspect size={20} />
+                                </div>
+                            </Link>
+
+                            <Link href="/settings">
+                                <div
+                                    className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                    title="Settings"
+                                >
+                                    <GrUserSettings size={20} />
+                                </div>
+                            </Link>
+                        </>
                     )}
                     {user?.role === "ADMIN" && (
                         <Link href="/admin/users">
@@ -79,6 +71,16 @@ const Sidebar = ({ children }: SidebarProps) => {
                                 title="User Management"
                             >
                                 <GrUserManager size={20} />
+                            </div>
+                        </Link>
+                    )}
+                    {!user && (
+                        <Link href="/login">
+                            <div
+                                className="inline-block p-3 my-4 bg-gray-200 rounded-lg hover:bg-gray-400"
+                                title="Login"
+                            >
+                                <GrLogin size={20} />
                             </div>
                         </Link>
                     )}
