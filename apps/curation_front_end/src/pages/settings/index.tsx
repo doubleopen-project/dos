@@ -2,20 +2,44 @@
 //
 // SPDX-License-Identifier: MIT
 
+import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/router";
+import { userHooks } from "@/hooks/zodiosHooks";
 import MultiSection from "@/components/MultiSection";
 import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
 
 export default function Settings() {
-    const user = useUser({ redirectTo: "/login", redirectIfFound: false });
+    const router = useRouter();
+    const {
+        data: user,
+        error,
+        isLoading,
+    } = userHooks.useGetUser(
+        {
+            withCredentials: true,
+        },
+        { retry: false },
+    );
+    let errMsg;
+
+    if (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 403) {
+            router.push({
+                pathname: "/login",
+                query: { redirectToPath: router.asPath },
+            });
+        } else {
+            errMsg = error.message;
+        }
+    }
 
     function Profile() {
         return (
             <>
                 {user && <UserDataForm user={user} />}
-                {!user && (
+                {isLoading && (
                     <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                     </div>
@@ -36,7 +60,7 @@ export default function Settings() {
                     when you create a new one.
                 </p>
                 {user && <TokenDialog />}
-                {!user && (
+                {isLoading && (
                     <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-16 h-16 mr-2 animate-spin" />
                     </div>
@@ -46,23 +70,32 @@ export default function Settings() {
     }
 
     return (
-        <MultiSection
-            title="Settings"
-            defaultSection="profile"
-            sections={[
-                {
-                    title: "Profile",
-                    tag: "profile",
-                    href: "/settings?section=profile",
-                    content: Profile,
-                },
-                {
-                    title: "Tokens",
-                    tag: "tokens",
-                    href: "/settings?section=tokens",
-                    content: Tokens,
-                },
-            ]}
-        />
+        <>
+            {user && (
+                <MultiSection
+                    title="Settings"
+                    defaultSection="profile"
+                    sections={[
+                        {
+                            title: "Profile",
+                            tag: "profile",
+                            href: "/settings?section=profile",
+                            content: Profile,
+                        },
+                        {
+                            title: "Tokens",
+                            tag: "tokens",
+                            href: "/settings?section=tokens",
+                            content: Tokens,
+                        },
+                    ]}
+                />
+            )}
+            {errMsg && (
+                <div className="flex items-center justify-center h-full">
+                    <p className="text-red-500">{errMsg}</p>
+                </div>
+            )}
+        </>
     );
 }
