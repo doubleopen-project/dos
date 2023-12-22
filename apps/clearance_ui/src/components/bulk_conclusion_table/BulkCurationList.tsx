@@ -6,8 +6,8 @@ import React from "react";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { columns } from "@/components/bulk_curation_table/columns";
-import { DataTable } from "@/components/bulk_curation_table/DataTable";
+import { columns } from "@/components/bulk_conclusion_table/columns";
+import { DataTable } from "@/components/bulk_conclusion_table/DataTable";
 
 type BulkCurationListProps = {
     user: ZodiosResponseByPath<typeof userAPI, "get", "/user">;
