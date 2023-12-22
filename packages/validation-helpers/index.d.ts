@@ -7028,26 +7028,15 @@ declare const userAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/path-exclusions";
+        method: "get";
+        path: "/packages/:purl/path-exclusions";
         description: "Get path exclusions for specified purl";
+        alias: "GetPathExclusionsByPurl";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodEffects<zod.ZodString, string, string>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -12648,26 +12637,15 @@ declare const dosAPI: [
         ];
     },
     {
-        method: "post";
-        path: "/user/path-exclusions";
+        method: "get";
+        path: "/user/packages/:purl/path-exclusions";
         description: "Get path exclusions for specified purl";
+        alias: "GetPathExclusionsByPurl";
         parameters: [
             {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purl: zod.ZodEffects<zod.ZodString, string, string>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purl: string;
-                    },
-                    {
-                        purl: string;
-                    }
-                >;
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<

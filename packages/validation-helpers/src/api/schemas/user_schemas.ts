@@ -329,10 +329,6 @@ export const DeletePathExclusionRes = z.object({
 
 //------------------ POST path-exclusions -------------------
 
-export const PostPathExclusionsReq = z.object({
-    purl: purlSchema(true),
-});
-
 export const PostPathExclusionsRes = z.object({
     pathExclusions: z.array(
         z.object({

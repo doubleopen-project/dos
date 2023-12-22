@@ -271,14 +271,15 @@ export const userAPI = makeApi([
         errors,
     },
     {
-        method: "post",
-        path: "/path-exclusions",
+        method: "get",
+        path: "/packages/:purl/path-exclusions",
         description: "Get path exclusions for specified purl",
+        alias: "GetPathExclusionsByPurl",
         parameters: [
             {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostPathExclusionsReq,
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
             },
         ],
         response: schemas.PostPathExclusionsRes,

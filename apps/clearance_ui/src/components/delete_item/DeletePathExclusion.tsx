@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias } from "@zodios/core";
 import { Loader2 } from "lucide-react";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -12,10 +12,9 @@ import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/delete_item/DeleteDialog";
 import { DeleteAction } from "@/types";
 
-type ItemType = ZodiosResponseByPath<
+type ItemType = ZodiosResponseByAlias<
     typeof userAPI,
-    "post",
-    "/path-exclusions"
+    "GetPathExclusionsByPurl"
 >["pathExclusions"][0];
 
 type Props = {
@@ -24,11 +23,10 @@ type Props = {
 
 const DeletePathExclusion = ({ data }: Props) => {
     const { toast } = useToast();
-    const keyPathExclusions = userHooks.getKeyByPath(
-        "post",
-        "/path-exclusions",
+    const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
+        "GetPathExclusionsByPurl",
     );
-    const keyPathExclusion = userHooks.getKeyByAlias("GetPathExclusions");
+    const keyPathExclusions = userHooks.getKeyByAlias("GetPathExclusions");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
@@ -73,7 +71,7 @@ const DeletePathExclusion = ({ data }: Props) => {
 
                     // When a path exclusion deleted, invalidate the query to refetch the data
                     queryClient.invalidateQueries(keyPathExclusions);
-                    queryClient.invalidateQueries(keyPathExclusion);
+                    queryClient.invalidateQueries(keyPathExclusionsByPurl);
                 },
                 onError: () => {
                     toast({

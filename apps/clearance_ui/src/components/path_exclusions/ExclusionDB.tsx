@@ -19,10 +19,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 import DeletePathExclusion from "../delete_item/DeletePathExclusion";
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     fractionalWidth: number;
 };
 
@@ -30,11 +31,10 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
     const [open, setOpen] = useState(false);
     const [listWidth, setListWidth] = useState(0);
     const buttonRef = useRef<HTMLButtonElement>(null);
-    const { data, isLoading, error } = userHooks.useImmutableQuery(
-        "/path-exclusions",
-        { purl: purl as string },
-        { withCredentials: true },
-        { enabled: !!purl },
+    const pathPurl = toPathPurl(purl);
+    const { data, isLoading, error } = userHooks.useGetPathExclusionsByPurl(
+        { withCredentials: true, params: { purl: pathPurl } },
+        { enabled: !!pathPurl },
     );
 
     useEffect(() => {

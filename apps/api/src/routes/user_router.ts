@@ -1024,15 +1024,15 @@ userRouter.delete("/path-exclusions/:id", async (req, res) => {
     }
 });
 
-userRouter.post("/path-exclusions", async (req, res) => {
+userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
     try {
         const { user } = req;
-
         if (!user) throw new Error("User not found");
 
-        const pathExclusions = await dbQueries.getPathExclusionsByPackagePurl(
-            req.body.purl,
-        );
+        const purl = formatPurl(req.params.purl);
+
+        const pathExclusions =
+            await dbQueries.getPathExclusionsByPackagePurl(purl);
 
         res.status(200).json({
             pathExclusions: pathExclusions,
