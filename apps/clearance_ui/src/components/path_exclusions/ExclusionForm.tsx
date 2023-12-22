@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 const exclusionFormSchema = z.object({
     pattern: z.string().min(1, "Pattern cannot be empty"),
@@ -39,7 +40,7 @@ const exclusionFormSchema = z.object({
 type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     pattern?: string;
     setOpen: (open: boolean) => void;
 };
@@ -54,11 +55,15 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
         resolver: zodResolver(exclusionFormSchema),
         defaultValues,
     });
+    const pathPurl = toPathPurl(purl);
     const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.usePostPathExclusion(
         {
             withCredentials: true,
+            params: {
+                purl: pathPurl,
+            },
         },
         {
             onSuccess: () => {
@@ -95,7 +100,6 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
 
     const onSubmit = (data: ExclusionFormType) => {
         addPathExclusion({
-            purl: purl as string,
             pattern: data.pattern,
             reason: data.reason,
             comment: data.comment,

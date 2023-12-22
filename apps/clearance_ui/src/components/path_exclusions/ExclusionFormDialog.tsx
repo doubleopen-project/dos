@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
 
 type Props = {
-    purl: string | undefined;
+    purl: string;
     pattern?: string;
     open: boolean;
     setOpen: (open: boolean) => void;

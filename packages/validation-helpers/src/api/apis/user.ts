@@ -237,10 +237,15 @@ export const userAPI = makeApi([
     },
     {
         method: "post",
-        path: "/path-exclusion",
+        path: "/packages/:purl/path-exclusions",
         description: "Add a new path exclusion",
         alias: "PostPathExclusion",
         parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
+            },
             {
                 name: "body",
                 type: "Body",
