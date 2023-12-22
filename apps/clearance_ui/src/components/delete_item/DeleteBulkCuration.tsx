@@ -29,11 +29,11 @@ const DeleteBulkCuration = ({ id }: Props) => {
         "get",
         "/packages/:purl/files/:sha256/license-conclusions/",
     );
-    const keyBulkCuration = userHooks.getKeyByPath("get", "/bulk-curations");
+    const keyBulkCuration = userHooks.getKeyByAlias("GetBulkConclusions");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
-    const { data: bulkCuration } = userHooks.useGet("/bulk-curations/:id", {
+    const { data: bulkCuration } = userHooks.useGetBulkConclusionById({
         withCredentials: true,
         params: {
             id: id,
@@ -66,8 +66,7 @@ const DeleteBulkCuration = ({ id }: Props) => {
 
     // Delete a bulk curation
     const { mutate: deleteBulkCuration, isLoading: isBulkLoading } =
-        userHooks.useDelete(
-            "/bulk-curations/:id",
+        userHooks.useDeleteBulkConclusion(
             {
                 withCredentials: true,
                 params: {
