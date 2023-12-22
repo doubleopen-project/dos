@@ -22,7 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeleteBulkCuration from "../delete_item/DeleteBulkCuration";
+import DeleteBulkCuration from "../delete_item/DeleteBulkConclusion";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 

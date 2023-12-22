@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import BulkCurationList from "@/components/bulk_conclusion_table/BulkCurationList";
+import BulkCurationList from "@/components/bulk_conclusion_table/BulkConclusionList";
 import LicenseConclusionList from "@/components/license_conclusion_table/LicenseConclusionList";
 import PathExclusionList from "@/components/path_exclusion_table/PathExclusionList";
 
