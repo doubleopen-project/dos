@@ -39,8 +39,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import CurationLicense from "@/components/license_conclusions/CurationLicense";
-import CurationSPDX from "@/components/license_conclusions/CurationSPDX";
+import CurationLicense from "@/components/license_conclusions/ConclusionLicense";
+import CurationSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
