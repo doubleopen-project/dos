@@ -131,7 +131,7 @@ export const DeleteLicenseConclusionRes = z.object({
 });
 
 //------------------ GET all bulk curations -------------------
-export const GetBulkCurationsRes = z.object({
+export const GetBulkConclusionsRes = z.object({
     bulkConclusions: z.array(
         z.object({
             id: z.number(),
@@ -165,7 +165,7 @@ export const GetBulkCurationsRes = z.object({
 });
 
 //-------------- GET bulk curation --------------
-export const GetBulkCurationRes = z.object({
+export const GetBulkConclusionRes = z.object({
     pattern: z.nullable(z.string()),
     concludedLicenseExpressionSPDX: z.string(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()),
@@ -181,7 +181,7 @@ export const GetBulkCurationRes = z.object({
 
 //-------------- POST bulk curation --------------
 
-export const PostBulkCurationReq = z.object({
+export const PostBulkConclusionReq = z.object({
     pattern: z
         .string({
             required_error: "Pattern is required",
@@ -202,7 +202,7 @@ export const PostBulkCurationReq = z.object({
     local: z.boolean().optional(),
 });
 
-export const PostBulkCurationRes = z.object({
+export const PostBulkConclusionRes = z.object({
     bulkConclusionId: z.number(),
     matchedPathsCount: z.number(),
     addedLicenseConclusionsCount: z.number(),
@@ -212,7 +212,7 @@ export const PostBulkCurationRes = z.object({
 });
 
 //--------------- PUT bulk curation ---------------
-export const PutBulkCurationReq = z
+export const PutBulkConclusionReq = z
     .object({
         pattern: z.string(),
         concludedLicenseExpressionSPDX: z.string(),
@@ -222,23 +222,23 @@ export const PutBulkCurationReq = z
     })
     .partial();
 
-export const PutBulkCurationRes = z.object({
+export const PutBulkConclusionRes = z.object({
     message: z.string(),
 });
 
 //------------- DELETE bulk curation -------------
 
-export const DeleteBulkCurationRes = z.object({
+export const DeleteBulkConclusionRes = z.object({
     message: z.string(),
 });
 
 //-------------- POST bulk curations --------------
 
-export const PostBulkCurationsReq = z.object({
+export const PostBulkConclusionsReq = z.object({
     purl: purlSchema(true),
 });
 
-export const PostBulkCurationsRes = z.object({
+export const PostBulkConclusionsRes = z.object({
     bulkConclusions: z.array(
         z.object({
             id: z.number(),
