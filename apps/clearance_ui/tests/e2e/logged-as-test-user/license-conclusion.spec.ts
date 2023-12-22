@@ -38,7 +38,7 @@ test("create license conclusion, delete from Main UI", async ({ page }) => {
     console.log("license conclusion created");
 
     // Delete the same conclusion
-    await page.getByTestId("curation-db-button").click();
+    await page.getByTestId("conclusion-db-button").click();
     await expect(page.getByTestId("concluded-license").first()).toContainText(
         "MIT",
     );

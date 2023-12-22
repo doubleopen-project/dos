@@ -31,13 +31,13 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import CurationDB from "@/components/license_conclusions/ConclusionDB";
-import CurationLicense from "@/components/license_conclusions/ConclusionLicense";
-import CurationSPDX from "@/components/license_conclusions/ConclusionSPDX";
+import ConclusionDB from "@/components/license_conclusions/ConclusionDB";
+import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
+import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
-const curationFormSchema = z.object({
+const conclusionFormSchema = z.object({
     concludedLicenseSPDX: z
         .string()
         .refine(
@@ -58,7 +58,7 @@ const curationFormSchema = z.object({
     local: z.boolean(),
 });
 
-type CurationFormType = z.infer<typeof curationFormSchema>;
+type ConclusionFormType = z.infer<typeof conclusionFormSchema>;
 
 type FileDataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
 
@@ -75,16 +75,16 @@ type Props = {
     className?: string;
 };
 
-const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
-    const defaultValues: CurationFormType = {
+const ConclusionForm = ({ purl, lcData, fileData, className }: Props) => {
+    const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseDB: "",
         concludedLicenseList: "",
         comment: "",
         local: false,
     };
-    const form = useForm<CurationFormType>({
-        resolver: zodResolver(curationFormSchema),
+    const form = useForm<ConclusionFormType>({
+        resolver: zodResolver(conclusionFormSchema),
         defaultValues,
     });
     const keyLCs = userHooks.getKeyByPath(
@@ -132,7 +132,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
     );
     const { toast } = useToast();
 
-    function onSubmit(data: CurationFormType) {
+    function onSubmit(data: ConclusionFormType) {
         // Create an array of fields with values
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
@@ -195,7 +195,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <CurationDB
+                                    <ConclusionDB
                                         data={lcData}
                                         concludedLicenseExpressionSPDX={
                                             field.value
@@ -216,7 +216,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <CurationLicense
+                                    <ConclusionLicense
                                         concludedLicenseExpressionSPDX={
                                             field.value
                                         }
@@ -236,7 +236,7 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <CurationSPDX
+                                    <ConclusionSPDX
                                         value={field.value}
                                         setValue={field.onChange}
                                     />
@@ -327,4 +327,4 @@ const CurationForm = ({ purl, lcData, fileData, className }: Props) => {
     );
 };
 
-export default CurationForm;
+export default ConclusionForm;

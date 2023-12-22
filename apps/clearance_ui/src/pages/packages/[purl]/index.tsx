@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
 
-const CurationUI = dynamic(() => import("@/components/CurationUI"), {
+const MainUI = dynamic(() => import("@/components/MainUI"), {
     ssr: false,
 });
 
@@ -46,7 +46,7 @@ export default function Package() {
     return (
         <div className="h-screen">
             {user && purl && (
-                <CurationUI
+                <MainUI
                     purl={purl.toString().replace(/\/@/g, "/%40")}
                     path={undefined}
                 />
