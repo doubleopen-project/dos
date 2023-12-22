@@ -988,7 +988,7 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     }
 });
 
-userRouter.delete("/path-exclusion/:id", async (req, res) => {
+userRouter.delete("/path-exclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");
         const pathExclusionId = req.params.id;

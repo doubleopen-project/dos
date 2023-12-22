@@ -56,34 +56,34 @@ const DeletePathExclusion = ({ data }: Props) => {
     }
 
     // Delete a path exclusion or license conclusion
-    const { mutate: deletePathExclusion, isLoading } = userHooks.useDelete(
-        "/path-exclusion/:id",
-        {
-            withCredentials: true,
-            params: {
-                id: data.id,
+    const { mutate: deletePathExclusion, isLoading } =
+        userHooks.useDeletePathExclusion(
+            {
+                withCredentials: true,
+                params: {
+                    id: data.id,
+                },
             },
-        },
-        {
-            onSuccess: () => {
-                toast({
-                    title: "Delete successful",
-                    description: "Path exclusion deleted successfully.",
-                });
+            {
+                onSuccess: () => {
+                    toast({
+                        title: "Delete successful",
+                        description: "Path exclusion deleted successfully.",
+                    });
 
-                // When a path exclusion deleted, invalidate the query to refetch the data
-                queryClient.invalidateQueries(keyPathExclusions);
-                queryClient.invalidateQueries(keyPathExclusion);
+                    // When a path exclusion deleted, invalidate the query to refetch the data
+                    queryClient.invalidateQueries(keyPathExclusions);
+                    queryClient.invalidateQueries(keyPathExclusion);
+                },
+                onError: () => {
+                    toast({
+                        variant: "destructive",
+                        title: "Delete failed",
+                        description: "Something went wrong. Please try again.",
+                    });
+                },
             },
-            onError: () => {
-                toast({
-                    variant: "destructive",
-                    title: "Delete failed",
-                    description: "Something went wrong. Please try again.",
-                });
-            },
-        },
-    );
+        );
 
     if (isLoading) {
         return (

@@ -257,8 +257,9 @@ export const userAPI = makeApi([
     },
     {
         method: "delete",
-        path: "/path-exclusion/:id",
+        path: "/path-exclusions/:id",
         description: "Delete a path exclusion",
+        alias: "DeletePathExclusion",
         parameters: [
             {
                 name: "id",

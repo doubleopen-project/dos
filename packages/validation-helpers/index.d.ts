@@ -6913,8 +6913,9 @@ declare const userAPI: [
     },
     {
         method: "delete";
-        path: "/path-exclusion/:id";
+        path: "/path-exclusions/:id";
         description: "Delete a path exclusion";
+        alias: "DeletePathExclusion";
         parameters: [
             {
                 name: "id";
@@ -12532,8 +12533,9 @@ declare const dosAPI: [
     },
     {
         method: "delete";
-        path: "/user/path-exclusion/:id";
+        path: "/user/path-exclusions/:id";
         description: "Delete a path exclusion";
+        alias: "DeletePathExclusion";
         parameters: [
             {
                 name: "id";
