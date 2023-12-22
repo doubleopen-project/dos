@@ -18,7 +18,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import BulkCurationFormDialog from "@/components/license_conclusions/BulkCurationFormDialog";
+import BulkCurationFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { cn } from "@/lib/utils";
 import type { SelectedNode } from "@/types/index";

@@ -5,7 +5,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import BulkCurationForm from "@/components/license_conclusions/BulkCurationForm";
+import BulkCurationForm from "@/components/license_conclusions/BulkConclusionForm";
 
 type Props = {
     purl: string;
