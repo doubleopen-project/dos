@@ -116,7 +116,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     );
 
     const queryClient = useQueryClient();
-    const { mutate: addBulkCuration } = userHooks.usePostBulkCuration(
+    const { mutate: addBulkCuration } = userHooks.usePostBulkConclusion(
         {
             withCredentials: true,
             params: {

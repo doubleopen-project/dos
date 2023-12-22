@@ -5407,9 +5407,9 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/packages/:purl/bulk-curations";
-        description: "Get bulk curations for specified purl";
-        alias: "GetBulkCurationsByPurl";
+        path: "/packages/:purl/bulk-conclusions";
+        description: "Get bulk conclusions for specified purl";
+        alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
                 name: "purl";
@@ -5696,9 +5696,9 @@ declare const userAPI: [
     },
     {
         method: "post";
-        path: "/packages/:purl/bulk-curations";
-        description: "Add a new bulk curation";
-        alias: "PostBulkCuration";
+        path: "/packages/:purl/bulk-conclusions";
+        description: "Add a new bulk conclusion";
+        alias: "PostBulkConclusion";
         parameters: [
             {
                 name: "purl";
@@ -5864,9 +5864,9 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/bulk-curations";
-        description: "Get all bulk curations";
-        alias: "GetBulkCurations";
+        path: "/bulk-conclusions";
+        description: "Get all bulk conclusions";
+        alias: "GetBulkConclusions";
         response: zod.ZodObject<
             {
                 bulkConclusions: zod.ZodArray<
@@ -6172,9 +6172,9 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/bulk-curations/:id";
-        description: "Get bulk curation by id";
-        alias: "GetBulkCurationById";
+        path: "/bulk-conclusions/:id";
+        description: "Get bulk conclusion by id";
+        alias: "GetBulkConclusionById";
         parameters: [
             {
                 name: "id";
@@ -6325,9 +6325,9 @@ declare const userAPI: [
     },
     {
         method: "put";
-        path: "/bulk-curations/:id";
-        description: "Edit bulk curation";
-        alias: "PutBulkCuration";
+        path: "/bulk-conclusions/:id";
+        description: "Edit bulk conclusion";
+        alias: "PutBulkConclusion";
         parameters: [
             {
                 name: "id";
@@ -6470,9 +6470,9 @@ declare const userAPI: [
     },
     {
         method: "delete";
-        path: "/bulk-curations/:id";
-        description: "Delete a bulk curation";
-        alias: "DeleteBulkCuration";
+        path: "/bulk-conclusions/:id";
+        description: "Delete a bulk conclusion";
+        alias: "DeleteBulkConclusion";
         parameters: [
             {
                 name: "id";
@@ -11023,9 +11023,9 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/packages/:purl/bulk-curations";
-        description: "Get bulk curations for specified purl";
-        alias: "GetBulkCurationsByPurl";
+        path: "/user/packages/:purl/bulk-conclusions";
+        description: "Get bulk conclusions for specified purl";
+        alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
                 name: "purl";
@@ -11312,9 +11312,9 @@ declare const dosAPI: [
     },
     {
         method: "post";
-        path: "/user/packages/:purl/bulk-curations";
-        description: "Add a new bulk curation";
-        alias: "PostBulkCuration";
+        path: "/user/packages/:purl/bulk-conclusions";
+        description: "Add a new bulk conclusion";
+        alias: "PostBulkConclusion";
         parameters: [
             {
                 name: "purl";
@@ -11480,9 +11480,9 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/bulk-curations";
-        description: "Get all bulk curations";
-        alias: "GetBulkCurations";
+        path: "/user/bulk-conclusions";
+        description: "Get all bulk conclusions";
+        alias: "GetBulkConclusions";
         response: zod.ZodObject<
             {
                 bulkConclusions: zod.ZodArray<
@@ -11788,9 +11788,9 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/bulk-curations/:id";
-        description: "Get bulk curation by id";
-        alias: "GetBulkCurationById";
+        path: "/user/bulk-conclusions/:id";
+        description: "Get bulk conclusion by id";
+        alias: "GetBulkConclusionById";
         parameters: [
             {
                 name: "id";
@@ -11941,9 +11941,9 @@ declare const dosAPI: [
     },
     {
         method: "put";
-        path: "/user/bulk-curations/:id";
-        description: "Edit bulk curation";
-        alias: "PutBulkCuration";
+        path: "/user/bulk-conclusions/:id";
+        description: "Edit bulk conclusion";
+        alias: "PutBulkConclusion";
         parameters: [
             {
                 name: "id";
@@ -12086,9 +12086,9 @@ declare const dosAPI: [
     },
     {
         method: "delete";
-        path: "/user/bulk-curations/:id";
-        description: "Delete a bulk curation";
-        alias: "DeleteBulkCuration";
+        path: "/user/bulk-conclusions/:id";
+        description: "Delete a bulk conclusion";
+        alias: "DeleteBulkConclusion";
         parameters: [
             {
                 name: "id";

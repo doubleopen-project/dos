@@ -130,7 +130,7 @@ export const DeleteLicenseConclusionRes = z.object({
     message: z.string(),
 });
 
-//------------------ GET all bulk curations -------------------
+//------------------ GET all bulk conclusions -------------------
 export const GetBulkConclusionsRes = z.object({
     bulkConclusions: z.array(
         z.object({
@@ -164,7 +164,7 @@ export const GetBulkConclusionsRes = z.object({
     ),
 });
 
-//-------------- GET bulk curation --------------
+//-------------- GET bulk conclusion --------------
 export const GetBulkConclusionRes = z.object({
     pattern: z.nullable(z.string()),
     concludedLicenseExpressionSPDX: z.string(),
@@ -179,7 +179,7 @@ export const GetBulkConclusionRes = z.object({
     ),
 });
 
-//-------------- POST bulk curation --------------
+//-------------- POST bulk conclusion --------------
 
 export const PostBulkConclusionReq = z.object({
     pattern: z
@@ -211,7 +211,7 @@ export const PostBulkConclusionRes = z.object({
     message: z.string(),
 });
 
-//--------------- PUT bulk curation ---------------
+//--------------- PUT bulk conclusion ---------------
 export const PutBulkConclusionReq = z
     .object({
         pattern: z.string(),
@@ -226,19 +226,15 @@ export const PutBulkConclusionRes = z.object({
     message: z.string(),
 });
 
-//------------- DELETE bulk curation -------------
+//------------- DELETE bulk conclusion -------------
 
 export const DeleteBulkConclusionRes = z.object({
     message: z.string(),
 });
 
-//-------------- POST bulk curations --------------
+//-------------- GET bulk conclusions by purl --------------
 
-export const PostBulkConclusionsReq = z.object({
-    purl: purlSchema(true),
-});
-
-export const PostBulkConclusionsRes = z.object({
+export const GetBulkConclusionsByPurlRes = z.object({
     bulkConclusions: z.array(
         z.object({
             id: z.number(),

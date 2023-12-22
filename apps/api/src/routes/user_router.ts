@@ -291,9 +291,9 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
                 comment: req.body.comment,
                 local: req.body.local,
                 /*
-                 * The following will detach the license conclusion from a bulk curation if it is connected to one
-                 * (since this endpoint is used to update one license conclusion only, and the bulk curation
-                 * is updated through the PUT /bulk-curation/:id endpoint)
+                 * The following will detach the license conclusion from a bulk conclusion if it is connected to one
+                 * (since this endpoint is used to update one license conclusion only, and the bulk conclusion
+                 * is updated through the PUT /bulk-conclusion/:id endpoint)
                  */
                 bulkConclusionId: licenseConclusion.bulkConclusionId
                     ? null
@@ -363,7 +363,7 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
     }
 });
 
-userRouter.get("/bulk-curations", async (req, res) => {
+userRouter.get("/bulk-conclusions", async (req, res) => {
     try {
         const bulkConclusionsWithRelations =
             await dbQueries.findBulkConclusionsWithRelations();
@@ -429,7 +429,7 @@ userRouter.get("/bulk-curations", async (req, res) => {
     }
 });
 
-userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
+userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
     try {
         const { user } = req;
 
@@ -495,7 +495,7 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
             );
             if (!deletedBulkConclusion)
                 console.log(
-                    "Unable to delete bulk curation id: " + bulkConclusion.id,
+                    "Unable to delete bulk conclusion id: " + bulkConclusion.id,
                 );
             throw new CustomError(
                 "No matching files for the provided pattern were found in the package",
@@ -514,7 +514,7 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
             );
             if (!deletedBulkConclusion)
                 console.log(
-                    "Unable to delete bulk curation id: " + bulkConclusion.id,
+                    "Unable to delete bulk conclusion id: " + bulkConclusion.id,
                 );
             throw new CustomError(
                 "Internal server error: Error creating license conclusions",
@@ -536,7 +536,7 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
                 affectedRecords.affectedPackageFileTreesCount,
             affectedFilesAcrossAllPackagesCount:
                 affectedRecords.affectedTotalFileTreesCount,
-            message: "Bulk curation created and license conclusions added",
+            message: "Bulk conclusion created and license conclusions added",
         });
     } catch (error) {
         console.log("Error: ", error);
@@ -553,7 +553,7 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
     }
 });
 
-userRouter.get("/bulk-curations/:id", async (req, res) => {
+userRouter.get("/bulk-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -564,7 +564,7 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
 
         if (!bulkConclusion)
             throw new CustomError(
-                "Bulk curation with the requested id does not exist",
+                "Bulk conclusion with the requested id does not exist",
                 404,
             );
 
@@ -575,7 +575,7 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
             );
 
         if (!bulkConclusionWithRelations)
-            throw new CustomError("Bulk curation not found", 404);
+            throw new CustomError("Bulk conclusion not found", 404);
 
         const filepaths = [];
         const licenseConclusions = [];
@@ -609,7 +609,7 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Bulk curation with the requested id does not exist",
+                message: "Bulk conclusion with the requested id does not exist",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -618,7 +618,7 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
     }
 });
 
-userRouter.put("/bulk-curations/:id", async (req, res) => {
+userRouter.put("/bulk-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -648,7 +648,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             await dbQueries.findBulkConclusionById(bulkConclusionId);
 
         if (!origBulkCur)
-            throw new CustomError("Bulk curation to update not found", 404);
+            throw new CustomError("Bulk conclusion to update not found", 404);
 
         if (req.user.role !== "ADMIN") {
             if (req.user.id !== origBulkCur.userId) {
@@ -675,7 +675,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             );
 
         if (!bulkConclusionWithRelations)
-            throw new CustomError("Bulk curation to update not found", 404);
+            throw new CustomError("Bulk conclusion to update not found", 404);
 
         if (reqPattern && reqPattern !== bulkConclusionWithRelations.pattern) {
             const newInputs = [];
@@ -753,7 +753,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             local: reqLocal,
         });
 
-        res.status(200).json({ message: "Bulk curation updated" });
+        res.status(200).json({ message: "Bulk conclusion updated" });
     } catch (error) {
         console.log("Error: ", error);
         if (error instanceof CustomError)
@@ -765,7 +765,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Bulk curation to update not found",
+                message: "Bulk conclusion to update not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -774,7 +774,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
     }
 });
 
-userRouter.delete("/bulk-curations/:id", async (req, res) => {
+userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
@@ -785,7 +785,10 @@ userRouter.delete("/bulk-curations/:id", async (req, res) => {
                 await dbQueries.findBulkConclusionUserId(bulkConclusionId);
 
             if (!bulkConclusionUserId) {
-                throw new CustomError("Bulk curation to delete not found", 404);
+                throw new CustomError(
+                    "Bulk conclusion to delete not found",
+                    404,
+                );
             }
 
             if (req.user.id !== bulkConclusionUserId) {
@@ -801,9 +804,9 @@ userRouter.delete("/bulk-curations/:id", async (req, res) => {
             await dbQueries.deleteBulkConclusion(bulkConclusionId);
 
         if (!deletedBulkConclusion)
-            throw new CustomError("Bulk curation to delete not found", 404);
+            throw new CustomError("Bulk conclusion to delete not found", 404);
 
-        res.status(200).json({ message: "Bulk curation deleted" });
+        res.status(200).json({ message: "Bulk conclusion deleted" });
     } catch (error) {
         console.log("Error: ", error);
         if (error instanceof CustomError)
@@ -815,7 +818,7 @@ userRouter.delete("/bulk-curations/:id", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message: "Bulk curation to delete not found",
+                message: "Bulk conclusion to delete not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -824,7 +827,7 @@ userRouter.delete("/bulk-curations/:id", async (req, res) => {
     }
 });
 
-userRouter.get("/packages/:purl/bulk-curations", async (req, res) => {
+userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
     try {
         const { user } = req;
         if (!user) throw new CustomError("Unauthorized", 401);
