@@ -8,6 +8,7 @@
         "apps/*"
     ],
     "scripts": {
+        "blt": "npm run build && npm run lint && npm run test",
         "build": "turbo run build",
         "build:no-cache": "turbo run build --no-cache --force",
         "build:api": "turbo run build --filter=api --no-daemon",
