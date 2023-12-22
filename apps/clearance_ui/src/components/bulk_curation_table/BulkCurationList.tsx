@@ -33,7 +33,7 @@ const BulkCurationList = ({ user }: BulkCurationListProps) => {
     return (
         <div className="container mx-auto">
             {user && (
-                <DataTable columns={tableColumns} data={data.bulkCurations} />
+                <DataTable columns={tableColumns} data={data.bulkConclusions} />
             )}
         </div>
     );

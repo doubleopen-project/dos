@@ -39,7 +39,7 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
                 <DataTable
                     columns={tableColumns}
                     data={data.licenseConclusions.filter(
-                        (lc) => lc.bulkCurationId === null,
+                        (lc) => lc.bulkConclusionId === null,
                     )}
                 />
             )}

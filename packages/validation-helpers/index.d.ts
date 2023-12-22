@@ -4516,7 +4516,7 @@ declare const userAPI: [
                                     username: string;
                                 }
                             >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                            bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
                             sha256: zod.ZodString;
                             contextPurl: zod.ZodString;
                             affectedPaths: zod.ZodObject<
@@ -4592,7 +4592,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
@@ -4615,7 +4615,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
@@ -4645,7 +4645,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
@@ -4670,7 +4670,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
@@ -4817,7 +4817,7 @@ declare const userAPI: [
                                     username: string;
                                 }
                             >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                            bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -4831,7 +4831,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                         },
                         {
@@ -4844,7 +4844,7 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                         }
                     >,
@@ -4864,7 +4864,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                 }[];
             },
@@ -4879,7 +4879,7 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                 }[];
             }
@@ -5419,7 +5419,7 @@ declare const userAPI: [
         ];
         response: zod.ZodObject<
             {
-                bulkCurations: zod.ZodArray<
+                bulkConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
                             id: zod.ZodNumber;
@@ -5557,7 +5557,7 @@ declare const userAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -5580,7 +5580,7 @@ declare const userAPI: [
                 }[];
             },
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -5745,7 +5745,7 @@ declare const userAPI: [
         ];
         response: zod.ZodObject<
             {
-                bulkCurationId: zod.ZodNumber;
+                bulkConclusionId: zod.ZodNumber;
                 matchedPathsCount: zod.ZodNumber;
                 addedLicenseConclusionsCount: zod.ZodNumber;
                 affectedFilesInPackageCount: zod.ZodNumber;
@@ -5756,7 +5756,7 @@ declare const userAPI: [
             zod.ZodTypeAny,
             {
                 message: string;
-                bulkCurationId: number;
+                bulkConclusionId: number;
                 matchedPathsCount: number;
                 addedLicenseConclusionsCount: number;
                 affectedFilesInPackageCount: number;
@@ -5764,7 +5764,7 @@ declare const userAPI: [
             },
             {
                 message: string;
-                bulkCurationId: number;
+                bulkConclusionId: number;
                 matchedPathsCount: number;
                 addedLicenseConclusionsCount: number;
                 affectedFilesInPackageCount: number;
@@ -5869,7 +5869,7 @@ declare const userAPI: [
         alias: "GetBulkCurations";
         response: zod.ZodObject<
             {
-                bulkCurations: zod.ZodArray<
+                bulkConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
                             id: zod.ZodNumber;
@@ -6027,7 +6027,7 @@ declare const userAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -6053,7 +6053,7 @@ declare const userAPI: [
                 }[];
             },
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -10132,7 +10132,7 @@ declare const dosAPI: [
                                     username: string;
                                 }
                             >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                            bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
                             sha256: zod.ZodString;
                             contextPurl: zod.ZodString;
                             affectedPaths: zod.ZodObject<
@@ -10208,7 +10208,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
@@ -10231,7 +10231,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
@@ -10261,7 +10261,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
@@ -10286,7 +10286,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
@@ -10433,7 +10433,7 @@ declare const dosAPI: [
                                     username: string;
                                 }
                             >;
-                            bulkCurationId: zod.ZodNullable<zod.ZodNumber>;
+                            bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -10447,7 +10447,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                         },
                         {
@@ -10460,7 +10460,7 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            bulkCurationId: number | null;
+                            bulkConclusionId: number | null;
                             contextPurl: string;
                         }
                     >,
@@ -10480,7 +10480,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                 }[];
             },
@@ -10495,7 +10495,7 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    bulkCurationId: number | null;
+                    bulkConclusionId: number | null;
                     contextPurl: string;
                 }[];
             }
@@ -11035,7 +11035,7 @@ declare const dosAPI: [
         ];
         response: zod.ZodObject<
             {
-                bulkCurations: zod.ZodArray<
+                bulkConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
                             id: zod.ZodNumber;
@@ -11173,7 +11173,7 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -11196,7 +11196,7 @@ declare const dosAPI: [
                 }[];
             },
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -11361,7 +11361,7 @@ declare const dosAPI: [
         ];
         response: zod.ZodObject<
             {
-                bulkCurationId: zod.ZodNumber;
+                bulkConclusionId: zod.ZodNumber;
                 matchedPathsCount: zod.ZodNumber;
                 addedLicenseConclusionsCount: zod.ZodNumber;
                 affectedFilesInPackageCount: zod.ZodNumber;
@@ -11372,7 +11372,7 @@ declare const dosAPI: [
             zod.ZodTypeAny,
             {
                 message: string;
-                bulkCurationId: number;
+                bulkConclusionId: number;
                 matchedPathsCount: number;
                 addedLicenseConclusionsCount: number;
                 affectedFilesInPackageCount: number;
@@ -11380,7 +11380,7 @@ declare const dosAPI: [
             },
             {
                 message: string;
-                bulkCurationId: number;
+                bulkConclusionId: number;
                 matchedPathsCount: number;
                 addedLicenseConclusionsCount: number;
                 affectedFilesInPackageCount: number;
@@ -11485,7 +11485,7 @@ declare const dosAPI: [
         alias: "GetBulkCurations";
         response: zod.ZodObject<
             {
-                bulkCurations: zod.ZodArray<
+                bulkConclusions: zod.ZodArray<
                     zod.ZodObject<
                         {
                             id: zod.ZodNumber;
@@ -11643,7 +11643,7 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;
@@ -11669,7 +11669,7 @@ declare const dosAPI: [
                 }[];
             },
             {
-                bulkCurations: {
+                bulkConclusions: {
                     id: number;
                     licenseConclusions: {
                         id: number;

@@ -51,10 +51,10 @@ model Package {
   subpath    String?
   scanStatus String
 
-  fileTrees      FileTree[]
-  scannerJobs    ScannerJob[]
-  pathExclusions PathExclusion[]
-  BulkCuration   BulkCuration[]
+  fileTrees       FileTree[]
+  scannerJobs     ScannerJob[]
+  pathExclusions  PathExclusion[]
+  BulkConclusions BulkConclusion[]
 }
 
 /// File in the context of a package.
@@ -108,8 +108,8 @@ model LicenseFindingMatch {
   @@index([licenseFindingId])
 }
 
-/// A bulk curation that is used for handling multiple license conclusions in the same package at once.
-model BulkCuration {
+/// A bulk conclusion that is used for handling multiple license conclusions in the same package at once.
+model BulkConclusion {
   id                             Int      @id @default(autoincrement())
   createdAt                      DateTime @default(now())
   updatedAt                      DateTime @updatedAt
@@ -148,12 +148,12 @@ model LicenseConclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  bulkCurationId Int?
-  bulkCuration   BulkCuration? @relation(fields: [bulkCurationId], references: [id], onDelete: Cascade)
+  bulkConclusionId Int?
+  bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
 
   @@index([fileSha256])
   @@index([userId])
-  @@index([bulkCurationId])
+  @@index([bulkConclusionId])
 }
 
 /// A copyright finding in a file.
@@ -288,8 +288,8 @@ model User {
   subscription   Subscription? @default(SILVER)
 
   licenseConclusions LicenseConclusion[]
-  PathExclusion      PathExclusion[]
-  BulkCuration       BulkCuration[]
+  PathExclusions     PathExclusion[]
+  BulkConclusions    BulkConclusion[]
 }
 
 enum Role {
