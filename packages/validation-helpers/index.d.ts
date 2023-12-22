@@ -6769,16 +6769,20 @@ declare const userAPI: [
     },
     {
         method: "post";
-        path: "/path-exclusion";
+        path: "/packages/:purl/path-exclusions";
         description: "Add a new path exclusion";
         alias: "PostPathExclusion";
         parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
             {
                 name: "body";
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        purl: zod.ZodString;
                         pattern: zod.ZodString;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
@@ -6788,13 +6792,11 @@ declare const userAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
                         pattern: string;
                         reason: string;
                         comment?: string | null | undefined;
                     },
                     {
-                        purl: string;
                         pattern: string;
                         reason: string;
                         comment?: string | null | undefined;
@@ -12386,16 +12388,20 @@ declare const dosAPI: [
     },
     {
         method: "post";
-        path: "/user/path-exclusion";
+        path: "/user/packages/:purl/path-exclusions";
         description: "Add a new path exclusion";
         alias: "PostPathExclusion";
         parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
             {
                 name: "body";
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        purl: zod.ZodString;
                         pattern: zod.ZodString;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
@@ -12405,13 +12411,11 @@ declare const dosAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        purl: string;
                         pattern: string;
                         reason: string;
                         comment?: string | null | undefined;
                     },
                     {
-                        purl: string;
                         pattern: string;
                         reason: string;
                         comment?: string | null | undefined;

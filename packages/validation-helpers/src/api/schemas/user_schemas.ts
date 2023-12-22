@@ -296,12 +296,6 @@ export const validReasons = [
 ];
 
 export const PostPathExclusionReq = z.object({
-    purl: z
-        .string({
-            required_error: "Purl is required",
-        })
-        .trim()
-        .min(1, "Purl cannot be empty"),
     pattern: z
         .string({
             required_error: "Pattern is required",

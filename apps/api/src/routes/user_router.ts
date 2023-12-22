@@ -915,22 +915,20 @@ userRouter.get("/path-exclusions", async (req, res) => {
     }
 });
 
-userRouter.post("/path-exclusion", async (req, res) => {
+userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     try {
         const { user } = req;
-
         if (!user) throw new Error("User not found");
 
-        const packageId = await dbQueries.findPackageIdByPurl(req.body.purl);
+        const purl = formatPurl(req.params.purl);
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
 
         if (!packageId) throw new Error("Package not found");
 
         let match = false;
 
         if (isGlob(req.body.pattern)) {
-            const filePaths = await dbQueries.findFilePathsByPackagePurl(
-                req.body.purl,
-            );
+            const filePaths = await dbQueries.findFilePathsByPackagePurl(purl);
             // Check that a path that matches the glob pattern exists for the package
             while (!match && filePaths.length > 0) {
                 const filePath = filePaths.pop();
@@ -945,7 +943,7 @@ userRouter.post("/path-exclusion", async (req, res) => {
         } else {
             // Check that a matching path exists for the package
             match = await dbQueries.findMatchingPath({
-                purl: req.body.purl,
+                purl: purl,
                 path: req.body.pattern.trim(),
             });
         }
