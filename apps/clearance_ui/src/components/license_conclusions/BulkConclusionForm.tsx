@@ -45,7 +45,7 @@ import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
-const bulkCurationFormSchema = z.object({
+const bulkConclusionFormSchema = z.object({
     pattern: z
         .string()
         .min(1, "Pattern cannot be empty")
@@ -75,7 +75,7 @@ const bulkCurationFormSchema = z.object({
     local: z.boolean(),
 });
 
-type BulkCurationFormType = z.infer<typeof bulkCurationFormSchema>;
+type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
 
 type Props = {
     purl: string;
@@ -83,7 +83,7 @@ type Props = {
     setOpen: (open: boolean) => void;
 };
 
-const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
+const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
@@ -95,15 +95,15 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     });
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
-    const defaultValues: BulkCurationFormType = {
+    const defaultValues: BulkConclusionFormType = {
         pattern: "",
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
         comment: "",
         local: false,
     };
-    const form = useForm<BulkCurationFormType>({
-        resolver: zodResolver(bulkCurationFormSchema),
+    const form = useForm<BulkConclusionFormType>({
+        resolver: zodResolver(bulkConclusionFormSchema),
         defaultValues,
     });
 
@@ -116,7 +116,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     );
 
     const queryClient = useQueryClient();
-    const { mutate: addBulkCuration } = userHooks.usePostBulkConclusion(
+    const { mutate: addBulkConclusion } = userHooks.usePostBulkConclusion(
         {
             withCredentials: true,
             params: {
@@ -177,7 +177,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
         }
     };
 
-    function onSubmit(data: BulkCurationFormType) {
+    function onSubmit(data: BulkConclusionFormType) {
         // Create an array of fields with values
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
@@ -196,7 +196,7 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
                     )} to these files?`,
                 )
             ) {
-                addBulkCuration({
+                addBulkConclusion({
                     pattern: data.pattern,
                     concludedLicenseExpressionSPDX:
                         concludedLicenseExpressionSPDX,
@@ -403,4 +403,4 @@ const BulkCurationForm = ({ purl, className, setOpen }: Props) => {
     );
 };
 
-export default BulkCurationForm;
+export default BulkConclusionForm;

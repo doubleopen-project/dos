@@ -5,7 +5,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import BulkCurationForm from "@/components/license_conclusions/BulkConclusionForm";
+import BulkConclusionForm from "@/components/license_conclusions/BulkConclusionForm";
 
 type Props = {
     purl: string;
@@ -13,11 +13,11 @@ type Props = {
     setOpen: (open: boolean) => void;
 };
 
-const BulkCurationFormDialog = ({ purl, open, setOpen }: Props) => {
+const BulkConclusionFormDialog = ({ purl, open, setOpen }: Props) => {
     return (
         <Dialog open={open}>
             <DialogContent>
-                <BulkCurationForm purl={purl} setOpen={setOpen} />
+                <BulkConclusionForm purl={purl} setOpen={setOpen} />
                 <DialogFooter className="flex justify-end">
                     <Button
                         variant="outline"
@@ -32,4 +32,4 @@ const BulkCurationFormDialog = ({ purl, open, setOpen }: Props) => {
     );
 };
 
-export default BulkCurationFormDialog;
+export default BulkConclusionFormDialog;

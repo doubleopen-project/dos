@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import BulkCurationList from "@/components/bulk_conclusion_table/BulkConclusionList";
+import BulkConclusionList from "@/components/bulk_conclusion_table/BulkConclusionList";
 import LicenseConclusionList from "@/components/license_conclusion_table/LicenseConclusionList";
 import PathExclusionList from "@/components/path_exclusion_table/PathExclusionList";
 
@@ -74,7 +74,7 @@ export default function ClearanceLibrary() {
                                 {user && <LicenseConclusionList user={user} />}
                             </TabsContent>
                             <TabsContent value="bulk_curations">
-                                {user && <BulkCurationList user={user} />}
+                                {user && <BulkConclusionList user={user} />}
                             </TabsContent>
                             <TabsContent value="path_exclusions">
                                 {user && <PathExclusionList user={user} />}
