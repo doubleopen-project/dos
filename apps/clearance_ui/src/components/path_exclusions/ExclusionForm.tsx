@@ -56,7 +56,9 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
         defaultValues,
     });
     const pathPurl = toPathPurl(purl);
-    const keyPathExclusion = userHooks.getKeyByPath("post", "/path-exclusions");
+    const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
+        "GetPathExclusionsByPurl",
+    );
     const queryClient = useQueryClient();
     const { mutate: addPathExclusion } = userHooks.usePostPathExclusion(
         {
@@ -73,7 +75,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                     description: "Path exclusion added successfully.",
                 });
                 // When a path exclusions is added, invalidate the query to refetch the data
-                queryClient.invalidateQueries(keyPathExclusion);
+                queryClient.invalidateQueries(keyPathExclusionsByPurl);
             },
             onError: (error) => {
                 if (axios.isAxiosError(error)) {

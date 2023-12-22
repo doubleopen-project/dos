@@ -68,11 +68,14 @@ const PackageTree = ({ purl }: Props) => {
     );
 
     // Fetch the path exclusions for the package
-    const { data: pathExclusions } = userHooks.useImmutableQuery(
-        "/path-exclusions",
-        { purl: purl },
-        { withCredentials: true },
-        { enabled: !!purl },
+    const { data: pathExclusions } = userHooks.useGetPathExclusionsByPurl(
+        {
+            withCredentials: true,
+            params: {
+                purl: pathPurl,
+            },
+        },
+        { enabled: !!pathPurl },
     );
 
     let tree: TreeApi<TreeNode> | null | undefined;
