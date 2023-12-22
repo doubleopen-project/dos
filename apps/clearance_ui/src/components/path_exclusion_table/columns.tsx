@@ -4,7 +4,7 @@
 
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias, ZodiosResponseByPath } from "@zodios/core";
 import {
     ChevronDownIcon,
     ChevronsUpDownIcon,
@@ -28,10 +28,9 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
-export type LicenseConclusion = ZodiosResponseByPath<
+export type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
-    "get",
-    "/path-exclusion"
+    "GetPathExclusions"
 >["pathExclusions"][0];
 
 export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {

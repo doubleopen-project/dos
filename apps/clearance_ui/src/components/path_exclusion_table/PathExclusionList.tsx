@@ -14,7 +14,7 @@ type PathExclusionListProps = {
 };
 
 const PathExclusionList = ({ user }: PathExclusionListProps) => {
-    const { data, isLoading, error } = userHooks.useGet("/path-exclusion", {
+    const { data, isLoading, error } = userHooks.useGetPathExclusions({
         withCredentials: true,
     });
     if (isLoading) {

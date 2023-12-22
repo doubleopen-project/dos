@@ -6586,8 +6586,9 @@ declare const userAPI: [
     },
     {
         method: "get";
-        path: "/path-exclusion";
+        path: "/path-exclusions";
         description: "Get all path exclusions";
+        alias: "GetPathExclusions";
         response: zod.ZodObject<
             {
                 pathExclusions: zod.ZodArray<
@@ -12202,8 +12203,9 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/user/path-exclusion";
+        path: "/user/path-exclusions";
         description: "Get all path exclusions";
+        alias: "GetPathExclusions";
         response: zod.ZodObject<
             {
                 pathExclusions: zod.ZodArray<
