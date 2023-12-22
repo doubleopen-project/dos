@@ -53,7 +53,7 @@ const fetchAndConvertYAML = async () => {
     }
 };
 
-const CurationLicense = ({
+const ConclusionLicense = ({
     concludedLicenseExpressionSPDX,
     setConcludedLicenseExpressionSPDX,
     fractionalWidth = 0.75,
@@ -188,4 +188,4 @@ const CurationLicense = ({
     );
 };
 
-export default CurationLicense;
+export default ConclusionLicense;

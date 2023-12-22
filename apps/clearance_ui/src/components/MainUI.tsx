@@ -7,12 +7,12 @@ import useSettingsStore from "@/store/settings.store";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
 import PackageTree from "@/components/package_inspector/PackageTree";
 
-type CurationUIProps = {
+type MainUIProps = {
     purl: string;
     path: string | undefined;
 };
 
-const CurationUI = ({ purl, path }: CurationUIProps) => {
+const MainUI = ({ purl, path }: MainUIProps) => {
     const treeWidth = useSettingsStore((state) => state.treeWidth);
     const setTreeWidth = useSettingsStore((state) => state.setTreeWidth);
     const treeRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
                 <PackageTree purl={purl} />
             </div>
 
-            {/* 2nd column: Open a file for license inspection and curation */}
+            {/* 2nd column: Open a file for license inspection and clearance */}
             <div className="m-2 ml-1 flex-1 overflow-auto rounded-md border p-2 shadow-lg">
                 <CodeInspector purl={purl} path={path} />
             </div>
@@ -51,4 +51,4 @@ const CurationUI = ({ purl, path }: CurationUIProps) => {
     );
 };
 
-export default CurationUI;
+export default MainUI;

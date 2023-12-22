@@ -39,8 +39,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import CurationLicense from "@/components/license_conclusions/ConclusionLicense";
-import CurationSPDX from "@/components/license_conclusions/ConclusionSPDX";
+import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
+import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
@@ -284,7 +284,7 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
                                     Select exactly one of the two below
                                 </FormLabel>
                                 <FormControl>
-                                    <CurationLicense
+                                    <ConclusionLicense
                                         concludedLicenseExpressionSPDX={
                                             field.value
                                         }
@@ -304,7 +304,7 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <CurationSPDX
+                                    <ConclusionSPDX
                                         value={field.value}
                                         setValue={field.onChange}
                                     />

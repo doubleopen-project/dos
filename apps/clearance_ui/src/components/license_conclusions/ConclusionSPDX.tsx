@@ -18,7 +18,7 @@ type Props = {
     setValue: (newSPDX: string) => void;
 };
 
-const CurationSPDX = ({ value, setValue }: Props) => {
+const ConclusionSPDX = ({ value, setValue }: Props) => {
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
     };
@@ -56,4 +56,4 @@ const CurationSPDX = ({ value, setValue }: Props) => {
     );
 };
 
-export default CurationSPDX;
+export default ConclusionSPDX;

@@ -43,7 +43,7 @@ type Props = {
     fractionalWidth?: number;
 };
 
-const CurationDB = ({
+const ConclusionDB = ({
     data,
     concludedLicenseExpressionSPDX,
     setConcludedLicenseExpressionSPDX,
@@ -55,7 +55,7 @@ const CurationDB = ({
     const [listWidth, setListWidth] = useState(0);
     const router = useRouter();
 
-    // Get user from useUser hook, to decide what DB rights the user has for curations
+    // Get user from useUser hook, to decide what DB rights the user has for conclusions
     let user = undefined;
     user = useUser();
     const userName = user ? user.username : "Guest";
@@ -68,7 +68,7 @@ const CurationDB = ({
         }
     }, [buttonRef.current?.offsetWidth, fractionalWidth]); // Re-run effect if the button's size changes
 
-    // Update parent state when a curation is selected
+    // Update parent state when a conclusion is selected
     const handleSelect = (d: {
         id: number;
         concludedLicenseExpressionSPDX: string;
@@ -91,7 +91,7 @@ const CurationDB = ({
                 <PopoverTrigger asChild>
                     <Button
                         ref={buttonRef}
-                        data-testid="curation-db-button"
+                        data-testid="conclusion-db-button"
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
@@ -234,4 +234,4 @@ const CurationDB = ({
     );
 };
 
-export default CurationDB;
+export default ConclusionDB;
