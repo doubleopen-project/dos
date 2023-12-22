@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
-import CurationForm from "@/components/license_conclusions/CurationForm";
+import CurationForm from "@/components/license_conclusions/ConclusionForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type CodeInspectorProps = {
