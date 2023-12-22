@@ -28,7 +28,7 @@ const DeletePathExclusion = ({ data }: Props) => {
         "post",
         "/path-exclusions",
     );
-    const keyPathExclusion = userHooks.getKeyByPath("get", "/path-exclusion");
+    const keyPathExclusion = userHooks.getKeyByAlias("GetPathExclusions");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 

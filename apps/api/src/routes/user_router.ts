@@ -871,7 +871,7 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
     }
 });
 
-userRouter.get("/path-exclusion", async (req, res) => {
+userRouter.get("/path-exclusions", async (req, res) => {
     try {
         const pathExclusionsWithRelations =
             await dbQueries.findPathExclusions();
