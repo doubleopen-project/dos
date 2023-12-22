@@ -144,7 +144,7 @@ export const userAPI = makeApi([
                 schema: PathParamPurl,
             },
         ],
-        response: schemas.PostBulkCurationsRes,
+        response: schemas.PostBulkConclusionsRes,
         errors,
     },
     {
@@ -161,10 +161,10 @@ export const userAPI = makeApi([
             {
                 name: "body",
                 type: "Body",
-                schema: schemas.PostBulkCurationReq,
+                schema: schemas.PostBulkConclusionReq,
             },
         ],
-        response: schemas.PostBulkCurationRes,
+        response: schemas.PostBulkConclusionRes,
         errors,
     },
     {
@@ -172,7 +172,7 @@ export const userAPI = makeApi([
         path: "/bulk-curations",
         description: "Get all bulk curations",
         alias: "GetBulkCurations",
-        response: schemas.GetBulkCurationsRes,
+        response: schemas.GetBulkConclusionsRes,
         errors,
     },
 
@@ -188,7 +188,7 @@ export const userAPI = makeApi([
                 schema: PathParamIdInteger,
             },
         ],
-        response: schemas.GetBulkCurationRes,
+        response: schemas.GetBulkConclusionRes,
         errors,
     },
 
@@ -206,10 +206,10 @@ export const userAPI = makeApi([
             {
                 name: "body",
                 type: "Body",
-                schema: schemas.PutBulkCurationReq,
+                schema: schemas.PutBulkConclusionReq,
             },
         ],
-        response: schemas.PutBulkCurationRes,
+        response: schemas.PutBulkConclusionRes,
         errors,
     },
     {
@@ -224,7 +224,7 @@ export const userAPI = makeApi([
                 schema: PathParamIdInteger,
             },
         ],
-        response: schemas.DeleteBulkCurationRes,
+        response: schemas.DeleteBulkConclusionRes,
         errors,
     },
     {
