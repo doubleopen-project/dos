@@ -14,7 +14,7 @@ type Props = {
     id: number;
 };
 
-const DeleteBulkCuration = ({ id }: Props) => {
+const DeleteBulkConclusion = ({ id }: Props) => {
     const { toast } = useToast();
     const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath(
@@ -107,4 +107,4 @@ const DeleteBulkCuration = ({ id }: Props) => {
     return <DeleteDialog deleteActions={deleteActions} />;
 };
 
-export default DeleteBulkCuration;
+export default DeleteBulkConclusion;

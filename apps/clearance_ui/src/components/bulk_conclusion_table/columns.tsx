@@ -22,7 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeleteBulkCuration from "../delete_item/DeleteBulkConclusion";
+import DeleteBulkConclusion from "../delete_item/DeleteBulkConclusion";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
@@ -391,7 +391,7 @@ export const columns = (user: User): ColumnDef<BulkCuration>[] => {
                     <>
                         {(user.role === "ADMIN" ||
                             user.username === row.original.user.username) && (
-                            <DeleteBulkCuration id={row.original.id} />
+                            <DeleteBulkConclusion id={row.original.id} />
                         )}
                     </>
                 );

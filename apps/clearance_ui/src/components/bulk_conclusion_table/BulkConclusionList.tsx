@@ -9,11 +9,11 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/bulk_conclusion_table/columns";
 import { DataTable } from "@/components/bulk_conclusion_table/DataTable";
 
-type BulkCurationListProps = {
+type BulkConclusionListProps = {
     user: ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 };
 
-const BulkCurationList = ({ user }: BulkCurationListProps) => {
+const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
     const { data, isLoading, error } = userHooks.useGetBulkConclusions({
         withCredentials: true,
     });
@@ -39,4 +39,4 @@ const BulkCurationList = ({ user }: BulkCurationListProps) => {
     );
 };
 
-export default BulkCurationList;
+export default BulkConclusionList;

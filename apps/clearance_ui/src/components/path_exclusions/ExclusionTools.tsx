@@ -18,7 +18,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import BulkCurationFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
+import BulkConclusionFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { cn } from "@/lib/utils";
 import type { SelectedNode } from "@/types/index";
@@ -189,7 +189,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                                 Write a license conclusion for multiple files
                             </TooltipContent>
                         </div>
-                        <BulkCurationFormDialog
+                        <BulkConclusionFormDialog
                             purl={purl}
                             open={openBulkCurationDialog}
                             setOpen={setOpenBulkCurationDialog}
