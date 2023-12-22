@@ -140,7 +140,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 comment: lc.comment,
                 local: lc.local,
                 user: lc.user,
-                bulkCurationId: lc.bulkCurationId,
+                bulkConclusionId: lc.bulkConclusionId,
                 sha256: lc.file.sha256,
                 contextPurl: lc.contextPurl,
                 affectedPaths: {
@@ -295,7 +295,7 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
                  * (since this endpoint is used to update one license conclusion only, and the bulk curation
                  * is updated through the PUT /bulk-curation/:id endpoint)
                  */
-                bulkCurationId: licenseConclusion.bulkCurationId
+                bulkConclusionId: licenseConclusion.bulkConclusionId
                     ? null
                     : undefined,
             });
@@ -365,11 +365,11 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
 
 userRouter.get("/bulk-curations", async (req, res) => {
     try {
-        const bulkCurationsWithRelations =
-            await dbQueries.findBulkCurationsWithRelations();
-        const bulkCurations = [];
+        const bulkConclusionsWithRelations =
+            await dbQueries.findBulkConclusionsWithRelations();
+        const bulkConclusions = [];
 
-        for (const bc of bulkCurationsWithRelations) {
+        for (const bc of bulkConclusionsWithRelations) {
             const licenseConclusions = [];
 
             for (const lc of bc.licenseConclusions) {
@@ -397,7 +397,7 @@ userRouter.get("/bulk-curations", async (req, res) => {
                 });
             }
 
-            bulkCurations.push({
+            bulkConclusions.push({
                 id: bc.id,
                 updatedAt: bc.updatedAt,
                 pattern: bc.pattern,
@@ -413,7 +413,7 @@ userRouter.get("/bulk-curations", async (req, res) => {
         }
 
         res.status(200).json({
-            bulkCurations: bulkCurations,
+            bulkConclusions: bulkConclusions,
         });
     } catch (error) {
         console.log("Error: ", error);
@@ -451,7 +451,7 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
 
         const pattern = req.body.pattern.trim();
 
-        const bulkCuration = await dbQueries.createBulkCuration({
+        const bulkConclusion = await dbQueries.createBulkConclusion({
             pattern: pattern,
             concludedLicenseExpressionSPDX:
                 req.body.concludedLicenseExpressionSPDX,
@@ -484,18 +484,18 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
                         contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
                         userId: user.id,
-                        bulkCurationId: bulkCuration.id,
+                        bulkConclusionId: bulkConclusion.id,
                     });
             }
         }
 
         if (licenseConclusionInputs.length === 0) {
-            const deletedBulkCuration = await dbQueries.deleteBulkCuration(
-                bulkCuration.id,
+            const deletedBulkConclusion = await dbQueries.deleteBulkConclusion(
+                bulkConclusion.id,
             );
-            if (!deletedBulkCuration)
+            if (!deletedBulkConclusion)
                 console.log(
-                    "Unable to delete bulk curation id: " + bulkCuration.id,
+                    "Unable to delete bulk curation id: " + bulkConclusion.id,
                 );
             throw new CustomError(
                 "No matching files for the provided pattern were found in the package",
@@ -509,12 +509,12 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
         );
 
         if (batchCount.count !== licenseConclusionInputs.length) {
-            const deletedBulkCuration = await dbQueries.deleteBulkCuration(
-                bulkCuration.id,
+            const deletedBulkConclusion = await dbQueries.deleteBulkConclusion(
+                bulkConclusion.id,
             );
-            if (!deletedBulkCuration)
+            if (!deletedBulkConclusion)
                 console.log(
-                    "Unable to delete bulk curation id: " + bulkCuration.id,
+                    "Unable to delete bulk curation id: " + bulkConclusion.id,
                 );
             throw new CustomError(
                 "Internal server error: Error creating license conclusions",
@@ -522,14 +522,14 @@ userRouter.post("/packages/:purl/bulk-curations", async (req, res) => {
             );
         }
 
-        const affectedRecords = await dbQueries.bulkCurationAffectedRecords(
-            bulkCuration.id,
+        const affectedRecords = await dbQueries.bulkConclusionAffectedRecords(
+            bulkConclusion.id,
             packageId,
             req.body.local || false,
         );
 
         res.status(200).json({
-            bulkCurationId: bulkCuration.id,
+            bulkConclusionId: bulkConclusion.id,
             matchedPathsCount: mathchedPathsCount,
             addedLicenseConclusionsCount: licenseConclusionInputs.length,
             affectedFilesInPackageCount:
@@ -557,30 +557,30 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
-        const bulkCurationId = req.params.id;
+        const bulkConclusionId = req.params.id;
 
-        const bulkCuration =
-            await dbQueries.findBulkCurationById(bulkCurationId);
+        const bulkConclusion =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
 
-        if (!bulkCuration)
+        if (!bulkConclusion)
             throw new CustomError(
                 "Bulk curation with the requested id does not exist",
                 404,
             );
 
-        const bulkCurationWithRelations =
-            await dbQueries.findBulkCurationWithRelationsById(
-                bulkCurationId,
-                bulkCuration.package.id,
+        const bulkConclusionWithRelations =
+            await dbQueries.findBulkConclusionWithRelationsById(
+                bulkConclusionId,
+                bulkConclusion.package.id,
             );
 
-        if (!bulkCurationWithRelations)
+        if (!bulkConclusionWithRelations)
             throw new CustomError("Bulk curation not found", 404);
 
         const filepaths = [];
         const licenseConclusions = [];
 
-        for (const lc of bulkCurationWithRelations.licenseConclusions) {
+        for (const lc of bulkConclusionWithRelations.licenseConclusions) {
             for (const filetree of lc.file.filetrees) {
                 filepaths.push(filetree.path);
             }
@@ -588,13 +588,13 @@ userRouter.get("/bulk-curations/:id", async (req, res) => {
         }
 
         res.status(200).json({
-            pattern: bulkCuration.pattern,
+            pattern: bulkConclusion.pattern,
             concludedLicenseExpressionSPDX:
-                bulkCuration.concludedLicenseExpressionSPDX,
+                bulkConclusion.concludedLicenseExpressionSPDX,
             detectedLicenseExpressionSPDX:
-                bulkCuration.detectedLicenseExpressionSPDX,
-            comment: bulkCuration.comment,
-            local: bulkCuration.local,
+                bulkConclusion.detectedLicenseExpressionSPDX,
+            comment: bulkConclusion.comment,
+            local: bulkConclusion.local,
             filePaths: filepaths,
             licenseConclusions: licenseConclusions,
         });
@@ -642,10 +642,10 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             );
         }
 
-        const bulkCurationId = req.params.id;
+        const bulkConclusionId = req.params.id;
 
         const origBulkCur =
-            await dbQueries.findBulkCurationById(bulkCurationId);
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
 
         if (!origBulkCur)
             throw new CustomError("Bulk curation to update not found", 404);
@@ -668,16 +668,16 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             throw new CustomError("Nothing to update", 400, "root");
         }
 
-        const bulkCurationWithRelations =
-            await dbQueries.findBulkCurationWithRelationsById(
-                bulkCurationId,
+        const bulkConclusionWithRelations =
+            await dbQueries.findBulkConclusionWithRelationsById(
+                bulkConclusionId,
                 origBulkCur.package.id,
             );
 
-        if (!bulkCurationWithRelations)
+        if (!bulkConclusionWithRelations)
             throw new CustomError("Bulk curation to update not found", 404);
 
-        if (reqPattern && reqPattern !== bulkCurationWithRelations.pattern) {
+        if (reqPattern && reqPattern !== bulkConclusionWithRelations.pattern) {
             const newInputs = [];
             const fileTrees = await dbQueries.findFileTreesByPackageId(
                 origBulkCur.package.id,
@@ -686,7 +686,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             for (const fileTree of fileTrees) {
                 if (
                     minimatch(fileTree.path, reqPattern, { dot: true }) &&
-                    bulkCurationWithRelations.licenseConclusions.find(
+                    bulkConclusionWithRelations.licenseConclusions.find(
                         (lc) => lc.file.sha256 === fileTree.fileSha256,
                     ) === undefined &&
                     newInputs.find(
@@ -696,24 +696,24 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
                     newInputs.push({
                         concludedLicenseExpressionSPDX:
                             reqCLESPDX ||
-                            bulkCurationWithRelations.concludedLicenseExpressionSPDX,
+                            bulkConclusionWithRelations.concludedLicenseExpressionSPDX,
                         detectedLicenseExpressionSPDX:
                             reqDLESPDX ||
-                            bulkCurationWithRelations.detectedLicenseExpressionSPDX,
+                            bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
                         comment:
-                            reqComment || bulkCurationWithRelations.comment,
-                        local: reqLocal || bulkCurationWithRelations.local,
+                            reqComment || bulkConclusionWithRelations.comment,
+                        local: reqLocal || bulkConclusionWithRelations.local,
                         contextPurl: origBulkCur.package.purl,
                         fileSha256: fileTree.fileSha256,
                         userId: req.user.id,
-                        bulkCurationId: bulkCurationWithRelations.id,
+                        bulkConclusionId: bulkConclusionWithRelations.id,
                     });
                 }
             }
 
             await dbQueries.createManyLicenseConclusions(newInputs);
 
-            for (const lc of bulkCurationWithRelations.licenseConclusions) {
+            for (const lc of bulkConclusionWithRelations.licenseConclusions) {
                 let noMatches = true;
                 for (const ft of lc.file.filetrees) {
                     // If one of the paths match with the new pattern, don't delete the license conclusion
@@ -737,7 +737,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             (reqComment && reqComment !== origBulkCur.comment) ||
             (reqLocal && reqLocal !== origBulkCur.local)
         ) {
-            await dbQueries.updateManyLicenseConclusions(bulkCurationId, {
+            await dbQueries.updateManyLicenseConclusions(bulkConclusionId, {
                 concludedLicenseExpressionSPDX: reqCLESPDX,
                 detectedLicenseExpressionSPDX: reqDLESPDX,
                 comment: reqComment,
@@ -745,7 +745,7 @@ userRouter.put("/bulk-curations/:id", async (req, res) => {
             });
         }
 
-        await dbQueries.updateBulkCuration(bulkCurationId, {
+        await dbQueries.updateBulkConclusion(bulkConclusionId, {
             pattern: reqPattern,
             concludedLicenseExpressionSPDX: reqCLESPDX,
             detectedLicenseExpressionSPDX: reqDLESPDX,
@@ -778,29 +778,29 @@ userRouter.delete("/bulk-curations/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
-        const bulkCurationId = req.params.id;
+        const bulkConclusionId = req.params.id;
 
         if (req.user.role !== "ADMIN") {
-            const bulkCurationUserId =
-                await dbQueries.findBulkCurationUserId(bulkCurationId);
+            const bulkConclusionUserId =
+                await dbQueries.findBulkConclusionUserId(bulkConclusionId);
 
-            if (!bulkCurationUserId) {
+            if (!bulkConclusionUserId) {
                 throw new CustomError("Bulk curation to delete not found", 404);
             }
 
-            if (req.user.id !== bulkCurationUserId) {
+            if (req.user.id !== bulkConclusionUserId) {
                 throw new CustomError("Forbidden", 403);
             }
         }
 
-        await dbQueries.deleteManyLicenseConclusionsByBulkCurationId(
-            bulkCurationId,
+        await dbQueries.deleteManyLicenseConclusionsByBulkConclusionId(
+            bulkConclusionId,
         );
 
-        const deletedBulkCuration =
-            await dbQueries.deleteBulkCuration(bulkCurationId);
+        const deletedBulkConclusion =
+            await dbQueries.deleteBulkConclusion(bulkConclusionId);
 
-        if (!deletedBulkCuration)
+        if (!deletedBulkConclusion)
             throw new CustomError("Bulk curation to delete not found", 404);
 
         res.status(200).json({ message: "Bulk curation deleted" });
@@ -839,11 +839,11 @@ userRouter.get("/packages/:purl/bulk-curations", async (req, res) => {
                 404,
             );
 
-        const bulkCurations =
-            await dbQueries.findBulkCurationsByPackageId(packageId);
+        const bulkConclusions =
+            await dbQueries.findBulkConclusionsByPackageId(packageId);
 
         res.status(200).json({
-            bulkCurations: bulkCurations,
+            bulkConclusions: bulkConclusions,
         });
     } catch (error) {
         console.log("Error: ", error);

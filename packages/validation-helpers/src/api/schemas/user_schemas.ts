@@ -40,7 +40,7 @@ export const GetLicenseConclusionsRes = z.object({
             comment: z.nullable(z.string()),
             local: z.boolean(),
             user: z.object({ username: z.string() }),
-            bulkCurationId: z.nullable(z.number()),
+            bulkConclusionId: z.nullable(z.number()),
             sha256: z.string(),
             contextPurl: z.string(),
             affectedPaths: z.object({
@@ -73,7 +73,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
             local: z.boolean(),
             contextPurl: z.string(),
             user: z.object({ username: z.string() }),
-            bulkCurationId: z.nullable(z.number()),
+            bulkConclusionId: z.nullable(z.number()),
         }),
     ),
 });
@@ -132,7 +132,7 @@ export const DeleteLicenseConclusionRes = z.object({
 
 //------------------ GET all bulk curations -------------------
 export const GetBulkCurationsRes = z.object({
-    bulkCurations: z.array(
+    bulkConclusions: z.array(
         z.object({
             id: z.number(),
             updatedAt: z.coerce.date(),
@@ -203,7 +203,7 @@ export const PostBulkCurationReq = z.object({
 });
 
 export const PostBulkCurationRes = z.object({
-    bulkCurationId: z.number(),
+    bulkConclusionId: z.number(),
     matchedPathsCount: z.number(),
     addedLicenseConclusionsCount: z.number(),
     affectedFilesInPackageCount: z.number(),
@@ -239,7 +239,7 @@ export const PostBulkCurationsReq = z.object({
 });
 
 export const PostBulkCurationsRes = z.object({
-    bulkCurations: z.array(
+    bulkConclusions: z.array(
         z.object({
             id: z.number(),
             updatedAt: z.coerce.date(),

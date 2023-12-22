@@ -32,7 +32,7 @@ export type BulkCuration = ZodiosResponseByPath<
     typeof userAPI,
     "get",
     "/bulk-curations"
->["bulkCurations"][0];
+>["bulkConclusions"][0];
 
 export const columns = (user: User): ColumnDef<BulkCuration>[] => {
     return [

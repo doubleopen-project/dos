@@ -5,7 +5,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
 import {
-    BulkCuration,
+    BulkConclusion,
     CopyrightFinding,
     File,
     FileTree,
@@ -282,7 +282,7 @@ export const createManyLicenseConclusions = async (
     return batchCreate;
 };
 
-export const createBulkCuration = async (input: {
+export const createBulkConclusion = async (input: {
     pattern: string;
     concludedLicenseExpressionSPDX: string;
     detectedLicenseExpressionSPDX: string | null;
@@ -290,17 +290,17 @@ export const createBulkCuration = async (input: {
     local: boolean | undefined;
     packageId: number;
     userId: number;
-}): Promise<BulkCuration> => {
+}): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
-    let bulkCuration: BulkCuration | null = null;
+    let bulkConclusion: BulkConclusion | null = null;
 
-    while (!bulkCuration && retries > 0) {
+    while (!bulkConclusion && retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.create({
+            bulkConclusion = await prisma.bulkConclusion.create({
                 data: input,
             });
         } catch (error) {
-            console.log("Error creating BulkCuration: " + error);
+            console.log("Error creating BulkConclusion: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -308,9 +308,10 @@ export const createBulkCuration = async (input: {
         }
     }
 
-    if (!bulkCuration) throw new Error("Error: Unable to create BulkCuration");
+    if (!bulkConclusion)
+        throw new Error("Error: Unable to create BulkConclusion");
 
-    return bulkCuration;
+    return bulkConclusion;
 };
 
 export const createCopyrightFinding = async (input: {
@@ -711,7 +712,7 @@ export const updateLicenseConclusion = async (
         detectedLicenseExpressionSPDX: string | null | undefined;
         comment: string | null | undefined;
         local: boolean | undefined;
-        bulkCurationId: number | null | undefined;
+        bulkConclusionId: number | null | undefined;
     },
 ): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
@@ -744,7 +745,7 @@ export const updateLicenseConclusion = async (
 };
 
 export const updateManyLicenseConclusions = async (
-    bulkCurationId: number,
+    bulkConclusionId: number,
     input: Prisma.LicenseConclusionUpdateInput,
 ): Promise<Prisma.BatchPayload> => {
     let retries = initialRetryCount;
@@ -754,7 +755,7 @@ export const updateManyLicenseConclusions = async (
         try {
             batchUpdate = await prisma.licenseConclusion.updateMany({
                 where: {
-                    bulkCurationId: bulkCurationId,
+                    bulkConclusionId: bulkConclusionId,
                 },
                 data: input,
             });
@@ -776,23 +777,23 @@ export const updateManyLicenseConclusions = async (
     return batchUpdate;
 };
 
-export const updateBulkCuration = async (
+export const updateBulkConclusion = async (
     id: number,
-    input: Prisma.BulkCurationUpdateInput,
-): Promise<BulkCuration> => {
+    input: Prisma.BulkConclusionUpdateInput,
+): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
-    let bulkCuration: BulkCuration | null = null;
+    let bulkConclusion: BulkConclusion | null = null;
 
-    while (!bulkCuration && retries > 0) {
+    while (!bulkConclusion && retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.update({
+            bulkConclusion = await prisma.bulkConclusion.update({
                 where: {
                     id: id,
                 },
                 data: input,
             });
         } catch (error) {
-            console.log("Error with trying to update BulkCuration: " + error);
+            console.log("Error with trying to update BulkConclusion: " + error);
 
             handleError(error);
             retries--;
@@ -801,9 +802,10 @@ export const updateBulkCuration = async (
         }
     }
 
-    if (!bulkCuration) throw new Error("Error: Unable to update BulkCuration");
+    if (!bulkConclusion)
+        throw new Error("Error: Unable to update BulkConclusion");
 
-    return bulkCuration;
+    return bulkConclusion;
 };
 
 export const updateUser = async (
@@ -2085,7 +2087,7 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
                 username: true;
             };
         };
-        bulkCurationId: true;
+        bulkConclusionId: true;
         file: {
             select: {
                 sha256: true;
@@ -2127,7 +2129,7 @@ export const findAllLicenseConclusions = async (): Promise<
                             username: true,
                         },
                     },
-                    bulkCurationId: true,
+                    bulkConclusionId: true,
                     file: {
                         select: {
                             sha256: true,
@@ -2161,7 +2163,7 @@ export const findAllLicenseConclusions = async (): Promise<
     return licenseConclusions;
 };
 
-type BulkCurationWithPackageRelation = Prisma.BulkCurationGetPayload<{
+type BulkConclusionWithPackageRelation = Prisma.BulkConclusionGetPayload<{
     select: {
         id: true;
         pattern: true;
@@ -2179,15 +2181,15 @@ type BulkCurationWithPackageRelation = Prisma.BulkCurationGetPayload<{
     };
 }>;
 
-export const findBulkCurationById = async (
+export const findBulkConclusionById = async (
     id: number,
-): Promise<BulkCurationWithPackageRelation | null> => {
-    let bulkCuration: BulkCurationWithPackageRelation | null = null;
+): Promise<BulkConclusionWithPackageRelation | null> => {
+    let bulkConclusion: BulkConclusionWithPackageRelation | null = null;
     let retries = initialRetryCount;
 
     while (retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.findUnique({
+            bulkConclusion = await prisma.bulkConclusion.findUnique({
                 where: {
                     id: id,
                 },
@@ -2209,7 +2211,7 @@ export const findBulkCurationById = async (
             });
             break;
         } catch (error) {
-            console.log("Error with trying to find BulkCuration: " + error);
+            console.log("Error with trying to find BulkConclusion: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -2217,10 +2219,10 @@ export const findBulkCurationById = async (
         }
     }
 
-    return bulkCuration;
+    return bulkConclusion;
 };
 
-type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
+type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
     select: {
         id: true;
         updatedAt: true;
@@ -2263,18 +2265,18 @@ type BulkCurationWithRelations = Prisma.BulkCurationGetPayload<{
     };
 }>;
 
-export const findBulkCurationWithRelationsById = async (
-    bulkCurationId: number,
+export const findBulkConclusionWithRelationsById = async (
+    bulkConclusionId: number,
     packageId: number,
-): Promise<BulkCurationWithRelations | null> => {
-    let bulkCuration: BulkCurationWithRelations | null = null;
+): Promise<BulkConclusionWithRelations | null> => {
+    let bulkConclusion: BulkConclusionWithRelations | null = null;
     let retries = initialRetryCount;
 
     while (retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.findUnique({
+            bulkConclusion = await prisma.bulkConclusion.findUnique({
                 where: {
-                    id: bulkCurationId,
+                    id: bulkConclusionId,
                 },
                 select: {
                     id: true,
@@ -2317,7 +2319,7 @@ export const findBulkCurationWithRelationsById = async (
             });
             break;
         } catch (error) {
-            console.log("Error with trying to find BulkCuration: " + error);
+            console.log("Error with trying to find BulkConclusion: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -2325,18 +2327,18 @@ export const findBulkCurationWithRelationsById = async (
         }
     }
 
-    return bulkCuration;
+    return bulkConclusion;
 };
 
-export const findBulkCurationsByPackageId = async (
+export const findBulkConclusionsByPackageId = async (
     packageId: number,
-): Promise<BulkCurationWithRelations[]> => {
+): Promise<BulkConclusionWithRelations[]> => {
     let retries = initialRetryCount;
-    let bulkCurations: BulkCurationWithRelations[] = [];
+    let bulkConclusions: BulkConclusionWithRelations[] = [];
 
     while (retries > 0) {
         try {
-            bulkCurations = await prisma.bulkCuration.findMany({
+            bulkConclusions = await prisma.bulkConclusion.findMany({
                 where: {
                     packageId: packageId,
                 },
@@ -2381,7 +2383,7 @@ export const findBulkCurationsByPackageId = async (
             });
             break;
         } catch (error) {
-            console.log("Error with trying to find BulkCurations: " + error);
+            console.log("Error with trying to find BulkConclusions: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -2389,18 +2391,18 @@ export const findBulkCurationsByPackageId = async (
         }
     }
 
-    return bulkCurations;
+    return bulkConclusions;
 };
 
-export const findBulkCurationsWithRelations = async (): Promise<
-    BulkCurationWithRelations[]
+export const findBulkConclusionsWithRelations = async (): Promise<
+    BulkConclusionWithRelations[]
 > => {
     let retries = initialRetryCount;
-    let bulkCurations: BulkCurationWithRelations[] = [];
+    let bulkConclusions: BulkConclusionWithRelations[] = [];
 
     while (retries > 0) {
         try {
-            bulkCurations = await prisma.bulkCuration.findMany({
+            bulkConclusions = await prisma.bulkConclusion.findMany({
                 select: {
                     id: true,
                     updatedAt: true,
@@ -2444,7 +2446,7 @@ export const findBulkCurationsWithRelations = async (): Promise<
             });
             break;
         } catch (error) {
-            console.log("Error with trying to find BulkCurations: " + error);
+            console.log("Error with trying to find BulkConclusions: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -2452,19 +2454,19 @@ export const findBulkCurationsWithRelations = async (): Promise<
         }
     }
 
-    return bulkCurations;
+    return bulkConclusions;
 };
 
-export const findBulkCurationUserId = async (
+export const findBulkConclusionUserId = async (
     id: number,
 ): Promise<number | null> => {
-    let bulkCuration: { userId: number } | null = null;
+    let bulkConclusion: { userId: number } | null = null;
     let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.findUnique({
+            bulkConclusion = await prisma.bulkConclusion.findUnique({
                 where: {
                     id: id,
                 },
@@ -2475,7 +2477,7 @@ export const findBulkCurationUserId = async (
             querySuccess = true;
         } catch (error) {
             console.log(
-                "Error with trying to find BulkCurationUserId: " + error,
+                "Error with trying to find BulkConclusionUserId: " + error,
             );
             handleError(error);
             retries--;
@@ -2483,7 +2485,7 @@ export const findBulkCurationUserId = async (
             else throw error;
         }
     }
-    return bulkCuration?.userId || null;
+    return bulkConclusion?.userId || null;
 };
 
 export const findPathExclusionUserId = async (
@@ -2679,7 +2681,7 @@ type LicenseConclusionWithUserRelation = Prisma.LicenseConclusionGetPayload<{
                 username: true;
             };
         };
-        bulkCurationId: true;
+        bulkConclusionId: true;
     };
 }>;
 
@@ -2709,7 +2711,7 @@ export const findLicenseConclusionsByFileSha256 = async (
                             username: true,
                         },
                     },
-                    bulkCurationId: true,
+                    bulkConclusionId: true,
                 },
             });
             querySuccess = true;
@@ -2882,8 +2884,8 @@ export const deleteLicenseConclusionsByFileHashes = async (
     return batchDelete;
 };
 
-export const deleteManyLicenseConclusionsByBulkCurationId = async (
-    bulkCurationId: number,
+export const deleteManyLicenseConclusionsByBulkConclusionId = async (
+    bulkConclusionId: number,
 ): Promise<{ count: number }> => {
     let retries = initialRetryCount;
     let batchDelete = null;
@@ -2892,7 +2894,7 @@ export const deleteManyLicenseConclusionsByBulkCurationId = async (
         try {
             batchDelete = await prisma.licenseConclusion.deleteMany({
                 where: {
-                    bulkCurationId: bulkCurationId,
+                    bulkConclusionId: bulkConclusionId,
                 },
             });
         } catch (error) {
@@ -2911,21 +2913,21 @@ export const deleteManyLicenseConclusionsByBulkCurationId = async (
     return batchDelete;
 };
 
-export const deleteBulkCuration = async (
+export const deleteBulkConclusion = async (
     id: number,
-): Promise<BulkCuration | null> => {
+): Promise<BulkConclusion | null> => {
     let retries = initialRetryCount;
-    let bulkCuration: BulkCuration | null = null;
+    let bulkConclusion: BulkConclusion | null = null;
 
-    while (!bulkCuration && retries > 0) {
+    while (!bulkConclusion && retries > 0) {
         try {
-            bulkCuration = await prisma.bulkCuration.delete({
+            bulkConclusion = await prisma.bulkConclusion.delete({
                 where: {
                     id: id,
                 },
             });
         } catch (error) {
-            console.log("Error with trying to delete BulkCuration: " + error);
+            console.log("Error with trying to delete BulkConclusion: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -2933,7 +2935,7 @@ export const deleteBulkCuration = async (
         }
     }
 
-    return bulkCuration;
+    return bulkConclusion;
 };
 
 export const deleteFilesByFileHashes = async (
@@ -3147,8 +3149,8 @@ export const countFileTreesByPackageId = async (
     return count;
 };
 
-export const bulkCurationAffectedRecords = async (
-    bulkCurationId: number,
+export const bulkConclusionAffectedRecords = async (
+    bulkConclusionId: number,
     packageId: number,
     local: boolean,
 ): Promise<{
@@ -3166,7 +3168,7 @@ export const bulkCurationAffectedRecords = async (
                     file: {
                         licenseConclusions: {
                             some: {
-                                bulkCurationId: bulkCurationId,
+                                bulkConclusionId: bulkConclusionId,
                             },
                         },
                     },
@@ -3195,7 +3197,7 @@ export const bulkCurationAffectedRecords = async (
                         file: {
                             licenseConclusions: {
                                 some: {
-                                    bulkCurationId: bulkCurationId,
+                                    bulkConclusionId: bulkConclusionId,
                                 },
                             },
                         },
