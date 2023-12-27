@@ -19,6 +19,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     Select,
@@ -124,9 +125,9 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                             <FormItem>
                                 <FormLabel>Pattern</FormLabel>
                                 <FormControl>
-                                    <Textarea
-                                        className="text-xs"
-                                        placeholder="Pattern..."
+                                    <Input
+                                        className="!min-h-[40px] text-xs"
+                                        placeholder="Glob pattern matching to the path to be excluded..."
                                         {...field}
                                     />
                                 </FormControl>
