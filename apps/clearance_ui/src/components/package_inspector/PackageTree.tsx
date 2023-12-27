@@ -12,6 +12,7 @@ import {
 import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
@@ -28,16 +29,17 @@ import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
+import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
-import { Button } from "../ui/button";
 
 type Props = {
     purl: string;
+    path: string | undefined;
 };
 
-const PackageTree = ({ purl }: Props) => {
+const PackageTree = ({ purl, path }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
         "licenseFilter",
@@ -141,6 +143,13 @@ const PackageTree = ({ purl }: Props) => {
             tree?.closeAll();
         }
     }, [isExpanded]);
+
+    useEffect(() => {
+        if (path) {
+            const node = findNodeByPath(treeData, path);
+            if (node) tree?.focus(node);
+        }
+    }, [path, treeData, tree]);
 
     return (
         <div className="flex h-full flex-col">

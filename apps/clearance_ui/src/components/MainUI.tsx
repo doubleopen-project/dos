@@ -40,7 +40,7 @@ const MainUI = ({ purl, path }: MainUIProps) => {
                 style={{ width: treeWidth }}
                 className="m-2 mr-1 flex resize-x flex-col overflow-auto rounded-md border p-2 shadow-lg"
             >
-                <PackageTree purl={purl} />
+                <PackageTree purl={purl} path={path} />
             </div>
 
             {/* 2nd column: Open a file for license inspection and clearance */}
