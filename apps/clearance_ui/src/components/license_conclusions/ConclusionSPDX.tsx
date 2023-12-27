@@ -27,7 +27,7 @@ const ConclusionSPDX = ({ value, setValue }: Props) => {
         <div className="flex">
             <Input
                 className="w-full rounded-md text-xs"
-                type="text"
+                name="spdx"
                 placeholder="Write your SPDX expression here..."
                 value={value}
                 onChange={handleInput}
