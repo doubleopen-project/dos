@@ -9,6 +9,7 @@ import {
     parseAsString,
     useQueryState,
 } from "next-usequerystate";
+import { useRouter } from "next/router";
 import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +56,8 @@ const PackageTree = ({ purl, path }: Props) => {
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const treeRef = useRef<HTMLDivElement>(null);
+
+    const router = useRouter();
 
     const pathPurl = toPathPurl(purl);
 
@@ -232,7 +235,18 @@ const PackageTree = ({ purl, path }: Props) => {
                         paddingTop={30}
                         paddingBottom={10}
                         padding={25}
-                        onFocus={(node) => setSelectedNode(node)}
+                        onFocus={(node) => {
+                            setSelectedNode(node);
+                            if (node.isLeaf) {
+                                router.push({
+                                    pathname: `/packages/${encodeURIComponent(
+                                        purl || "",
+                                    )}/${encodeURIComponent(
+                                        node.data.path || "",
+                                    )}`,
+                                });
+                            }
+                        }}
                         ref={(t) => (tree = t)}
                     >
                         {(nodeProps) => (
