@@ -10,16 +10,25 @@ import {
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
 
 type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;
     licenseFilter: string | null;
     filtering: boolean;
+    openedNodeId: string | undefined;
 };
 
-const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
-    const { isLeaf, isClosed, isFocused, data } = node;
+const Node = ({
+    node,
+    style,
+    purl,
+    licenseFilter,
+    filtering,
+    openedNodeId,
+}: NodeProps) => {
+    const { isLeaf, isClosed, data } = node;
     const {
         hasLicenseFindings,
         hasLicenseConclusions,
@@ -31,11 +40,6 @@ const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
     let color;
     let icon;
     let isBold = false;
-    let selectedClassName;
-
-    if (isFocused) {
-        selectedClassName = "bg-gray-400 rounded-sm";
-    }
 
     if (isExcluded) {
         color = "gray";
@@ -98,10 +102,21 @@ const Node = ({ node, style, purl, licenseFilter, filtering }: NodeProps) => {
                                 : {},
                         }}
                     >
-                        <span className={selectedClassName}>{name}</span>
+                        <span
+                            className={cn(
+                                node.id === openedNodeId
+                                    ? "bg-violet-400"
+                                    : "hover:bg-primary/20",
+                                "inline-block w-full rounded-sm",
+                            )}
+                        >
+                            {name}
+                        </span>
                     </Link>
                 ) : (
-                    <span className={selectedClassName}>{name}</span>
+                    <span className="hover:bg-primary/20 inline-block w-full rounded-sm">
+                        {name}
+                    </span>
                 )}
             </span>
         </div>

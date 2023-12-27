@@ -55,6 +55,7 @@ const PackageTree = ({ purl, path }: Props) => {
     const [treeData, setTreeData] = useState<TreeNode[]>([]);
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
+    const [openedNodeId, setOpenedNodeId] = useState<string>();
     const treeRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
@@ -150,7 +151,10 @@ const PackageTree = ({ purl, path }: Props) => {
     useEffect(() => {
         if (path) {
             const node = findNodeByPath(treeData, path);
-            if (node) tree?.focus(node);
+            if (node) {
+                setOpenedNodeId(node.id);
+                tree?.select(node);
+            }
         }
     }, [path, treeData, tree]);
 
@@ -238,6 +242,7 @@ const PackageTree = ({ purl, path }: Props) => {
                         onFocus={(node) => {
                             setSelectedNode(node);
                             if (node.isLeaf) {
+                                setOpenedNodeId(node.id);
                                 router.push({
                                     pathname: `/packages/${encodeURIComponent(
                                         purl || "",
@@ -255,6 +260,7 @@ const PackageTree = ({ purl, path }: Props) => {
                                 licenseFilter={licenseFilter}
                                 filtering={filtering}
                                 purl={purl}
+                                openedNodeId={openedNodeId}
                             />
                         )}
                     </Tree>
