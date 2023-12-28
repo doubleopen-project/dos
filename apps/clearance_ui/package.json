@@ -55,7 +55,7 @@
         "react-copy-to-clipboard": "5.1.0",
         "react-hook-form": "7.48.2",
         "react-icons": "4.12.0",
-        "spdx-expression-parse": "4.0.0",
+        "spdx-expression-parse": "github:doubleopen-project/spdx-expression-parse.js",
         "tailwind-merge": "2.1.0",
         "tailwindcss-animate": "1.0.7",
         "validation-helpers": "*",
