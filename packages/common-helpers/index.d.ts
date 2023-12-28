@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import parse from "spdx-expression-parse";
+
 declare const getCurrentDateTime: () => string;
 
-export { getCurrentDateTime };
+declare function parseSPDX(spdxString: string): parse.Info;
+
+export { getCurrentDateTime, parseSPDX };

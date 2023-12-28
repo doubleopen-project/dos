@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
+import { parseSPDX } from "common-helpers";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
-import parse from "spdx-expression-parse";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -43,7 +43,7 @@ const conclusionFormSchema = z.object({
         .refine(
             (value) => {
                 try {
-                    parse(value);
+                    parseSPDX(value);
                     return true;
                 } catch (e) {
                     return false;
