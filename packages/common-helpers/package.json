@@ -13,9 +13,10 @@
         "spdx-expression-parse": "github:doubleopen-project/spdx-expression-parse.js"
     },
     "devDependencies": {
-        "@types/pako": "2.0.3",
         "@types/chai": "4.3.11",
         "@types/mocha": "10.0.6",
+        "@types/pako": "2.0.3",
+        "@types/spdx-expression-parse": "^3.0.5",
         "chai": "4.3.10",
         "mocha": "10.2.0"
     }
