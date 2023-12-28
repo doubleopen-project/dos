@@ -249,6 +249,12 @@ const PackageTree = ({ purl, path }: Props) => {
                                     )}/${encodeURIComponent(
                                         node.data.path || "",
                                     )}`,
+                                    query: licenseFilter
+                                        ? {
+                                              licenseFilter: `${licenseFilter}`,
+                                              filtering: `${filtering}`,
+                                          }
+                                        : {},
                                 });
                             }
                         }}
