@@ -28,7 +28,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type ComboBoxPackageProps = {
-    data: Set<string>;
+    data: Map<string, string>;
     filterString: string;
     className?: string;
 };
@@ -49,10 +49,11 @@ const ComboBoxPackage = ({
     const router = useRouter();
 
     // Map data to the format required by the Command component
-    const licenses = Array.from(data).map((license) => ({
-        value: license.toLowerCase(),
-        label: license,
-    }));
+    const licenses: { value: string; label: string; bgcolor: string }[] = [];
+
+    data.forEach((value, key) => {
+        licenses.push({ value: key.toLowerCase(), label: key, bgcolor: value });
+    });
 
     // If the license filter is set, set "filtering" to true.
     // Do it as a side effect to avoid infinite loop
@@ -113,6 +114,12 @@ const ComboBoxPackage = ({
                                     <span className="w-11/12 text-xs">
                                         {license.label}
                                     </span>
+                                    <span
+                                        className="ml-2 mt-1 flex h-2 w-2 items-center justify-center rounded-full"
+                                        style={{
+                                            backgroundColor: license.bgcolor,
+                                        }}
+                                    ></span>
                                 </CommandItem>
                             ))}
                         </CommandGroup>
