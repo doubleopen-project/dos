@@ -20,7 +20,7 @@ export type TreeNode = {
 };
 
 export type LicenseFindings = {
-    licenseExpressionSPDX?: string;
+    licenseExpressionSPDX: string;
 };
 
 export type LicenseConclusions = {

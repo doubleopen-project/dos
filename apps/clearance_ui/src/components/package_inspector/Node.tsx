@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { JSX } from "react";
 import Link from "next/link";
 import { NodeRendererProps } from "react-arborist";
 import {
@@ -12,12 +13,14 @@ import {
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
+import LicenseHitCircle from "./LicenseHitCircle";
 
 type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;
     licenseFilter: string | null;
     filtering: boolean;
     openedNodeId: string | undefined;
+    uniqueLicenses: Map<string, string>;
 };
 
 const Node = ({
@@ -27,6 +30,7 @@ const Node = ({
     licenseFilter,
     filtering,
     openedNodeId,
+    uniqueLicenses,
 }: NodeProps) => {
     const { isLeaf, isClosed, data } = node;
     const {
@@ -35,11 +39,13 @@ const Node = ({
         isExcluded,
         name,
         path,
+        file,
     } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
     let icon;
     let isBold = false;
+    const licenseFindingIndicators: JSX.Element[] = [];
 
     if (isExcluded) {
         color = "gray";
@@ -51,6 +57,32 @@ const Node = ({
             color = "red";
             isBold = true;
         }
+    }
+
+    if (
+        isLeaf &&
+        hasLicenseFindings &&
+        file?.licenseFindings &&
+        file.licenseFindings.length > 0
+    ) {
+        uniqueLicenses.forEach((value, key) => {
+            for (const lf of file?.licenseFindings) {
+                if (lf.licenseExpressionSPDX.includes(key)) {
+                    licenseFindingIndicators.push(
+                        <LicenseHitCircle
+                            key={key}
+                            license={key}
+                            bgcolor={value}
+                            filtered={Boolean(
+                                licenseFilter &&
+                                    licenseFilter.toLowerCase() ===
+                                        key.toLowerCase(),
+                            )}
+                        />,
+                    );
+                }
+            }
+        });
     }
 
     if (isLeaf) {
@@ -87,6 +119,7 @@ const Node = ({
             }}
         >
             <span className="flex items-center">{icon}</span>
+
             <span className="ml-1 flex-grow truncate font-mono text-xs">
                 {isLeaf ? (
                     <Link
@@ -119,6 +152,11 @@ const Node = ({
                     </span>
                 )}
             </span>
+            {isLeaf && licenseFindingIndicators.length > 0 && (
+                <span className="flex flex-row items-center">
+                    {licenseFindingIndicators}
+                </span>
+            )}
         </div>
     );
 };

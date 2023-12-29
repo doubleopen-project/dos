@@ -40,6 +40,19 @@ type Props = {
     path: string | undefined;
 };
 
+const stringToColour = (str: string) => {
+    let hash = 0;
+    str.split("").forEach((char) => {
+        hash = char.charCodeAt(0) + ((hash << 5) - hash);
+    });
+    let colour = "#";
+    for (let i = 0; i < 3; i++) {
+        const value = (hash >> (i * 8)) & 0xff;
+        colour += value.toString(16).padStart(2, "0");
+    }
+    return colour;
+};
+
 const PackageTree = ({ purl, path }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
@@ -86,6 +99,11 @@ const PackageTree = ({ purl, path }: Props) => {
 
     let tree: TreeApi<TreeNode> | null | undefined;
     const uniqueLicenses = extractUniqueLicenses(originalTreeData);
+    const uniqueLicensesToColorMap = new Map<string, string>();
+
+    uniqueLicenses.forEach((license) => {
+        uniqueLicensesToColorMap.set(license, stringToColour(license));
+    });
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
@@ -267,6 +285,7 @@ const PackageTree = ({ purl, path }: Props) => {
                                 filtering={filtering}
                                 purl={purl}
                                 openedNodeId={openedNodeId}
+                                uniqueLicenses={uniqueLicensesToColorMap}
                             />
                         )}
                     </Tree>
@@ -280,7 +299,7 @@ const PackageTree = ({ purl, path }: Props) => {
 
             <div className="mt-2 flex flex-col items-center rounded-md border p-1 text-sm shadow-lg">
                 <ComboBoxPackage
-                    data={uniqueLicenses}
+                    data={uniqueLicensesToColorMap}
                     filterString={"licenseFilter"}
                     className="mb-1 w-full"
                 />
