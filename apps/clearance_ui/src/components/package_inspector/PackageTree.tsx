@@ -136,7 +136,7 @@ const PackageTree = ({ purl, path }: Props) => {
             setTreeData(updatedTreeData); // Set the updated and/or filtered tree data to trigger a re-render
             setIsExpanded(true); // Expand the tree when filtering
         } else {
-            // Reset to original tree data if licenseFilter is empty
+            // Reset to original tree data if licenseFilter is empty or filtering is off
             setTreeData(originalTreeData);
             setIsExpanded(false);
         }
@@ -154,17 +154,16 @@ const PackageTree = ({ purl, path }: Props) => {
             setTreeData(convertedData);
             setOriginalTreeData(convertedData);
         }
-    }, [data, pathExclusions]);
+    }, [data, pathExclusions, licenseFilter]);
 
-    // This should have worked without useEffect, as a component should be re-rendered
-    // when the isExpanded state changes. However, it didn't
+    // Handle expanding and collapsing the tree
     useEffect(() => {
-        if (isExpanded) {
+        if (isExpanded && (!licenseFilter || filtering)) {
             tree?.openAll();
-        } else {
+        } else if (!isExpanded && !filtering) {
             tree?.closeAll();
         }
-    }, [isExpanded]);
+    }, [isExpanded, tree, filtering, treeData, licenseFilter]);
 
     useEffect(() => {
         if (path) {
@@ -193,7 +192,14 @@ const PackageTree = ({ purl, path }: Props) => {
                 />
                 <Button
                     className="ml-2 rounded-md p-1 text-xs"
-                    onClick={() => setIsExpanded(!isExpanded)}
+                    onClick={() => {
+                        if (isExpanded) {
+                            tree?.closeAll();
+                        } else {
+                            tree?.openAll();
+                        }
+                        setIsExpanded(!isExpanded);
+                    }}
                     variant={"outline"}
                 >
                     {isExpanded ? "Collapse" : "Expand"}
