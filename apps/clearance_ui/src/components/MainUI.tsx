@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import useSettingsStore from "@/store/settings.store";
 import {
     ResizableHandle,
@@ -18,25 +18,6 @@ type MainUIProps = {
 };
 
 const MainUI = ({ purl, path }: MainUIProps) => {
-    const treeWidth = useSettingsStore((state) => state.treeWidth);
-    const setTreeWidth = useSettingsStore((state) => state.setTreeWidth);
-    const treeRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // Event listener for mouseup event on window
-        const handleMouseUp = () => {
-            if (treeRef.current) {
-                setTreeWidth(treeRef.current.offsetWidth);
-            }
-        };
-        // Add the event listener when the component mounts
-        window.addEventListener("mouseup", handleMouseUp);
-        // Cleanup the event listener when the component unmounts
-        return () => {
-            window.removeEventListener("mouseup", handleMouseUp);
-        };
-    }, [setTreeWidth]);
-
     return (
         <ResizablePanelGroup direction="horizontal" className="border">
             <ResizablePanel defaultSize={30}>
