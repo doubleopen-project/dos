@@ -18,9 +18,12 @@ export default function App({ Component, pageProps }: AppProps) {
             disableTransitionOnChange
         >
             <TanstackProvider>
-                <Sidebar>
-                    <Component {...pageProps} />
-                </Sidebar>
+                <div className="flex">
+                    <Sidebar />
+                    <main className="w-full overflow-auto">
+                        {<Component {...pageProps} />}
+                    </main>
+                </div>
                 <Toaster />
             </TanstackProvider>
         </ThemeProvider>
