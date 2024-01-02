@@ -41,17 +41,18 @@ const MainUI = ({ purl, path }: MainUIProps) => {
         <ResizablePanelGroup direction="horizontal" className="border">
             <ResizablePanel defaultSize={30}>
                 {/* 1st column: Package Inspector */}
-                <div className="m-2 mr-1 flex h-full flex-col overflow-auto rounded-md border p-2 shadow-lg">
+                <div className="mr-1 flex h-full flex-col overflow-auto p-2">
                     <PackageTree purl={purl} path={path} />
                 </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={70}>
-                {/* 2nd column: Open a file for license inspection and clearance */}
-                <div className="m-2 ml-1 h-full flex-1 overflow-auto rounded-md border p-2 shadow-lg">
+                {/* 2nd column: File Inspector */}
+                <div className="ml-1 h-full flex-1 overflow-auto p-2">
                     <CodeInspector purl={purl} path={path} />
                 </div>
             </ResizablePanel>
+            {/* 3rd column: Clearance */}
         </ResizablePanelGroup>
     );
 };
