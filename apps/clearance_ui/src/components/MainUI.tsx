@@ -4,6 +4,11 @@
 
 import React, { useEffect, useRef } from "react";
 import useSettingsStore from "@/store/settings.store";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
 import PackageTree from "@/components/package_inspector/PackageTree";
 
@@ -33,21 +38,21 @@ const MainUI = ({ purl, path }: MainUIProps) => {
     }, [setTreeWidth]);
 
     return (
-        <div className="flex flex-col overflow-auto md:h-screen md:flex-row">
-            {/* 1st column: Show and filter package */}
-            <div
-                ref={treeRef}
-                style={{ width: treeWidth }}
-                className="m-2 mr-1 flex resize-x flex-col overflow-auto rounded-md border p-2 shadow-lg"
-            >
-                <PackageTree purl={purl} path={path} />
-            </div>
-
-            {/* 2nd column: Open a file for license inspection and clearance */}
-            <div className="m-2 ml-1 flex-1 overflow-auto rounded-md border p-2 shadow-lg">
-                <CodeInspector purl={purl} path={path} />
-            </div>
-        </div>
+        <ResizablePanelGroup direction="horizontal" className="border">
+            <ResizablePanel defaultSize={30}>
+                {/* 1st column: Package Inspector */}
+                <div className="m-2 mr-1 flex h-full flex-col overflow-auto rounded-md border p-2 shadow-lg">
+                    <PackageTree purl={purl} path={path} />
+                </div>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={70}>
+                {/* 2nd column: Open a file for license inspection and clearance */}
+                <div className="m-2 ml-1 h-full flex-1 overflow-auto rounded-md border p-2 shadow-lg">
+                    <CodeInspector purl={purl} path={path} />
+                </div>
+            </ResizablePanel>
+        </ResizablePanelGroup>
     );
 };
 
