@@ -15,7 +15,7 @@ type Props = {
 
 const BulkConclusionFormDialog = ({ purl, open, setOpen }: Props) => {
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
                 <BulkConclusionForm purl={purl} setOpen={setOpen} />
                 <DialogFooter className="flex justify-end">
