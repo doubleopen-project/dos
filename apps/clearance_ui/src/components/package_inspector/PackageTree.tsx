@@ -31,6 +31,7 @@ import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
+import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
@@ -150,6 +151,7 @@ const PackageTree = ({ purl, path }: Props) => {
                 pathExclusions.pathExclusions.map(
                     (exclusion) => exclusion.pattern,
                 ),
+                licenseFilter,
             );
             setTreeData(convertedData);
             setOriginalTreeData(convertedData);
@@ -161,7 +163,18 @@ const PackageTree = ({ purl, path }: Props) => {
         if (isExpanded && (!licenseFilter || filtering)) {
             tree?.openAll();
         } else if (!isExpanded && !filtering) {
-            tree?.closeAll();
+            if (licenseFilter) {
+                const nodes = getNodesWithChildren(treeData);
+                for (const node of nodes) {
+                    if (node.openByDefault) {
+                        tree?.open(node);
+                    } else {
+                        tree?.close(node);
+                    }
+                }
+            } else {
+                tree?.closeAll();
+            }
         }
     }, [isExpanded, tree, filtering, treeData, licenseFilter]);
 
