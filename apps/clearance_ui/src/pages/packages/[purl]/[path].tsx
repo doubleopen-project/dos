@@ -7,12 +7,14 @@ import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useSettingsStore from "@/store/settings.store";
 
 const MainUI = dynamic(() => import("@/components/MainUI"), {
     ssr: false,
 });
 
 export default function PackageAndFile() {
+    const mainWidths = useSettingsStore((state) => state.mainWidths);
     const router = useRouter();
     const { purl, path } = router.query;
     const {
@@ -49,6 +51,7 @@ export default function PackageAndFile() {
                 <MainUI
                     purl={purl.toString().replace(/\/@/g, "/%40")}
                     path={path.toString()}
+                    defaultMainWidths={mainWidths}
                 />
             )}
             {isLoading && (
