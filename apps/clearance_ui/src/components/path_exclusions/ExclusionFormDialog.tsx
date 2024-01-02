@@ -16,7 +16,7 @@ type Props = {
 
 const ExclusionFormDialog = ({ purl, pattern, open, setOpen }: Props) => {
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
                 <ExclusionForm
                     purl={purl}
