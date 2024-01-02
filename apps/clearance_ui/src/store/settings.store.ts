@@ -9,21 +9,25 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type State = {
-    treeWidth: number;
+    mainWidths: number[];
+    clearanceHeights: number[];
 };
 
 type Actions = {
-    setTreeWidth: (treeWidth: number) => void;
+    setMainWidths: (w: number[]) => void;
+    setClearanceHeights: (h: number[]) => void;
 };
 
 const useSettingsStore = create<State & Actions>()(
     persist(
         (set) => ({
-            treeWidth: 300,
-            setTreeWidth: (treeWidth: number) => set({ treeWidth }),
+            mainWidths: [30, 70],
+            setMainWidths: (w) => set({ mainWidths: w }),
+            clearanceHeights: [20, 30, 10],
+            setClearanceHeights: (h) => set({ clearanceHeights: h }),
         }),
         {
-            name: "theme-storage",
+            name: "layout-storage",
         },
     ),
 );
