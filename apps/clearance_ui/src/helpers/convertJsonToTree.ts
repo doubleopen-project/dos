@@ -11,6 +11,7 @@ import { updateExclusionStatus } from "./updateExclusionStatus";
 export const convertJsonToTree = (
     filetrees: FileTreeType[],
     patterns?: string[],
+    licenseFilter?: string,
 ): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
     const root: TreeNode[] = []; // Initialize an empty root
@@ -103,6 +104,22 @@ export const convertJsonToTree = (
                         }
                         if (fileTree.file.licenseConclusions.length > 0) {
                             map[ancestorPath].hasLicenseConclusions = true; // Propagate flag to ancestors
+                        }
+                        if (
+                            licenseFilter &&
+                            fileTree.file.licenseFindings.length > 0 &&
+                            j === i
+                        ) {
+                            for (const finding of fileTree.file
+                                .licenseFindings) {
+                                if (
+                                    finding.licenseExpressionSPDX
+                                        .toLowerCase()
+                                        .includes(licenseFilter.toLowerCase())
+                                ) {
+                                    map[ancestorPath].openByDefault = true;
+                                }
+                            }
                         }
                     }
                 }
