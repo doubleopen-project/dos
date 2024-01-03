@@ -45,7 +45,7 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
             <ResizableHandle withHandle />
 
             {/* 3rd column: Clearance */}
-            <ResizablePanel defaultSize={20}>
+            <ResizablePanel defaultSize={defaultMainWidths[2]}>
                 <ResizablePanelGroup direction="vertical">
                     <ResizablePanel defaultSize={20}>
                         <div className="flex h-full items-center justify-center p-6">
