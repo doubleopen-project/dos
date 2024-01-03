@@ -89,7 +89,10 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                                     className="p-2"
                                     onClick={() => setOpenSubdirsDialog(true)}
                                 >
-                                    <TbFoldersOff className="text-lg" />
+                                    <TbFoldersOff
+                                        className="text-lg"
+                                        data-testid="path-exclusion-subdirs"
+                                    />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
