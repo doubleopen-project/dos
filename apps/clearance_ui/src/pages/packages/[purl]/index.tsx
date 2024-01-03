@@ -46,7 +46,7 @@ export default function Package() {
     // This is because in the purl spec, @ is used to separate the package name and the version
 
     return (
-        <div className="h-screen">
+        <div className="h-full">
             {user && purl && (
                 <MainUI
                     purl={purl.toString().replace(/\/@/g, "/%40")}

@@ -38,7 +38,7 @@ export default function ClearanceLibrary() {
     }
 
     return (
-        <div className="flex h-screen flex-col p-2">
+        <div className="flex h-full flex-col p-2">
             {user && (
                 <>
                     <div className="m-1 flex-none rounded-md shadow">
