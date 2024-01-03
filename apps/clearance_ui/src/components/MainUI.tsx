@@ -28,20 +28,58 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
                 setMainWidths(sizes);
             }}
         >
+            {/* 1st column: Package Inspector */}
             <ResizablePanel defaultSize={defaultMainWidths[0]}>
-                {/* 1st column: Package Inspector */}
                 <div className="mr-1 flex h-full flex-col overflow-auto p-2">
                     <PackageTree purl={purl} path={path} />
                 </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
+
+            {/* 2nd column: File Inspector */}
             <ResizablePanel defaultSize={defaultMainWidths[1]}>
-                {/* 2nd column: File Inspector */}
                 <div className="ml-1 h-full flex-1 overflow-auto p-2">
                     <CodeInspector purl={purl} path={path} />
                 </div>
             </ResizablePanel>
+            <ResizableHandle withHandle />
+
             {/* 3rd column: Clearance */}
+            <ResizablePanel defaultSize={20}>
+                <ResizablePanelGroup direction="vertical">
+                    <ResizablePanel defaultSize={20}>
+                        <div className="flex h-full items-center justify-center p-6">
+                            <span className="font-semibold">
+                                Detected license
+                            </span>
+                        </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={30}>
+                        <div className="flex h-full items-center justify-center p-6">
+                            <span className="font-semibold">
+                                Individual license matches
+                            </span>
+                        </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={10}>
+                        <div className="flex h-full items-center justify-center p-6">
+                            <span className="font-semibold">
+                                Concluded license
+                            </span>
+                        </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={40}>
+                        <div className="flex h-full items-center justify-center p-6">
+                            <span className="font-semibold">
+                                Create a license conclusion
+                            </span>
+                        </div>
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+            </ResizablePanel>
         </ResizablePanelGroup>
     );
 };
