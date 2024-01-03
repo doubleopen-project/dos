@@ -4,6 +4,7 @@
 
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navigation/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
@@ -18,6 +19,12 @@ export default function App({ Component, pageProps }: AppProps) {
             disableTransitionOnChange
         >
             <TanstackProvider>
+                <Head>
+                    <style>
+                        @import
+                        url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap');
+                    </style>
+                </Head>
                 <div className="flex flex-col">
                     <Navbar />
                     <main className="w-full overflow-auto">
