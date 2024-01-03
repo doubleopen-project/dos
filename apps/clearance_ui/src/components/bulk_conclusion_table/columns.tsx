@@ -28,12 +28,12 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
-export type BulkCuration = ZodiosResponseByAlias<
+export type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
     "GetBulkConclusions"
 >["bulkConclusions"][0];
 
-export const columns = (user: User): ColumnDef<BulkCuration>[] => {
+export const columns = (user: User): ColumnDef<BulkConclusion>[] => {
     return [
         {
             accessorKey: "updatedAt",
