@@ -5,9 +5,9 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/navigation/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import Sidebar from "../components/Sidebar";
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -18,8 +18,8 @@ export default function App({ Component, pageProps }: AppProps) {
             disableTransitionOnChange
         >
             <TanstackProvider>
-                <div className="flex">
-                    <Sidebar />
+                <div className="flex flex-col">
+                    <Navbar />
                     <main className="w-full overflow-auto">
                         {<Component {...pageProps} />}
                     </main>
