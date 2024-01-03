@@ -21,9 +21,9 @@ type Actions = {
 const useSettingsStore = create<State & Actions>()(
     persist(
         (set) => ({
-            mainWidths: [30, 70],
+            mainWidths: [30, 50, 20],
             setMainWidths: (w) => set({ mainWidths: w }),
-            clearanceHeights: [20, 30, 10],
+            clearanceHeights: [20, 30, 10, 40],
             setClearanceHeights: (h) => set({ clearanceHeights: h }),
         }),
         {
