@@ -127,6 +127,7 @@ const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
                                 <FormControl>
                                     <Input
                                         className="!min-h-[40px] text-xs"
+                                        data-testid="path-exclusion-pattern"
                                         placeholder="Glob pattern matching to the path to be excluded..."
                                         {...field}
                                     />

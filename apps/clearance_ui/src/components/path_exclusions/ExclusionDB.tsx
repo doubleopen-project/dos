@@ -104,7 +104,10 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                                 .split("T")[0]
                                                         }
                                                     </span>
-                                                    <span className="rounded-sm bg-orange-400 p-1 font-bold">
+                                                    <span
+                                                        className="rounded-sm bg-orange-400 p-1 font-bold"
+                                                        data-testid="path-exclusion-creator"
+                                                    >
                                                         {
                                                             exclusion.user
                                                                 .username
