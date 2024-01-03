@@ -43,7 +43,7 @@ export default function Logout() {
     }, [logoutUser]);
 
     return (
-        <div className="h-screen">
+        <div className="h-full">
             <div className="flex h-full items-center justify-center ">
                 {isLoading && (
                     <div className="flex h-min w-72 justify-center rounded-md p-10 text-lg">

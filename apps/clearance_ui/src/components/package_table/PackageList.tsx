@@ -21,7 +21,7 @@ const PackageList = ({ data }: PackageListProps) => {
     const tableColumns = columns(user.role);
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto h-full">
             <DataTable columns={tableColumns} data={data.packages} />
         </div>
     );

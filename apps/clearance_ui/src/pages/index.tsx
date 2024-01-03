@@ -4,7 +4,7 @@
 
 export default function Home() {
     return (
-        <main className="min-h-screen">
+        <main className="min-h-full">
             <div className="flex flex-col items-center justify-center py-6">
                 <h1>Welcome to Double Open Clearance UI</h1>
             </div>

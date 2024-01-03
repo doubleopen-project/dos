@@ -28,7 +28,7 @@ const MultiSection = ({
     const searchParamSection = searchParams.get("section") || defaultSection;
 
     return (
-        <div className={cn("p-2 md:h-screen", className)}>
+        <div className={cn("p-2 md:h-full", className)}>
             <div className="m-1 h-full w-full rounded-md border p-10 shadow-lg sm:p-20">
                 <h1 className="pb-2">{title}</h1>
                 <Separator />

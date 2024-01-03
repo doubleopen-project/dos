@@ -25,9 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
                         url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap');
                     </style>
                 </Head>
-                <div className="flex flex-col">
+                <div className="flex h-screen flex-col">
                     <Navbar />
-                    <main className="w-full overflow-auto">
+                    <main className="h-full w-full overflow-auto">
                         {<Component {...pageProps} />}
                     </main>
                 </div>
