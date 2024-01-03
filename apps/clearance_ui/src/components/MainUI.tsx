@@ -16,10 +16,20 @@ type MainUIProps = {
     purl: string;
     path: string | undefined;
     defaultMainWidths: number[];
+    defaultClearanceHeights: number[];
 };
 
-const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
+const MainUI = ({
+    purl,
+    path,
+    defaultMainWidths,
+    defaultClearanceHeights,
+}: MainUIProps) => {
     const setMainWidths = useSettingsStore((state) => state.setMainWidths);
+    const setClearanceHeights = useSettingsStore(
+        (state) => state.setClearanceHeights,
+    );
+
     return (
         <ResizablePanelGroup
             direction="horizontal"
@@ -46,8 +56,13 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
 
             {/* 3rd column: Clearance */}
             <ResizablePanel defaultSize={defaultMainWidths[2]}>
-                <ResizablePanelGroup direction="vertical">
-                    <ResizablePanel defaultSize={20}>
+                <ResizablePanelGroup
+                    direction="vertical"
+                    onLayout={(sizes: number[]) => {
+                        setClearanceHeights(sizes);
+                    }}
+                >
+                    <ResizablePanel defaultSize={defaultClearanceHeights[0]}>
                         <div className="flex h-full items-center justify-center p-6">
                             <span className="font-semibold">
                                 Detected license
@@ -55,7 +70,7 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
                         </div>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={30}>
+                    <ResizablePanel defaultSize={defaultClearanceHeights[1]}>
                         <div className="flex h-full items-center justify-center p-6">
                             <span className="font-semibold">
                                 Individual license matches
@@ -63,7 +78,7 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
                         </div>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={10}>
+                    <ResizablePanel defaultSize={defaultClearanceHeights[2]}>
                         <div className="flex h-full items-center justify-center p-6">
                             <span className="font-semibold">
                                 Concluded license
@@ -71,7 +86,7 @@ const MainUI = ({ purl, path, defaultMainWidths }: MainUIProps) => {
                         </div>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={40}>
+                    <ResizablePanel defaultSize={defaultClearanceHeights[3]}>
                         <div className="flex h-full items-center justify-center p-6">
                             <span className="font-semibold">
                                 Create a license conclusion

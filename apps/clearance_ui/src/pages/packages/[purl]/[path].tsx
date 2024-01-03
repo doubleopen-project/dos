@@ -15,6 +15,9 @@ const MainUI = dynamic(() => import("@/components/MainUI"), {
 
 export default function PackageAndFile() {
     const mainWidths = useSettingsStore((state) => state.mainWidths);
+    const clearanceHeights = useSettingsStore(
+        (state) => state.clearanceHeights,
+    );
     const router = useRouter();
     const { purl, path } = router.query;
     const {
@@ -52,6 +55,7 @@ export default function PackageAndFile() {
                     purl={purl.toString().replace(/\/@/g, "/%40")}
                     path={path.toString()}
                     defaultMainWidths={mainWidths}
+                    defaultClearanceHeights={clearanceHeights}
                 />
             )}
             {isLoading && (
