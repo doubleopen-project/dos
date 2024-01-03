@@ -89,6 +89,7 @@ test("create license conclusion, delete from Clearance Library", async ({
 
     // Delete the same conclusion
     await page.goto("/clearances");
+    await page.getByTestId("clearance-lib-lic-conclusions").click();
     await expect(
         page.getByRole("cell", { name: "Apache-" }).first(),
     ).toContainText("Apache-2.0");
@@ -98,7 +99,7 @@ test("create license conclusion, delete from Clearance Library", async ({
     const rows = await page.$$('tr:has-text("Test comment 2")');
     const row = rows[0];
     const button = row
-        ? await row.$('[data-testid="delete-license-conclusion"]')
+        ? await row.$('[data-testid="delete-clearance-button"]')
         : null;
     if (button) {
         await button.click();

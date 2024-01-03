@@ -136,7 +136,10 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                                     className="p-2"
                                     onClick={() => setOpenFileExtDialog(true)}
                                 >
-                                    <TbFilesOff className="text-lg" />
+                                    <TbFilesOff
+                                        className="text-lg"
+                                        data-testid="path-exclusion-similar"
+                                    />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>

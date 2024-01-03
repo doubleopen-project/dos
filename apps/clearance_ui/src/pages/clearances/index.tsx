@@ -59,13 +59,22 @@ export default function ClearanceLibrary() {
                     <div className="mx-1 flex-1 overflow-auto rounded-lg border shadow">
                         <Tabs defaultValue="license_conclusions">
                             <TabsList className="ml-8 mt-2 p-2">
-                                <TabsTrigger value="license_conclusions">
+                                <TabsTrigger
+                                    value="license_conclusions"
+                                    data-testid="clearance-lib-lic-conclusions"
+                                >
                                     License Conclusions
                                 </TabsTrigger>
-                                <TabsTrigger value="bulk_curations">
+                                <TabsTrigger
+                                    value="bulk_curations"
+                                    data-testid="clearance-lib-bulk-conclusions"
+                                >
                                     Bulk Conclusions
                                 </TabsTrigger>
-                                <TabsTrigger value="path_exclusions">
+                                <TabsTrigger
+                                    value="path_exclusions"
+                                    data-testid="clearance-lib-path-exclusions"
+                                >
                                     Path Exclusions
                                 </TabsTrigger>
                             </TabsList>
