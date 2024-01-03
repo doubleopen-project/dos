@@ -88,4 +88,13 @@
     h2 {
         @apply text-2xl font-semibold leading-none tracking-tight;
     }
+
+    .logo {
+        font-family: "Fira Code", monospace;
+        @apply text-xl text-black dark:text-white;
+    }
+
+    .logo-brackets {
+        color: #ff3366 !important;
+    }
 }
