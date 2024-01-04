@@ -28,26 +28,32 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                     <Loader2 className="animate-spin" />
                 </div>
             )}
-            {data && data?.licenseFindings[0] && (
+            {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="m-1 font-semibold">
                         Detected license
                     </Label>
-                    <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
-                        {data.licenseFindings.map((license) => (
-                            <span key={license.id}>
-                                <>
-                                    {
-                                        new Date(license.updatedAt)
-                                            .toISOString()
-                                            .split("T")[0]
-                                    }
-                                    : {license.licenseExpressionSPDX}
-                                    <br />
-                                </>
-                            </span>
-                        ))}
-                    </p>
+                    {data?.licenseFindings[0] ? (
+                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                            {data.licenseFindings.map((license) => (
+                                <span key={license.id}>
+                                    <>
+                                        {
+                                            new Date(license.updatedAt)
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
+                                        : {license.licenseExpressionSPDX}
+                                        <br />
+                                    </>
+                                </span>
+                            ))}
+                        </p>
+                    ) : (
+                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                            No license detected
+                        </p>
+                    )}
                 </div>
             )}
             {error && (
