@@ -10,6 +10,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import DetectedLicense from "@/components/clearance_inspector/DetectedLicense";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
 type ClearanceInspectorProps = {
@@ -53,11 +54,7 @@ const ClearanceInspector = ({
                     }}
                 >
                     <ResizablePanel defaultSize={defaultClearanceHeights[0]}>
-                        <div className="flex h-full items-center justify-center p-6">
-                            <span className="font-semibold">
-                                Detected license
-                            </span>
-                        </div>
+                        <DetectedLicense fileSha256={data.fileSha256} />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={defaultClearanceHeights[1]}>
