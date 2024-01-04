@@ -63,30 +63,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
 
-            {fileSha256 && licenseConclusions?.licenseConclusions[0] && (
-                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
-                    <Label className="font-semibold">Curations</Label>
-                    <p className="rounded-md border p-1 text-xs">
-                        {licenseConclusions.licenseConclusions.map(
-                            (license) => (
-                                <span key={license.id}>
-                                    <>
-                                        {
-                                            new Date(license.updatedAt)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        :{" "}
-                                        {license.concludedLicenseExpressionSPDX}
-                                        <br />
-                                    </>
-                                </span>
-                            ),
-                        )}
-                    </p>
-                </div>
-            )}
-
             <div className="flex flex-1 items-center justify-center overflow-auto">
                 {!path && (
                     <div className="flex h-full items-center justify-center">
