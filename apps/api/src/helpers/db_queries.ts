@@ -874,6 +874,46 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
     return file;
 };
 
+export const findFileSha256ByPurlAndPath = async (
+    purl: string,
+    path: string,
+): Promise<string | null> => {
+    let retries = initialRetryCount;
+    let fileSha256: string | null = null;
+
+    while (retries > 0) {
+        try {
+            fileSha256 =
+                (
+                    await prisma.fileTree.findFirst({
+                        where: {
+                            package: {
+                                purl: purl,
+                            },
+                            path: path,
+                        },
+                        select: {
+                            file: {
+                                select: {
+                                    sha256: true,
+                                },
+                            },
+                        },
+                    })
+                )?.file.sha256 || null;
+            break;
+        } catch (error) {
+            console.log("Error with trying to find File: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return fileSha256;
+};
+
 export const findFileHashesByPackageId = async (
     packageId: number,
 ): Promise<string[]> => {

@@ -445,6 +445,10 @@ export const PutTokenRes = z.object({
     token: z.string(),
 });
 
+export const GetFileRes = z.object({
+    fileSha256: z.string(),
+});
+
 //------------------ GET license-findings -------------------
 
 export const GetLicenseFindingsForFileRes = z.object({

@@ -326,6 +326,26 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/packages/:purl/filetrees/:path/files",
+        alias: "GetFile",
+        description: "Get file sha256 for file in path in package",
+        parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: PathParamPurl,
+            },
+            {
+                name: "path",
+                type: "Path",
+                schema: PathParamString("Path"),
+            },
+        ],
+        response: schemas.GetFileRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/files/:sha256/license-findings",
         alias: "GetLicenseFindingsForFile",
         description: "Get license findings for specified file",
