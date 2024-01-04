@@ -64,27 +64,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                 )}
             </div>
 
-            {data?.licenseFindings[0] && (
-                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
-                    <Label className="font-semibold">Detected SPDX</Label>
-                    <p className="rounded-md border p-1 text-xs">
-                        {data.licenseFindings.map((license) => (
-                            <span key={license.id}>
-                                <>
-                                    {
-                                        new Date(license.updatedAt)
-                                            .toISOString()
-                                            .split("T")[0]
-                                    }
-                                    : {license.licenseExpressionSPDX}
-                                    <br />
-                                </>
-                            </span>
-                        ))}
-                    </p>
-                </div>
-            )}
-
             {data?.licenseFindings[0]?.licenseFindingMatches && (
                 <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                     <Label className="font-semibold">
