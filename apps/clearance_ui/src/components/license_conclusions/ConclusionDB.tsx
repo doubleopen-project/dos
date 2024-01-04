@@ -149,7 +149,10 @@ const ConclusionDB = ({
                                                         }
                                                     </span>
                                                     {d.bulkConclusionId && (
-                                                        <span className="ml-1 rounded-sm bg-blue-400 p-1 font-bold">
+                                                        <span
+                                                            data-testid="license-type"
+                                                            className="ml-1 rounded-sm bg-blue-400 p-1 font-bold"
+                                                        >
                                                             BULK
                                                         </span>
                                                     )}
