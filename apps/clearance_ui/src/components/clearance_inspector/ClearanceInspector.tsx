@@ -10,6 +10,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import ConclusionFormWrapper from "@/components/clearance_inspector/ConclusionFormWrapper";
 import DetectedLicense from "@/components/clearance_inspector/DetectedLicense";
 import LicenseConclusions from "@/components/clearance_inspector/LicenseConclusions";
 import LicenseMatches from "@/components/clearance_inspector/LicenseMatches";
@@ -71,11 +72,10 @@ const ClearanceInspector = ({
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={defaultClearanceHeights[3]}>
-                        <div className="flex h-full items-center justify-center p-6">
-                            <span className="font-semibold">
-                                Create a license conclusion
-                            </span>
-                        </div>
+                        <ConclusionFormWrapper
+                            purl={purl}
+                            fileSha256={data.fileSha256}
+                        />
                     </ResizablePanel>
                 </ResizablePanelGroup>
             )}
