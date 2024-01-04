@@ -8,8 +8,6 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
-import ConclusionForm from "@/components/license_conclusions/ConclusionForm";
-import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type CodeInspectorProps = {
     purl: string;
@@ -25,19 +23,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         { withCredentials: true },
         { enabled: !!path && !!purl },
     );
-    const fileSha256 = data?.sha256;
-    const pathPurl = toPathPurl(purl);
-    const { data: licenseConclusions } =
-        userHooks.useGetLicenseConclusionsForFileInPackage(
-            {
-                params: {
-                    purl: pathPurl,
-                    sha256: fileSha256 as string,
-                },
-                withCredentials: true,
-            },
-            { enabled: !!fileSha256 && !!pathPurl },
-        );
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL
@@ -86,14 +71,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     </div>
                 )}
             </div>
-            {data && purl && licenseConclusions && (
-                <ConclusionForm
-                    purl={purl}
-                    lcData={licenseConclusions}
-                    fileData={data}
-                    className="mt-2 rounded-md border p-1 text-sm shadow-lg"
-                />
-            )}
         </div>
     );
 };
