@@ -324,4 +324,19 @@ export const userAPI = makeApi([
         response: schemas.PostFileRes,
         errors,
     },
+    {
+        method: "get",
+        path: "/files/:sha256/license-findings",
+        alias: "GetLicenseFindingsForFile",
+        description: "Get license findings for specified file",
+        parameters: [
+            {
+                name: "sha256",
+                type: "Path",
+                schema: PathParamSha256,
+            },
+        ],
+        response: schemas.GetLicenseFindingsForFileRes,
+        errors,
+    },
 ]);

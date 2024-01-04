@@ -444,3 +444,29 @@ export const PostFileRes = z.object({
 export const PutTokenRes = z.object({
     token: z.string(),
 });
+
+//------------------ GET license-findings -------------------
+
+export const GetLicenseFindingsForFileRes = z.object({
+    licenseFindings: z.array(
+        z.object({
+            id: z.number(),
+            createdAt: z.coerce.date(),
+            updatedAt: z.coerce.date(),
+            licenseExpressionSPDX: z.string(),
+            scanner: z.string(),
+            scannerConfig: z.string(),
+            licenseFindingMatches: z.array(
+                z.object({
+                    id: z.number(),
+                    createdAt: z.coerce.date(),
+                    updatedAt: z.coerce.date(),
+                    licenseExpression: z.nullable(z.string()),
+                    startLine: z.number(),
+                    endLine: z.number(),
+                    score: z.number(),
+                }),
+            ),
+        }),
+    ),
+});
