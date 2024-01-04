@@ -46,9 +46,15 @@ const MainUI = ({
 
             {/* 2nd column: File Inspector */}
             <ResizablePanel defaultSize={defaultMainWidths[1]}>
-                <div className="ml-1 h-full flex-1 overflow-auto p-2">
-                    <CodeInspector purl={purl} path={path} />
-                </div>
+                {path ? (
+                    <div className="ml-1 h-full flex-1 overflow-auto p-2">
+                        <CodeInspector purl={purl} path={path} />
+                    </div>
+                ) : (
+                    <div className="flex h-full items-center justify-center">
+                        No file opened
+                    </div>
+                )}
             </ResizablePanel>
             <ResizableHandle withHandle />
 

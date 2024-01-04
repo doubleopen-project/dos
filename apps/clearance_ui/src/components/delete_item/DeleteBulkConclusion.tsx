@@ -16,7 +16,6 @@ type Props = {
 
 const DeleteBulkConclusion = ({ id }: Props) => {
     const { toast } = useToast();
-    const keyFile = userHooks.getKeyByPath("post", "/file");
     const keyFiletree = userHooks.getKeyByPath(
         "get",
         "/packages/:purl/filetrees",
@@ -80,7 +79,6 @@ const DeleteBulkConclusion = ({ id }: Props) => {
                         description: `Bulk license conclusion deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
                     });
                     // When a bulk curation is deleted, invalidate queries to refetch the data
-                    queryClient.invalidateQueries(keyFile);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                     queryClient.invalidateQueries(keyBulkCuration);

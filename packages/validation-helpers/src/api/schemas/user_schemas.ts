@@ -4,12 +4,7 @@
 
 import isGlob from "is-glob";
 import { z } from "zod";
-import {
-    getPasswordSchema,
-    getUsernameSchema,
-    purlSchema,
-    sha256Schema,
-} from "./common_schemas";
+import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -393,60 +388,16 @@ export const GetPackagesRes = z.object({
     ),
 });
 
-//------------------- POST file -------------------
-
-export const PostFileReq = z
-    .object({
-        purl: z.string(),
-        path: z.string(),
-        sha256: sha256Schema(false),
-    })
-    .partial()
-    .refine(
-        ({ purl, path, sha256 }) =>
-            (purl !== undefined && path !== undefined) || sha256 !== undefined,
-        { message: "Either purl and path or sha256 is required" },
-    );
-
-export const PostFileRes = z.object({
-    sha256: z.string(),
-    downloadUrl: z.string(),
-    licenseFindings: z.array(
-        z.object({
-            id: z.number(),
-            updatedAt: z.coerce.date(),
-            licenseExpressionSPDX: z.string(),
-            licenseFindingMatches: z.array(
-                z.object({
-                    id: z.number(),
-                    updatedAt: z.coerce.date(),
-                    licenseExpression: z.nullable(z.string()),
-                    startLine: z.number(),
-                    endLine: z.number(),
-                    score: z.number(),
-                }),
-            ),
-        }),
-    ),
-    copyrightFindings: z.array(
-        z.object({
-            id: z.number(),
-            updatedAt: z.coerce.date(),
-            copyright: z.string(),
-            startLine: z.number(),
-            endLine: z.number(),
-        }),
-    ),
-});
-
 //------------------ PUT token -------------------
 
 export const PutTokenRes = z.object({
     token: z.string(),
 });
 
+//------------------ GET file -------------------
 export const GetFileRes = z.object({
-    fileSha256: z.string(),
+    sha256: z.string(),
+    downloadUrl: z.string(),
 });
 
 //------------------ GET license-findings -------------------

@@ -4,14 +4,17 @@
 
 import React from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias } from "@zodios/core";
 import { useTheme } from "next-themes";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { userAPI } from "validation-helpers";
 import styles from "@/styles/CodeInspector.module.css";
 
-type LicenseFindings = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type LicenseFindings = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetLicenseFindingsForFile"
+>;
 
 type LicenseFindingMatch = {
     id: number;
