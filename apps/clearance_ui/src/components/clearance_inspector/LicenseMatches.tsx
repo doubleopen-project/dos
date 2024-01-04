@@ -29,15 +29,21 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
                     <Loader2 className="animate-spin" />
                 </div>
             )}
-            {data?.licenseFindings[0]?.licenseFindingMatches && (
+            {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="m-1 font-semibold">
                         Individual license matches
                     </Label>
-                    <ButtonGroup
-                        data={data.licenseFindings[0].licenseFindingMatches}
-                        className="h-full w-full overflow-y-auto rounded-md border p-1"
-                    />
+                    {data?.licenseFindings[0]?.licenseFindingMatches ? (
+                        <ButtonGroup
+                            data={data.licenseFindings[0].licenseFindingMatches}
+                            className="h-full w-full overflow-y-auto rounded-md border p-1"
+                        />
+                    ) : (
+                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                            No license matches
+                        </p>
+                    )}
                 </div>
             )}
             {error && (

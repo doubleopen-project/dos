@@ -32,26 +32,33 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                     <Loader2 className="animate-spin" />
                 </div>
             )}
-            {data && data.licenseConclusions?.length > 0 && (
+            {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="m-1 font-semibold">
                         Concluded license
                     </Label>
-                    <p className="h-full w-full overflow-y-auto rounded-md border p-1 text-xs">
-                        {data.licenseConclusions.map((license) => (
-                            <span key={license.id}>
-                                <>
-                                    {
-                                        new Date(license.updatedAt)
-                                            .toISOString()
-                                            .split("T")[0]
-                                    }
-                                    : {license.concludedLicenseExpressionSPDX}
-                                    <br />
-                                </>
-                            </span>
-                        ))}
-                    </p>
+                    {data.licenseConclusions?.length > 0 ? (
+                        <p className="h-full w-full overflow-y-auto rounded-md border p-1 text-xs">
+                            {data.licenseConclusions.map((license) => (
+                                <span key={license.id}>
+                                    <>
+                                        {
+                                            new Date(license.updatedAt)
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
+                                        :{" "}
+                                        {license.concludedLicenseExpressionSPDX}
+                                        <br />
+                                    </>
+                                </span>
+                            ))}
+                        </p>
+                    ) : (
+                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                            No license conclusions
+                        </p>
+                    )}
                 </div>
             )}
             {error && (
