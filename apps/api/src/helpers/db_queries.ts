@@ -2014,6 +2014,40 @@ export const findFileData = async (
     return file;
 };
 
+type LicenseFindingWithRelations = Prisma.LicenseFindingGetPayload<{
+    include: {
+        licenseFindingMatches: true;
+    };
+}>;
+
+export const findLicenseFindingsByFileSha256 = async (
+    sha256: string,
+): Promise<LicenseFindingWithRelations[]> => {
+    let licenseFindings: LicenseFindingWithRelations[] = [];
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            licenseFindings = await prisma.licenseFinding.findMany({
+                where: {
+                    fileSha256: sha256,
+                },
+                include: {
+                    licenseFindingMatches: true,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find LicenseFindings: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return licenseFindings;
+};
+
 export const findLicenseConclusionById = async (
     id: number,
 ): Promise<LicenseConclusion | null> => {

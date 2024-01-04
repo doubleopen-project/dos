@@ -1132,4 +1132,34 @@ userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     }
 });
 
+userRouter.get("/files/:sha256/license-findings", async (req, res) => {
+    try {
+        const sha256 = req.params.sha256;
+        const file = await dbQueries.findFileByHash(sha256);
+
+        if (!file)
+            throw new CustomError(
+                "File with the requested sha256 does not exist",
+                400,
+            );
+
+        const licenseFindings =
+            await dbQueries.findLicenseFindingsByFileSha256(sha256);
+
+        res.status(200).json({
+            licenseFindings: licenseFindings,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 export default userRouter;

@@ -7889,6 +7889,236 @@ declare const userAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/files/:sha256/license-findings";
+        alias: "GetLicenseFindingsForFile";
+        description: "Get license findings for specified file";
+        parameters: [
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseFindings: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            createdAt: zod.ZodDate;
+                            updatedAt: zod.ZodDate;
+                            licenseExpressionSPDX: zod.ZodString;
+                            scanner: zod.ZodString;
+                            scannerConfig: zod.ZodString;
+                            licenseFindingMatches: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        createdAt: zod.ZodDate;
+                                        updatedAt: zod.ZodDate;
+                                        licenseExpression: zod.ZodNullable<zod.ZodString>;
+                                        startLine: zod.ZodNumber;
+                                        endLine: zod.ZodNumber;
+                                        score: zod.ZodNumber;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        score: number;
+                                        updatedAt: Date;
+                                        licenseExpression: string | null;
+                                        startLine: number;
+                                        endLine: number;
+                                        createdAt: Date;
+                                    },
+                                    {
+                                        id: number;
+                                        score: number;
+                                        updatedAt: Date;
+                                        licenseExpression: string | null;
+                                        startLine: number;
+                                        endLine: number;
+                                        createdAt: Date;
+                                    }
+                                >,
+                                "many"
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            updatedAt: Date;
+                            licenseExpressionSPDX: string;
+                            licenseFindingMatches: {
+                                id: number;
+                                score: number;
+                                updatedAt: Date;
+                                licenseExpression: string | null;
+                                startLine: number;
+                                endLine: number;
+                                createdAt: Date;
+                            }[];
+                            createdAt: Date;
+                            scanner: string;
+                            scannerConfig: string;
+                        },
+                        {
+                            id: number;
+                            updatedAt: Date;
+                            licenseExpressionSPDX: string;
+                            licenseFindingMatches: {
+                                id: number;
+                                score: number;
+                                updatedAt: Date;
+                                licenseExpression: string | null;
+                                startLine: number;
+                                endLine: number;
+                                createdAt: Date;
+                            }[];
+                            createdAt: Date;
+                            scanner: string;
+                            scannerConfig: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseFindings: {
+                    id: number;
+                    updatedAt: Date;
+                    licenseExpressionSPDX: string;
+                    licenseFindingMatches: {
+                        id: number;
+                        score: number;
+                        updatedAt: Date;
+                        licenseExpression: string | null;
+                        startLine: number;
+                        endLine: number;
+                        createdAt: Date;
+                    }[];
+                    createdAt: Date;
+                    scanner: string;
+                    scannerConfig: string;
+                }[];
+            },
+            {
+                licenseFindings: {
+                    id: number;
+                    updatedAt: Date;
+                    licenseExpressionSPDX: string;
+                    licenseFindingMatches: {
+                        id: number;
+                        score: number;
+                        updatedAt: Date;
+                        licenseExpression: string | null;
+                        startLine: number;
+                        endLine: number;
+                        createdAt: Date;
+                    }[];
+                    createdAt: Date;
+                    scanner: string;
+                    scannerConfig: string;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const dosAPI: [
@@ -13404,6 +13634,236 @@ declare const dosAPI: [
                     updatedAt: Date;
                     startLine: number;
                     endLine: number;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/files/:sha256/license-findings";
+        alias: "GetLicenseFindingsForFile";
+        description: "Get license findings for specified file";
+        parameters: [
+            {
+                name: "sha256";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseFindings: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodNumber;
+                            createdAt: zod.ZodDate;
+                            updatedAt: zod.ZodDate;
+                            licenseExpressionSPDX: zod.ZodString;
+                            scanner: zod.ZodString;
+                            scannerConfig: zod.ZodString;
+                            licenseFindingMatches: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        id: zod.ZodNumber;
+                                        createdAt: zod.ZodDate;
+                                        updatedAt: zod.ZodDate;
+                                        licenseExpression: zod.ZodNullable<zod.ZodString>;
+                                        startLine: zod.ZodNumber;
+                                        endLine: zod.ZodNumber;
+                                        score: zod.ZodNumber;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        id: number;
+                                        score: number;
+                                        updatedAt: Date;
+                                        licenseExpression: string | null;
+                                        startLine: number;
+                                        endLine: number;
+                                        createdAt: Date;
+                                    },
+                                    {
+                                        id: number;
+                                        score: number;
+                                        updatedAt: Date;
+                                        licenseExpression: string | null;
+                                        startLine: number;
+                                        endLine: number;
+                                        createdAt: Date;
+                                    }
+                                >,
+                                "many"
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: number;
+                            updatedAt: Date;
+                            licenseExpressionSPDX: string;
+                            licenseFindingMatches: {
+                                id: number;
+                                score: number;
+                                updatedAt: Date;
+                                licenseExpression: string | null;
+                                startLine: number;
+                                endLine: number;
+                                createdAt: Date;
+                            }[];
+                            createdAt: Date;
+                            scanner: string;
+                            scannerConfig: string;
+                        },
+                        {
+                            id: number;
+                            updatedAt: Date;
+                            licenseExpressionSPDX: string;
+                            licenseFindingMatches: {
+                                id: number;
+                                score: number;
+                                updatedAt: Date;
+                                licenseExpression: string | null;
+                                startLine: number;
+                                endLine: number;
+                                createdAt: Date;
+                            }[];
+                            createdAt: Date;
+                            scanner: string;
+                            scannerConfig: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseFindings: {
+                    id: number;
+                    updatedAt: Date;
+                    licenseExpressionSPDX: string;
+                    licenseFindingMatches: {
+                        id: number;
+                        score: number;
+                        updatedAt: Date;
+                        licenseExpression: string | null;
+                        startLine: number;
+                        endLine: number;
+                        createdAt: Date;
+                    }[];
+                    createdAt: Date;
+                    scanner: string;
+                    scannerConfig: string;
+                }[];
+            },
+            {
+                licenseFindings: {
+                    id: number;
+                    updatedAt: Date;
+                    licenseExpressionSPDX: string;
+                    licenseFindingMatches: {
+                        id: number;
+                        score: number;
+                        updatedAt: Date;
+                        licenseExpression: string | null;
+                        startLine: number;
+                        endLine: number;
+                        createdAt: Date;
+                    }[];
+                    createdAt: Date;
+                    scanner: string;
+                    scannerConfig: string;
                 }[];
             }
         >;
