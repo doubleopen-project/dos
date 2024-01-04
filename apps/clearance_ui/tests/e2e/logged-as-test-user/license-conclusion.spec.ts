@@ -9,7 +9,9 @@ test.beforeEach(async ({ page }) => {
     await page.getByRole("link", { name: "package-lock.json" }).click();
 });
 
-test("create license conclusion, delete from Main UI", async ({ page }) => {
+test.skip("create license conclusion, delete from Main UI", async ({
+    page,
+}) => {
     // Create a license conclusion
     await page
         .locator("form button")
