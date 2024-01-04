@@ -1132,6 +1132,35 @@ userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
+    try {
+        const purl = formatPurl(req.params.purl);
+        const path = req.params.path;
+        console.log(path);
+
+        const fileSha256 = await dbQueries.findFileSha256ByPurlAndPath(
+            purl,
+            path,
+        );
+
+        if (!fileSha256) throw new CustomError("File not found", 400);
+
+        res.status(200).json({
+            fileSha256: fileSha256,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.get("/files/:sha256/license-findings", async (req, res) => {
     try {
         const sha256 = req.params.sha256;
