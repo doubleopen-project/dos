@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useMemo } from "react";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias } from "@zodios/core";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { userAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,10 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-type DataType = ZodiosResponseByPath<typeof userAPI, "post", "/file">;
+type DataType = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetLicenseFindingsForFile"
+>;
 type LicenseMatch = DataType["licenseFindings"][0]["licenseFindingMatches"][0];
 
 // Define type for component props

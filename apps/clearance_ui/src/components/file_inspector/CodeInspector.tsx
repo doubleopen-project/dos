@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import ButtonGroup from "@/components/file_inspector/ButtonGroup";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import ConclusionForm from "@/components/license_conclusions/ConclusionForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
@@ -63,18 +62,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
                     <Label className="text-sm">No file opened</Label>
                 )}
             </div>
-
-            {data?.licenseFindings[0]?.licenseFindingMatches && (
-                <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
-                    <Label className="font-semibold">
-                        Individual license matches
-                    </Label>
-                    <ButtonGroup
-                        data={data.licenseFindings[0].licenseFindingMatches}
-                        className="max-h-[8vh] w-full overflow-y-auto rounded-md border p-1"
-                    />
-                </div>
-            )}
 
             {fileSha256 && licenseConclusions?.licenseConclusions[0] && (
                 <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
