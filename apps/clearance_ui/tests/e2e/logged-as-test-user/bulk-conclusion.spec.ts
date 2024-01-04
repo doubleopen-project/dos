@@ -4,6 +4,8 @@
 
 import { expect, test } from "@playwright/test";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeEach(async ({ page }) => {
     await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
 });
@@ -55,7 +57,7 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
         "Bulk license conclusion deleted successfully,",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("bulk license conclusion deleted");
+    console.log("bulk license conclusion deleted from Main UI");
 });
 
 test("create bulk conclusion, delete from Clearance Library", async ({
@@ -117,5 +119,5 @@ test("create bulk conclusion, delete from Clearance Library", async ({
         "Bulk license conclusion deleted successfully,",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("bulk license conclusion deleted");
+    console.log("bulk license conclusion deleted from Clearance Library");
 });

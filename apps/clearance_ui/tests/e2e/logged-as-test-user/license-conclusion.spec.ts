@@ -4,14 +4,14 @@
 
 import { expect, test } from "@playwright/test";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeEach(async ({ page }) => {
     await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
     await page.getByRole("link", { name: "package-lock.json" }).click();
 });
 
-test.skip("create license conclusion, delete from Main UI", async ({
-    page,
-}) => {
+test("create license conclusion, delete from Main UI", async ({ page }) => {
     // Create a license conclusion
     await page
         .locator("form button")
@@ -56,7 +56,7 @@ test.skip("create license conclusion, delete from Main UI", async ({
         "License conclusion deleted successfully.",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("license conclusion deleted");
+    console.log("license conclusion deleted from Main UI");
 });
 
 test("create license conclusion, delete from Clearance Library", async ({
@@ -117,5 +117,5 @@ test("create license conclusion, delete from Clearance Library", async ({
         "License conclusion deleted successfully.",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("license conclusion deleted");
+    console.log("license conclusion deleted from Clearance Library");
 });

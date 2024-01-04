@@ -4,6 +4,8 @@
 
 import { expect, test } from "@playwright/test";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeEach(async ({ page }) => {
     await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
 });
@@ -51,7 +53,7 @@ test("create path exclusion, delete from Main UI", async ({ page }) => {
         "Path exclusion deleted successfully.",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("path exclusion deleted");
+    console.log("path exclusion deleted from Main UI");
 });
 
 test("create path exclusion, delete from Clearance UI", async ({ page }) => {
@@ -103,5 +105,5 @@ test("create path exclusion, delete from Clearance UI", async ({ page }) => {
         "Path exclusion deleted successfully.",
     );
     await toastDeleted.waitFor({ state: "hidden" });
-    console.log("path exclusion deleted");
+    console.log("path exclusion deleted from Clearance Library");
 });
