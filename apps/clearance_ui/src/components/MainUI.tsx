@@ -54,9 +54,17 @@ const MainUI = ({
 
             {/* 3rd column: Clearance Inspector */}
             <ResizablePanel defaultSize={defaultMainWidths[2]}>
-                <ClearanceInspector
-                    defaultClearanceHeights={defaultClearanceHeights}
-                />
+                {path ? (
+                    <ClearanceInspector
+                        purl={purl}
+                        path={path}
+                        defaultClearanceHeights={defaultClearanceHeights}
+                    />
+                ) : (
+                    <div className="flex h-full items-center justify-center">
+                        <div>No file data to show</div>
+                    </div>
+                )}
             </ResizablePanel>
         </ResizablePanelGroup>
     );
