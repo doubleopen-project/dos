@@ -58,7 +58,7 @@ const ConclusionFormWrapper = ({
                     <Label className="m-1 font-semibold">
                         Create a license conclusion
                     </Label>
-                    <p className="h-full w-full overflow-y-auto rounded-md border p-1">
+                    <div className="h-full w-full overflow-y-auto rounded-md border p-1">
                         <ConclusionForm
                             purl={purl}
                             fileSha256={fileSha256}
@@ -70,7 +70,7 @@ const ConclusionFormWrapper = ({
                                     : undefined
                             }
                         />
-                    </p>
+                    </div>
                 </div>
             )}
             {(lcError || lfError) && (

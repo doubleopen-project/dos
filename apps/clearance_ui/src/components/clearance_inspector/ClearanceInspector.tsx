@@ -57,24 +57,24 @@ const ClearanceInspector = ({
                     }}
                 >
                     <ResizablePanel defaultSize={defaultClearanceHeights[0]}>
-                        <DetectedLicense fileSha256={data.fileSha256} />
+                        <DetectedLicense fileSha256={data.sha256} />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={defaultClearanceHeights[1]}>
-                        <LicenseMatches fileSha256={data.fileSha256} />
+                        <LicenseMatches fileSha256={data.sha256} />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={defaultClearanceHeights[2]}>
                         <LicenseConclusions
                             purl={purl}
-                            fileSha256={data.fileSha256}
+                            fileSha256={data.sha256}
                         />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={defaultClearanceHeights[3]}>
                         <ConclusionFormWrapper
                             purl={purl}
-                            fileSha256={data.fileSha256}
+                            fileSha256={data.sha256}
                         />
                     </ResizablePanel>
                 </ResizablePanelGroup>

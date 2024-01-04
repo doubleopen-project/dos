@@ -1054,52 +1054,6 @@ userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
     }
 });
 
-userRouter.post("/file", async (req, res) => {
-    try {
-        let sha256 = null;
-
-        if (req.body.sha256) sha256 = req.body.sha256;
-        else if (req.body.purl && req.body.path) {
-            sha256 = await dbQueries.findFileSha256(
-                req.body.purl,
-                req.body.path,
-            );
-        }
-
-        if (!sha256) throw new Error("sha256 not found");
-
-        console.log("Searching data for file sha256: ", sha256);
-
-        const fileData = await dbQueries.findFileData(sha256);
-        const presignedGetUrl = await getPresignedGetUrl(
-            s3Client,
-            process.env.SPACES_BUCKET || "doubleopen",
-            sha256,
-        );
-
-        if (!presignedGetUrl) {
-            throw new Error("Error: Presigned URL is undefined");
-        }
-
-        if (fileData) {
-            res.status(200).json({
-                sha256: sha256,
-                downloadUrl: presignedGetUrl,
-                licenseFindings: fileData.licenseFindings,
-                copyrightFindings: fileData.copyrightFindings,
-            });
-        } else {
-            res.status(400).json({
-                message:
-                    "Bad request: File with the requested sha256 does not exist",
-            });
-        }
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
 userRouter.get("/packages", async (req, res) => {
     try {
         const packages = await dbQueries.findScannedPackages();
@@ -1136,17 +1090,27 @@ userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
     try {
         const purl = formatPurl(req.params.purl);
         const path = req.params.path;
-        console.log(path);
 
-        const fileSha256 = await dbQueries.findFileSha256ByPurlAndPath(
-            purl,
-            path,
+        const sha256 = await dbQueries.findFileSha256ByPurlAndPath(purl, path);
+
+        if (!sha256) throw new CustomError("File not found", 400);
+
+        const presignedGetUrl = await getPresignedGetUrl(
+            s3Client,
+            process.env.SPACES_BUCKET || "doubleopen",
+            sha256,
         );
 
-        if (!fileSha256) throw new CustomError("File not found", 400);
+        if (!presignedGetUrl) {
+            throw new CustomError(
+                "Internal server error: Presigned URL is undefined",
+                500,
+            );
+        }
 
         res.status(200).json({
-            fileSha256: fileSha256,
+            sha256: sha256,
+            downloadUrl: presignedGetUrl,
         });
     } catch (error) {
         console.log("Error: ", error);

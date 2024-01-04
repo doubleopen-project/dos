@@ -308,27 +308,11 @@ export const userAPI = makeApi([
         errors,
     },
     {
-        method: "post",
-        path: "/file",
-        alias: "GetFileData",
-        description:
-            "Get file download url, findings and conclusions. If sha256 is not provided, it will be searched by purl and path.",
-        immutable: true,
-        parameters: [
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostFileReq,
-            },
-        ],
-        response: schemas.PostFileRes,
-        errors,
-    },
-    {
         method: "get",
         path: "/packages/:purl/filetrees/:path/files",
         alias: "GetFile",
-        description: "Get file sha256 for file in path in package",
+        description:
+            "Get file sha256 and S3 download url for file in path in package",
         parameters: [
             {
                 name: "purl",

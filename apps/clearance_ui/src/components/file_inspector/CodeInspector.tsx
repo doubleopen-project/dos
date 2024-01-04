@@ -8,21 +8,42 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
+import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
 type CodeInspectorProps = {
     purl: string;
-    path: string | undefined;
+    path: string;
 };
 
 const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
     const [fileContents, setFileContents] = useState<string | undefined>(
         undefined,
     );
-    const { data, isLoading, error } = userHooks.useGetFileData(
-        { purl: purl, path: path as string },
-        { withCredentials: true },
+    const { data, isLoading, error } = userHooks.useGetFile(
+        {
+            withCredentials: true,
+            params: {
+                purl: toPathPurl(purl),
+                path: toPathPath(path),
+            },
+        },
         { enabled: !!path && !!purl },
     );
+
+    const {
+        data: licenseFindingData,
+        isLoading: lfIsLoading,
+        error: lfError,
+    } = userHooks.useGetLicenseFindingsForFile(
+        {
+            withCredentials: true,
+            params: {
+                sha256: data?.sha256 as string,
+            },
+        },
+        { enabled: Boolean(data) && data && !!data.sha256 },
+    );
+
     const fileUrl = data?.downloadUrl;
 
     // Fetch ASCII data from the URL
@@ -41,31 +62,22 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
         <div className="flex h-full flex-col">
             <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
                 <Label className="font-bold">File: </Label>
-                {path ? (
-                    <Badge className="rounded-md">{path}</Badge>
-                ) : (
-                    <Label className="text-sm">No file opened</Label>
-                )}
+                <Badge className="rounded-md">{path}</Badge>
             </div>
 
             <div className="flex flex-1 items-center justify-center overflow-auto">
-                {!path && (
-                    <div className="flex h-full items-center justify-center">
-                        No file opened
-                    </div>
-                )}
-                {path && isLoading && (
+                {(isLoading || lfIsLoading) && (
                     <div className="flex h-full items-center justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
-                {data && fileContents && (
+                {licenseFindingData && fileContents && (
                     <CodeEditor
                         contents={fileContents}
-                        licenseFindings={data.licenseFindings}
+                        licenseFindings={licenseFindingData.licenseFindings}
                     />
                 )}
-                {error && (
+                {(error || lfError) && (
                     <div className="flex h-full items-center justify-center">
                         Unable to fetch file data
                     </div>
