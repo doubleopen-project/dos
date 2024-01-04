@@ -42,7 +42,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     const [openFileExtDialog, setOpenFileExtDialog] = useState<boolean>(false);
     const [openFreeTextDialog, setOpenFreeTextDialog] =
         useState<boolean>(false);
-    const [openBulkCurationDialog, setOpenBulkCurationDialog] =
+    const [openBulkConclusionDialog, setOpenBulkConclusionDialog] =
         useState<boolean>(false);
 
     return (
@@ -185,10 +185,13 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                                     variant="ghost"
                                     className="p-2"
                                     onClick={() =>
-                                        setOpenBulkCurationDialog(true)
+                                        setOpenBulkConclusionDialog(true)
                                     }
                                 >
-                                    <LuFileStack className="text-lg" />
+                                    <LuFileStack
+                                        className="text-lg"
+                                        data-testid="bulk-conclusion"
+                                    />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -197,8 +200,8 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <BulkConclusionFormDialog
                             purl={purl}
-                            open={openBulkCurationDialog}
-                            setOpen={setOpenBulkCurationDialog}
+                            open={openBulkConclusionDialog}
+                            setOpen={setOpenBulkConclusionDialog}
                         />
                     </Tooltip>
                 </TooltipProvider>
