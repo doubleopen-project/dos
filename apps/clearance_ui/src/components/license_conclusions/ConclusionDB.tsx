@@ -53,6 +53,7 @@ const ConclusionDB = ({
     const [value, setValue] = useState(concludedLicenseExpressionSPDX);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
+    const minWidth = 375;
     const router = useRouter();
 
     // Get user from useUser hook, to decide what DB rights the user has for conclusions
@@ -64,7 +65,9 @@ const ConclusionDB = ({
     useEffect(() => {
         if (buttonRef.current) {
             const width = buttonRef.current.offsetWidth;
-            setListWidth(width * fractionalWidth);
+            if (width * fractionalWidth >= minWidth)
+                setListWidth(width * fractionalWidth);
+            else setListWidth(minWidth);
         }
     }, [buttonRef.current?.offsetWidth, fractionalWidth]); // Re-run effect if the button's size changes
 
