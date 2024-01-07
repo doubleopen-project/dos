@@ -54,22 +54,25 @@ const ConclusionFormWrapper = ({
                 </div>
             )}
             {licenseConclusionData && licenseFindingData && (
-                <div className="flex h-full w-full flex-col items-start p-1">
-                    <Label className="clearance-label">
-                        Create a license conclusion
-                    </Label>
-                    <div className="h-full w-full overflow-y-auto rounded-md border p-1">
-                        <ConclusionForm
-                            purl={purl}
-                            fileSha256={fileSha256}
-                            lcData={licenseConclusionData}
-                            detectedExpression={
-                                licenseFindingData.licenseFindings.length > 0
-                                    ? licenseFindingData.licenseFindings[0]
-                                          .licenseExpressionSPDX
-                                    : undefined
-                            }
-                        />
+                <div className="flex h-full items-end">
+                    <div className="flex w-full flex-col items-start p-1">
+                        <Label className="clearance-label">
+                            Create a license conclusion
+                        </Label>
+                        <div className=" w-full rounded-md border p-1">
+                            <ConclusionForm
+                                purl={purl}
+                                fileSha256={fileSha256}
+                                lcData={licenseConclusionData}
+                                detectedExpression={
+                                    licenseFindingData.licenseFindings.length >
+                                    0
+                                        ? licenseFindingData.licenseFindings[0]
+                                              .licenseExpressionSPDX
+                                        : undefined
+                                }
+                            />
+                        </div>
                     </div>
                 </div>
             )}
