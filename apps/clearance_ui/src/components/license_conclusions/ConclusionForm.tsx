@@ -205,7 +205,7 @@ const ConclusionForm = ({
                                         setConcludedLicenseExpressionSPDX={
                                             field.onChange
                                         }
-                                        fractionalWidth={1.25}
+                                        fractionalWidth={1}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -254,7 +254,7 @@ const ConclusionForm = ({
                             <FormItem className="mr-1 flex-1">
                                 <FormControl>
                                     <Textarea
-                                        className="!min-h-[100px] text-xs"
+                                        className="!min-h-[40px] text-xs"
                                         placeholder="Comment on your license conclusion..."
                                         {...field}
                                     />
@@ -263,56 +263,57 @@ const ConclusionForm = ({
                             </FormItem>
                         )}
                     />
-
-                    <FormField
-                        control={form.control}
-                        name="local"
-                        render={({ field }) => (
-                            <FormItem className="ml-1 flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
-                                <FormControl>
-                                    <Checkbox
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                </FormControl>
-                                <Label className="text-xs">Local</Label>
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger type="button">
-                                            <Info size={"15px"} />
-                                        </TooltipTrigger>
-                                        <TooltipContent
-                                            side="top"
-                                            className="mr-3"
-                                        >
-                                            <p>
-                                                By checking this box, this
-                                                license conclusion will only
-                                                apply to the files in this
-                                                version of this package.
-                                            </p>
-                                            <p>
-                                                If you want to apply this
-                                                license conclusion across all
-                                                packages that have the same file
-                                                (identified by the file's
-                                                sha256), leave this box
-                                                unchecked.
-                                            </p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button
-                        type="submit"
-                        className="text-left text-xs"
-                        variant={"outline"}
-                    >
-                        Submit
-                    </Button>
+                    <div className="flex">
+                        <FormField
+                            control={form.control}
+                            name="local"
+                            render={({ field }) => (
+                                <FormItem className="ml-1 flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <Label className="text-xs">Local</Label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger type="button">
+                                                <Info size={"15px"} />
+                                            </TooltipTrigger>
+                                            <TooltipContent
+                                                side="top"
+                                                className="mr-3"
+                                            >
+                                                <p>
+                                                    By checking this box, this
+                                                    license conclusion will only
+                                                    apply to the files in this
+                                                    version of this package.
+                                                </p>
+                                                <p>
+                                                    If you want to apply this
+                                                    license conclusion across
+                                                    all packages that have the
+                                                    same file (identified by the
+                                                    file's sha256), leave this
+                                                    box unchecked.
+                                                </p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button
+                            type="submit"
+                            className="text-left text-xs"
+                            variant={"outline"}
+                        >
+                            Submit
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </div>
