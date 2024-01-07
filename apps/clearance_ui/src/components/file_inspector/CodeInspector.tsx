@@ -61,7 +61,7 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
     return (
         <div className="flex h-full flex-col">
             <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
-                <Label className="font-bold">File: </Label>
+                <Label className="clearance-label">File: </Label>
                 <Badge className="rounded-md">{path}</Badge>
             </div>
 

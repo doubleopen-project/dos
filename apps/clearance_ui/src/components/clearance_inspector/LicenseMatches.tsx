@@ -31,7 +31,7 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
             )}
             {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
-                    <Label className="m-1 font-semibold">
+                    <Label className="clearance-label">
                         Individual license matches
                     </Label>
                     {data?.licenseFindings[0]?.licenseFindingMatches ? (

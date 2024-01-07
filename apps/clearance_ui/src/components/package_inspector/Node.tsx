@@ -138,7 +138,7 @@ const Node = ({
                         <span
                             className={cn(
                                 node.id === openedNodeId
-                                    ? "bg-violet-400"
+                                    ? "bg-[#777DA7]"
                                     : "hover:bg-primary/20",
                                 "inline-block w-full rounded-sm",
                             )}
