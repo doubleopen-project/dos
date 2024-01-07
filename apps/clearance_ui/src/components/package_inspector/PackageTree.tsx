@@ -191,7 +191,7 @@ const PackageTree = ({ purl, path }: Props) => {
     return (
         <div className="flex h-full flex-col">
             <div className="mb-2 flex-row rounded-md border p-1 shadow-lg">
-                <Label className="font-bold">Package: </Label>
+                <Label className="clearance-label">Package: </Label>
                 <Badge className="rounded-md">{purl}</Badge>
             </div>
 

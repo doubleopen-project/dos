@@ -53,7 +53,7 @@ const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
         <div className={cn("flex flex-wrap", className)}>
             <Button
                 key="reset"
-                className="m-0.5 h-fit p-0.5 text-xs"
+                className="m-0.5 h-fit bg-[#C6CAED] p-0.5 text-xs hover:bg-[#313C9B] hover:text-white dark:bg-[#313C9B] dark:hover:bg-[#C6CAED] dark:hover:text-black "
                 onClick={() => {
                     setLicenseMatchId(null);
                 }}

@@ -34,9 +34,7 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
             )}
             {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
-                    <Label className="m-1 font-semibold">
-                        Concluded license
-                    </Label>
+                    <Label className="clearance-label">Concluded license</Label>
                     {data.licenseConclusions?.length > 0 ? (
                         <p className="h-full w-full overflow-y-auto rounded-md border p-1 text-xs">
                             {data.licenseConclusions.map((license) => (
