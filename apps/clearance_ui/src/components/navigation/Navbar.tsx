@@ -36,7 +36,7 @@ const Navbar = () => {
             </div>
             <div>
                 <UserMenuItem user={user} className="mr-1" />
-                <ModeToggle />
+                <ModeToggle className="mr-1" />
             </div>
         </div>
     );
