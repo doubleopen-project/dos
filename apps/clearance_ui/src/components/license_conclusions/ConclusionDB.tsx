@@ -123,6 +123,7 @@ const ConclusionDB = ({
                                 <div
                                     key={`wrapper-${d.id}`}
                                     className="flex items-start justify-between"
+                                    data-testid="license-conclusion"
                                 >
                                     <CommandItem
                                         key={d.id}
@@ -143,10 +144,7 @@ const ConclusionDB = ({
                                                     <span className="mr-1">
                                                         Concluded:
                                                     </span>
-                                                    <span
-                                                        data-testid="concluded-license"
-                                                        className="rounded-sm bg-green-400 p-1 font-bold"
-                                                    >
+                                                    <span className="rounded-sm bg-green-400 p-1 font-bold">
                                                         {
                                                             d.concludedLicenseExpressionSPDX
                                                         }
