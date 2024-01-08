@@ -45,6 +45,49 @@ async function main() {
     });
     console.log(testUser);
 
+    const testUser2Salt = crypto.randomBytes(16);
+    const testUser2HashedPassword = crypto.pbkdf2Sync(
+        "test2",
+        testUser2Salt,
+        310000,
+        32,
+        "sha256",
+    );
+    await prisma.user.upsert({
+        where: {
+            username: "test2",
+        },
+        update: {},
+        create: {
+            username: "test2",
+            token: "test_token2",
+            salt: testUser2Salt,
+            hashedPassword: testUser2HashedPassword,
+        },
+    });
+
+    const testAdminUserSalt = crypto.randomBytes(16);
+    const testAdminUserHashedPassword = crypto.pbkdf2Sync(
+        "testAdmin",
+        testAdminUserSalt,
+        310000,
+        32,
+        "sha256",
+    );
+    await prisma.user.upsert({
+        where: {
+            username: "testAdmin",
+        },
+        update: {},
+        create: {
+            username: "testAdmin",
+            token: "admin_token",
+            role: "ADMIN",
+            salt: testAdminUserSalt,
+            hashedPassword: testAdminUserHashedPassword,
+        },
+    });
+
     const fileExists = fs.existsSync(
         path.join(__dirname, "./test_data/files.zip"),
     );
