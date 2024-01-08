@@ -118,7 +118,7 @@ const ConclusionDB = ({
                         <CommandEmpty>
                             No license conclusions found.
                         </CommandEmpty>
-                        <CommandGroup className="max-h-[70vh] min-h-[1px] overflow-y-auto">
+                        <CommandGroup className="max-h-[50vh] min-h-[1px] overflow-y-auto">
                             {data?.licenseConclusions.map((d) => (
                                 <div
                                     key={`wrapper-${d.id}`}
