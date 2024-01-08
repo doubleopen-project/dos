@@ -11,6 +11,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("create path exclusion, delete from Main UI", async ({ page }) => {
+    const comment = "Test create path exclusion, delete from Main UI";
+
     // Create a path exclusion
     await page.getByText("apps").click();
     await page.getByText("api").click();
@@ -22,7 +24,7 @@ test("create path exclusion, delete from Main UI", async ({ page }) => {
     await page.getByLabel("Reason").click();
     await page.getByLabel("OTHER").click();
     await page.getByPlaceholder("Comment...").click();
-    await page.getByPlaceholder("Comment...").fill("Test path exclusion.");
+    await page.getByPlaceholder("Comment...").fill(comment);
     await page.getByRole("button", { name: "Add path exclusion" }).click();
     // Wait for the toast to appear, contain a success text and disappear
     const toastCreated = page.getByRole("status").first();
@@ -38,14 +40,16 @@ test("create path exclusion, delete from Main UI", async ({ page }) => {
         .locator("button")
         .filter({ hasText: "List/delete path exclusions" })
         .click();
-    await expect(
-        page.getByTestId("path-exclusion-creator").first(),
-    ).toContainText("test");
-    await page.getByRole("group").getByRole("button").first().click();
+    await page
+        .getByTestId("path-exclusion")
+        .filter({ hasText: comment })
+        .getByTestId("delete-clearance-button")
+        .click();
     await expect(page.getByLabel("Delete").getByText("test")).toContainText(
         "test",
     );
     await page.getByRole("button", { name: "Delete" }).click();
+
     // Wait for the toast to appear, contain a success text and disappear
     const toastDeleted = page.getByRole("status").first();
     await toastDeleted.waitFor({ state: "visible" });
@@ -56,7 +60,11 @@ test("create path exclusion, delete from Main UI", async ({ page }) => {
     console.log("path exclusion deleted from Main UI");
 });
 
-test("create path exclusion, delete from Clearance UI", async ({ page }) => {
+test("create path exclusion, delete from Clearance Library", async ({
+    page,
+}) => {
+    const comment = "Test create path exclusion, delete from Clearance Library";
+
     // Create a path exclusion
     await page.getByRole("link", { name: "package-lock.json" }).click();
     await page.getByTestId("path-exclusion-similar").click();
@@ -66,7 +74,7 @@ test("create path exclusion, delete from Clearance UI", async ({ page }) => {
     await page.getByLabel("Reason").click();
     await page.getByLabel("OPTIONAL_COMPONENT_OF").click();
     await page.getByPlaceholder("Comment...").click();
-    await page.getByPlaceholder("Comment...").fill("Test path exclusion.");
+    await page.getByPlaceholder("Comment...").fill(comment);
     await page.getByRole("button", { name: "Add path exclusion" }).click();
     // Wait for the toast to appear, contain a success text and disappear
     const toastCreated = page.getByRole("status").first();
@@ -80,20 +88,11 @@ test("create path exclusion, delete from Clearance UI", async ({ page }) => {
     // Delete the same exclusion
     await page.goto("/clearances");
     await page.getByTestId("clearance-lib-path-exclusions").click();
-    await expect(
-        page.getByRole("cell", { name: "test" }).first(),
-    ).toContainText("test");
-    await expect(
-        page.getByRole("cell", { name: "Test path exclusion." }).first(),
-    ).toContainText("Test path exclusion.");
-    const rows = await page.$$('tr:has-text("Test path exclusion.")');
-    const row = rows[0];
-    const button = row
-        ? await row.$('[data-testid="delete-clearance-button"]')
-        : null;
-    if (button) {
-        await button.click();
-    }
+    await page
+        .getByRole("row")
+        .filter({ hasText: comment })
+        .getByTestId("delete-clearance-button")
+        .click();
     await expect(
         page.getByLabel("Delete").getByText("**/*.json"),
     ).toContainText("**/*.json");
