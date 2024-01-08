@@ -11,6 +11,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("create bulk conclusion, delete from Main UI", async ({ page }) => {
+    const license = "AGPL-1.0-only";
+    const comment = "Test create bulk conclusion, delete from Main UI";
+
     // Create a bulk license conclusion
     await page.getByText("apps").click();
     await page.getByText("api").click();
@@ -19,11 +22,9 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill("**/*.ts");
     await page.getByRole("combobox").click();
-    await page.getByText("AGPL-1.0-only").click();
+    await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
-    await page
-        .getByPlaceholder("Comment on your bulk")
-        .fill("Test bulk conclusion.");
+    await page.getByPlaceholder("Comment on your bulk").fill(comment);
     page.once("dialog", (dialog) => {
         dialog.accept().catch(() => {});
     });
@@ -39,16 +40,14 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
 
     // Delete the same bulk license conclusion
     await page.getByTestId("conclusion-db-button").click();
-    await expect(page.getByTestId("concluded-license").first()).toContainText(
-        "AGPL-1.0-only",
-    );
-    await expect(page.getByTestId("license-type").first()).toContainText(
-        "BULK",
-    );
-    await page.getByRole("group").getByRole("button").first().click();
+    await page
+        .getByTestId("license-conclusion")
+        .filter({ hasText: comment })
+        .getByTestId("delete-clearance-button")
+        .click();
     await expect(
-        page.getByLabel("Delete").getByText("AGPL-1.0-only").first(),
-    ).toContainText("AGPL-1.0-only");
+        page.getByLabel("Delete").getByText(license).first(),
+    ).toContainText(license);
     await page.getByRole("button", { name: "Delete bulk conclusion" }).click();
     // Wait for the toast to appear, contain a success text and disappear
     const toastDeleted = page.getByRole("status").first();
@@ -63,6 +62,10 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
 test("create bulk conclusion, delete from Clearance Library", async ({
     page,
 }) => {
+    const license = "389-exception";
+    const comment =
+        "Test create bulk conclusion, delete from Clearance Library";
+
     // Create a bulk conclusion
     await page.getByTestId("bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
@@ -70,11 +73,9 @@ test("create bulk conclusion, delete from Clearance Library", async ({
         .getByPlaceholder("Glob pattern matching to the")
         .fill("**/*.json");
     await page.getByRole("combobox").click();
-    await page.getByText("AGPL-1.0-only").click();
+    await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
-    await page
-        .getByPlaceholder("Comment on your bulk")
-        .fill("Test bulk conclusion.");
+    await page.getByPlaceholder("Comment on your bulk").fill(comment);
     page.once("dialog", (dialog) => {
         dialog.accept().catch(() => {});
     });
@@ -91,23 +92,11 @@ test("create bulk conclusion, delete from Clearance Library", async ({
     // Delete the same bulk conclusion
     await page.goto("/clearances");
     await page.getByTestId("clearance-lib-bulk-conclusions").click();
-    await expect(
-        page.getByRole("cell", { name: "test" }).first(),
-    ).toContainText("test");
-    await expect(
-        page.getByRole("cell", { name: "AGPL-1.0-only" }).first(),
-    ).toContainText("AGPL-1.0-only");
-    await expect(
-        page.getByRole("cell", { name: "Test bulk conclusion." }).first(),
-    ).toContainText("Test bulk conclusion.");
-    const rows = await page.$$('tr:has-text("Test bulk conclusion.")');
-    const row = rows[0];
-    const button = row
-        ? await row.$('[data-testid="delete-clearance-button"]')
-        : null;
-    if (button) {
-        await button.click();
-    }
+    await page
+        .getByRole("row")
+        .filter({ hasText: comment })
+        .getByTestId("delete-clearance-button")
+        .click();
     await expect(
         page.getByLabel("Delete").getByText("**/*.json"),
     ).toContainText("**/*.json");
