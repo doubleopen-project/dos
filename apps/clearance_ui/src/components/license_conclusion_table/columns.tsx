@@ -23,6 +23,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
+import EditLCButton from "@/components/edit_item/EditLCButton";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
@@ -337,12 +338,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
             id: "actions",
             cell: ({ row }) => {
                 return (
-                    <>
+                    <div>
                         {(user.role === "ADMIN" ||
                             user.username === row.original.user.username) && (
-                            <DeleteLicenseConclusion data={row.original} />
+                            <div className="flex">
+                                <EditLCButton />
+                                <DeleteLicenseConclusion data={row.original} />
+                            </div>
                         )}
-                    </>
+                    </div>
                 );
             },
         },
