@@ -88,6 +88,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                     <div
                                         key={`wrapper-${exclusion.id}`}
                                         className="flex items-start justify-between"
+                                        data-testid="path-exclusion"
                                     >
                                         <CommandItem
                                             key={exclusion.id}
@@ -104,10 +105,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                                 .split("T")[0]
                                                         }
                                                     </span>
-                                                    <span
-                                                        className="rounded-sm bg-orange-400 p-1 font-bold"
-                                                        data-testid="path-exclusion-creator"
-                                                    >
+                                                    <span className="rounded-sm bg-orange-400 p-1 font-bold">
                                                         {
                                                             exclusion.user
                                                                 .username
