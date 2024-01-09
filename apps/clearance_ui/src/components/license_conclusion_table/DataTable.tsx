@@ -11,6 +11,7 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    RowData,
     SortingState,
     useReactTable,
 } from "@tanstack/react-table";
@@ -30,12 +31,23 @@ interface DataTableProps<TData, TValue> {
     data: TData[];
 }
 
+declare module "@tanstack/table-core" {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface TableMeta<TData extends RowData> {
+        editedRows: { [key: number]: boolean };
+        setEditedRows: React.Dispatch<
+            React.SetStateAction<{ [key: number]: boolean }>
+        >;
+    }
+}
+
 export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [editedRows, setEditedRows] = useState({});
 
     const table = useReactTable({
         data,
@@ -50,6 +62,10 @@ export function DataTable<TData, TValue>({
             columnFilters,
         },
         getPaginationRowModel: getPaginationRowModel(),
+        meta: {
+            editedRows,
+            setEditedRows,
+        },
     });
 
     return (

@@ -14,12 +14,9 @@ type LicenseConclusionListProps = {
 };
 
 const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
-    const { data, isLoading, error } = userHooks.useGet(
-        "/license-conclusions",
-        {
-            withCredentials: true,
-        },
-    );
+    const { data, isLoading, error } = userHooks.useGetLicenseConclusions({
+        withCredentials: true,
+    });
     if (isLoading) {
         return (
             <div className="flex h-full items-center justify-center">
