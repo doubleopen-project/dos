@@ -5,6 +5,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { CellContext } from "@tanstack/react-table";
 import { ZodiosResponseByAlias } from "@zodios/core";
+import { parseSPDX } from "common-helpers";
 import { Check, Loader2, X } from "lucide-react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
@@ -24,6 +25,15 @@ type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
     "GetLicenseConclusions"
 >["licenseConclusions"][0];
+
+const isValidConcludedExpression = (expression: string) => {
+    try {
+        parseSPDX(expression);
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
 
 const ActionCell = ({
     row,
@@ -62,23 +72,44 @@ const ActionCell = ({
 
     const setEditedRows = (e: React.MouseEvent<HTMLButtonElement>) => {
         const elName = e.currentTarget.name;
+        if (e.currentTarget.name !== "save") {
+            meta?.setEditedRows(() => {
+                const old = meta.editedRows;
+                return {
+                    ...old,
+                    [parseInt(row.id)]: !old[parseInt(row.id)],
+                };
+            });
+        }
 
-        meta?.setEditedRows(() => {
-            const old = meta.editedRows;
-            return {
-                ...old,
-                [parseInt(row.id)]: !old[parseInt(row.id)],
-            };
-        });
         if (elName !== "edit") {
             meta?.revertData(row.index, e.currentTarget.name === "cancel");
             if (e.currentTarget.name === "save") {
-                UpdateLicenseConclusion({
-                    concludedLicenseExpressionSPDX: row.getValue(
-                        "concludedLicenseExpressionSPDX",
-                    ),
-                    comment: row.getValue("comment"),
-                });
+                if (
+                    isValidConcludedExpression(
+                        row.getValue("concludedLicenseExpressionSPDX"),
+                    )
+                ) {
+                    meta?.setEditedRows(() => {
+                        const old = meta.editedRows;
+                        return {
+                            ...old,
+                            [parseInt(row.id)]: !old[parseInt(row.id)],
+                        };
+                    });
+                    UpdateLicenseConclusion({
+                        concludedLicenseExpressionSPDX: row.getValue(
+                            "concludedLicenseExpressionSPDX",
+                        ),
+                        comment: row.getValue("comment"),
+                    });
+                } else {
+                    toast({
+                        variant: "destructive",
+                        title: "Error",
+                        description: "Invalid concluded license expression",
+                    });
+                }
             }
         }
     };
