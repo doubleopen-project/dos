@@ -988,6 +988,100 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     }
 });
 
+userRouter.put("/path-exclusions/:id", async (req, res) => {
+    try {
+        if (!req.user) throw new CustomError("Unauthorized", 401);
+
+        const pathExclusion = await dbQueries.findPathExclusionById(
+            req.params.id,
+        );
+
+        if (!pathExclusion)
+            throw new CustomError("Path exclusion to update not found", 404);
+
+        if (req.user.role !== "ADMIN") {
+            if (req.user.id !== pathExclusion.userId) {
+                throw new CustomError("Forbidden", 403);
+            }
+        }
+
+        const reqPattern = req.body.pattern;
+        const reqReason = req.body.reason;
+        const reqComment = req.body.comment;
+
+        if (
+            (!reqPattern || reqPattern === pathExclusion.pattern) &&
+            (!reqReason || reqReason === pathExclusion.reason) &&
+            (!reqComment || reqComment === pathExclusion.comment)
+        ) {
+            throw new CustomError("Nothing to update", 400, "root");
+        }
+
+        const pkg = await dbQueries.findPackageById(pathExclusion.packageId);
+        if (!pkg) throw new CustomError("Package not found", 404);
+
+        if (reqPattern && reqPattern !== pathExclusion.pattern) {
+            let match = false;
+
+            if (isGlob(reqPattern)) {
+                const filePaths = await dbQueries.findFilePathsByPackagePurl(
+                    pkg.purl,
+                );
+                // Check that a path that matches the glob pattern exists for the package
+                while (!match && filePaths.length > 0) {
+                    const filePath = filePaths.pop();
+
+                    if (!filePath) break;
+                    if (minimatch(filePath, reqPattern.trim(), { dot: true })) {
+                        match = true;
+                    }
+                }
+            } else {
+                // Check that a matching path exists for the package
+                match = await dbQueries.findMatchingPath({
+                    purl: pkg.purl,
+                    path: reqPattern.trim(),
+                });
+            }
+
+            if (!match)
+                throw new CustomError(
+                    "No matching path(s) for the provided pattern were found in the package",
+                    400,
+                    "pattern",
+                );
+        }
+
+        const updatedPathExclusion = await dbQueries.updatePathExclusion(
+            pathExclusion.id,
+            {
+                pattern: reqPattern,
+                reason: reqReason,
+                comment: reqComment,
+            },
+        );
+
+        if (!updatedPathExclusion)
+            throw new CustomError(
+                "Internal Server Error: Unable to update path exclusion",
+                500,
+            );
+
+        res.status(200).json({ message: "Path exclusion updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.delete("/path-exclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new Error("User not found");

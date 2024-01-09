@@ -705,6 +705,33 @@ export const updatePackagesScanStatusesByPurl = async (
     return batchUpdate;
 };
 
+export const updatePathExclusion = async (
+    id: number,
+    input: Prisma.PathExclusionUpdateInput,
+): Promise<PathExclusion | null> => {
+    let retries = initialRetryCount;
+    let pathExclusion: PathExclusion | null = null;
+
+    while (!pathExclusion && retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.update({
+                where: {
+                    id: id,
+                },
+                data: input,
+            });
+        } catch (error) {
+            console.log("Error with trying to update PathExclusion: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusion;
+};
+
 export const updateLicenseConclusion = async (
     id: number,
     input: {
@@ -1469,6 +1496,30 @@ export const findPackageByPurl = async (
                 },
             });
             querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find Package: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return packageObj;
+};
+
+export const findPackageById = async (id: number): Promise<Package | null> => {
+    let retries = initialRetryCount;
+    let packageObj: Package | null = null;
+
+    while (!packageObj && retries > 0) {
+        try {
+            packageObj = await prisma.package.findUnique({
+                where: {
+                    id: id,
+                },
+            });
+            break;
         } catch (error) {
             console.log("Error with trying to find Package: " + error);
             handleError(error);
@@ -2560,6 +2611,32 @@ export const findBulkConclusionUserId = async (
         }
     }
     return bulkConclusion?.userId || null;
+};
+
+export const findPathExclusionById = async (
+    id: number,
+): Promise<PathExclusion | null> => {
+    let pathExclusion: PathExclusion | null = null;
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.findUnique({
+                where: {
+                    id: id,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find PathExclusion: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusion;
 };
 
 export const findPathExclusionUserId = async (
