@@ -2,20 +2,23 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ZodiosResponseByPath } from "@zodios/core";
 import {
+    Check,
     ChevronDownIcon,
     ChevronsUpDownIcon,
     ChevronUpIcon,
+    X,
 } from "lucide-react";
 import Link from "next/link";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
     TooltipContent,
@@ -29,7 +32,7 @@ type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
-export type LicenseConclusion = ZodiosResponseByPath<
+type LicenseConclusion = ZodiosResponseByPath<
     typeof userAPI,
     "get",
     "/license-conclusions"
@@ -212,6 +215,33 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             </Button>
                         );
                     },
+                    cell: ({ row, getValue, table }) => {
+                        const tableMeta = table.options.meta;
+                        const initialValue = getValue();
+
+                        if (tableMeta?.editedRows[parseInt(row.id)]) {
+                            return (
+                                <Input
+                                    defaultValue={
+                                        typeof initialValue === "string"
+                                            ? initialValue
+                                            : ""
+                                    }
+                                    type="text"
+                                />
+                            );
+                        }
+                        return (
+                            <span>
+                                {typeof initialValue === "string"
+                                    ? initialValue
+                                    : ""}
+                            </span>
+                        );
+                    },
+                    meta: {
+                        type: "text",
+                    },
                 },
             ],
         },
@@ -333,20 +363,91 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     </Button>
                 );
             },
+            cell: ({ row, getValue, table }) => {
+                const tableMeta = table.options.meta;
+                const initialValue = getValue();
+
+                if (tableMeta?.editedRows[parseInt(row.id)]) {
+                    return (
+                        <Textarea
+                            defaultValue={
+                                typeof initialValue === "string"
+                                    ? initialValue
+                                    : ""
+                            }
+                        />
+                    );
+                }
+                return (
+                    <span>
+                        {typeof initialValue === "string" ? initialValue : ""}
+                    </span>
+                );
+            },
+            meta: {
+                type: "text-area",
+            },
         },
         {
             id: "actions",
-            cell: ({ row }) => {
-                return (
-                    <div>
-                        {(user.role === "ADMIN" ||
-                            user.username === row.original.user.username) && (
+            cell: ({ row, table }) => {
+                const meta = table.options.meta;
+
+                const setEditedRows = (
+                    e: React.MouseEvent<HTMLButtonElement>,
+                ) => {
+                    const elName = e.currentTarget.name;
+
+                    meta?.setEditedRows(() => {
+                        const old = meta.editedRows;
+                        return {
+                            ...old,
+                            [parseInt(row.id)]: !old[parseInt(row.id)],
+                        };
+                    });
+                    if (elName !== "edit") {
+                        //meta?.revertData(row.index, e.currentTarget.name === "cancel");
+                        if (e.currentTarget.name === "cancel") {
+                            console.log("cancel");
+                        }
+                        if (e.currentTarget.name === "save") {
+                            console.log("save");
+                        }
+                    }
+                };
+
+                return meta?.editedRows[parseInt(row.id)] ? (
+                    <div className="flex">
+                        <Button
+                            onClick={setEditedRows}
+                            name="save"
+                            variant="outline"
+                            className="mr-1 px-2"
+                        >
+                            <Check size={16} className="text-green-400" />
+                        </Button>
+                        <Button
+                            onClick={setEditedRows}
+                            name="cancel"
+                            variant="outline"
+                            className="mr-1 px-2"
+                        >
+                            <X size={16} className="text-[#ff3366]" />
+                        </Button>
+                    </div>
+                ) : (
+                    <>
+                        {(user.username === row.original.user.username ||
+                            user.role === "ADMIN") && (
                             <div className="flex">
-                                <EditLCButton />
+                                <EditLCButton
+                                    onClick={setEditedRows}
+                                    name="edit"
+                                />
                                 <DeleteLicenseConclusion data={row.original} />
                             </div>
                         )}
-                    </div>
+                    </>
                 );
             },
         },

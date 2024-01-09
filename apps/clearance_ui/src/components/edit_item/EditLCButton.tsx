@@ -5,9 +5,19 @@
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const EditLCButton = () => {
+type Props = {
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    name: string;
+};
+
+const EditLCButton = ({ onClick, name }: Props) => {
     return (
-        <Button variant="outline" className="mr-1 px-2">
+        <Button
+            variant="outline"
+            className="mr-1 px-2"
+            onClick={onClick}
+            name={name}
+        >
             <Pencil size={16}></Pencil>
         </Button>
     );
