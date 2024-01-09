@@ -89,6 +89,11 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     {row.original.user.username}
                 </Badge>
             ),
+            sortingFn: (a, b) => {
+                return a.original.user.username.localeCompare(
+                    b.original.user.username,
+                );
+            },
         },
         {
             accessorKey: "licenseExpressionSPDX",
