@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias, ZodiosResponseByPath } from "@zodios/core";
 import {
     Check,
     ChevronDownIcon,
@@ -16,9 +16,7 @@ import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
     TooltipContent,
@@ -27,15 +25,15 @@ import {
 } from "@/components/ui/tooltip";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import EditLCButton from "@/components/edit_item/EditLCButton";
+import TableCell from "@/components/license_conclusion_table/TableCell";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
-type LicenseConclusion = ZodiosResponseByPath<
+type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
-    "get",
-    "/license-conclusions"
+    "GetLicenseConclusions"
 >["licenseConclusions"][0];
 
 export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
@@ -215,30 +213,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             </Button>
                         );
                     },
-                    cell: ({ row, getValue, table }) => {
-                        const tableMeta = table.options.meta;
-                        const initialValue = getValue();
-
-                        if (tableMeta?.editedRows[parseInt(row.id)]) {
-                            return (
-                                <Input
-                                    defaultValue={
-                                        typeof initialValue === "string"
-                                            ? initialValue
-                                            : ""
-                                    }
-                                    type="text"
-                                />
-                            );
-                        }
-                        return (
-                            <span>
-                                {typeof initialValue === "string"
-                                    ? initialValue
-                                    : ""}
-                            </span>
-                        );
-                    },
+                    cell: TableCell,
                     meta: {
                         type: "text",
                     },
@@ -363,29 +338,9 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     </Button>
                 );
             },
-            cell: ({ row, getValue, table }) => {
-                const tableMeta = table.options.meta;
-                const initialValue = getValue();
-
-                if (tableMeta?.editedRows[parseInt(row.id)]) {
-                    return (
-                        <Textarea
-                            defaultValue={
-                                typeof initialValue === "string"
-                                    ? initialValue
-                                    : ""
-                            }
-                        />
-                    );
-                }
-                return (
-                    <span>
-                        {typeof initialValue === "string" ? initialValue : ""}
-                    </span>
-                );
-            },
+            cell: TableCell,
             meta: {
-                type: "text-area",
+                type: "textarea",
             },
         },
         {
@@ -406,10 +361,10 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                         };
                     });
                     if (elName !== "edit") {
-                        //meta?.revertData(row.index, e.currentTarget.name === "cancel");
-                        if (e.currentTarget.name === "cancel") {
-                            console.log("cancel");
-                        }
+                        meta?.revertData(
+                            row.index,
+                            e.currentTarget.name === "cancel",
+                        );
                         if (e.currentTarget.name === "save") {
                             console.log("save");
                         }

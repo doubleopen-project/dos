@@ -38,13 +38,21 @@ declare module "@tanstack/table-core" {
         setEditedRows: React.Dispatch<
             React.SetStateAction<{ [key: number]: boolean }>
         >;
+        revertData: (rowId: number, revert: boolean) => void;
+        updateData: (rowId: number, columnId: string, value: string) => void;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface ColumnMeta<TData extends RowData, TValue> {
+        type?: string;
     }
 }
 
 export function DataTable<TData, TValue>({
     columns,
-    data,
+    data: initialData,
 }: DataTableProps<TData, TValue>) {
+    const [data, setData] = useState(initialData);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [editedRows, setEditedRows] = useState({});
@@ -65,6 +73,34 @@ export function DataTable<TData, TValue>({
         meta: {
             editedRows,
             setEditedRows,
+            revertData: (rowId: number, revert: boolean) => {
+                if (revert) {
+                    setData((old) =>
+                        old.map((row, index) =>
+                            index === rowId ? initialData[rowId] : row,
+                        ),
+                    );
+                } else {
+                    setData((old) =>
+                        old.map((row, index) =>
+                            index === rowId ? data[rowId] : row,
+                        ),
+                    );
+                }
+            },
+            updateData: (rowId: number, columnId: string, value: string) => {
+                setData((old) =>
+                    old.map((row, index) => {
+                        if (index === rowId) {
+                            return {
+                                ...old[rowId]!,
+                                [columnId]: value,
+                            };
+                        }
+                        return row;
+                    }),
+                );
+            },
         },
     });
 
