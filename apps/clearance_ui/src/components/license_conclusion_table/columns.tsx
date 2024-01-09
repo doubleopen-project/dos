@@ -4,13 +4,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ZodiosResponseByAlias, ZodiosResponseByPath } from "@zodios/core";
-import {
-    Check,
-    ChevronDownIcon,
-    ChevronsUpDownIcon,
-    ChevronUpIcon,
-    X,
-} from "lucide-react";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
@@ -25,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import EditLCButton from "@/components/edit_item/EditLCButton";
+import HeaderButton from "@/components/license_conclusion_table/HeaderButton";
 import TableCell from "@/components/license_conclusion_table/TableCell";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
@@ -41,26 +36,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "updatedAt",
             header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                    >
-                        <Label className="cursor-pointer font-bold">
-                            Updated
-                        </Label>
-                        {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                        )}
-                    </Button>
-                );
+                return <HeaderButton column={column} label="Updated" />;
             },
             cell: ({ row }) => (
                 <>
@@ -75,26 +51,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "contextPurl",
             header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                    >
-                        <Label className="cursor-pointer font-bold">
-                            Package
-                        </Label>
-                        {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                        )}
-                    </Button>
-                );
+                return <HeaderButton column={column} label="Package" />;
             },
             cell: ({ row }) => {
                 const pkg = PackageURL.fromString(row.original.contextPurl);
@@ -125,26 +82,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "username",
             header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                    >
-                        <Label className="cursor-pointer font-bold">
-                            Creator
-                        </Label>
-                        {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                        )}
-                    </Button>
-                );
+                return <HeaderButton column={column} label="Creator" />;
             },
             cell: ({ row }) => (
                 <Badge className="bg-green-400 text-sm">
@@ -164,26 +102,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "detectedLicenseExpressionSPDX",
                     header: ({ column }) => {
                         return (
-                            <Button
-                                variant="ghost"
-                                className="px-0"
-                                onClick={() =>
-                                    column.toggleSorting(
-                                        column.getIsSorted() === "asc",
-                                    )
-                                }
-                            >
-                                <Label className="cursor-pointer font-bold">
-                                    Detected
-                                </Label>
-                                {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
-                                ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
-                                ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                                )}
-                            </Button>
+                            <HeaderButton column={column} label="Detected" />
                         );
                     },
                 },
@@ -191,26 +110,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "concludedLicenseExpressionSPDX",
                     header: ({ column }) => {
                         return (
-                            <Button
-                                variant="ghost"
-                                className="px-0"
-                                onClick={() =>
-                                    column.toggleSorting(
-                                        column.getIsSorted() === "asc",
-                                    )
-                                }
-                            >
-                                <Label className="cursor-pointer font-bold">
-                                    Concluded
-                                </Label>
-                                {column.getIsSorted() === "desc" ? (
-                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
-                                ) : column.getIsSorted() === "asc" ? (
-                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
-                                ) : (
-                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                                )}
-                            </Button>
+                            <HeaderButton column={column} label="Concluded" />
                         );
                     },
                     cell: TableCell,
@@ -317,26 +217,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "comment",
             header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                    >
-                        <Label className="cursor-pointer font-bold">
-                            Comment
-                        </Label>
-                        {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-                        )}
-                    </Button>
-                );
+                return <HeaderButton column={column} label="Comment" />;
             },
             cell: TableCell,
             meta: {
