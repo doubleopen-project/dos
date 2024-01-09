@@ -236,6 +236,26 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "put",
+        path: "/path-exclusions/:id",
+        description: "Edit a path exclusion",
+        alias: "PutPathExclusion",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: PathParamIdInteger,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PutPathExclusionReq,
+            },
+        ],
+        response: schemas.PutPathExclusionRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/packages/:purl/path-exclusions",
         description: "Add a new path exclusion",

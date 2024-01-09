@@ -6768,6 +6768,147 @@ declare const userAPI: [
         ];
     },
     {
+        method: "put";
+        path: "/path-exclusions/:id";
+        description: "Edit a path exclusion";
+        alias: "PutPathExclusion";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        pattern: zod.ZodOptional<zod.ZodString>;
+                        reason: zod.ZodOptional<
+                            zod.ZodEffects<zod.ZodString, string, string>
+                        >;
+                        comment: zod.ZodOptional<zod.ZodString>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        pattern?: string | undefined;
+                        reason?: string | undefined;
+                        comment?: string | undefined;
+                    },
+                    {
+                        pattern?: string | undefined;
+                        reason?: string | undefined;
+                        comment?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "post";
         path: "/packages/:purl/path-exclusions";
         description: "Add a new path exclusion";
@@ -12348,6 +12489,147 @@ declare const dosAPI: [
                     };
                     affectedPaths: string[];
                 }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "put";
+        path: "/user/path-exclusions/:id";
+        description: "Edit a path exclusion";
+        alias: "PutPathExclusion";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        pattern: zod.ZodOptional<zod.ZodString>;
+                        reason: zod.ZodOptional<
+                            zod.ZodEffects<zod.ZodString, string, string>
+                        >;
+                        comment: zod.ZodOptional<zod.ZodString>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        pattern?: string | undefined;
+                        reason?: string | undefined;
+                        comment?: string | undefined;
+                    },
+                    {
+                        pattern?: string | undefined;
+                        reason?: string | undefined;
+                        comment?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
             }
         >;
         errors: [

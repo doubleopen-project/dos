@@ -277,7 +277,7 @@ export const GetPathExclusionsRes = z.object({
     ),
 });
 
-//------------------ POST path exclusion --------------
+// -------------------------------------------------
 export const validReasons = [
     "BUILD_TOOL_OF",
     "DATA_FILE_OF",
@@ -289,6 +289,25 @@ export const validReasons = [
     "TEST_OF",
     "TEST_TOOL_OF",
 ];
+
+//--------------- PUT path exclusion ---------------
+export const PutPathExclusionReq = z
+    .object({
+        pattern: z.string().min(1, "Pattern cannot be empty"),
+        reason: z.string().refine((reason) => validReasons.includes(reason), {
+            message:
+                "Reason is invalid. Accepted values are: " +
+                validReasons.join(", "),
+        }),
+        comment: z.string(),
+    })
+    .partial();
+
+export const PutPathExclusionRes = z.object({
+    message: z.string(),
+});
+
+//------------------ POST path exclusion --------------
 
 export const PostPathExclusionReq = z.object({
     pattern: z
