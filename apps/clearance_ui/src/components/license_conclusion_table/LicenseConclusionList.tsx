@@ -28,7 +28,7 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
     if (!data) return <div>No data</div>;
 
     // Get user role, to decide what rights the user has for this view
-    const tableColumns = columns(user);
+    const tableColumns = columns();
 
     return (
         <div className="container mx-auto">

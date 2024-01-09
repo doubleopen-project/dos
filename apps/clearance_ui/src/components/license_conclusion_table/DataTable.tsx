@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -56,6 +56,10 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [editedRows, setEditedRows] = useState({});
+
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
 
     const table = useReactTable({
         data,
