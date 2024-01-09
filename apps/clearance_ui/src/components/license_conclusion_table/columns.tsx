@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: MIT
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ZodiosResponseByAlias, ZodiosResponseByPath } from "@zodios/core";
-import { Check, X } from "lucide-react";
+import { ZodiosResponseByAlias } from "@zodios/core";
 import Link from "next/link";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
     Tooltip,
@@ -17,12 +15,9 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
-import EditLCButton from "@/components/edit_item/EditLCButton";
+import ActionCell from "@/components/license_conclusion_table/ActionCell";
 import HeaderButton from "@/components/license_conclusion_table/HeaderButton";
 import TableCell from "@/components/license_conclusion_table/TableCell";
-
-type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -31,7 +26,7 @@ type LicenseConclusion = ZodiosResponseByAlias<
     "GetLicenseConclusions"
 >["licenseConclusions"][0];
 
-export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
+export const columns = (): ColumnDef<LicenseConclusion>[] => {
     return [
         {
             accessorKey: "updatedAt",
@@ -231,66 +226,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         },
         {
             id: "actions",
-            cell: ({ row, table }) => {
-                const meta = table.options.meta;
-
-                const setEditedRows = (
-                    e: React.MouseEvent<HTMLButtonElement>,
-                ) => {
-                    const elName = e.currentTarget.name;
-
-                    meta?.setEditedRows(() => {
-                        const old = meta.editedRows;
-                        return {
-                            ...old,
-                            [parseInt(row.id)]: !old[parseInt(row.id)],
-                        };
-                    });
-                    if (elName !== "edit") {
-                        meta?.revertData(
-                            row.index,
-                            e.currentTarget.name === "cancel",
-                        );
-                        if (e.currentTarget.name === "save") {
-                            console.log("save");
-                        }
-                    }
-                };
-
-                return meta?.editedRows[parseInt(row.id)] ? (
-                    <div className="flex">
-                        <Button
-                            onClick={setEditedRows}
-                            name="save"
-                            variant="outline"
-                            className="mr-1 px-2"
-                        >
-                            <Check size={16} className="text-green-400" />
-                        </Button>
-                        <Button
-                            onClick={setEditedRows}
-                            name="cancel"
-                            variant="outline"
-                            className="mr-1 px-2"
-                        >
-                            <X size={16} className="text-[#ff3366]" />
-                        </Button>
-                    </div>
-                ) : (
-                    <>
-                        {(user.username === row.original.user.username ||
-                            user.role === "ADMIN") && (
-                            <div className="flex">
-                                <EditLCButton
-                                    onClick={setEditedRows}
-                                    name="edit"
-                                />
-                                <DeleteLicenseConclusion data={row.original} />
-                            </div>
-                        )}
-                    </>
-                );
-            },
+            cell: ActionCell,
         },
     ];
 };
