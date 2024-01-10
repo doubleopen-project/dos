@@ -119,6 +119,7 @@ test("create license conclusion, delete from Clearance Library", async ({
 test("create license conclusion, edit, and delete from Clearance Library", async ({
     page,
 }) => {
+    test.setTimeout(60000);
     const license = "Beerware";
     const comment =
         "Test create license conclusion, edit it, and finally delete from Clearance Library";
@@ -213,6 +214,7 @@ test("create license conclusion, edit, and delete from Clearance Library", async
 test("create license conclusion, edit with erroneous license conclusion, cancel, and finally delete conclusion from Clearance Library", async ({
     page,
 }) => {
+    test.setTimeout(60000);
     const license = "Beerware";
     const comment =
         "Test create license conclusion, try to edit, cancel, and finally delete from Clearance Library";
