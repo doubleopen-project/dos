@@ -118,7 +118,7 @@ const ActionCell = ({
         <div className="flex">
             <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                         <Button
                             onClick={setEditedRows}
                             name="save"
@@ -133,7 +133,7 @@ const ActionCell = ({
             </TooltipProvider>
             <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                         <Button
                             onClick={setEditedRows}
                             name="cancel"
