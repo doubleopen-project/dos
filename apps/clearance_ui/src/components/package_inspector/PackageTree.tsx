@@ -322,7 +322,7 @@ const PackageTree = ({ purl, path }: Props) => {
                     filterString={"licenseFilter"}
                     className="mb-1 w-full"
                 />
-                <ExclusionDB purl={purl} fractionalWidth={1.0} />
+                <ExclusionDB purl={purl} fractionalWidth={1.5} />
             </div>
         </div>
     );
