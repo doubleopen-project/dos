@@ -9,6 +9,7 @@ import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
 
 type Props = {
     purl: string;
+    mode: "Edit" | "Add";
     pattern?: string;
     reason?: string;
     comment?: string;
@@ -18,6 +19,7 @@ type Props = {
 
 const ExclusionFormDialog = ({
     purl,
+    mode,
     pattern,
     reason,
     comment,
@@ -29,6 +31,7 @@ const ExclusionFormDialog = ({
             <DialogContent>
                 <ExclusionForm
                     purl={purl}
+                    mode={mode}
                     pattern={pattern}
                     reason={reason}
                     comment={comment}
