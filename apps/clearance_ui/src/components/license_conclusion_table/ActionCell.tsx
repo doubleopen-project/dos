@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/use-toast";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
-import EditLCButton from "@/components/edit_item/EditLCButton";
+import EditButton from "@/components/edit_item/EditButton";
 
 type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -158,7 +158,11 @@ const ActionCell = ({
                         {isLoading ? (
                             <Loader2 size={20} className="mx-2 animate-spin" />
                         ) : (
-                            <EditLCButton onClick={setEditedRows} name="edit" />
+                            <EditButton
+                                onClick={setEditedRows}
+                                name="edit"
+                                className="mr-1 px-2"
+                            />
                         )}
                         <DeleteLicenseConclusion data={row.original} />
                     </div>
