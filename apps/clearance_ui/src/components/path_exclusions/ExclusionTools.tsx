@@ -75,6 +75,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <ExclusionFormDialog
                             purl={purl}
+                            mode="Add"
                             pattern={selectedNode?.data.path + "/*"}
                             open={openDirDialog}
                             setOpen={setOpenDirDialog}
@@ -101,6 +102,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <ExclusionFormDialog
                             purl={purl}
+                            mode="Add"
                             pattern={selectedNode?.data.path + "/**"}
                             open={openSubdirsDialog}
                             setOpen={setOpenSubdirsDialog}
@@ -122,6 +124,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <ExclusionFormDialog
                             purl={purl}
+                            mode="Add"
                             pattern={selectedNode?.data.path}
                             open={openFileDialog}
                             setOpen={setOpenFileDialog}
@@ -148,6 +151,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <ExclusionFormDialog
                             purl={purl}
+                            mode="Add"
                             pattern={
                                 "**/*." +
                                 selectedNode?.data.path?.split(".").pop()
@@ -173,6 +177,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
                         </div>
                         <ExclusionFormDialog
                             purl={purl}
+                            mode="Add"
                             pattern={undefined}
                             open={openFreeTextDialog}
                             setOpen={setOpenFreeTextDialog}

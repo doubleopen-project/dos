@@ -42,13 +42,21 @@ type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 
 type Props = {
     purl: string;
+    mode: "Edit" | "Add";
     pattern?: string;
     reason?: string;
     comment?: string;
     setOpen: (open: boolean) => void;
 };
 
-const ExclusionForm = ({ purl, pattern, reason, comment, setOpen }: Props) => {
+const ExclusionForm = ({
+    purl,
+    mode,
+    pattern,
+    reason,
+    comment,
+    setOpen,
+}: Props) => {
     const defaultValues: ExclusionFormType = {
         pattern: pattern || "",
         reason: reason || "",
@@ -114,7 +122,7 @@ const ExclusionForm = ({ purl, pattern, reason, comment, setOpen }: Props) => {
 
     return (
         <div className="flex w-full flex-col">
-            <Label className="mb-1 font-bold">Add path exclusion</Label>
+            <Label className="mb-1 font-bold">{mode + " path exclusion"}</Label>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -204,7 +212,7 @@ const ExclusionForm = ({ purl, pattern, reason, comment, setOpen }: Props) => {
                             type="submit"
                             className="mt-2 rounded-md p-1 text-xs"
                         >
-                            Add path exclusion
+                            Submit
                         </Button>
                     </div>
                 </form>
