@@ -41,6 +41,8 @@ const TableCell = ({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
+                name={column.id}
+                aria-label={column.id}
             />
         ) : (
             <Input
@@ -48,6 +50,8 @@ const TableCell = ({
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
                 type={"text"}
+                name={column.id}
+                aria-label={column.id}
             />
         );
     }

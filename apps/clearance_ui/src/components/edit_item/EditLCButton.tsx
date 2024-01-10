@@ -17,6 +17,7 @@ const EditLCButton = ({ onClick, name }: Props) => {
             className="mr-1 px-2"
             onClick={onClick}
             name={name}
+            aria-label={name}
         >
             <Pencil size={16}></Pencil>
         </Button>

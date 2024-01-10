@@ -124,6 +124,7 @@ const ActionCell = ({
                             name="save"
                             variant="outline"
                             className="mr-1 px-2"
+                            aria-label="save"
                         >
                             <Check size={16} className="text-green-400" />
                         </Button>
@@ -139,6 +140,7 @@ const ActionCell = ({
                             name="cancel"
                             variant="outline"
                             className="mr-1 px-2"
+                            aria-label="cancel"
                         >
                             <X size={16} className="text-[#ff3366]" />
                         </Button>
