@@ -5152,7 +5152,9 @@ declare const userAPI: [
                         {
                             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-                            comment: zod.ZodOptional<zod.ZodString>;
+                            comment: zod.ZodOptional<
+                                zod.ZodNullable<zod.ZodString>
+                            >;
                             local: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
@@ -5160,26 +5162,26 @@ declare const userAPI: [
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
-                            comment?: string | undefined;
+                            comment?: string | null | undefined;
                             local?: boolean | undefined;
                         },
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
-                            comment?: string | undefined;
+                            comment?: string | null | undefined;
                             local?: boolean | undefined;
                         }
                     >,
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     }
                 >;
@@ -10967,7 +10969,9 @@ declare const dosAPI: [
                         {
                             concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-                            comment: zod.ZodOptional<zod.ZodString>;
+                            comment: zod.ZodOptional<
+                                zod.ZodNullable<zod.ZodString>
+                            >;
                             local: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
@@ -10975,26 +10979,26 @@ declare const dosAPI: [
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
-                            comment?: string | undefined;
+                            comment?: string | null | undefined;
                             local?: boolean | undefined;
                         },
                         {
                             concludedLicenseExpressionSPDX?: string | undefined;
                             detectedLicenseExpressionSPDX?: string | undefined;
-                            comment?: string | undefined;
+                            comment?: string | null | undefined;
                             local?: boolean | undefined;
                         }
                     >,
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     },
                     {
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     }
                 >;

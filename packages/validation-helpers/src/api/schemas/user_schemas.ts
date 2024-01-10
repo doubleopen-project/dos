@@ -97,7 +97,7 @@ export const PutLicenseConclusionReq = z
     .object({
         concludedLicenseExpressionSPDX: z.string(),
         detectedLicenseExpressionSPDX: z.string(),
-        comment: z.string(),
+        comment: z.nullable(z.string()),
         local: z.boolean(),
     })
     .partial()
