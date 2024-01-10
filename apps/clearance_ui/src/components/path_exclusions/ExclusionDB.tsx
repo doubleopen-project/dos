@@ -156,6 +156,8 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                         <ExclusionFormDialog
                                             purl={purl}
                                             pattern={exclusion.pattern}
+                                            reason={exclusion.reason}
+                                            comment={exclusion.comment || ""}
                                             open={openEditDialog}
                                             setOpen={setOpenEditDialog}
                                         />

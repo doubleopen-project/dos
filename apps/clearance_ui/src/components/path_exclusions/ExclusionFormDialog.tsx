@@ -10,17 +10,28 @@ import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
 type Props = {
     purl: string;
     pattern?: string;
+    reason?: string;
+    comment?: string;
     open: boolean;
     setOpen: (open: boolean) => void;
 };
 
-const ExclusionFormDialog = ({ purl, pattern, open, setOpen }: Props) => {
+const ExclusionFormDialog = ({
+    purl,
+    pattern,
+    reason,
+    comment,
+    open,
+    setOpen,
+}: Props) => {
     return (
         <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
                 <ExclusionForm
                     purl={purl}
                     pattern={pattern}
+                    reason={reason}
+                    comment={comment}
                     setOpen={setOpen}
                 />
                 <DialogFooter className="flex justify-end">
