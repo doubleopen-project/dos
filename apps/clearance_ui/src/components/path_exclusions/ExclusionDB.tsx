@@ -87,7 +87,7 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                 {data.pathExclusions.map((exclusion) => (
                                     <div
                                         key={`wrapper-${exclusion.id}`}
-                                        className="flex items-start justify-between"
+                                        className="flex items-stretch justify-between"
                                         data-testid="path-exclusion"
                                     >
                                         <CommandItem
@@ -130,14 +130,18 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                         </CommandItem>
                                         <CommandItem
                                             key={`delete-${exclusion.id}`}
-                                            className="mr-1 items-start text-left"
                                         >
                                             {(userName ===
                                                 exclusion.user.username ||
                                                 userRole === "ADMIN") && (
-                                                <DeletePathExclusion
-                                                    data={exclusion}
-                                                />
+                                                <div className="flex align-middle">
+                                                    <Button variant="outline">
+                                                        E
+                                                    </Button>
+                                                    <DeletePathExclusion
+                                                        data={exclusion}
+                                                    />
+                                                </div>
                                             )}
                                         </CommandItem>
                                     </div>
