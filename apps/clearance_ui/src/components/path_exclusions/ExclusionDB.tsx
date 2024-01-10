@@ -19,8 +19,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
+import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
-import DeletePathExclusion from "../delete_item/DeletePathExclusion";
 
 type Props = {
     purl: string;
@@ -29,6 +30,7 @@ type Props = {
 
 const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
     const [open, setOpen] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
     const [listWidth, setListWidth] = useState(0);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const pathPurl = toPathPurl(purl);
@@ -135,7 +137,14 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                 exclusion.user.username ||
                                                 userRole === "ADMIN") && (
                                                 <div className="flex align-middle">
-                                                    <Button variant="outline">
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            setOpenEditDialog(
+                                                                true,
+                                                            )
+                                                        }
+                                                    >
                                                         E
                                                     </Button>
                                                     <DeletePathExclusion
@@ -144,6 +153,12 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                 </div>
                                             )}
                                         </CommandItem>
+                                        <ExclusionFormDialog
+                                            purl={purl}
+                                            pattern={exclusion.pattern}
+                                            open={openEditDialog}
+                                            setOpen={setOpenEditDialog}
+                                        />
                                     </div>
                                 ))}
                             </CommandGroup>
