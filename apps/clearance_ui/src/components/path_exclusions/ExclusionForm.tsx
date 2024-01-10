@@ -43,6 +43,7 @@ type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 type Props = {
     purl: string;
     mode: "Edit" | "Add";
+    id?: number;
     pattern?: string;
     reason?: string;
     comment?: string;
@@ -52,6 +53,7 @@ type Props = {
 const ExclusionForm = ({
     purl,
     mode,
+    id,
     pattern,
     reason,
     comment,
@@ -71,6 +73,7 @@ const ExclusionForm = ({
         "GetPathExclusionsByPurl",
     );
     const queryClient = useQueryClient();
+
     const { mutate: addPathExclusion } = userHooks.usePostPathExclusion(
         {
             withCredentials: true,
@@ -111,12 +114,61 @@ const ExclusionForm = ({
         },
     );
 
+    const { mutate: editPathExclusion } = userHooks.usePutPathExclusion(
+        {
+            withCredentials: true,
+            params: {
+                id: id || -1,
+            },
+        },
+        {
+            onSuccess: () => {
+                setOpen(false);
+                toast({
+                    title: "Path exclusion",
+                    description:
+                        "Path exclusion edited and saved successfully.",
+                });
+                // When a path exclusions is edited, invalidate the query to refetch the data
+                queryClient.invalidateQueries(keyPathExclusionsByPurl);
+            },
+            onError: (error) => {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.data?.path === "pattern") {
+                        form.setError("pattern", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    } else if (error.response?.data?.message) {
+                        form.setError("root", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    }
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.message,
+                    });
+                }
+            },
+        },
+    );
+
     const onSubmit = (data: ExclusionFormType) => {
-        addPathExclusion({
-            pattern: data.pattern,
-            reason: data.reason,
-            comment: data.comment,
-        });
+        if (mode === "Add") {
+            addPathExclusion({
+                pattern: data.pattern,
+                reason: data.reason,
+                comment: data.comment,
+            });
+        } else if (mode === "Edit") {
+            editPathExclusion({
+                pattern: data.pattern,
+                reason: data.reason,
+                comment: data.comment,
+            });
+        }
     };
     const { toast } = useToast();
 
