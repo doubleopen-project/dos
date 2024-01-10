@@ -20,6 +20,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
+import EditButton from "@/components/edit_item/EditButton";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
@@ -137,16 +138,15 @@ const ExclusionDB = ({ purl, fractionalWidth = 0.75 }: Props) => {
                                                 exclusion.user.username ||
                                                 userRole === "ADMIN") && (
                                                 <div className="flex align-middle">
-                                                    <Button
-                                                        variant="outline"
+                                                    <EditButton
+                                                        name="edit"
+                                                        className="mr-1 px-2"
                                                         onClick={() =>
                                                             setOpenEditDialog(
                                                                 true,
                                                             )
                                                         }
-                                                    >
-                                                        E
-                                                    </Button>
+                                                    />
                                                     <DeletePathExclusion
                                                         data={exclusion}
                                                     />
