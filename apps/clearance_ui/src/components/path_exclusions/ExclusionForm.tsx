@@ -43,14 +43,16 @@ type ExclusionFormType = z.infer<typeof exclusionFormSchema>;
 type Props = {
     purl: string;
     pattern?: string;
+    reason?: string;
+    comment?: string;
     setOpen: (open: boolean) => void;
 };
 
-const ExclusionForm = ({ purl, pattern, setOpen }: Props) => {
+const ExclusionForm = ({ purl, pattern, reason, comment, setOpen }: Props) => {
     const defaultValues: ExclusionFormType = {
         pattern: pattern || "",
-        reason: "",
-        comment: "",
+        reason: reason || "",
+        comment: comment || "",
     };
     const form = useForm<ExclusionFormType>({
         resolver: zodResolver(exclusionFormSchema),
