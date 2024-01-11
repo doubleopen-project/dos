@@ -306,11 +306,7 @@ const ConclusionForm = ({
                                 </FormItem>
                             )}
                         />
-                        <Button
-                            type="submit"
-                            className="text-left text-xs"
-                            variant={"outline"}
-                        >
+                        <Button type="submit" className="text-left text-xs">
                             Submit
                         </Button>
                     </div>
