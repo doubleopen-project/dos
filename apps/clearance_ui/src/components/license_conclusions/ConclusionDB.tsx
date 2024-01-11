@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/tooltip";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/edit_item/EditButton";
+import BulkConclusionFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
 import { cn } from "@/lib/utils";
 
 type DataType = ZodiosResponseByPath<
@@ -51,6 +52,7 @@ const ConclusionDB = ({
     fractionalWidth = 0.75,
 }: Props) => {
     const [open, setOpen] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState(false);
     const [value, setValue] = useState(concludedLicenseExpressionSPDX);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [listWidth, setListWidth] = useState(0);
@@ -203,7 +205,11 @@ const ConclusionDB = ({
                                                     <EditButton
                                                         name="edit"
                                                         className="mr-1 px-2"
-                                                        onClick={() => {}}
+                                                        onClick={() =>
+                                                            setOpenEditDialog(
+                                                                true,
+                                                            )
+                                                        }
                                                     />
                                                 )}
                                                 <DeleteLicenseConclusion
@@ -212,6 +218,11 @@ const ConclusionDB = ({
                                             </div>
                                         )}
                                     </CommandItem>
+                                    <BulkConclusionFormDialog
+                                        purl={d.contextPurl}
+                                        open={openEditDialog}
+                                        setOpen={setOpenEditDialog}
+                                    />
                                 </div>
                             ))}
                         </CommandGroup>
