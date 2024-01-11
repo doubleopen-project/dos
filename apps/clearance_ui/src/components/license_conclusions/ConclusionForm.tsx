@@ -205,7 +205,7 @@ const ConclusionForm = ({
                                         setConcludedLicenseExpressionSPDX={
                                             field.onChange
                                         }
-                                        fractionalWidth={1}
+                                        fractionalWidth={1.7}
                                     />
                                 </FormControl>
                                 <FormMessage />
