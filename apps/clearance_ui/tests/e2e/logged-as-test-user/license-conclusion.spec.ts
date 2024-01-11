@@ -4,6 +4,9 @@
 
 import { expect, test } from "@playwright/test";
 
+// Set the test mode to "serial" to run the tests in order, as opposed to in parallel
+test.describe.configure({ mode: "serial" });
+
 test.beforeEach(async ({ page }) => {
     await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
 });
@@ -269,7 +272,8 @@ test("create license conclusion, edit with erroneous license conclusion, cancel,
         .filter({ hasText: editedComment })
         .getByRole("button", { name: "save" })
         .click();
-    // Wait for the toast to appear, contain a success text and disappear
+
+    // Wait for the toast to appear, contain an error text and disappear
     const toastEdited = page.getByRole("status").first();
     await toastEdited.waitFor({ state: "visible" });
     await expect(toastEdited).toContainText(
@@ -299,6 +303,74 @@ test("create license conclusion, edit with erroneous license conclusion, cancel,
     await expect(page.getByLabel("Delete").getByText(license)).toContainText(
         license,
     );
+    await page.getByRole("button", { name: "Delete" }).click();
+    // Wait for the toast to appear, contain a success text and disappear
+    const toastDeleted = page.getByRole("status").first();
+    await toastDeleted.waitFor({ state: "visible" });
+    await expect(toastDeleted).toContainText(
+        "License conclusion deleted successfully.",
+    );
+    await toastDeleted.waitFor({ state: "hidden" });
+    console.log("license conclusion deleted from Clearance Library");
+});
+
+test("create license conclusion without comment, edit license, and finally delete conclusion from Clearance Library", async ({
+    page,
+}) => {
+    test.setTimeout(60000);
+    const license = "MIT or BSD-2-Clause";
+    const editedLicense = "GPL-2.0-only with GCC-exception-2.0";
+
+    // Create a license conclusion
+    await page.getByText("apps").click();
+    await page.getByText("curation_front_end").click();
+    await page.getByRole("link", { name: "next.config.js" }).click();
+    await page.getByPlaceholder("Write your SPDX expression").click();
+    await page.getByPlaceholder("Write your SPDX expression").fill(license);
+    page.once("dialog", (dialog) => {
+        dialog.accept().catch(() => {});
+    });
+    await page.getByRole("button", { name: "Submit" }).click();
+    // Wait for the toast to appear, contain a success text and disappear
+    const toastCreated = page.getByRole("status").first();
+    await toastCreated.waitFor({ state: "visible" });
+    await expect(toastCreated).toContainText(
+        "License conclusion added successfully.",
+    );
+    await toastCreated.waitFor({ state: "hidden" });
+    console.log("license conclusion created");
+
+    // Edit the same conclusion
+    await page.goto("/clearances");
+    await page.getByTestId("clearance-lib-lic-conclusions").click();
+    await page
+        .getByRole("row")
+        .filter({ hasText: license })
+        .getByRole("button", { name: "edit" })
+        .click();
+    await page
+        .getByRole("textbox", { name: "concludedLicenseExpressionSPDX" })
+        .fill(editedLicense);
+    await page.getByRole("button", { name: "save" }).click();
+
+    // Wait for the toast to appear, contain a success text and disappear
+    const toastEdited = page.getByRole("status").first();
+    await toastEdited.waitFor({ state: "visible" });
+    await expect(toastEdited).toContainText(
+        "License conclusion updated successfully",
+    );
+    await toastEdited.waitFor({ state: "hidden" });
+    console.log("license conclusion edited");
+
+    // Delete the same conclusion
+    await page
+        .getByRole("row")
+        .filter({ hasText: editedLicense })
+        .getByTestId("delete-clearance-button")
+        .click();
+    await expect(
+        page.getByLabel("Delete").getByText(editedLicense),
+    ).toContainText(editedLicense);
     await page.getByRole("button", { name: "Delete" }).click();
     // Wait for the toast to appear, contain a success text and disappear
     const toastDeleted = page.getByRole("status").first();
