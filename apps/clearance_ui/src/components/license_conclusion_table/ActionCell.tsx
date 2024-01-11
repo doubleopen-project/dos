@@ -5,7 +5,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { CellContext } from "@tanstack/react-table";
 import { ZodiosResponseByAlias } from "@zodios/core";
-import { parseSPDX } from "common-helpers";
 import { Check, Loader2, X } from "lucide-react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
@@ -20,20 +19,12 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/edit_item/EditButton";
+import { isValidConcludedExpression } from "@/helpers/isValidConcludedExpression";
 
 type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
     "GetLicenseConclusions"
 >["licenseConclusions"][0];
-
-const isValidConcludedExpression = (expression: string) => {
-    try {
-        parseSPDX(expression);
-        return true;
-    } catch (error) {
-        return false;
-    }
-};
 
 const ActionCell = ({
     row,
@@ -85,11 +76,10 @@ const ActionCell = ({
         if (elName !== "edit") {
             meta?.revertData(row.index, e.currentTarget.name === "cancel");
             if (e.currentTarget.name === "save") {
-                if (
-                    isValidConcludedExpression(
-                        row.getValue("concludedLicenseExpressionSPDX"),
-                    )
-                ) {
+                const isValidObj = isValidConcludedExpression(
+                    row.getValue("concludedLicenseExpressionSPDX"),
+                );
+                if (isValidObj.isValid) {
                     meta?.setEditedRows(() => {
                         const old = meta.editedRows;
                         return {
@@ -104,10 +94,15 @@ const ActionCell = ({
                         comment: row.getValue("comment"),
                     });
                 } else {
+                    let description = "Invalid concluded license expression";
+                    if (isValidObj.errWord !== null) {
+                        description +=
+                            ": syntax error in '" + isValidObj.errWord + "'";
+                    }
                     toast({
                         variant: "destructive",
                         title: "Error",
-                        description: "Invalid concluded license expression",
+                        description: description,
                     });
                 }
             }
