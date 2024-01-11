@@ -28,6 +28,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
+import EditButton from "@/components/edit_item/EditButton";
 import { cn } from "@/lib/utils";
 
 type DataType = ZodiosResponseByPath<
@@ -122,7 +123,7 @@ const ConclusionDB = ({
                             {data?.licenseConclusions.map((d) => (
                                 <div
                                     key={`wrapper-${d.id}`}
-                                    className="flex items-start justify-between"
+                                    className="flex items-stretch justify-between"
                                     data-testid="license-conclusion"
                                 >
                                     <CommandItem
@@ -194,13 +195,21 @@ const ConclusionDB = ({
                                             </span>
                                         </div>
                                     </CommandItem>
-                                    <CommandItem
-                                        key={`delete-${d.id}`}
-                                        className="items-start text-left"
-                                    >
+                                    <CommandItem key={`delete-${d.id}`}>
                                         {(userName === d.user.username ||
                                             userRole === "ADMIN") && (
-                                            <DeleteLicenseConclusion data={d} />
+                                            <div className="flex align-middle">
+                                                {d.bulkConclusionId && (
+                                                    <EditButton
+                                                        name="edit"
+                                                        className="mr-1 px-2"
+                                                        onClick={() => {}}
+                                                    />
+                                                )}
+                                                <DeleteLicenseConclusion
+                                                    data={d}
+                                                />
+                                            </div>
                                         )}
                                     </CommandItem>
                                 </div>
