@@ -392,7 +392,6 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
                         <Button
                             type="submit"
                             className="mt-2 rounded-md p-1 text-xs"
-                            variant={"outline"}
                         >
                             Add bulk conclusion
                         </Button>

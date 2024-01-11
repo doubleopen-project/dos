@@ -50,9 +50,7 @@ const TokenDialog = () => {
     return (
         <Dialog onOpenChange={toggleOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" onClick={onGenerateNewToken}>
-                    Generate new token
-                </Button>
+                <Button onClick={onGenerateNewToken}>Generate new token</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>

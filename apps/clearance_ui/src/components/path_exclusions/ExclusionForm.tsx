@@ -259,7 +259,6 @@ const ExclusionForm = ({
                     )}
                     <div className="flex justify-end">
                         <Button
-                            variant="outline"
                             type="submit"
                             className="mt-2 rounded-md p-1 text-xs"
                         >

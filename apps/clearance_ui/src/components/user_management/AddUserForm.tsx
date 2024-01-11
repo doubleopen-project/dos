@@ -254,11 +254,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     )}
                     {!isLoading && !isSuccess && (
                         <div className="flex flex-row">
-                            <Button
-                                className="mr-1 flex-1"
-                                type="submit"
-                                variant={"outline"}
-                            >
+                            <Button className="mr-1 flex-1" type="submit">
                                 Add user
                             </Button>
                             <Button

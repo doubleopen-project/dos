@@ -156,12 +156,7 @@ const LoginForm = () => {
                             </FormItem>
                         )}
                     />
-                    <Button
-                        className="grow"
-                        type="submit"
-                        variant={"outline"}
-                        disabled={isLoading}
-                    >
+                    <Button className="grow" type="submit" disabled={isLoading}>
                         {isLoading && (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

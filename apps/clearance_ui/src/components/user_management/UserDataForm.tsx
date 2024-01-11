@@ -274,7 +274,7 @@ const UserDataForm = ({ user }: UserDataProps) => {
                                 isSuccess ? "!opacity-100" : undefined,
                             )}
                             type="submit"
-                            variant={isSuccess ? "success" : "outline"}
+                            variant={isSuccess ? "success" : "default"}
                             disabled={isLoading || isSuccess}
                         >
                             {isSuccess && <Check />}
