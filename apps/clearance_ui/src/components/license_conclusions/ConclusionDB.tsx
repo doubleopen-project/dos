@@ -233,6 +233,7 @@ const ConclusionDB = ({
                                     </CommandItem>
                                     <BulkConclusionFormDialog
                                         purl={d.contextPurl}
+                                        id={d.bulkConclusionId || undefined}
                                         open={openEditDialog}
                                         setOpen={setOpenEditDialog}
                                     />
