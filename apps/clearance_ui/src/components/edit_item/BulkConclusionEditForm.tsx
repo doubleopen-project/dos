@@ -5,12 +5,14 @@
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
 import isGlob from "is-glob";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
+import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -77,13 +79,20 @@ const bulkConclusionFormSchema = z.object({
 
 type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
 
+type BCDataType = ZodiosResponseByPath<
+    typeof userAPI,
+    "get",
+    "/bulk-conclusions/:id"
+>;
+
 type Props = {
     purl: string;
+    id: number;
     className?: string;
     setOpen: (open: boolean) => void;
 };
 
-const BulkConclusionEditForm = ({ purl, className, setOpen }: Props) => {
+const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
@@ -93,14 +102,21 @@ const BulkConclusionEditForm = ({ purl, className, setOpen }: Props) => {
             purl: pathPurl,
         },
     });
+    const { data: bulkConclusion } = userHooks.useGetBulkConclusionById({
+        withCredentials: true,
+        params: {
+            id: id,
+        },
+    });
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkConclusionFormType = {
-        pattern: "",
-        concludedLicenseSPDX: "",
+        pattern: bulkConclusion?.pattern || "",
+        concludedLicenseSPDX:
+            bulkConclusion?.concludedLicenseExpressionSPDX || "",
         concludedLicenseList: "",
-        comment: "",
-        local: false,
+        comment: bulkConclusion?.comment || "",
+        local: bulkConclusion?.local || false,
     };
     const form = useForm<BulkConclusionFormType>({
         resolver: zodResolver(bulkConclusionFormSchema),
