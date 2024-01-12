@@ -77,6 +77,10 @@ export const jobStateQuery = async () => {
                 /*
                  * Case where the job hasn't yet been added to the queue.
                  */
+                const maxFlagCountForProcessing =
+                    parseInt(process.env.MAX_FLAG_COUNT_PROCESSING as string) ||
+                    12;
+
                 if (flaggedJob) {
                     if (flaggedJob.dbState === dbState) {
                         // If the job is in the flagged map, increment the flagCount
@@ -85,7 +89,8 @@ export const jobStateQuery = async () => {
                             (dbState === "created" &&
                                 flaggedJob.flagCount > 1) ||
                             (dbState === "processing" &&
-                                flaggedJob.flagCount > 6)
+                                flaggedJob.flagCount >
+                                    maxFlagCountForProcessing)
                         ) {
                             console.log(
                                 scannerJobId +
@@ -94,7 +99,8 @@ export const jobStateQuery = async () => {
                                     " to failed as the state hasn't changed in " +
                                     (dbState === "created"
                                         ? "5 minutes"
-                                        : "30 minutes"),
+                                        : maxFlagCountForProcessing * 5 +
+                                          " minutes"),
                             );
                             await updateScannerJob(scannerJobId, {
                                 state: "failed",
