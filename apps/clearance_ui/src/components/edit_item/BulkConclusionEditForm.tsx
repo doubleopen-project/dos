@@ -189,7 +189,6 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
 
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
-            console.log(data);
             const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
             editBulkConclusion({
                 pattern: data.pattern,
@@ -221,7 +220,18 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
             </Label>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    id="bulkConclusionEditForm"
+                    onSubmit={(e) => {
+                        form.handleSubmit(onSubmit)(e);
+                        if (e) {
+                            if (typeof e.preventDefault === "function") {
+                                e.preventDefault();
+                            }
+                            if (typeof e.stopPropagation === "function") {
+                                e.stopPropagation();
+                            }
+                        }
+                    }}
                     className="space-y-1"
                 >
                     <div className="flex flex-row items-end justify-between">
@@ -382,6 +392,7 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                     <div className="flex justify-end">
                         <Button
                             type="submit"
+                            form="bulkConclusionEditForm"
                             name="submit-bulk-edit"
                             className="mt-2 rounded-md p-1 text-xs"
                         >
