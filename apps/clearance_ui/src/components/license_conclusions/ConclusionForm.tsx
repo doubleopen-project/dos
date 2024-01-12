@@ -188,6 +188,7 @@ const ConclusionForm = ({
         <div className={cn("flex w-full flex-col", className)}>
             <Form {...form}>
                 <form
+                    id="conclusionForm"
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-1"
                 >
@@ -306,7 +307,11 @@ const ConclusionForm = ({
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="text-left text-xs">
+                        <Button
+                            type="submit"
+                            form="conclusionForm"
+                            className="text-left text-xs"
+                        >
                             Submit
                         </Button>
                     </div>
