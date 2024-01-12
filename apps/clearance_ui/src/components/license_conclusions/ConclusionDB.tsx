@@ -142,42 +142,51 @@ const ConclusionDB = ({
                                             )}
                                         />
                                         <div className="ml-2 flex w-full flex-col text-xs">
-                                            <span className="mb-2 flex justify-between">
+                                            {/* Date and creator */}
+                                            <div className="mb-1 flex items-center justify-between">
                                                 <span>
-                                                    <span className="mr-1">
-                                                        Concluded:
-                                                    </span>
-                                                    <span className="rounded-sm bg-green-400 p-1 font-bold">
-                                                        {
-                                                            d.concludedLicenseExpressionSPDX
-                                                        }
-                                                    </span>
-                                                    {d.bulkConclusionId && (
-                                                        <span
-                                                            data-testid="license-type"
-                                                            className="ml-1 rounded-sm bg-blue-400 p-1 font-bold"
-                                                        >
-                                                            BULK
-                                                        </span>
-                                                    )}
+                                                    {
+                                                        new Date(d.updatedAt)
+                                                            .toISOString()
+                                                            .split("T")[0]
+                                                    }
                                                 </span>
-                                                <span className="">
-                                                    <span className="mr-1">
-                                                        {
-                                                            new Date(
-                                                                d.updatedAt,
-                                                            )
-                                                                .toISOString()
-                                                                .split("T")[0]
-                                                        }
-                                                    </span>
-                                                    <span className="rounded-sm bg-orange-400 p-1 font-bold">
-                                                        {d.user.username}
-                                                    </span>
+                                                <span className="rounded-sm bg-orange-400 p-1 font-bold">
+                                                    {d.user.username}
                                                 </span>
-                                            </span>
-                                            <span className="text-smaller">
-                                                <span className="mr-1">
+                                            </div>
+
+                                            {/* Clearance info */}
+                                            <div className="mb-1">
+                                                <span className="mr-1 font-bold">
+                                                    Concluded:
+                                                </span>
+                                                <span className="rounded-sm bg-green-400 p-0.5 font-bold">
+                                                    {
+                                                        d.concludedLicenseExpressionSPDX
+                                                    }
+                                                </span>
+                                                {d.bulkConclusionId && (
+                                                    <span
+                                                        data-testid="license-type"
+                                                        className="ml-1 rounded-sm bg-blue-400 p-0.5 font-bold"
+                                                    >
+                                                        BULK
+                                                    </span>
+                                                )}
+                                                {d.local && (
+                                                    <span
+                                                        data-testid="license-type"
+                                                        className="ml-1 rounded-sm bg-red-400 p-0.5 font-bold"
+                                                    >
+                                                        LOCAL
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Detected license */}
+                                            <div className="text-smaller mb-1">
+                                                <span className="mr-1 font-bold">
                                                     Detected:
                                                 </span>
                                                 <span>
@@ -185,16 +194,20 @@ const ConclusionDB = ({
                                                         d.detectedLicenseExpressionSPDX
                                                     }
                                                 </span>
-                                            </span>
-                                            <span className="text-smaller">
-                                                <span className="mr-1">
+                                            </div>
+
+                                            {/* Context PURL */}
+                                            <div className="text-smaller mb-1">
+                                                <span className="mr-1 font-bold">
                                                     Context PURL:
                                                 </span>
                                                 {d.contextPurl}
-                                            </span>
-                                            <span className="text-smaller italic">
+                                            </div>
+
+                                            {/* Comment */}
+                                            <div className="text-smaller mb-1 italic">
                                                 {d.comment}
-                                            </span>
+                                            </div>
                                         </div>
                                     </CommandItem>
                                     <CommandItem key={`delete-${d.id}`}>
