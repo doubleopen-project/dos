@@ -5,14 +5,12 @@
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
 import isGlob from "is-glob";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import parse from "spdx-expression-parse";
-import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -79,12 +77,6 @@ const bulkConclusionFormSchema = z.object({
 
 type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
 
-type BCDataType = ZodiosResponseByPath<
-    typeof userAPI,
-    "get",
-    "/bulk-conclusions/:id"
->;
-
 type Props = {
     purl: string;
     id: number;
@@ -130,34 +122,29 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
+    const keyBulkConclusion = userHooks.getKeyByAlias("GetBulkConclusionById");
 
     const queryClient = useQueryClient();
-    const { mutate: addBulkConclusion } = userHooks.usePostBulkConclusion(
+    const { mutate: editBulkConclusion } = userHooks.usePutBulkConclusion(
         {
             withCredentials: true,
             params: {
-                purl: pathPurl,
+                id: id,
             },
         },
         {
-            onSuccess: (data) => {
-                const res = {
-                    filesGlob: data.matchedPathsCount,
-                    filesPackage: data.affectedFilesInPackageCount,
-                    filesAll: data.affectedFilesAcrossAllPackagesCount,
-                };
+            onSuccess: () => {
                 setOpen(false);
                 toast({
                     title: "Bulk conclusion",
-                    description: `Bulk license conclusion added successfully.
-                        ${res.filesGlob} files matched the pattern, 
-                        ${res.filesPackage} identical (SHA256) files affected in this package, 
-                        ${res.filesAll} identical (SHA256) files affected in the database.`,
+                    description:
+                        "Bulk license conclusion edited and saved successfully.",
                 });
                 // When a bulk curation is added, invalidate the queries to refetch the data
                 queryClient.invalidateQueries(keyLCs);
                 queryClient.invalidateQueries(keyFiletree);
                 queryClient.invalidateQueries(keyLicenseConclusions);
+                queryClient.invalidateQueries(keyBulkConclusion);
             },
             onError: (error) => {
                 if (axios.isAxiosError(error)) {
@@ -202,32 +189,20 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
 
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
+            console.log(data);
             const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
-            if (
-                window.confirm(
-                    `Do you want to add a bulk license conclusion\n${JSON.stringify(
-                        concludedLicenseExpressionSPDX,
-                        null,
-                        2,
-                    )} to these files?`,
-                )
-            ) {
-                addBulkConclusion({
-                    pattern: data.pattern,
-                    concludedLicenseExpressionSPDX:
-                        concludedLicenseExpressionSPDX,
-                    comment: data.comment ?? "",
-                    local: data.local,
-                });
-            } else {
-                return;
-            }
+            editBulkConclusion({
+                pattern: data.pattern,
+                concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
+                comment: data.comment ?? "",
+                local: data.local,
+            });
         } else if (fieldsWithValue.length === 0) {
             toast({
                 variant: "destructive",
                 title: "ERROR",
                 description:
-                    "No license conclusion (SPDX expression, or from a license list) are specified. Please specify exactly one.",
+                    "No license conclusion (SPDX expression, or from a license list) xxx are specified. Please specify exactly one.",
             });
         } else {
             toast({
@@ -407,9 +382,10 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                     <div className="flex justify-end">
                         <Button
                             type="submit"
+                            name="submit-bulk-edit"
                             className="mt-2 rounded-md p-1 text-xs"
                         >
-                            Add bulk conclusion
+                            Submit the edit
                         </Button>
                     </div>
                 </form>
