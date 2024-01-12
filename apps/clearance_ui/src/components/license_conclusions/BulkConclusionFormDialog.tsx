@@ -20,7 +20,11 @@ const BulkConclusionFormDialog = ({ purl, id, open, setOpen }: Props) => {
         <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
                 {id ? (
-                    <BulkConclusionEditForm purl={purl} setOpen={setOpen} />
+                    <BulkConclusionEditForm
+                        purl={purl}
+                        id={id}
+                        setOpen={setOpen}
+                    />
                 ) : (
                     <BulkConclusionForm purl={purl} setOpen={setOpen} />
                 )}
