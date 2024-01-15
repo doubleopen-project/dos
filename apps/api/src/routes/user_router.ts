@@ -13,7 +13,6 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { hashPassword } from "../helpers/password_helper";
-import { formatPurl } from "../helpers/purl_helpers";
 import { s3Client } from "../helpers/s3client";
 
 const userRouter = zodiosRouter(userAPI);
@@ -209,7 +208,7 @@ userRouter.post(
         try {
             if (!req.user) throw new CustomError("Unauthorized", 401);
 
-            const contextPurl = formatPurl(req.params.purl);
+            const contextPurl = req.params.purl;
 
             // Make sure that a package with purl exists
             const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
@@ -435,7 +434,7 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
 
         if (!user) throw new CustomError("Unauthorized", 401);
 
-        const contextPurl = formatPurl(req.params.purl);
+        const contextPurl = req.params.purl;
 
         const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
 
@@ -835,7 +834,7 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
         const { user } = req;
         if (!user) throw new CustomError("Unauthorized", 401);
 
-        const purl = formatPurl(req.params.purl);
+        const purl = req.params.purl;
 
         const packageId = await dbQueries.findPackageIdByPurl(purl);
 
@@ -862,10 +861,7 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
             error.code === "P2025"
         ) {
             return res.status(404).json({
-                message:
-                    "Package with purl " +
-                    formatPurl(req.params.purl) +
-                    " not found",
+                message: "Package with purl " + req.params.purl + " not found",
             });
         } else {
             const err = await getErrorCodeAndMessage(error);
@@ -923,7 +919,7 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         const { user } = req;
         if (!user) throw new Error("User not found");
 
-        const purl = formatPurl(req.params.purl);
+        const purl = req.params.purl;
         const packageId = await dbQueries.findPackageIdByPurl(purl);
 
         if (!packageId) throw new Error("Package not found");
@@ -1126,7 +1122,7 @@ userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
         const { user } = req;
         if (!user) throw new Error("User not found");
 
-        const purl = formatPurl(req.params.purl);
+        const purl = req.params.purl;
 
         const pathExclusions =
             await dbQueries.getPathExclusionsByPackagePurl(purl);
@@ -1163,7 +1159,9 @@ userRouter.get("/packages", async (req, res) => {
 
 userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     try {
-        const purl = formatPurl(req.params.purl);
+        console.log(req.params.purl);
+        const purl = req.params.purl;
+        console.log(purl);
         const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
         for (const ft of filetrees) {
@@ -1185,7 +1183,7 @@ userRouter.get("/packages/:purl/filetrees", async (req, res) => {
 
 userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
     try {
-        const purl = formatPurl(req.params.purl);
+        const purl = req.params.purl;
         const path = req.params.path;
 
         const sha256 = await dbQueries.findFileSha256ByPurlAndPath(purl, path);
