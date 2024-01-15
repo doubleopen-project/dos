@@ -622,6 +622,20 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
     try {
         if (!req.user) throw new CustomError("Unauthorized", 401);
 
+        const bulkConclusionId = req.params.id;
+
+        const origBulkCur =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
+
+        if (!origBulkCur)
+            throw new CustomError("Bulk conclusion to update not found", 404);
+
+        if (req.user.role !== "ADMIN") {
+            if (req.user.id !== origBulkCur.userId) {
+                throw new CustomError("Forbidden", 403);
+            }
+        }
+
         const reqPattern = req.body.pattern;
         const reqCLESPDX = req.body.concludedLicenseExpressionSPDX;
         const reqDLESPDX = req.body.detectedLicenseExpressionSPDX;
@@ -640,20 +654,6 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                 400,
                 "root",
             );
-        }
-
-        const bulkConclusionId = req.params.id;
-
-        const origBulkCur =
-            await dbQueries.findBulkConclusionById(bulkConclusionId);
-
-        if (!origBulkCur)
-            throw new CustomError("Bulk conclusion to update not found", 404);
-
-        if (req.user.role !== "ADMIN") {
-            if (req.user.id !== origBulkCur.userId) {
-                throw new CustomError("Forbidden", 403);
-            }
         }
 
         if (
