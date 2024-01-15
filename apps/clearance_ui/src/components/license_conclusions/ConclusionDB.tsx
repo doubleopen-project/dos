@@ -185,16 +185,18 @@ const ConclusionDB = ({
                                             </div>
 
                                             {/* Detected license */}
-                                            <div className="text-smaller mb-1">
-                                                <span className="mr-1 font-bold">
-                                                    Detected:
-                                                </span>
-                                                <span>
-                                                    {
-                                                        d.detectedLicenseExpressionSPDX
-                                                    }
-                                                </span>
-                                            </div>
+                                            {d.detectedLicenseExpressionSPDX && (
+                                                <div className="text-smaller mb-1">
+                                                    <span className="mr-1 font-bold">
+                                                        Detected:
+                                                    </span>
+                                                    <span>
+                                                        {
+                                                            d.detectedLicenseExpressionSPDX
+                                                        }
+                                                    </span>
+                                                </div>
+                                            )}
 
                                             {/* Context PURL */}
                                             <div className="text-smaller mb-1">
