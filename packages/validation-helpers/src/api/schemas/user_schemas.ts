@@ -212,7 +212,7 @@ export const PutBulkConclusionReq = z
         pattern: z.string(),
         concludedLicenseExpressionSPDX: z.string(),
         detectedLicenseExpressionSPDX: z.string(),
-        comment: z.string(),
+        comment: z.nullable(z.string()),
         local: z.boolean(),
     })
     .partial();

@@ -646,7 +646,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             !reqPattern &&
             !reqCLESPDX &&
             !reqDLESPDX &&
-            !reqComment &&
+            reqComment === undefined &&
             !reqLocal
         ) {
             throw new CustomError(
@@ -662,7 +662,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                 reqCLESPDX === origBulkCur.concludedLicenseExpressionSPDX) &&
             (!reqDLESPDX ||
                 reqDLESPDX === origBulkCur.detectedLicenseExpressionSPDX) &&
-            (!reqComment || reqComment === origBulkCur.comment) &&
+            (reqComment === undefined || reqComment === origBulkCur.comment) &&
             (!reqLocal || reqLocal === origBulkCur.local)
         ) {
             throw new CustomError("Nothing to update", 400, "root");

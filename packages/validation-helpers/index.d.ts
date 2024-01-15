@@ -6344,7 +6344,9 @@ declare const userAPI: [
                         pattern: zod.ZodOptional<zod.ZodString>;
                         concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-                        comment: zod.ZodOptional<zod.ZodString>;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                         local: zod.ZodOptional<zod.ZodBoolean>;
                     },
                     "strip",
@@ -6353,14 +6355,14 @@ declare const userAPI: [
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     }
                 >;
@@ -12161,7 +12163,9 @@ declare const dosAPI: [
                         pattern: zod.ZodOptional<zod.ZodString>;
                         concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
-                        comment: zod.ZodOptional<zod.ZodString>;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                         local: zod.ZodOptional<zod.ZodBoolean>;
                     },
                     "strip",
@@ -12170,14 +12174,14 @@ declare const dosAPI: [
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         concludedLicenseExpressionSPDX?: string | undefined;
                         detectedLicenseExpressionSPDX?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                         local?: boolean | undefined;
                     }
                 >;
