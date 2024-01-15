@@ -702,7 +702,10 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                             bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
                         comment:
                             reqComment || bulkConclusionWithRelations.comment,
-                        local: reqLocal || bulkConclusionWithRelations.local,
+                        local:
+                            reqLocal !== undefined
+                                ? reqLocal
+                                : bulkConclusionWithRelations.local,
                         contextPurl: origBulkCur.package.purl,
                         fileSha256: fileTree.fileSha256,
                         userId: req.user.id,
@@ -735,7 +738,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             (reqDLESPDX &&
                 reqDLESPDX !== origBulkCur.detectedLicenseExpressionSPDX) ||
             (reqComment && reqComment !== origBulkCur.comment) ||
-            (reqLocal && reqLocal !== origBulkCur.local)
+            (reqLocal !== undefined && reqLocal !== origBulkCur.local)
         ) {
             await dbQueries.updateManyLicenseConclusions(bulkConclusionId, {
                 concludedLicenseExpressionSPDX: reqCLESPDX,
