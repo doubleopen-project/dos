@@ -6,6 +6,12 @@ import { parseSPDX } from "common-helpers";
 
 export const isValidConcludedExpression = (concludedLicense: string) => {
     try {
+        if (concludedLicense === "NONE" || concludedLicense === "NOASSERTION") {
+            return {
+                isValid: true,
+                errWord: null,
+            };
+        }
         parseSPDX(concludedLicense);
         return {
             isValid: true,
