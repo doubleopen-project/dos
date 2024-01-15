@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 export const toPathPurl = (purl: string) => {
-    return purl.replace(/\//g, "%2F").replace(/#/g, "%23");
+    return encodeURIComponent(purl);
 };
 
 export const toPathPath = (path: string) => {
