@@ -106,7 +106,6 @@ test("create path exclusion, delete from Clearance Library", async ({
 test("create path exclusion, edit, and delete from Main UI", async ({
     page,
 }) => {
-    test.setTimeout(60000);
     const pattern = "apps/api/src/**";
     const reason = "OTHER";
     const comment =

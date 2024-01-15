@@ -16,6 +16,9 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export const STORAGE_STATE = path.join(__dirname, ".auth/user.json");
 export default defineConfig({
+    /* Timeout for each test, to accommodate for slower machines in local testing */
+    timeout: 60000,
+
     testDir: "./tests/e2e",
     /* Run tests in files in parallel */
     fullyParallel: true,
