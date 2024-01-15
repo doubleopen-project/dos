@@ -122,7 +122,6 @@ test("create license conclusion, delete from Clearance Library", async ({
 test("create license conclusion, edit, and delete from Clearance Library", async ({
     page,
 }) => {
-    test.setTimeout(60000);
     const license = "Beerware";
     const comment =
         "Test create license conclusion, edit it, and finally delete from Clearance Library";
