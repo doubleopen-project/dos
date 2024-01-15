@@ -647,7 +647,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             !reqCLESPDX &&
             !reqDLESPDX &&
             reqComment === undefined &&
-            !reqLocal
+            reqLocal === undefined
         ) {
             throw new CustomError(
                 "At least one field is required",
@@ -663,7 +663,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             (!reqDLESPDX ||
                 reqDLESPDX === origBulkCur.detectedLicenseExpressionSPDX) &&
             (reqComment === undefined || reqComment === origBulkCur.comment) &&
-            (!reqLocal || reqLocal === origBulkCur.local)
+            (reqLocal === undefined || reqLocal === origBulkCur.local)
         ) {
             throw new CustomError("Nothing to update", 400, "root");
         }
