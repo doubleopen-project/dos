@@ -7,10 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import isGlob from "is-glob";
-import { Info } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Info, Loader2 } from "lucide-react";
+import { useForm, useFormState } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
-import parse from "spdx-expression-parse";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -39,6 +38,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { concludedLicenseExpressionSPDXSchema } from "@/components/license_conclusions/ConclusionForm";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
@@ -56,21 +56,8 @@ const bulkConclusionFormSchema = z.object({
             message:
                 "You cannot do a bulk conclusion for all files in a package",
         }),
-    concludedLicenseSPDX: z
-        .string()
-        .refine(
-            (value) => {
-                try {
-                    parse(value);
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            },
-            { message: "Invalid SPDX expression" },
-        )
-        .or(z.enum(["", "NONE", "NOASSERTION"])),
-    concludedLicenseList: z.string(),
+    concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
+    concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),
     local: z.boolean(),
 });
@@ -114,6 +101,7 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
         resolver: zodResolver(bulkConclusionFormSchema),
         defaultValues,
     });
+    const { errors } = useFormState({ control: form.control });
 
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
@@ -125,49 +113,50 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
     const keyBulkConclusion = userHooks.getKeyByAlias("GetBulkConclusionById");
 
     const queryClient = useQueryClient();
-    const { mutate: editBulkConclusion } = userHooks.usePutBulkConclusion(
-        {
-            withCredentials: true,
-            params: {
-                id: id,
+    const { mutate: editBulkConclusion, isLoading: editIsLoading } =
+        userHooks.usePutBulkConclusion(
+            {
+                withCredentials: true,
+                params: {
+                    id: id,
+                },
             },
-        },
-        {
-            onSuccess: () => {
-                setOpen(false);
-                toast({
-                    title: "Bulk conclusion",
-                    description:
-                        "Bulk license conclusion edited and saved successfully.",
-                });
-                // When a bulk curation is added, invalidate the queries to refetch the data
-                queryClient.invalidateQueries(keyLCs);
-                queryClient.invalidateQueries(keyFiletree);
-                queryClient.invalidateQueries(keyLicenseConclusions);
-                queryClient.invalidateQueries(keyBulkConclusion);
-            },
-            onError: (error) => {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data?.path === "pattern") {
-                        form.setError("pattern", {
-                            type: "manual",
-                            message: error.response?.data?.message,
-                        });
-                    } else if (error.response?.data?.message) {
+            {
+                onSuccess: () => {
+                    setOpen(false);
+                    toast({
+                        title: "Bulk conclusion",
+                        description:
+                            "Bulk license conclusion edited and saved successfully.",
+                    });
+                    // When a bulk curation is added, invalidate the queries to refetch the data
+                    queryClient.invalidateQueries(keyLCs);
+                    queryClient.invalidateQueries(keyFiletree);
+                    queryClient.invalidateQueries(keyLicenseConclusions);
+                    queryClient.invalidateQueries(keyBulkConclusion);
+                },
+                onError: (error) => {
+                    if (axios.isAxiosError(error)) {
+                        if (error.response?.data?.path === "pattern") {
+                            form.setError("pattern", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        } else if (error.response?.data?.message) {
+                            form.setError("root", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        }
+                    } else {
                         form.setError("root", {
                             type: "manual",
-                            message: error.response?.data?.message,
+                            message: error.message,
                         });
                     }
-                } else {
-                    form.setError("root", {
-                        type: "manual",
-                        message: error.message,
-                    });
-                }
+                },
             },
-        },
-    );
+        );
 
     const { toast } = useToast();
 
@@ -243,12 +232,17 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                                     <FormLabel>Pattern</FormLabel>
                                     <FormControl>
                                         <Input
-                                            className="!min-h-[40px] text-xs"
+                                            className={cn(
+                                                errors.pattern
+                                                    ? "border-destructive border"
+                                                    : undefined,
+                                                "!min-h-[40px] text-xs",
+                                            )}
                                             placeholder="Glob pattern matching to the files to be concluded..."
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-xs" />
                                 </FormItem>
                             )}
                         />
@@ -276,14 +270,12 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+                    <FormLabel>Select exactly one of the two below</FormLabel>
                     <FormField
                         control={form.control}
                         name="concludedLicenseList"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>
-                                    Select exactly one of the two below
-                                </FormLabel>
                                 <FormControl>
                                     <ConclusionLicense
                                         concludedLicenseExpressionSPDX={
@@ -293,9 +285,14 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                                             field.onChange
                                         }
                                         fractionalWidth={0.75}
+                                        className={
+                                            errors.concludedLicenseList
+                                                ? "border-destructive border"
+                                                : undefined
+                                        }
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                             </FormItem>
                         )}
                     />
@@ -308,9 +305,14 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                                     <ConclusionSPDX
                                         value={field.value}
                                         setValue={field.onChange}
+                                        className={
+                                            errors.concludedLicenseSPDX
+                                                ? "border-destructive border"
+                                                : ""
+                                        }
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                             </FormItem>
                         )}
                     />
@@ -327,7 +329,7 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                             </FormItem>
                         )}
                     />
@@ -375,7 +377,7 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                             </FormItem>
                         )}
                     />
@@ -395,8 +397,16 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                             form="bulkConclusionEditForm"
                             name="submit-bulk-edit"
                             className="mt-2 rounded-md p-1 text-xs"
+                            disabled={editIsLoading}
                         >
-                            Submit the edit
+                            {editIsLoading ? (
+                                <>
+                                    <Loader2 className="m-1 h-4 w-4 animate-spin" />
+                                    Please wait
+                                </>
+                            ) : (
+                                <>Submit the edit</>
+                            )}
                         </Button>
                     </div>
                 </form>
