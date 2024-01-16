@@ -1159,9 +1159,7 @@ userRouter.get("/packages", async (req, res) => {
 
 userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     try {
-        console.log(req.params.purl);
         const purl = req.params.purl;
-        console.log(purl);
         const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
         for (const ft of filetrees) {
