@@ -62,7 +62,7 @@ test("create bulk conclusion, delete from Clearance Library", async ({
     page,
 }) => {
     const pattern = "**/*.json";
-    const license = "389-exception";
+    const license = "CC-BY-1.0";
     const comment =
         "Test create bulk conclusion, delete from Clearance Library";
 
