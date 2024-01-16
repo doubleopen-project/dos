@@ -42,9 +42,3 @@ export const parsePurl = (purl: string) => {
         subpath: parsedPurl.subpath,
     };
 };
-
-export const parsePurlAndQualifiers = (purl: string) => {
-    const parsedPurl = PackageURL.fromString(purl);
-    const parsedQualifiers = parsedPurl.qualifiers;
-    return { ...parsedPurl, ...parsedQualifiers };
-};

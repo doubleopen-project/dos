@@ -27,6 +27,7 @@ import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
 import Node from "@/components/package_inspector/Node";
 import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
+import PurlDetails from "@/components/PurlDetails";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
@@ -192,7 +193,9 @@ const PackageTree = ({ purl, path }: Props) => {
         <div className="flex h-full flex-col">
             <div className="mb-2 flex-row rounded-md border p-1 shadow-lg">
                 <Label className="clearance-label">Package: </Label>
-                <Badge className="rounded-md">{purl}</Badge>
+                <Badge className="rounded-md">
+                    <PurlDetails purl={purl} />
+                </Badge>
             </div>
 
             <div className="mb-3 flex items-center rounded-md border p-1 text-sm shadow-lg">
