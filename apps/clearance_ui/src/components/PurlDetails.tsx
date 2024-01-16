@@ -3,18 +3,22 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import {
-    parsePurl,
-    parseQualifiers,
-} from "../../../../apps/api/src/helpers/purl_helpers";
+import { parsePurlAndQualifiers } from "../../../../apps/api/src/helpers/purl_helpers";
 
 const PurlDetails = (purl: string) => {
+    const parsedPurl = parsePurlAndQualifiers(purl);
     return (
         <div>
-            <p>Type: {parsePurl(purl).type}</p>
-            <p>Namespace: {parsePurl(purl).namespace}</p>
-            <p>Name: {parsePurl(purl).name}</p>
-            <p>Qualifiers: {parsePurl(purl).qualifiers}</p>
+            <p>Type: {parsedPurl.type}</p>
+            <p>Namespace: {parsedPurl.namespace}</p>
+            <p>Name: {parsedPurl.name}</p>
+            <p>Qualifiers:</p>
+            {parsedPurl.qualifiers &&
+                Object.entries(parsedPurl.qualifiers).map(([key, value]) => (
+                    <p key={key}>
+                        {key}: {value}
+                    </p>
+                ))}
         </div>
     );
 };
