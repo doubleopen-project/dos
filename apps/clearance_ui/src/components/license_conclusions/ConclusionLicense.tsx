@@ -32,6 +32,7 @@ type Props = {
     concludedLicenseExpressionSPDX: string | undefined;
     setConcludedLicenseExpressionSPDX: (newSPDX: string | null) => void;
     fractionalWidth?: number;
+    className?: string;
 };
 
 const fetchAndConvertYAML = async () => {
@@ -57,6 +58,7 @@ const ConclusionLicense = ({
     concludedLicenseExpressionSPDX,
     setConcludedLicenseExpressionSPDX,
     fractionalWidth = 0.75,
+    className,
 }: Props) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -96,7 +98,10 @@ const ConclusionLicense = ({
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="h-fit w-full justify-between"
+                        className={cn(
+                            className,
+                            "h-fit w-full justify-between",
+                        )}
                     >
                         <div className="text-xs">
                             {router.isReady

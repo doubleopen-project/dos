@@ -9,7 +9,7 @@ import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
 import { parseSPDX } from "common-helpers";
 import { Info } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -37,23 +37,25 @@ import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
+export const concludedLicenseExpressionSPDXSchema = z
+    .string()
+    .refine(
+        (value) => {
+            try {
+                parseSPDX(value);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
+        { message: "Invalid SPDX expression" },
+    )
+    .or(z.enum(["", "NONE", "NOASSERTION"]));
+
 const conclusionFormSchema = z.object({
-    concludedLicenseSPDX: z
-        .string()
-        .refine(
-            (value) => {
-                try {
-                    parseSPDX(value);
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            },
-            { message: "Invalid SPDX expression" },
-        )
-        .or(z.enum(["", "NONE", "NOASSERTION"])),
+    concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
     concludedLicenseDB: z.string(),
-    concludedLicenseList: z.string(),
+    concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),
     local: z.boolean(),
 });
@@ -92,6 +94,8 @@ const ConclusionForm = ({
         resolver: zodResolver(conclusionFormSchema),
         defaultValues,
     });
+    const { errors } = useFormState({ control: form.control });
+
     const keyLCs = userHooks.getKeyByPath(
         "get",
         "/packages/:purl/files/:sha256/license-conclusions/",
@@ -209,7 +213,7 @@ const ConclusionForm = ({
                                         fractionalWidth={1.7}
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="ml-1 text-xs" />
                             </FormItem>
                         )}
                     />
@@ -227,9 +231,14 @@ const ConclusionForm = ({
                                             field.onChange
                                         }
                                         fractionalWidth={1}
+                                        className={
+                                            errors.concludedLicenseList
+                                                ? "border-destructive border"
+                                                : undefined
+                                        }
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="ml-1 text-xs" />
                             </FormItem>
                         )}
                     />
@@ -242,9 +251,14 @@ const ConclusionForm = ({
                                     <ConclusionSPDX
                                         value={field.value}
                                         setValue={field.onChange}
+                                        className={
+                                            errors.concludedLicenseSPDX
+                                                ? "border-destructive border"
+                                                : undefined
+                                        }
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="ml-1 text-xs" />
                             </FormItem>
                         )}
                     />
@@ -260,7 +274,7 @@ const ConclusionForm = ({
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="ml-1 text-xs" />
                             </FormItem>
                         )}
                     />
@@ -303,14 +317,14 @@ const ConclusionForm = ({
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                    <FormMessage />
+                                    <FormMessage className="ml-1 text-xs" />
                                 </FormItem>
                             )}
                         />
                         <Button
                             type="submit"
                             form="conclusionForm"
-                            className="text-left text-xs"
+                            className="ml-4 text-left text-xs"
                         >
                             Submit
                         </Button>
