@@ -30,19 +30,19 @@ const PurlDetails = ({ purl }: Props) => {
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
                     {parsedPurl.type && (
-                        <p className="font-xs">
+                        <p>
                             <b>Type:</b> {parsedPurl.type}
                         </p>
                     )}
                     {parsedPurl.namespace && (
-                        <p className="font-xs">
+                        <p>
                             <b>Namespace:</b> {parsedPurl.namespace}
                         </p>
                     )}
                     {parsedPurl.qualifiers &&
                         Object.entries(parsedPurl.qualifiers).map(
                             ([key, value]) => (
-                                <p className="font-xs" key={key}>
+                                <p key={key}>
                                     <b>{key}:</b> {value}
                                 </p>
                             ),
