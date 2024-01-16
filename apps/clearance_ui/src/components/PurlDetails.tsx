@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Double Open Oy
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
@@ -18,10 +18,13 @@ type Props = {
 
 const PurlDetails = ({ purl }: Props) => {
     const parsedPurl = parsePurlAndQualifiers(purl);
-    let packageName = parsedPurl.name + "@" + parsedPurl.version;
-    if (parsedPurl.subpath) {
-        packageName += "/" + parsedPurl.subpath;
-    }
+    const packageName =
+        (parsedPurl.namespace ? parsedPurl.namespace + "/" : "") +
+        parsedPurl.name +
+        "@" +
+        parsedPurl.version +
+        (parsedPurl.subpath ? "/" + parsedPurl.subpath : "");
+
     return (
         <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
@@ -32,11 +35,6 @@ const PurlDetails = ({ purl }: Props) => {
                     {parsedPurl.type && (
                         <p>
                             <b>Type:</b> {parsedPurl.type}
-                        </p>
-                    )}
-                    {parsedPurl.namespace && (
-                        <p>
-                            <b>Namespace:</b> {parsedPurl.namespace}
                         </p>
                     )}
                     {parsedPurl.qualifiers &&

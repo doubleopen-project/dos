@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Double Open Oy
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
