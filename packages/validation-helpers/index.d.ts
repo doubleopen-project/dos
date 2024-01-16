@@ -4996,7 +4996,12 @@ declare const userAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        concludedLicenseExpressionSPDX: zod.ZodUnion<
+                            [
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                            ]
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;
@@ -5150,7 +5155,18 @@ declare const userAPI: [
                 schema: zod.ZodEffects<
                     zod.ZodObject<
                         {
-                            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodOptional<
+                                zod.ZodUnion<
+                                    [
+                                        zod.ZodEffects<
+                                            zod.ZodString,
+                                            string,
+                                            string
+                                        >,
+                                        zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                                    ]
+                                >
+                            >;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             comment: zod.ZodOptional<
                                 zod.ZodNullable<zod.ZodString>
@@ -5713,7 +5729,12 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        concludedLicenseExpressionSPDX: zod.ZodUnion<
+                            [
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                            ]
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;
@@ -6342,7 +6363,18 @@ declare const userAPI: [
                 schema: zod.ZodObject<
                     {
                         pattern: zod.ZodOptional<zod.ZodString>;
-                        concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+                        concludedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodUnion<
+                                [
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                                ]
+                            >
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
@@ -10815,7 +10847,12 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        concludedLicenseExpressionSPDX: zod.ZodUnion<
+                            [
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                            ]
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;
@@ -10969,7 +11006,18 @@ declare const dosAPI: [
                 schema: zod.ZodEffects<
                     zod.ZodObject<
                         {
-                            concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+                            concludedLicenseExpressionSPDX: zod.ZodOptional<
+                                zod.ZodUnion<
+                                    [
+                                        zod.ZodEffects<
+                                            zod.ZodString,
+                                            string,
+                                            string
+                                        >,
+                                        zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                                    ]
+                                >
+                            >;
                             detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                             comment: zod.ZodOptional<
                                 zod.ZodNullable<zod.ZodString>
@@ -11532,7 +11580,12 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         pattern: zod.ZodEffects<zod.ZodString, string, string>;
-                        concludedLicenseExpressionSPDX: zod.ZodString;
+                        concludedLicenseExpressionSPDX: zod.ZodUnion<
+                            [
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                            ]
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
                         >;
@@ -12161,7 +12214,18 @@ declare const dosAPI: [
                 schema: zod.ZodObject<
                     {
                         pattern: zod.ZodOptional<zod.ZodString>;
-                        concludedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
+                        concludedLicenseExpressionSPDX: zod.ZodOptional<
+                            zod.ZodUnion<
+                                [
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    zod.ZodEnum<["NONE", "NOASSERTION"]>,
+                                ]
+                            >
+                        >;
                         detectedLicenseExpressionSPDX: zod.ZodOptional<zod.ZodString>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>

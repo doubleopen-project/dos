@@ -2,9 +2,32 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { parseSPDX } from "common-helpers";
 import isGlob from "is-glob";
 import { z } from "zod";
 import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
+
+const concludedLicenseExpressionSPDX = z
+    .string({
+        required_error: "Concluded license expression is required",
+    })
+    .trim()
+    .min(1, "Concluded license expression (SPDX) cannot be empty")
+    .refine(
+        (concludedLicenseExpressionSPDX) => {
+            try {
+                parseSPDX(concludedLicenseExpressionSPDX);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        { message: "Invalid SPDX expression" },
+    )
+    .or(z.enum(["NONE", "NOASSERTION"]));
+
+//------------------ GET user -------------------
 
 export const GetUserRes = z.object({
     username: z.string(),
@@ -76,12 +99,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
 //-------------- POST license conclusion --------------
 
 export const PostLicenseConclusionReq = z.object({
-    concludedLicenseExpressionSPDX: z
-        .string({
-            required_error: "Concluded license expression is required",
-        })
-        .trim()
-        .min(1, "Concluded license expression (SPDX) cannot be empty"),
+    concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
@@ -95,7 +113,7 @@ export const PostLicenseConclusionRes = z.object({
 //--------------- PUT license conclusion ---------------
 export const PutLicenseConclusionReq = z
     .object({
-        concludedLicenseExpressionSPDX: z.string(),
+        concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.nullable(z.string()),
         local: z.boolean(),
@@ -186,12 +204,7 @@ export const PostBulkConclusionReq = z.object({
         .refine((pattern) => isGlob(pattern), {
             message: "Pattern is not a valid glob pattern",
         }),
-    concludedLicenseExpressionSPDX: z
-        .string({
-            required_error: "Concluded license expression is required",
-        })
-        .trim()
-        .min(1, "Concluded license expression (SPDX) cannot be empty"),
+    concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
@@ -210,7 +223,7 @@ export const PostBulkConclusionRes = z.object({
 export const PutBulkConclusionReq = z
     .object({
         pattern: z.string(),
-        concludedLicenseExpressionSPDX: z.string(),
+        concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.nullable(z.string()),
         local: z.boolean(),
