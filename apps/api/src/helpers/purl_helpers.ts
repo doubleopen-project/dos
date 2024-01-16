@@ -42,3 +42,14 @@ export const parsePurl = (purl: string) => {
         subpath: parsedPurl.subpath,
     };
 };
+
+export const parseQualifiers = (qualifiers: string) => {
+    const parsedQualifiers: { [key: string]: string } = {};
+    const qualifiersArray = qualifiers.split("&");
+
+    for (const qualifier of qualifiersArray) {
+        const [key, value] = qualifier.split("=");
+        parsedQualifiers[key] = decodeURIComponent(value);
+    }
+    return parsedQualifiers;
+};
