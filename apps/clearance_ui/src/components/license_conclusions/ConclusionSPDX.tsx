@@ -16,9 +16,10 @@ import { cn } from "@/lib/utils";
 type Props = {
     value: string | undefined;
     setValue: (newSPDX: string) => void;
+    className?: string;
 };
 
-const ConclusionSPDX = ({ value, setValue }: Props) => {
+const ConclusionSPDX = ({ value, setValue, className }: Props) => {
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
     };
@@ -26,7 +27,7 @@ const ConclusionSPDX = ({ value, setValue }: Props) => {
     return (
         <div className="flex">
             <Input
-                className="w-full rounded-md text-xs"
+                className={cn(className, "w-full rounded-md text-xs")}
                 name="spdx"
                 placeholder="Write your SPDX expression here..."
                 value={value}
