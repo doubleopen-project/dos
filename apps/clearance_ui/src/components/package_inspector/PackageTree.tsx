@@ -12,7 +12,6 @@ import {
 import { useRouter } from "next/router";
 import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -191,11 +190,9 @@ const PackageTree = ({ purl, path }: Props) => {
 
     return (
         <div className="flex h-full flex-col">
-            <div className="mb-2 flex-row rounded-md border p-1 shadow-lg">
+            <div className="mb-2 flex-row rounded-md border px-1 shadow-lg">
                 <Label className="clearance-label">Package: </Label>
-                <Badge className="rounded-md">
-                    <PurlDetails purl={purl} />
-                </Badge>
+                <PurlDetails purl={purl} />
             </div>
 
             <div className="mb-3 flex items-center rounded-md border p-1 text-sm shadow-lg">
