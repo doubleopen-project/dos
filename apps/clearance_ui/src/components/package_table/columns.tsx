@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DeletePackage from "../delete_item/DeletePackage";
+import PurlDetails from "../PurlDetails";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -43,13 +44,13 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="cursor-pointer font-bold">Name</Label>
+                        <Label className="font-bold cursor-pointer">Name</Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -68,7 +69,7 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             </Link>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <div className="text-sm">{row.original.purl}</div>
+                            <PurlDetails purl={row.original.purl} />
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
@@ -85,15 +86,15 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="cursor-pointer font-bold">
+                        <Label className="font-bold cursor-pointer">
                             Version
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -110,13 +111,13 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="cursor-pointer font-bold">Type</Label>
+                        <Label className="font-bold cursor-pointer">Type</Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -133,15 +134,15 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="cursor-pointer font-bold">
+                        <Label className="font-bold cursor-pointer">
                             Namespace
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
@@ -158,15 +159,15 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="cursor-pointer font-bold">
+                        <Label className="font-bold cursor-pointer">
                             Updated
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronDownIcon className="w-4 h-4 ml-2" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                            <ChevronUpIcon className="w-4 h-4 ml-2" />
                         ) : (
-                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
                         )}
                     </Button>
                 );
