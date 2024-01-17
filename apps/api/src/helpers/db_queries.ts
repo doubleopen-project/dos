@@ -1925,6 +1925,29 @@ export const findUserByUsername = async (
     return user;
 };
 
+export const findAllScannedPackages = async (): Promise<Package[]> => {
+    let packages: Package[] = [];
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            packages = await prisma.package.findMany({
+                where: {
+                    scanStatus: "scanned",
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find Packages: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return packages;
+};
+
 type findScannedPackagesOutput = Prisma.PackageGetPayload<{
     select: {
         purl: true;
