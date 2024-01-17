@@ -18,23 +18,25 @@ type Props = {
 
 const PurlDetails = ({ purl }: Props) => {
     const parsedPurl = parsePurlAndQualifiers(purl);
-    const packageName =
+    const mainPurl =
+        "pkg:" +
+        (parsedPurl.type ? parsedPurl.type + "/" : "") +
         (parsedPurl.namespace ? parsedPurl.namespace + "/" : "") +
         parsedPurl.name +
-        "@" +
-        parsedPurl.version +
-        (parsedPurl.subpath ? "/" + parsedPurl.subpath : "");
+        (parsedPurl.version ? "@" + parsedPurl.version : "");
 
     return (
         <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
                 <AccordionTrigger>
-                    <Badge className="rounded-md">{packageName}</Badge>
+                    <Badge className="break-all rounded-md px-1">
+                        {mainPurl}
+                    </Badge>
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                    {parsedPurl.type && (
+                    {parsedPurl.subpath && (
                         <p>
-                            <b>Type:</b> {parsedPurl.type}
+                            <b>Subpath:</b> {parsedPurl.subpath}
                         </p>
                     )}
                     {parsedPurl.qualifiers &&
