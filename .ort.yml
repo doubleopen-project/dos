@@ -35,3 +35,11 @@ license_choices:
     choice: MIT
   - given: MIT OR BSD-3-Clause OR GPL-2.0-only
     choice: MIT
+
+curations:
+  license_findings:
+  - path: "README.md"
+    detected_license: "MIT AND LicenseRef-scancode-free-unknown"
+    reason: "INCORRECT"
+    comment: "Incorrect scanner match."
+    concluded_license: "MIT"
