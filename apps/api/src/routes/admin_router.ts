@@ -8,6 +8,10 @@ import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
+import {
+    getFilteredPackageMap,
+    getPackageMap,
+} from "../helpers/purl_cleanup_helpers";
 
 const adminRouter = zodiosRouter(adminAPI);
 
@@ -110,6 +114,12 @@ adminRouter.delete("/scan-results", async (req, res) => {
 adminRouter.post("/purl-cleanup", async (req, res) => {
     try {
         console.log("Triggering purl bookmark cleanup");
+        const pkgMap = await getPackageMap();
+        const filteredPkgMap = await getFilteredPackageMap(pkgMap);
+
+        for (const [key, value] of filteredPkgMap.entries()) {
+            console.log(key, value);
+        }
         res.status(200).json({
             message: "Triggered purl bookmark cleanup",
         });
