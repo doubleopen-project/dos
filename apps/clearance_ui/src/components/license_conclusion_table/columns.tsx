@@ -18,6 +18,7 @@ import {
 import ActionCell from "@/components/license_conclusion_table/ActionCell";
 import HeaderButton from "@/components/license_conclusion_table/HeaderButton";
 import TableCell from "@/components/license_conclusion_table/TableCell";
+import PurlDetails from "@/components/PurlDetails";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -65,9 +66,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <div className="text-sm">
-                                    {row.original.contextPurl}
-                                </div>
+                                <PurlDetails purl={row.original.contextPurl} />
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -80,7 +79,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                 return <HeaderButton column={column} label="Creator" />;
             },
             cell: ({ row }) => (
-                <Badge className="bg-green-400 text-sm">
+                <Badge className="text-sm bg-green-400">
                     {row.original.user.username}
                 </Badge>
             ),
@@ -93,7 +92,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "licenseExpressionSPDX",
             header: () => (
-                <Label className="cursor-pointer font-bold">
+                <Label className="font-bold cursor-pointer">
                     SPDX License Expression
                 </Label>
             ),
@@ -123,7 +122,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "affectedPaths",
             header: () => (
-                <Label className="cursor-pointer font-bold">
+                <Label className="font-bold cursor-pointer">
                     Affected Files
                 </Label>
             ),
@@ -132,7 +131,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "affectedPathsThis",
                     header: () => {
                         return (
-                            <Label className="cursor-pointer font-bold">
+                            <Label className="font-bold cursor-pointer">
                                 This
                             </Label>
                         );
@@ -144,7 +143,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                             <TooltipProvider>
                                 <Tooltip delayDuration={300}>
                                     <TooltipTrigger>
-                                        <Badge className="bg-blue-400 text-sm">
+                                        <Badge className="text-sm bg-blue-400">
                                             {affectedPathsThis}
                                         </Badge>
                                     </TooltipTrigger>
@@ -168,7 +167,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "affectedPathsOther",
                     header: () => {
                         return (
-                            <Label className="cursor-pointer font-bold">
+                            <Label className="font-bold cursor-pointer">
                                 Other
                             </Label>
                         );
@@ -181,7 +180,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                             <TooltipProvider>
                                 <Tooltip delayDuration={300}>
                                     <TooltipTrigger>
-                                        <Badge className="bg-orange-400 text-sm">
+                                        <Badge className="text-sm bg-orange-400">
                                             {affectedPathsOther}
                                         </Badge>
                                     </TooltipTrigger>
