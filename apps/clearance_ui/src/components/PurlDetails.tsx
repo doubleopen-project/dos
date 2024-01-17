@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { PackageURL } from "packageurl-js";
 import {
     Accordion,
     AccordionContent,
@@ -18,12 +19,14 @@ type Props = {
 
 const PurlDetails = ({ purl }: Props) => {
     const parsedPurl = parsePurlAndQualifiers(purl);
-    const mainPurl =
-        "pkg:" +
-        (parsedPurl.type ? parsedPurl.type + "/" : "") +
-        (parsedPurl.namespace ? parsedPurl.namespace + "/" : "") +
-        parsedPurl.name +
-        (parsedPurl.version ? "@" + parsedPurl.version : "");
+    const mainPurl = new PackageURL(
+        parsedPurl.type,
+        parsedPurl.namespace,
+        parsedPurl.name,
+        parsedPurl.version,
+        null,
+        null,
+    ).toString();
 
     return (
         <Accordion type="single" collapsible>
@@ -34,11 +37,6 @@ const PurlDetails = ({ purl }: Props) => {
                     </Badge>
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                    {parsedPurl.subpath && (
-                        <p>
-                            <b>Subpath:</b> {parsedPurl.subpath}
-                        </p>
-                    )}
                     {parsedPurl.qualifiers &&
                         Object.entries(parsedPurl.qualifiers).map(
                             ([key, value]) => (
@@ -47,6 +45,11 @@ const PurlDetails = ({ purl }: Props) => {
                                 </p>
                             ),
                         )}
+                    {parsedPurl.subpath && (
+                        <p>
+                            <b>Subpath:</b> {parsedPurl.subpath}
+                        </p>
+                    )}
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
