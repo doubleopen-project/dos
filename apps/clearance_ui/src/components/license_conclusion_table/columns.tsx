@@ -79,7 +79,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                 return <HeaderButton column={column} label="Creator" />;
             },
             cell: ({ row }) => (
-                <Badge className="text-sm bg-green-400">
+                <Badge className="bg-green-400 text-sm">
                     {row.original.user.username}
                 </Badge>
             ),
@@ -92,7 +92,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "licenseExpressionSPDX",
             header: () => (
-                <Label className="font-bold cursor-pointer">
+                <Label className="cursor-pointer font-bold">
                     SPDX License Expression
                 </Label>
             ),
@@ -122,7 +122,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "affectedPaths",
             header: () => (
-                <Label className="font-bold cursor-pointer">
+                <Label className="cursor-pointer font-bold">
                     Affected Files
                 </Label>
             ),
@@ -131,7 +131,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "affectedPathsThis",
                     header: () => {
                         return (
-                            <Label className="font-bold cursor-pointer">
+                            <Label className="cursor-pointer font-bold">
                                 This
                             </Label>
                         );
@@ -143,7 +143,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                             <TooltipProvider>
                                 <Tooltip delayDuration={300}>
                                     <TooltipTrigger>
-                                        <Badge className="text-sm bg-blue-400">
+                                        <Badge className="bg-blue-400 text-sm">
                                             {affectedPathsThis}
                                         </Badge>
                                     </TooltipTrigger>
@@ -167,7 +167,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                     accessorKey: "affectedPathsOther",
                     header: () => {
                         return (
-                            <Label className="font-bold cursor-pointer">
+                            <Label className="cursor-pointer font-bold">
                                 Other
                             </Label>
                         );
@@ -180,7 +180,7 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
                             <TooltipProvider>
                                 <Tooltip delayDuration={300}>
                                     <TooltipTrigger>
-                                        <Badge className="text-sm bg-orange-400">
+                                        <Badge className="bg-orange-400 text-sm">
                                             {affectedPathsOther}
                                         </Badge>
                                     </TooltipTrigger>
