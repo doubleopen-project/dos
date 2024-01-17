@@ -44,3 +44,9 @@ export const DeleteUserReqParamId = z.number({
 export const DeleteUserRes = z.object({
     message: z.string(),
 });
+
+//----------------- POST purl-cleanup ----------------
+
+export const PostPurlCleanupRes = z.object({
+    message: z.string(),
+});

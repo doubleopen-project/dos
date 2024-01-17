@@ -107,4 +107,16 @@ adminRouter.delete("/scan-results", async (req, res) => {
     }
 });
 
+adminRouter.post("/purl-cleanup", async (req, res) => {
+    try {
+        console.log("Triggering purl bookmark cleanup");
+        res.status(200).json({
+            message: "Triggered purl bookmark cleanup",
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 export default adminRouter;

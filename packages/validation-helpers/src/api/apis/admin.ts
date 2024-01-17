@@ -50,4 +50,11 @@ export const adminAPI = makeApi([
         response: schemas.DeleteUserRes,
         errors,
     },
+    {
+        method: "post",
+        path: "/purl-cleanup",
+        description: "Remove old purl bookmarks",
+        response: schemas.PostPurlCleanupRes,
+        errors,
+    },
 ]);
