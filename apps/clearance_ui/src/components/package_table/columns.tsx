@@ -34,6 +34,40 @@ export type Package = ZodiosResponseByPath<
 export const columns = (userRole: string): ColumnDef<Package>[] => {
     return [
         {
+            accessorKey: "updatedAt",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === "asc")
+                        }
+                    >
+                        <Label className="cursor-pointer font-bold">
+                            Updated
+                        </Label>
+                        {column.getIsSorted() === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : column.getIsSorted() === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
+            },
+            cell: ({ row }) => (
+                <>
+                    {
+                        new Date(row.getValue("updatedAt"))
+                            .toISOString()
+                            .split("T")[0]
+                    }
+                </>
+            ),
+        },
+        {
             accessorKey: "name",
             header: ({ column }) => {
                 return (
@@ -44,13 +78,15 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">Name</Label>
+                        <Label className="cursor-pointer font-bold">
+                            Package
+                        </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -86,15 +122,15 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Version
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -111,13 +147,13 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">Type</Label>
+                        <Label className="cursor-pointer font-bold">Type</Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -134,53 +170,19 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Namespace
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
             },
-        },
-        {
-            accessorKey: "updatedAt",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                    >
-                        <Label className="font-bold cursor-pointer">
-                            Updated
-                        </Label>
-                        {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
-                        ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
-                        ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
-                        )}
-                    </Button>
-                );
-            },
-            cell: ({ row }) => (
-                <>
-                    {
-                        new Date(row.getValue("updatedAt"))
-                            .toISOString()
-                            .split("T")[0]
-                    }
-                </>
-            ),
         },
         {
             id: "actions",

@@ -189,22 +189,22 @@ const PackageTree = ({ purl, path }: Props) => {
     }, [path, treeData, tree]);
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex-row px-1 mb-2 border rounded-md shadow-lg">
+        <div className="flex h-full flex-col">
+            <div className="mb-2 flex-row rounded-md border px-1 shadow-lg">
                 <Label className="clearance-label">Package: </Label>
                 <PurlDetails purl={purl} />
             </div>
 
-            <div className="flex items-center p-1 mb-3 text-sm border rounded-md shadow-lg">
+            <div className="mb-3 flex items-center rounded-md border p-1 text-sm shadow-lg">
                 <Input
-                    className="w-full p-1 text-xs rounded-md"
+                    className="w-full rounded-md p-1 text-xs"
                     type="text"
                     placeholder="Filter"
                     value={treeFilter}
                     onChange={handleTreeFilter}
                 />
                 <Button
-                    className="p-1 ml-2 text-xs rounded-md"
+                    className="ml-2 rounded-md p-1 text-xs"
                     onClick={() => {
                         if (isExpanded) {
                             tree?.closeAll();
@@ -222,7 +222,7 @@ const PackageTree = ({ purl, path }: Props) => {
                 <ExclusionTools
                     selectedNode={selectedNode}
                     purl={purl}
-                    className="flex-1 mr-2"
+                    className="mr-2 flex-1"
                 />
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
@@ -252,10 +252,10 @@ const PackageTree = ({ purl, path }: Props) => {
                 </TooltipProvider>
             </div>
 
-            <div className="flex-1 pl-1 overflow-auto" ref={treeRef}>
+            <div className="flex-1 overflow-auto pl-1" ref={treeRef}>
                 {isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-16 h-16 mr-2 animate-spin" />
+                    <div className="flex h-full items-center justify-center">
+                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
                 {data && pathExclusions && (
@@ -310,17 +310,17 @@ const PackageTree = ({ purl, path }: Props) => {
                     </Tree>
                 )}
                 {error && (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex h-full items-center justify-center">
                         Unable to fetch package data
                     </div>
                 )}
             </div>
 
-            <div className="flex flex-col items-center p-1 mt-2 text-sm border rounded-md shadow-lg">
+            <div className="mt-2 flex flex-col items-center rounded-md border p-1 text-sm shadow-lg">
                 <ComboBoxPackage
                     data={uniqueLicensesToColorMap}
                     filterString={"licenseFilter"}
-                    className="w-full mb-1"
+                    className="mb-1 w-full"
                 />
                 <ExclusionDB purl={purl} fractionalWidth={1.5} />
             </div>

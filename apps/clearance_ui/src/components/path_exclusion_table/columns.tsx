@@ -47,15 +47,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Updated
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -81,15 +81,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Package
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -129,21 +129,21 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Creator
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <Badge className="text-sm bg-green-400">
+                <Badge className="bg-green-400 text-sm">
                     {row.original.user.username}
                 </Badge>
             ),
@@ -159,15 +159,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Pattern
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -184,15 +184,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Reason
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
@@ -201,7 +201,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         {
             accessorKey: "affectedPaths",
             header: () => (
-                <Label className="font-bold cursor-pointer">
+                <Label className="cursor-pointer font-bold">
                     Affected Files
                 </Label>
             ),
@@ -211,7 +211,7 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                     <TooltipProvider>
                         <Tooltip delayDuration={300}>
                             <TooltipTrigger>
-                                <Badge className="text-sm bg-blue-400">
+                                <Badge className="bg-blue-400 text-sm">
                                     {affectedPaths}
                                 </Badge>
                             </TooltipTrigger>
@@ -240,15 +240,15 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
                             column.toggleSorting(column.getIsSorted() === "asc")
                         }
                     >
-                        <Label className="font-bold cursor-pointer">
+                        <Label className="cursor-pointer font-bold">
                             Comment
                         </Label>
                         {column.getIsSorted() === "desc" ? (
-                            <ChevronDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
                         ) : column.getIsSorted() === "asc" ? (
-                            <ChevronUpIcon className="w-4 h-4 ml-2" />
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
-                            <ChevronsUpDownIcon className="w-4 h-4 ml-2" />
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
                         )}
                     </Button>
                 );
