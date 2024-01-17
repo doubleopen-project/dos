@@ -94,3 +94,40 @@ export const getFilteredPackageMap = async (pkgMap: Map<string, Package[]>) => {
 
     return filteredMap;
 };
+
+export const transferPathExclusions = async (
+    pkgMap: Map<string, Package[]>,
+) => {
+    for (const [purl, pkgs] of pkgMap.entries()) {
+        console.log("PURL: ", purl);
+        const newestPkg = findNewestPackage(pkgs);
+
+        for (const pkg of pkgs) {
+            if (pkg.id !== newestPkg.id) {
+                const pathExclusions =
+                    await dbQueries.findPathExclusionsByPackageId(pkg.id);
+
+                if (pathExclusions.length > 0) {
+                    for (const pe of pathExclusions) {
+                        const updatedPathExclusion =
+                            await dbQueries.updatePathExclusionPackageId(
+                                pe.id,
+                                newestPkg.id,
+                            );
+
+                        console.log(updatedPathExclusion?.packageId);
+                    }
+                }
+
+                const pathExclusionsAfter =
+                    await dbQueries.findPathExclusionsByPackageId(pkg.id);
+
+                if (pathExclusionsAfter.length > 0) {
+                    throw new Error(
+                        `Path exclusions not moved for package ${pkg.id}`,
+                    );
+                }
+            }
+        }
+    }
+};

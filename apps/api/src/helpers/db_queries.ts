@@ -732,6 +732,35 @@ export const updatePathExclusion = async (
     return pathExclusion;
 };
 
+export const updatePathExclusionPackageId = async (
+    id: number,
+    packageId: number,
+): Promise<PathExclusion | null> => {
+    let retries = initialRetryCount;
+    let pathExclusion: PathExclusion | null = null;
+
+    while (!pathExclusion && retries > 0) {
+        try {
+            pathExclusion = await prisma.pathExclusion.update({
+                where: {
+                    id: id,
+                },
+                data: {
+                    packageId: packageId,
+                },
+            });
+        } catch (error) {
+            console.log("Error with trying to update PathExclusion: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusion;
+};
+
 export const updateLicenseConclusion = async (
     id: number,
     input: {
@@ -2750,6 +2779,32 @@ export const findPathExclusions = async (): Promise<
                             },
                         },
                     },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusions;
+};
+
+export const findPathExclusionsByPackageId = async (
+    packageId: number,
+): Promise<PathExclusion[]> => {
+    let retries = initialRetryCount;
+    let pathExclusions: PathExclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            pathExclusions = await prisma.pathExclusion.findMany({
+                where: {
+                    packageId: packageId,
                 },
             });
             break;

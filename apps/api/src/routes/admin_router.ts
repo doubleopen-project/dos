@@ -11,6 +11,7 @@ import * as dbQueries from "../helpers/db_queries";
 import {
     getFilteredPackageMap,
     getPackageMap,
+    transferPathExclusions,
 } from "../helpers/purl_cleanup_helpers";
 
 const adminRouter = zodiosRouter(adminAPI);
@@ -120,6 +121,7 @@ adminRouter.post("/purl-cleanup", async (req, res) => {
         for (const [key, value] of filteredPkgMap.entries()) {
             console.log(key, value);
         }
+        await transferPathExclusions(filteredPkgMap);
         res.status(200).json({
             message: "Triggered purl bookmark cleanup",
         });
