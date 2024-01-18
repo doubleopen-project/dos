@@ -47,6 +47,27 @@ export const DeleteUserRes = z.object({
 
 //----------------- POST purl-cleanup ----------------
 
+export const PostPurlCleanupReq = z.object({
+    options: z
+        .object({
+            dryRun: z.boolean().optional(),
+            allPhases: z.boolean().optional(),
+            transferPathExclusions: z.boolean().optional(),
+            transferBulkConclusions: z.boolean().optional(),
+            changeContextPurls: z.boolean().optional(),
+            deleteOldPurlBookmarks: z.boolean().optional(),
+        })
+        .optional(),
+});
+
 export const PostPurlCleanupRes = z.object({
     message: z.string(),
+    optionDescriptions: z.object({
+        dryRun: z.string(),
+        allPhases: z.string(),
+        transferPathExclusions: z.string(),
+        transferBulkConclusions: z.string(),
+        changeContextPurls: z.string(),
+        deleteOldPurlBookmarks: z.string(),
+    }),
 });
