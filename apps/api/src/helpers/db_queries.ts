@@ -768,6 +768,7 @@ export const updateLicenseConclusion = async (
         detectedLicenseExpressionSPDX: string | null | undefined;
         comment: string | null | undefined;
         local: boolean | undefined;
+        contextPurl: string | undefined;
         bulkConclusionId: number | null | undefined;
     },
 ): Promise<LicenseConclusion> => {
@@ -847,6 +848,39 @@ export const updateBulkConclusion = async (
                     id: id,
                 },
                 data: input,
+            });
+        } catch (error) {
+            console.log("Error with trying to update BulkConclusion: " + error);
+
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!bulkConclusion)
+        throw new Error("Error: Unable to update BulkConclusion");
+
+    return bulkConclusion;
+};
+
+export const updateBulkConclusionPackageId = async (
+    id: number,
+    packageId: number,
+): Promise<BulkConclusion> => {
+    let retries = initialRetryCount;
+    let bulkConclusion: BulkConclusion | null = null;
+
+    while (!bulkConclusion && retries > 0) {
+        try {
+            bulkConclusion = await prisma.bulkConclusion.update({
+                where: {
+                    id: id,
+                },
+                data: {
+                    packageId: packageId,
+                },
             });
         } catch (error) {
             console.log("Error with trying to update BulkConclusion: " + error);
@@ -2507,7 +2541,7 @@ export const findBulkConclusionWithRelationsById = async (
     return bulkConclusion;
 };
 
-export const findBulkConclusionsByPackageId = async (
+export const findBulkConclusionsWithRelationsByPackageId = async (
     packageId: number,
 ): Promise<BulkConclusionWithRelations[]> => {
     let retries = initialRetryCount;
@@ -2663,6 +2697,32 @@ export const findBulkConclusionUserId = async (
         }
     }
     return bulkConclusion?.userId || null;
+};
+
+export const findBulkConclusionsByPackageId = async (
+    packageId: number,
+): Promise<BulkConclusion[]> => {
+    let retries = initialRetryCount;
+    let bulkConclusions: BulkConclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            bulkConclusions = await prisma.bulkConclusion.findMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkConclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkConclusions;
 };
 
 export const findPathExclusionById = async (
@@ -2890,6 +2950,62 @@ export const findLicenseConclusionsByPackagePurl = async (
                         licenseConclusion.concludedLicenseExpressionSPDX,
                     comment: licenseConclusion.comment,
                 });
+        }
+    }
+
+    return licenseConclusions;
+};
+
+export const findLicenseConclusionsByContextPurl = async (
+    contextPurl: string,
+): Promise<LicenseConclusion[]> => {
+    let retries = initialRetryCount;
+    let licenseConclusions: LicenseConclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            licenseConclusions = await prisma.licenseConclusion.findMany({
+                where: {
+                    contextPurl: contextPurl,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return licenseConclusions;
+};
+
+export const findLicenseConclusionsByBulkConclusionId = async (
+    bulkConclusionId: number,
+): Promise<LicenseConclusion[]> => {
+    let retries = initialRetryCount;
+    let licenseConclusions: LicenseConclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            licenseConclusions = await prisma.licenseConclusion.findMany({
+                where: {
+                    bulkConclusionId: bulkConclusionId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
     }
 

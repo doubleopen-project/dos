@@ -845,7 +845,9 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
             );
 
         const bulkConclusions =
-            await dbQueries.findBulkConclusionsByPackageId(packageId);
+            await dbQueries.findBulkConclusionsWithRelationsByPackageId(
+                packageId,
+            );
 
         res.status(200).json({
             bulkConclusions: bulkConclusions,

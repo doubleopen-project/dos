@@ -57,6 +57,8 @@ export const runPurlCleanup = async (options: {
             }
             if (options.allPhases || options.transferPathExclusions)
                 await transferPathExclusions(filteredPkgMap, dryRun);
+            if (options.allPhases || options.transferBulkConclusions)
+                await transferBulkConclusions(filteredPkgMap, dryRun);
         }
     } catch (error) {
         console.log("Error: ", error);
@@ -211,6 +213,138 @@ const transferPathExclusions = async (
                     if (pathExclusionsAfter.length > 0) {
                         throw new Error(
                             `Path exclusions not moved for package ${pkg.id}`,
+                        );
+                    }
+                }
+            } else {
+                console.log(
+                    "Skipping package " + pkg.purl + " as it is newest one",
+                );
+            }
+        }
+    }
+};
+
+const transferBulkConclusions = async (
+    pkgMap: Map<string, Package[]>,
+    dryRun?: boolean,
+) => {
+    for (const [purl, pkgs] of pkgMap.entries()) {
+        console.log(
+            "\nStarting process to transfer bulk conclusions for clean purl: ",
+            purl,
+        );
+        const newestPkg = findNewestPackage(pkgs);
+        console.log("Newest package: ", newestPkg.purl);
+
+        for (const pkg of pkgs) {
+            console.log("Processing package: ", pkg.purl);
+            if (pkg.id !== newestPkg.id) {
+                const bulkConclusions =
+                    await dbQueries.findBulkConclusionsByPackageId(pkg.id);
+                console.log("Found bulk conclusions: ", bulkConclusions.length);
+                if (bulkConclusions.length > 0) {
+                    for (const bc of bulkConclusions) {
+                        console.log(
+                            "Transferring bulk conclusion with id " +
+                                bc.id +
+                                " from package id " +
+                                bc.packageId +
+                                " to package id " +
+                                newestPkg.id,
+                        );
+                        if (dryRun) console.log(dryRunMessage);
+                        else {
+                            const updatedBulkConclusion =
+                                await dbQueries.updateBulkConclusionPackageId(
+                                    bc.id,
+                                    newestPkg.id,
+                                );
+                            console.log(
+                                "New package id: ",
+                                updatedBulkConclusion?.packageId,
+                            );
+                            if (
+                                updatedBulkConclusion?.packageId !==
+                                newestPkg.id
+                            ) {
+                                throw new Error(
+                                    `Bulk conclusion with id ${bc.id} not moved for package ${pkg.id}`,
+                                );
+                            }
+                        }
+                        console.log(
+                            "Updating contextPurl for license conclusions that are part of the bulk conclusion",
+                        );
+                        const licenseConclusions =
+                            await dbQueries.findLicenseConclusionsByBulkConclusionId(
+                                bc.id,
+                            );
+                        console.log(
+                            "This update will affect " +
+                                licenseConclusions.length +
+                                " license conclusions",
+                        );
+                        if (dryRun) console.log(dryRunMessage);
+                        else {
+                            const batchPayload =
+                                await dbQueries.updateManyLicenseConclusions(
+                                    bc.id,
+                                    {
+                                        contextPurl: newestPkg.purl,
+                                    },
+                                );
+                            if (
+                                batchPayload.count !== licenseConclusions.length
+                            ) {
+                                throw new Error(
+                                    `All license conclusions were not updated for bulk conclusion ${bc.id}`,
+                                );
+                            }
+                            console.log(
+                                "Updated " +
+                                    batchPayload.count +
+                                    " license conclusions",
+                            );
+                        }
+                        const licenseConclusionsAfter =
+                            await dbQueries.findLicenseConclusionsByBulkConclusionId(
+                                bc.id,
+                            );
+                        if (dryRun) {
+                            for (const lc of licenseConclusionsAfter) {
+                                if (lc.contextPurl === newestPkg.purl) {
+                                    throw new Error(
+                                        `Context purl changed for license conclusion ${lc.id} during dry run`,
+                                    );
+                                }
+                            }
+                        } else {
+                            for (const lc of licenseConclusionsAfter) {
+                                if (lc.contextPurl !== newestPkg.purl) {
+                                    throw new Error(
+                                        `Context purl not changed for license conclusion ${lc.id}`,
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+                const bulkConclusionsAfter =
+                    await dbQueries.findBulkConclusionsByPackageId(pkg.id);
+
+                if (dryRun) {
+                    if (
+                        bulkConclusionsAfter.length !== bulkConclusions.length
+                    ) {
+                        throw new Error(
+                            `Bulk conclusions changed for package ${pkg.id} during dry run`,
+                        );
+                    }
+                } else {
+                    if (bulkConclusionsAfter.length > 0) {
+                        throw new Error(
+                            `Bulk conclusions not moved for package ${pkg.id}`,
                         );
                     }
                 }
