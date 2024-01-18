@@ -8,11 +8,7 @@ import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
-import {
-    getFilteredPackageMap,
-    getPackageMap,
-    transferPathExclusions,
-} from "../helpers/purl_cleanup_helpers";
+import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 
 const adminRouter = zodiosRouter(adminAPI);
 
@@ -114,17 +110,35 @@ adminRouter.delete("/scan-results", async (req, res) => {
 
 adminRouter.post("/purl-cleanup", async (req, res) => {
     try {
-        console.log("Triggering purl bookmark cleanup");
-        const pkgMap = await getPackageMap();
-        const filteredPkgMap = await getFilteredPackageMap(pkgMap);
+        const optionDescriptions = {
+            dryRun: "Defaults to true. The cleanup is run as a dry run to see what would happen without actually making any update queries to the database. Set to false to enable the database update queries. You can run any of the phases below with the dryRun option enabled.",
+            allPhases:
+                "Set this to true to run all the phases described below. Note that if this option is enabled, the other options below will be ignored.",
+            transferPathExclusions:
+                "Set this to true to transfer path exclusions from old packages to the newest package",
+            transferBulkConclusions:
+                "Set this to true to transfer bulk conclusions from old packages to the newest package",
+            changeContextPurls:
+                "Set this to true to change the context purl of license conclusions from old purl bookmark to the new one",
+            deleteOldPurlBookmarks:
+                "Set this to true to delete old purl bookmarks",
+        };
+        if (!req.body.options || Object.keys(req.body.options).length === 0) {
+            res.status(200).json({
+                message:
+                    "No options chosen. You can use the options described in optionDescriptions (true/false/undefined). Note that the dryRun option is enabled by default, and needs to be set to false in order to enable database update queries.",
+                optionDescriptions: optionDescriptions,
+            });
+        } else {
+            console.log("Triggering purl bookmark cleanup");
 
-        for (const [key, value] of filteredPkgMap.entries()) {
-            console.log(key, value);
+            runPurlCleanup(req.body.options);
+
+            res.status(200).json({
+                message: "Triggered purl bookmark cleanup",
+                optionDescriptions: optionDescriptions,
+            });
         }
-        await transferPathExclusions(filteredPkgMap);
-        res.status(200).json({
-            message: "Triggered purl bookmark cleanup",
-        });
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).json({ message: "Internal server error" });

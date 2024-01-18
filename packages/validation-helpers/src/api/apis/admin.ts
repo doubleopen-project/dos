@@ -53,7 +53,15 @@ export const adminAPI = makeApi([
     {
         method: "post",
         path: "/purl-cleanup",
-        description: "Remove old purl bookmarks",
+        description:
+            "Remove old purl bookmarks. Get detailed descriptions of options by making this query with an empty body.",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostPurlCleanupReq,
+            },
+        ],
         response: schemas.PostPurlCleanupRes,
         errors,
     },

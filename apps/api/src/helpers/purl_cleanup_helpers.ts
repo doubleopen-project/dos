@@ -6,7 +6,64 @@ import { FileTree, Package } from "database";
 import { PackageURL } from "packageurl-js";
 import * as dbQueries from "./db_queries";
 
-export const getPackageMap = async () => {
+export const runPurlCleanup = async (options: {
+    dryRun?: boolean;
+    allPhases?: boolean;
+    transferPathExclusions?: boolean;
+    transferBulkConclusions?: boolean;
+    changeContextPurls?: boolean;
+    deleteOldPurlBookmarks?: boolean;
+}) => {
+    try {
+        const dryRun = options.dryRun !== undefined ? options.dryRun : true;
+        console.log(
+            "\nStarting purl cleanup process with the following options:",
+        );
+        console.log("dryRun: ", dryRun);
+        console.log("allPhases: ", options.allPhases);
+        if (!options.allPhases) {
+            console.log(
+                "transferPathExclusions: ",
+                options.transferPathExclusions,
+            );
+            console.log(
+                "transferContextPurls: ",
+                options.transferBulkConclusions,
+            );
+            console.log("transferContextPurls: ", options.changeContextPurls);
+            console.log(
+                "deleteOldPurlBookmarks: ",
+                options.deleteOldPurlBookmarks,
+            );
+        }
+        const pkgMap = await getPackageMap();
+        const filteredPkgMap = await getFilteredPackageMap(pkgMap);
+        if (filteredPkgMap.size === 0) {
+            console.log(
+                "\nNo clean purls with multiple identical packages found",
+            );
+        } else {
+            console.log(
+                "\nFound " +
+                    filteredPkgMap.size +
+                    " clean purls with multiple identical packages:",
+            );
+            for (const [key, value] of filteredPkgMap.entries()) {
+                console.log("Clean purl: " + key);
+                console.log("Purls:");
+                for (const pkg of value) {
+                    console.log(pkg.purl);
+                }
+            }
+            if (options.allPhases || options.transferPathExclusions)
+                await transferPathExclusions(filteredPkgMap, dryRun);
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+};
+
+const getPackageMap = async () => {
     const packages = await dbQueries.findAllScannedPackages();
 
     const pkgMap = new Map<string, Package[]>();
@@ -69,7 +126,7 @@ const compareFiletrees = (filetrees1: FileTree[], filetrees2: FileTree[]) => {
     return true;
 };
 
-export const getFilteredPackageMap = async (pkgMap: Map<string, Package[]>) => {
+const getFilteredPackageMap = async (pkgMap: Map<string, Package[]>) => {
     const filteredMap = new Map<string, Package[]>();
     for (const [purl, pkgs] of pkgMap.entries()) {
         if (pkgs.length > 1) {
@@ -95,38 +152,72 @@ export const getFilteredPackageMap = async (pkgMap: Map<string, Package[]>) => {
     return filteredMap;
 };
 
-export const transferPathExclusions = async (
+const dryRunMessage =
+    "---Skipping database update operation as this is a dry run---";
+
+const transferPathExclusions = async (
     pkgMap: Map<string, Package[]>,
+    dryRun?: boolean,
 ) => {
     for (const [purl, pkgs] of pkgMap.entries()) {
-        console.log("PURL: ", purl);
+        console.log(
+            "\nStarting process to transfer path exclusions for clean purl: ",
+            purl,
+        );
         const newestPkg = findNewestPackage(pkgs);
+        console.log("Newest package: ", newestPkg.purl);
 
         for (const pkg of pkgs) {
+            console.log("Processing package: ", pkg.purl);
             if (pkg.id !== newestPkg.id) {
                 const pathExclusions =
                     await dbQueries.findPathExclusionsByPackageId(pkg.id);
-
+                console.log("Found path exclusions: ", pathExclusions.length);
                 if (pathExclusions.length > 0) {
                     for (const pe of pathExclusions) {
-                        const updatedPathExclusion =
-                            await dbQueries.updatePathExclusionPackageId(
-                                pe.id,
+                        console.log(
+                            "Transferring path exclusion with id " +
+                                pe.id +
+                                " from package id " +
+                                pe.packageId +
+                                " to package id " +
                                 newestPkg.id,
+                        );
+                        if (dryRun) console.log(dryRunMessage);
+                        else {
+                            const updatedPathExclusion =
+                                await dbQueries.updatePathExclusionPackageId(
+                                    pe.id,
+                                    newestPkg.id,
+                                );
+                            console.log(
+                                "New package id: ",
+                                updatedPathExclusion?.packageId,
                             );
-
-                        console.log(updatedPathExclusion?.packageId);
+                        }
                     }
                 }
 
                 const pathExclusionsAfter =
                     await dbQueries.findPathExclusionsByPackageId(pkg.id);
 
-                if (pathExclusionsAfter.length > 0) {
-                    throw new Error(
-                        `Path exclusions not moved for package ${pkg.id}`,
-                    );
+                if (dryRun) {
+                    if (pathExclusionsAfter.length !== pathExclusions.length) {
+                        throw new Error(
+                            `Path exclusions changed for package ${pkg.id} during dry run`,
+                        );
+                    }
+                } else {
+                    if (pathExclusionsAfter.length > 0) {
+                        throw new Error(
+                            `Path exclusions not moved for package ${pkg.id}`,
+                        );
+                    }
                 }
+            } else {
+                console.log(
+                    "Skipping package " + pkg.purl + " as it is newest one",
+                );
             }
         }
     }

@@ -2050,18 +2050,140 @@ declare const adminAPI: [
     {
         method: "post";
         path: "/purl-cleanup";
-        description: "Remove old purl bookmarks";
+        description: "Remove old purl bookmarks. Get detailed descriptions of options by making this query with an empty body.";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        options: zod.ZodOptional<
+                            zod.ZodObject<
+                                {
+                                    dryRun: zod.ZodOptional<zod.ZodBoolean>;
+                                    allPhases: zod.ZodOptional<zod.ZodBoolean>;
+                                    transferPathExclusions: zod.ZodOptional<zod.ZodBoolean>;
+                                    transferBulkConclusions: zod.ZodOptional<zod.ZodBoolean>;
+                                    changeContextPurls: zod.ZodOptional<zod.ZodBoolean>;
+                                    deleteOldPurlBookmarks: zod.ZodOptional<zod.ZodBoolean>;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    dryRun?: boolean | undefined;
+                                    allPhases?: boolean | undefined;
+                                    transferPathExclusions?:
+                                        | boolean
+                                        | undefined;
+                                    transferBulkConclusions?:
+                                        | boolean
+                                        | undefined;
+                                    changeContextPurls?: boolean | undefined;
+                                    deleteOldPurlBookmarks?:
+                                        | boolean
+                                        | undefined;
+                                },
+                                {
+                                    dryRun?: boolean | undefined;
+                                    allPhases?: boolean | undefined;
+                                    transferPathExclusions?:
+                                        | boolean
+                                        | undefined;
+                                    transferBulkConclusions?:
+                                        | boolean
+                                        | undefined;
+                                    changeContextPurls?: boolean | undefined;
+                                    deleteOldPurlBookmarks?:
+                                        | boolean
+                                        | undefined;
+                                }
+                            >
+                        >;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        options?:
+                            | {
+                                  dryRun?: boolean | undefined;
+                                  allPhases?: boolean | undefined;
+                                  transferPathExclusions?: boolean | undefined;
+                                  transferBulkConclusions?: boolean | undefined;
+                                  changeContextPurls?: boolean | undefined;
+                                  deleteOldPurlBookmarks?: boolean | undefined;
+                              }
+                            | undefined;
+                    },
+                    {
+                        options?:
+                            | {
+                                  dryRun?: boolean | undefined;
+                                  allPhases?: boolean | undefined;
+                                  transferPathExclusions?: boolean | undefined;
+                                  transferBulkConclusions?: boolean | undefined;
+                                  changeContextPurls?: boolean | undefined;
+                                  deleteOldPurlBookmarks?: boolean | undefined;
+                              }
+                            | undefined;
+                    }
+                >;
+            },
+        ];
         response: zod.ZodObject<
             {
                 message: zod.ZodString;
+                optionDescriptions: zod.ZodObject<
+                    {
+                        dryRun: zod.ZodString;
+                        allPhases: zod.ZodString;
+                        transferPathExclusions: zod.ZodString;
+                        transferBulkConclusions: zod.ZodString;
+                        changeContextPurls: zod.ZodString;
+                        deleteOldPurlBookmarks: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        dryRun: string;
+                        allPhases: string;
+                        transferPathExclusions: string;
+                        transferBulkConclusions: string;
+                        changeContextPurls: string;
+                        deleteOldPurlBookmarks: string;
+                    },
+                    {
+                        dryRun: string;
+                        allPhases: string;
+                        transferPathExclusions: string;
+                        transferBulkConclusions: string;
+                        changeContextPurls: string;
+                        deleteOldPurlBookmarks: string;
+                    }
+                >;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 message: string;
+                optionDescriptions: {
+                    dryRun: string;
+                    allPhases: string;
+                    transferPathExclusions: string;
+                    transferBulkConclusions: string;
+                    changeContextPurls: string;
+                    deleteOldPurlBookmarks: string;
+                };
             },
             {
                 message: string;
+                optionDescriptions: {
+                    dryRun: string;
+                    allPhases: string;
+                    transferPathExclusions: string;
+                    transferBulkConclusions: string;
+                    changeContextPurls: string;
+                    deleteOldPurlBookmarks: string;
+                };
             }
         >;
         errors: [
@@ -14496,18 +14618,140 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/admin/purl-cleanup";
-        description: "Remove old purl bookmarks";
+        description: "Remove old purl bookmarks. Get detailed descriptions of options by making this query with an empty body.";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        options: zod.ZodOptional<
+                            zod.ZodObject<
+                                {
+                                    dryRun: zod.ZodOptional<zod.ZodBoolean>;
+                                    allPhases: zod.ZodOptional<zod.ZodBoolean>;
+                                    transferPathExclusions: zod.ZodOptional<zod.ZodBoolean>;
+                                    transferBulkConclusions: zod.ZodOptional<zod.ZodBoolean>;
+                                    changeContextPurls: zod.ZodOptional<zod.ZodBoolean>;
+                                    deleteOldPurlBookmarks: zod.ZodOptional<zod.ZodBoolean>;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    dryRun?: boolean | undefined;
+                                    allPhases?: boolean | undefined;
+                                    transferPathExclusions?:
+                                        | boolean
+                                        | undefined;
+                                    transferBulkConclusions?:
+                                        | boolean
+                                        | undefined;
+                                    changeContextPurls?: boolean | undefined;
+                                    deleteOldPurlBookmarks?:
+                                        | boolean
+                                        | undefined;
+                                },
+                                {
+                                    dryRun?: boolean | undefined;
+                                    allPhases?: boolean | undefined;
+                                    transferPathExclusions?:
+                                        | boolean
+                                        | undefined;
+                                    transferBulkConclusions?:
+                                        | boolean
+                                        | undefined;
+                                    changeContextPurls?: boolean | undefined;
+                                    deleteOldPurlBookmarks?:
+                                        | boolean
+                                        | undefined;
+                                }
+                            >
+                        >;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        options?:
+                            | {
+                                  dryRun?: boolean | undefined;
+                                  allPhases?: boolean | undefined;
+                                  transferPathExclusions?: boolean | undefined;
+                                  transferBulkConclusions?: boolean | undefined;
+                                  changeContextPurls?: boolean | undefined;
+                                  deleteOldPurlBookmarks?: boolean | undefined;
+                              }
+                            | undefined;
+                    },
+                    {
+                        options?:
+                            | {
+                                  dryRun?: boolean | undefined;
+                                  allPhases?: boolean | undefined;
+                                  transferPathExclusions?: boolean | undefined;
+                                  transferBulkConclusions?: boolean | undefined;
+                                  changeContextPurls?: boolean | undefined;
+                                  deleteOldPurlBookmarks?: boolean | undefined;
+                              }
+                            | undefined;
+                    }
+                >;
+            },
+        ];
         response: zod.ZodObject<
             {
                 message: zod.ZodString;
+                optionDescriptions: zod.ZodObject<
+                    {
+                        dryRun: zod.ZodString;
+                        allPhases: zod.ZodString;
+                        transferPathExclusions: zod.ZodString;
+                        transferBulkConclusions: zod.ZodString;
+                        changeContextPurls: zod.ZodString;
+                        deleteOldPurlBookmarks: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        dryRun: string;
+                        allPhases: string;
+                        transferPathExclusions: string;
+                        transferBulkConclusions: string;
+                        changeContextPurls: string;
+                        deleteOldPurlBookmarks: string;
+                    },
+                    {
+                        dryRun: string;
+                        allPhases: string;
+                        transferPathExclusions: string;
+                        transferBulkConclusions: string;
+                        changeContextPurls: string;
+                        deleteOldPurlBookmarks: string;
+                    }
+                >;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 message: string;
+                optionDescriptions: {
+                    dryRun: string;
+                    allPhases: string;
+                    transferPathExclusions: string;
+                    transferBulkConclusions: string;
+                    changeContextPurls: string;
+                    deleteOldPurlBookmarks: string;
+                };
             },
             {
                 message: string;
+                optionDescriptions: {
+                    dryRun: string;
+                    allPhases: string;
+                    transferPathExclusions: string;
+                    transferBulkConclusions: string;
+                    changeContextPurls: string;
+                    deleteOldPurlBookmarks: string;
+                };
             }
         >;
         errors: [
