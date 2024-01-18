@@ -59,6 +59,8 @@ export const runPurlCleanup = async (options: {
                 await transferPathExclusions(filteredPkgMap, dryRun);
             if (options.allPhases || options.transferBulkConclusions)
                 await transferBulkConclusions(filteredPkgMap, dryRun);
+            if (options.allPhases || options.changeContextPurls)
+                await changeContextPurls(filteredPkgMap, dryRun);
         }
     } catch (error) {
         console.log("Error: ", error);
@@ -345,6 +347,88 @@ const transferBulkConclusions = async (
                     if (bulkConclusionsAfter.length > 0) {
                         throw new Error(
                             `Bulk conclusions not moved for package ${pkg.id}`,
+                        );
+                    }
+                }
+            } else {
+                console.log(
+                    "Skipping package " + pkg.purl + " as it is newest one",
+                );
+            }
+        }
+    }
+};
+
+const changeContextPurls = async (
+    pkgMap: Map<string, Package[]>,
+    dryRun?: boolean,
+) => {
+    for (const [purl, pkgs] of pkgMap.entries()) {
+        console.log(
+            "\nStarting process to change context purls for license conclusions with clean purl: ",
+            purl,
+        );
+        const newestPkg = findNewestPackage(pkgs);
+        console.log("Newest package: ", newestPkg.purl);
+
+        for (const pkg of pkgs) {
+            console.log("Processing package: ", pkg.purl);
+            if (pkg.id !== newestPkg.id) {
+                const licenseConclusions =
+                    await dbQueries.findLicenseConclusionsByContextPurl(
+                        pkg.purl,
+                    );
+                console.log(
+                    "Found license conclusions: ",
+                    licenseConclusions.length,
+                );
+                if (licenseConclusions.length > 0) {
+                    for (const lc of licenseConclusions) {
+                        console.log(
+                            "Changing context purl of license conclusion with id " +
+                                lc.id +
+                                " from purl " +
+                                lc.contextPurl +
+                                " to purl " +
+                                newestPkg.purl,
+                        );
+                        if (dryRun) console.log(dryRunMessage);
+                        else {
+                            const updatedLicenseConclusion =
+                                await dbQueries.updateLicenseConclusion(lc.id, {
+                                    concludedLicenseExpressionSPDX: undefined,
+                                    detectedLicenseExpressionSPDX: undefined,
+                                    comment: undefined,
+                                    local: undefined,
+                                    contextPurl: newestPkg.purl,
+                                    bulkConclusionId: undefined,
+                                });
+                            console.log(
+                                "New contextPurl: ",
+                                updatedLicenseConclusion?.contextPurl,
+                            );
+                        }
+                    }
+                }
+
+                const licenseConclusionsAfter =
+                    await dbQueries.findLicenseConclusionsByContextPurl(
+                        pkg.purl,
+                    );
+
+                if (dryRun) {
+                    if (
+                        licenseConclusionsAfter.length !==
+                        licenseConclusions.length
+                    ) {
+                        throw new Error(
+                            `License conclusions changed for package ${pkg.id}`,
+                        );
+                    }
+                } else {
+                    if (licenseConclusionsAfter.length > 0) {
+                        throw new Error(
+                            `License conclusions not moved for package ${pkg.id}`,
                         );
                     }
                 }
