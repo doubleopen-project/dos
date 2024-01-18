@@ -289,6 +289,7 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
                     req.body.detectedLicenseExpressionSPDX,
                 comment: req.body.comment,
                 local: req.body.local,
+                contextPurl: undefined,
                 /*
                  * The following will detach the license conclusion from a bulk conclusion if it is connected to one
                  * (since this endpoint is used to update one license conclusion only, and the bulk conclusion
