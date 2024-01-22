@@ -61,6 +61,8 @@ export const runPurlCleanup = async (options: {
                 await transferBulkConclusions(filteredPkgMap, dryRun);
             if (options.allPhases || options.changeContextPurls)
                 await changeContextPurls(filteredPkgMap, dryRun);
+            if (options.allPhases || options.deleteOldPurlBookmarks)
+                await deleteOldPurlBookmarks(filteredPkgMap, dryRun);
         }
     } catch (error) {
         console.log("Error: ", error);
@@ -431,6 +433,165 @@ const changeContextPurls = async (
                             `License conclusions not moved for package ${pkg.id}`,
                         );
                     }
+                }
+            } else {
+                console.log(
+                    "Skipping package " + pkg.purl + " as it is newest one",
+                );
+            }
+        }
+    }
+};
+
+const deleteOldPurlBookmarks = async (
+    pkgMap: Map<string, Package[]>,
+    dryRun?: boolean,
+) => {
+    for (const [purl, pkgs] of pkgMap.entries()) {
+        console.log(
+            "\nStarting process to delete old purl bookmarks for clean purl: ",
+            purl,
+        );
+        const newestPkg = findNewestPackage(pkgs);
+        console.log("Newest package: ", newestPkg.purl);
+
+        for (const pkg of pkgs) {
+            console.log("Processing package: ", pkg.purl);
+            if (pkg.id !== newestPkg.id) {
+                const pathExclusions =
+                    await dbQueries.findPathExclusionsByPackageId(pkg.id);
+                const bulkConclusions =
+                    await dbQueries.findBulkConclusionsByPackageId(pkg.id);
+                const licenseConclusions =
+                    await dbQueries.findLicenseConclusionsByContextPurl(
+                        pkg.purl,
+                    );
+                if (
+                    pathExclusions.length > 0 ||
+                    bulkConclusions.length > 0 ||
+                    licenseConclusions.length > 0
+                ) {
+                    if (dryRun)
+                        console.log(
+                            "---Dry run log: Error would be thrown here, as some references have not been cleared yet---",
+                        );
+                    else
+                        throw new Error(
+                            "Old purl bookmarks not deleted for package " +
+                                pkg.purl +
+                                ". Some references have not been cleared yet. The package contains " +
+                                pathExclusions.length +
+                                " path exclusions, " +
+                                bulkConclusions.length +
+                                " bulk conclusions, and is the contextPurl of " +
+                                licenseConclusions.length +
+                                " license conclusions",
+                        );
+                }
+                const scannerJobs = await dbQueries.findScannerJobsByPackageId(
+                    pkg.id,
+                );
+                for (const scannerJob of scannerJobs) {
+                    // Find out if scanner job has child scanner jobs
+                    const childScannerJobs =
+                        await dbQueries.findScannerJobsByParentId(
+                            scannerJob.id,
+                        );
+
+                    if (childScannerJobs.length > 0) {
+                        // Detach child scanner jobs from parent
+                        console.log(
+                            "Detaching " +
+                                childScannerJobs.length +
+                                " child scanner jobs from parent scanner job with id " +
+                                scannerJob.id,
+                        );
+                        if (dryRun) console.log(dryRunMessage);
+                        else
+                            await dbQueries.updateManyScannerJobChildren(
+                                scannerJob.id,
+                                null,
+                            );
+                    }
+                }
+                console.log(
+                    "Deleting " +
+                        scannerJobs.length +
+                        " scanner jobs with package id " +
+                        pkg.id +
+                        "...",
+                );
+                if (dryRun) console.log(dryRunMessage);
+                else {
+                    const deletedScannerJobs =
+                        await dbQueries.deleteScannerJobsByPackageId(pkg.id);
+                    console.log(
+                        "Deleted " + deletedScannerJobs.count + " scanner jobs",
+                    );
+                }
+                const scannerJobsAfter =
+                    await dbQueries.findScannerJobsByPackageId(pkg.id);
+
+                if (!dryRun) {
+                    if (scannerJobsAfter.length > 0) {
+                        throw new Error(
+                            "Scanner jobs not deleted for package " +
+                                pkg.id +
+                                ". The package is linked to " +
+                                scannerJobsAfter.length +
+                                " scanner jobs",
+                        );
+                    }
+                }
+                const fileTrees = await dbQueries.findFileTreesByPackageId(
+                    pkg.id,
+                );
+                console.log(
+                    "Deleting " +
+                        fileTrees.length +
+                        " FileTrees with package id " +
+                        pkg.id +
+                        "...",
+                );
+                if (dryRun) console.log(dryRunMessage);
+                else {
+                    const deletedFileTrees =
+                        await dbQueries.deleteFileTreesByPackageId(pkg.id);
+                    console.log(
+                        "Deleted " + deletedFileTrees.count + " FileTrees",
+                    );
+                }
+                const fileTreesAfter = await dbQueries.findFileTreesByPackageId(
+                    pkg.id,
+                );
+                if (dryRun && fileTreesAfter.length === 0)
+                    throw new Error(
+                        "FileTrees deleted for package " +
+                            pkg.id +
+                            " during dry run",
+                    );
+                else if (!dryRun && fileTreesAfter.length > 0)
+                    throw new Error(
+                        "FileTrees not deleted for package " + pkg.id,
+                    );
+
+                console.log(
+                    "Deleting package with id " +
+                        pkg.id +
+                        " and purl " +
+                        pkg.purl,
+                );
+                if (dryRun) console.log(dryRunMessage);
+                else {
+                    const deletedPackage = await dbQueries.deletePackage(
+                        pkg.id,
+                    );
+                    console.log(
+                        "Deleted package with id " +
+                            deletedPackage?.id +
+                            " and purl " +
+                            deletedPackage?.purl,
+                    );
                 }
             } else {
                 console.log(

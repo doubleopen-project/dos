@@ -517,6 +517,39 @@ export const updateScannerJob = async (
     return scannerJob;
 };
 
+export const updateManyScannerJobChildren = async (
+    id: string,
+    parentId: string | null,
+): Promise<{ count: number }> => {
+    let retries = initialRetryCount;
+    let batchUpdate = null;
+
+    while (!batchUpdate && retries > 0) {
+        try {
+            batchUpdate = await prisma.scannerJob.updateMany({
+                where: {
+                    parentId: id,
+                },
+                data: {
+                    parentId: parentId,
+                },
+            });
+        } catch (error) {
+            console.log(
+                "Error with trying to update ScannerJob children: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    if (!batchUpdate)
+        throw new Error("Error: Unable to update ScannerJob children");
+
+    return batchUpdate;
+};
+
 export const updateManyScannerJobStates = async (
     ids: string[],
     state: string,
@@ -1375,6 +1408,32 @@ export const findScannerJobByPackageId = async (
         }
     }
     return scannerJob;
+};
+
+export const findScannerJobsByPackageId = async (
+    packageId: number,
+): Promise<ScannerJob[]> => {
+    let retries = initialRetryCount;
+    let scannerJobs: ScannerJob[] = [];
+
+    while (retries > 0) {
+        try {
+            scannerJobs = await prisma.scannerJob.findMany({
+                where: {
+                    packageId: packageId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scannerJobs;
 };
 
 export const findScannerJobById = async (
