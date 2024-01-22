@@ -112,6 +112,8 @@ adminRouter.post("/purl-cleanup", async (req, res) => {
     try {
         const optionDescriptions = {
             dryRun: "Defaults to true. The cleanup is run as a dry run to see what would happen without actually making any update queries to the database. Set to false to enable the database update queries. You can run any of the phases below with the dryRun option enabled.",
+            pkgNameStartsWith:
+                "Set this to a string to run the cleanup only for packages where name starts with the given string.",
             allPhases:
                 "Set this to true to run all the phases described below. Note that if this option is enabled, the other options below will be ignored.",
             transferPathExclusions:
