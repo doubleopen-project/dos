@@ -2047,7 +2047,9 @@ export const findUserByUsername = async (
     return user;
 };
 
-export const findAllScannedPackages = async (): Promise<Package[]> => {
+export const findAllScannedPackages = async (
+    pkgNameStartsWith?: string,
+): Promise<Package[]> => {
     let packages: Package[] = [];
     let retries = initialRetryCount;
 
@@ -2056,6 +2058,9 @@ export const findAllScannedPackages = async (): Promise<Package[]> => {
             packages = await prisma.package.findMany({
                 where: {
                     scanStatus: "scanned",
+                    name: {
+                        startsWith: pkgNameStartsWith,
+                    },
                 },
             });
             break;

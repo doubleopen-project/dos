@@ -51,6 +51,7 @@ export const PostPurlCleanupReq = z.object({
     options: z
         .object({
             dryRun: z.boolean().optional(),
+            pkgNameStartsWith: z.string().optional(),
             allPhases: z.boolean().optional(),
             transferPathExclusions: z.boolean().optional(),
             transferBulkConclusions: z.boolean().optional(),
@@ -64,6 +65,7 @@ export const PostPurlCleanupRes = z.object({
     message: z.string(),
     optionDescriptions: z.object({
         dryRun: z.string(),
+        pkgNameStartsWith: z.string(),
         allPhases: z.string(),
         transferPathExclusions: z.string(),
         transferBulkConclusions: z.string(),

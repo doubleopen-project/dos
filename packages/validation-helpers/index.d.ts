@@ -2061,6 +2061,7 @@ declare const adminAPI: [
                             zod.ZodObject<
                                 {
                                     dryRun: zod.ZodOptional<zod.ZodBoolean>;
+                                    pkgNameStartsWith: zod.ZodOptional<zod.ZodString>;
                                     allPhases: zod.ZodOptional<zod.ZodBoolean>;
                                     transferPathExclusions: zod.ZodOptional<zod.ZodBoolean>;
                                     transferBulkConclusions: zod.ZodOptional<zod.ZodBoolean>;
@@ -2071,6 +2072,7 @@ declare const adminAPI: [
                                 zod.ZodTypeAny,
                                 {
                                     dryRun?: boolean | undefined;
+                                    pkgNameStartsWith?: string | undefined;
                                     allPhases?: boolean | undefined;
                                     transferPathExclusions?:
                                         | boolean
@@ -2085,6 +2087,7 @@ declare const adminAPI: [
                                 },
                                 {
                                     dryRun?: boolean | undefined;
+                                    pkgNameStartsWith?: string | undefined;
                                     allPhases?: boolean | undefined;
                                     transferPathExclusions?:
                                         | boolean
@@ -2106,6 +2109,7 @@ declare const adminAPI: [
                         options?:
                             | {
                                   dryRun?: boolean | undefined;
+                                  pkgNameStartsWith?: string | undefined;
                                   allPhases?: boolean | undefined;
                                   transferPathExclusions?: boolean | undefined;
                                   transferBulkConclusions?: boolean | undefined;
@@ -2118,6 +2122,7 @@ declare const adminAPI: [
                         options?:
                             | {
                                   dryRun?: boolean | undefined;
+                                  pkgNameStartsWith?: string | undefined;
                                   allPhases?: boolean | undefined;
                                   transferPathExclusions?: boolean | undefined;
                                   transferBulkConclusions?: boolean | undefined;
@@ -2135,6 +2140,7 @@ declare const adminAPI: [
                 optionDescriptions: zod.ZodObject<
                     {
                         dryRun: zod.ZodString;
+                        pkgNameStartsWith: zod.ZodString;
                         allPhases: zod.ZodString;
                         transferPathExclusions: zod.ZodString;
                         transferBulkConclusions: zod.ZodString;
@@ -2145,6 +2151,7 @@ declare const adminAPI: [
                     zod.ZodTypeAny,
                     {
                         dryRun: string;
+                        pkgNameStartsWith: string;
                         allPhases: string;
                         transferPathExclusions: string;
                         transferBulkConclusions: string;
@@ -2153,6 +2160,7 @@ declare const adminAPI: [
                     },
                     {
                         dryRun: string;
+                        pkgNameStartsWith: string;
                         allPhases: string;
                         transferPathExclusions: string;
                         transferBulkConclusions: string;
@@ -2167,6 +2175,7 @@ declare const adminAPI: [
                 message: string;
                 optionDescriptions: {
                     dryRun: string;
+                    pkgNameStartsWith: string;
                     allPhases: string;
                     transferPathExclusions: string;
                     transferBulkConclusions: string;
@@ -2178,6 +2187,7 @@ declare const adminAPI: [
                 message: string;
                 optionDescriptions: {
                     dryRun: string;
+                    pkgNameStartsWith: string;
                     allPhases: string;
                     transferPathExclusions: string;
                     transferBulkConclusions: string;
@@ -14629,6 +14639,7 @@ declare const dosAPI: [
                             zod.ZodObject<
                                 {
                                     dryRun: zod.ZodOptional<zod.ZodBoolean>;
+                                    pkgNameStartsWith: zod.ZodOptional<zod.ZodString>;
                                     allPhases: zod.ZodOptional<zod.ZodBoolean>;
                                     transferPathExclusions: zod.ZodOptional<zod.ZodBoolean>;
                                     transferBulkConclusions: zod.ZodOptional<zod.ZodBoolean>;
@@ -14639,6 +14650,7 @@ declare const dosAPI: [
                                 zod.ZodTypeAny,
                                 {
                                     dryRun?: boolean | undefined;
+                                    pkgNameStartsWith?: string | undefined;
                                     allPhases?: boolean | undefined;
                                     transferPathExclusions?:
                                         | boolean
@@ -14653,6 +14665,7 @@ declare const dosAPI: [
                                 },
                                 {
                                     dryRun?: boolean | undefined;
+                                    pkgNameStartsWith?: string | undefined;
                                     allPhases?: boolean | undefined;
                                     transferPathExclusions?:
                                         | boolean
@@ -14674,6 +14687,7 @@ declare const dosAPI: [
                         options?:
                             | {
                                   dryRun?: boolean | undefined;
+                                  pkgNameStartsWith?: string | undefined;
                                   allPhases?: boolean | undefined;
                                   transferPathExclusions?: boolean | undefined;
                                   transferBulkConclusions?: boolean | undefined;
@@ -14686,6 +14700,7 @@ declare const dosAPI: [
                         options?:
                             | {
                                   dryRun?: boolean | undefined;
+                                  pkgNameStartsWith?: string | undefined;
                                   allPhases?: boolean | undefined;
                                   transferPathExclusions?: boolean | undefined;
                                   transferBulkConclusions?: boolean | undefined;
@@ -14703,6 +14718,7 @@ declare const dosAPI: [
                 optionDescriptions: zod.ZodObject<
                     {
                         dryRun: zod.ZodString;
+                        pkgNameStartsWith: zod.ZodString;
                         allPhases: zod.ZodString;
                         transferPathExclusions: zod.ZodString;
                         transferBulkConclusions: zod.ZodString;
@@ -14713,6 +14729,7 @@ declare const dosAPI: [
                     zod.ZodTypeAny,
                     {
                         dryRun: string;
+                        pkgNameStartsWith: string;
                         allPhases: string;
                         transferPathExclusions: string;
                         transferBulkConclusions: string;
@@ -14721,6 +14738,7 @@ declare const dosAPI: [
                     },
                     {
                         dryRun: string;
+                        pkgNameStartsWith: string;
                         allPhases: string;
                         transferPathExclusions: string;
                         transferBulkConclusions: string;
@@ -14735,6 +14753,7 @@ declare const dosAPI: [
                 message: string;
                 optionDescriptions: {
                     dryRun: string;
+                    pkgNameStartsWith: string;
                     allPhases: string;
                     transferPathExclusions: string;
                     transferBulkConclusions: string;
@@ -14746,6 +14765,7 @@ declare const dosAPI: [
                 message: string;
                 optionDescriptions: {
                     dryRun: string;
+                    pkgNameStartsWith: string;
                     allPhases: string;
                     transferPathExclusions: string;
                     transferBulkConclusions: string;

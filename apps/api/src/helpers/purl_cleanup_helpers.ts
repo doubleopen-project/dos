@@ -8,6 +8,7 @@ import * as dbQueries from "./db_queries";
 
 export const runPurlCleanup = async (options: {
     dryRun?: boolean;
+    pkgNameStartsWith?: string;
     allPhases?: boolean;
     transferPathExclusions?: boolean;
     transferBulkConclusions?: boolean;
@@ -20,6 +21,7 @@ export const runPurlCleanup = async (options: {
             "\nStarting purl cleanup process with the following options:",
         );
         console.log("dryRun: ", dryRun);
+        console.log("pkgNameStartsWith: ", options.pkgNameStartsWith);
         console.log("allPhases: ", options.allPhases);
         if (!options.allPhases) {
             console.log(
@@ -36,7 +38,7 @@ export const runPurlCleanup = async (options: {
                 options.deleteOldPurlBookmarks,
             );
         }
-        const pkgMap = await getPackageMap();
+        const pkgMap = await getPackageMap(options.pkgNameStartsWith);
         const filteredPkgMap = await getFilteredPackageMap(pkgMap);
         if (filteredPkgMap.size === 0) {
             console.log(
@@ -46,15 +48,16 @@ export const runPurlCleanup = async (options: {
             console.log(
                 "\nFound " +
                     filteredPkgMap.size +
-                    " clean purls with multiple identical packages:",
+                    " clean purls with multiple identical packages",
             );
+            /*
             for (const [key, value] of filteredPkgMap.entries()) {
                 console.log("Clean purl: " + key);
                 console.log("Purls:");
                 for (const pkg of value) {
                     console.log(pkg.purl);
                 }
-            }
+            }*/
             if (options.allPhases || options.transferPathExclusions)
                 await transferPathExclusions(filteredPkgMap, dryRun);
             if (options.allPhases || options.transferBulkConclusions)
@@ -63,15 +66,17 @@ export const runPurlCleanup = async (options: {
                 await changeContextPurls(filteredPkgMap, dryRun);
             if (options.allPhases || options.deleteOldPurlBookmarks)
                 await deleteOldPurlBookmarks(filteredPkgMap, dryRun);
+
+            console.log("\nFinished purl cleanup process\n");
         }
     } catch (error) {
         console.log("Error: ", error);
     }
 };
 
-const getPackageMap = async () => {
-    const packages = await dbQueries.findAllScannedPackages();
-
+const getPackageMap = async (pkgNameStartsWith?: string) => {
+    const packages = await dbQueries.findAllScannedPackages(pkgNameStartsWith);
+    console.log("Found " + packages.length + " scanned packages to process");
     const pkgMap = new Map<string, Package[]>();
 
     for (const pkg of packages) {
@@ -133,9 +138,11 @@ const compareFiletrees = (filetrees1: FileTree[], filetrees2: FileTree[]) => {
 };
 
 const getFilteredPackageMap = async (pkgMap: Map<string, Package[]>) => {
+    console.log("Searching for packages with identical purls");
     const filteredMap = new Map<string, Package[]>();
     for (const [purl, pkgs] of pkgMap.entries()) {
         if (pkgs.length > 1) {
+            console.log("Comparing filetrees for clean purl: ", purl);
             // Find out if the contents of the packages are the same
             const newestPkg = findNewestPackage(pkgs);
             const newPkgFiletrees = await dbQueries.findFileTreesByPackageId(
