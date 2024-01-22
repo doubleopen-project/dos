@@ -28,6 +28,7 @@ import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import PurlDetails from "@/components/PurlDetails";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
+import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
@@ -99,7 +100,9 @@ const PackageTree = ({ purl, path }: Props) => {
     );
 
     let tree: TreeApi<TreeNode> | null | undefined;
-    const uniqueLicenses = extractUniqueLicenses(originalTreeData);
+    const uniqueLicenses = decomposeLicenses(
+        extractUniqueLicenses(originalTreeData),
+    );
     const uniqueLicensesToColorMap = new Map<string, string>();
 
     uniqueLicenses.forEach((license) => {
