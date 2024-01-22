@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { parseSPDX } from "common-helpers";
+import parse from "spdx-expression-parse";
 
 type SPDXExpression = {
     license?: string;
@@ -42,10 +43,13 @@ export function decomposeLicenses(spdxExpressions: Set<string>): Set<string> {
 
     // Process each SPDX expression and extract licenses
     spdxExpressions.forEach((spdxExpression) => {
-        console.log(`Processing ${spdxExpression}`);
-        const parsedInfo = parseSPDX(spdxExpression);
-        const licenses = extractLicenses(parsedInfo);
-        allLicenses.push(...licenses);
+        try {
+            const parsedInfo = parseSPDX(spdxExpression);
+            const licenses = extractLicenses(parsedInfo);
+            allLicenses.push(...licenses);
+        } catch (e) {
+            allLicenses.push("INVALID SPDX EXPRESSION: " + e);
+        }
     });
 
     // Deduplicate and sort the licenses alphabetically
