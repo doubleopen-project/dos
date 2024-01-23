@@ -6,6 +6,7 @@ import { Prisma } from "database";
 import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
+import { replaceANDExceptionWithWITHException } from "./license_expression_helpers";
 import { s3Client } from "./s3client";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
 
@@ -349,12 +350,17 @@ export const saveJobResults = async (
                         }
 
                         if (file.detected_license_expression_spdx) {
+                            // Replace "AND <some_exception>" with "WITH <some_exception>"
+                            const licenseExpressionSPDX =
+                                replaceANDExceptionWithWITHException(
+                                    file.detected_license_expression_spdx,
+                                );
                             const finding =
                                 await dbQueries.createLicenseFinding({
                                     scanner: scanner,
                                     scannerConfig: scannerConfig,
                                     licenseExpressionSPDX:
-                                        file.detected_license_expression_spdx,
+                                        licenseExpressionSPDX,
                                     fileSha256: file.sha256,
                                 });
                             for (const license of file.license_detections) {
