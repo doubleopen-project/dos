@@ -48,7 +48,7 @@ export function decomposeLicenses(spdxExpressions: Set<string>): Set<string> {
             const licenses = extractLicenses(parsedInfo);
             allLicenses.push(...licenses);
         } catch (e) {
-            allLicenses.push("INVALID SPDX EXPRESSION: " + e);
+            allLicenses.push(spdxExpression);
         }
     });
 
