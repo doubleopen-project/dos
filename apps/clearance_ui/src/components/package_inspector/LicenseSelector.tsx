@@ -27,17 +27,17 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-type ComboBoxPackageProps = {
+type LicenseSelectorProps = {
     data: Map<string, string>;
     filterString: string;
     className?: string;
 };
 
-const ComboBoxPackage = ({
+const LicenseSelector = ({
     data,
     filterString,
     className,
-}: ComboBoxPackageProps) => {
+}: LicenseSelectorProps) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useQueryState(filterString, {
         parse: (query: string) => query.toLowerCase(),
@@ -158,4 +158,4 @@ const ComboBoxPackage = ({
     );
 };
 
-export default ComboBoxPackage;
+export default LicenseSelector;
