@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { parseSPDX } from "common-helpers";
-import parse from "spdx-expression-parse";
 
 type SPDXExpression = {
     license?: string;
