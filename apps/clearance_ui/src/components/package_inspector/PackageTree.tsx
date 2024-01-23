@@ -22,7 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ComboBoxPackage from "@/components/package_inspector/ComboBoxPackage";
+import LicenseSelector from "@/components/package_inspector/LicenseSelector";
 import Node from "@/components/package_inspector/Node";
 import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
@@ -320,7 +320,7 @@ const PackageTree = ({ purl, path }: Props) => {
             </div>
 
             <div className="mt-2 flex flex-col items-center rounded-md border p-1 text-sm shadow-lg">
-                <ComboBoxPackage
+                <LicenseSelector
                     data={uniqueLicensesToColorMap}
                     filterString={"licenseFilter"}
                     className="mb-1 w-full"
