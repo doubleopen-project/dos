@@ -111,9 +111,16 @@ const ComboBoxPackage = ({
                                                 : "opacity-0",
                                         )}
                                     />
-                                    <span className="w-11/12 text-xs">
-                                        {license.label}
-                                    </span>
+                                    {license.label.includes("AND") ||
+                                    license.label.includes("OR") ? (
+                                        <span className="w-11/12 text-xs text-red-600">
+                                            {license.label}
+                                        </span>
+                                    ) : (
+                                        <span className="w-11/12 text-xs">
+                                            {license.label}
+                                        </span>
+                                    )}
                                     <span
                                         className="ml-2 mt-1 flex h-2 w-2 items-center justify-center rounded-full"
                                         style={{
