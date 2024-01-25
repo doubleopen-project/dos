@@ -11,11 +11,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-"use strict";
+import { ConjunctionInfo, LicenseInfo, parse } from "./parse";
+import { scan } from "./scan";
 
-var scan = require("./scan");
-var parse = require("./parse");
-
-module.exports = function (source: string) {
+export const parseSPDX = (source: string): LicenseInfo | ConjunctionInfo => {
     return parse(scan(source));
 };

@@ -10,4 +10,17 @@
  *
  * SPDX-License-Identifier: MIT
  */
-export {};
+interface LicenseInfo {
+    license: string;
+    plus?: true | undefined;
+    exception?: string | undefined;
+}
+interface ConjunctionInfo {
+    conjunction: "and" | "or";
+    left: LicenseInfo | ConjunctionInfo;
+    right: LicenseInfo | ConjunctionInfo;
+}
+
+declare const parseSPDX: (source: string) => LicenseInfo | ConjunctionInfo;
+
+export { parseSPDX };
