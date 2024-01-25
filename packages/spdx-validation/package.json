@@ -1,0 +1,12 @@
+{
+    "name": "spdx-validation",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./index.d.ts",
+    "scripts": {
+        "build": "tsup && prettier --write dist/index.d.ts && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts"
+    },
+    "devDependencies": {
+        "tsup": "8.0.1"
+    }
+}
