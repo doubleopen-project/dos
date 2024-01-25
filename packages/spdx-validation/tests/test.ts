@@ -11,65 +11,60 @@
  * SPDX-License-Identifier: MIT
  */
 
-var assert = require("assert");
-var p = require("./");
+import { parseSPDX } from "../src";
+import { ConjunctionInfo } from "../src/parse";
 
-// The spec is unclear about tabs and newlines
-it("forbids tabs and newlines", function () {
-    assert.throws(function () {
-        p("MIT\t");
+describe("Test parseSPDX: error throwing", () => {
+    it("forbids tabs and newlines", () => {
+        expect(() => parseSPDX("MIT\t")).toThrow();
+        expect(() => parseSPDX("\nMIT")).toThrow();
     });
-    assert.throws(function () {
-        p("\nMIT");
-    });
-});
 
-it("allows many spaces", function () {
-    assert.deepStrictEqual(p(" MIT"), { license: "MIT" });
-
-    assert.deepStrictEqual(p("MIT "), { license: "MIT" });
-
-    assert.deepStrictEqual(p("MIT  AND    BSD-3-Clause"), {
-        left: { license: "MIT" },
-        conjunction: "and",
-        right: { license: "BSD-3-Clause" },
+    it("forbids spaces between a license-id and a following `+`", () => {
+        expect(() => parseSPDX("MIT +")).toThrow();
+        expect(() => parseSPDX("MIT +")).toThrowErrorMatchingInlineSnapshot(
+            `"Space before \`+\`"`,
+        );
     });
 });
 
-it("forbids spaces between a license-id and a following `+`", function () {
-    assert.throws(function () {
-        p("MIT +");
-    }, /Space before `\+`/);
-});
-
-it("parses DocumentRefs and LicenseRefs", function () {
-    assert.deepStrictEqual(p("LicenseRef-something"), {
-        license: "LicenseRef-something",
-    });
-
-    assert.deepStrictEqual(
-        p("DocumentRef-spdx-tool-1.2 : LicenseRef-MIT-Style-2"),
-        { license: "DocumentRef-spdx-tool-1.2:LicenseRef-MIT-Style-2" },
-    );
-});
-
-// See the note in `parser.js`.
-it("parses `AND`, `OR` and `WITH` with the correct precedence", function () {
-    assert.deepStrictEqual(p("MIT AND BSD-3-Clause AND CC-BY-4.0"), {
-        left: { license: "MIT" },
-        conjunction: "and",
-        right: {
-            left: { license: "BSD-3-Clause" },
+describe("Test parseSPDX: valid expressions", () => {
+    it("allows many spaces", () => {
+        expect(parseSPDX(" MIT")).toEqual({ license: "MIT" });
+        expect(parseSPDX("MIT ")).toEqual({ license: "MIT" });
+        expect(parseSPDX("MIT  AND    BSD-3-Clause")).toEqual({
+            left: { license: "MIT" },
             conjunction: "and",
-            right: { license: "CC-BY-4.0" },
-        },
+            right: { license: "BSD-3-Clause" },
+        });
     });
+    it("parses DocumentRefs and LicenseRefs", () => {
+        expect(parseSPDX("LicenseRef-something")).toEqual({
+            license: "LicenseRef-something",
+        });
 
-    assert.deepStrictEqual(
-        p(
-            "MIT AND BSD-3-Clause WITH GCC-exception-3.1 OR CC-BY-4.0 AND Apache-2.0",
-        ),
-        {
+        expect(
+            parseSPDX("DocumentRef-spdx-tool-1.2 : LicenseRef-MIT-Style-2"),
+        ).toEqual({
+            license: "DocumentRef-spdx-tool-1.2:LicenseRef-MIT-Style-2",
+        });
+    });
+    it("parses `AND`, `OR` and `WITH` with the correct precedence", () => {
+        expect(parseSPDX("MIT AND BSD-3-Clause AND CC-BY-4.0")).toEqual({
+            left: { license: "MIT" },
+            conjunction: "and",
+            right: {
+                left: { license: "BSD-3-Clause" },
+                conjunction: "and",
+                right: { license: "CC-BY-4.0" },
+            },
+        });
+
+        expect(
+            parseSPDX(
+                "MIT AND BSD-3-Clause WITH GCC-exception-3.1 OR CC-BY-4.0 AND Apache-2.0",
+            ),
+        ).toEqual({
             left: {
                 left: { license: "MIT" },
                 conjunction: "and",
@@ -84,34 +79,30 @@ it("parses `AND`, `OR` and `WITH` with the correct precedence", function () {
                 conjunction: "and",
                 right: { license: "Apache-2.0" },
             },
-        },
-    );
-});
+        });
+    });
+    it("allows mixed-case `and`, `or`, and `with`", () => {
+        const variants = [
+            "MIT and BSD-3-Clause or GPL-2.0-only with GCC-exception-2.0",
+            "MIT aNd BSD-3-Clause oR GPL-2.0-only wITh GCC-exception-2.0",
+            "MIT AnD BSD-3-Clause Or GPL-2.0-only WitH GCC-exception-2.0",
+        ];
+        const result: ConjunctionInfo = {
+            left: {
+                left: { license: "MIT" },
+                conjunction: "and",
+                right: { license: "BSD-3-Clause" },
+            },
+            conjunction: "or",
+            right: {
+                license: "GPL-2.0-only",
+                exception: "GCC-exception-2.0",
+            },
+        };
 
-it("allows mixed-case `and`, `or`, and `with`", function () {
-    var variants = [
-        "MIT and BSD-3-Clause or GPL-2.0-only with GCC-exception-2.0",
-        "MIT aNd BSD-3-Clause oR GPL-2.0-only wITh GCC-exception-2.0",
-        "MIT AnD BSD-3-Clause Or GPL-2.0-only WitH GCC-exception-2.0",
-    ];
-    var result = {
-        left: {
-            left: { license: "MIT" },
-            conjunction: "and",
-            right: { license: "BSD-3-Clause" },
-        },
-        conjunction: "or",
-        right: {
-            license: "GPL-2.0-only",
-            exception: "GCC-exception-2.0",
-        },
-    };
-    for (let index = 0; index < variants.length; index++) {
-        const variant = variants[index];
-        assert.deepStrictEqual(p(variant), result);
-    }
+        for (let index = 0; index < variants.length; index++) {
+            const variant = variants[index];
+            expect(parseSPDX(variant)).toEqual(result);
+        }
+    });
 });
-
-function it(message, test) {
-    test();
-}

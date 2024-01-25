@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
-        "lib": ["ES2021"],
+        "lib": ["ES2022"],
         "outDir": "./dist",
         "rootDir": "./",
-        "types": ["@types/node"]
+        "types": ["@types/node", "@types/chai", "@types/mocha", "@types/jest"],
+        "module": "ESNext"
     },
     "exclude": ["node_modules"],
     "extends": "tsconfig/base.json",
