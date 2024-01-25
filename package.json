@@ -16,6 +16,7 @@
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
         "build:scanner_worker": "turbo run build --filter=scanner-worker --no-daemon",
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
+        "build:spdx-validation": "turbo run build --filter=spdx-validation --no-daemon",
         "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
         "clever-logs-api": "turbo run clever-logs --filter=api --no-daemon",
         "clever-logs-cui": "turbo run clever-logs --filter=clearance_ui --no-daemon",

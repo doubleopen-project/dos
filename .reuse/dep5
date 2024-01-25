@@ -181,3 +181,15 @@ License: CC-BY-4.0
 Files: packages/database/src/test_data/*
 Copyright: 2023 Double Open Oy
 License: CC-BY-4.0
+
+Files: packages/spdx-validation/package.json
+Copyright: 2024 Double Open Oy
+License: CC-BY-4.0
+
+Files: packages/spdx-validation/tsconfig.eslint.json
+Copyright: 2024 Double Open Oy
+License: CC-BY-4.0
+
+Files: packages/spdx-validation/tsconfig.json
+Copyright: 2024 Double Open Oy
+License: CC-BY-4.0
