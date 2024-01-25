@@ -11,15 +11,30 @@
  * SPDX-License-Identifier: MIT
  */
 
-"use strict";
-
 // The ABNF grammar in the spec is totally ambiguous.
 //
 // This parser follows the operator precedence defined in the
 // `Order of Precedence and Parentheses` section.
 
-module.exports = function (tokens) {
-    var index = 0;
+export interface Token {
+    type: "OPERATOR" | "LICENSE" | "DOCUMENTREF" | "LICENSEREF" | "EXCEPTION";
+    string: string;
+}
+
+export interface LicenseInfo {
+    license: string;
+    plus?: true | undefined;
+    exception?: string | undefined;
+}
+
+export interface ConjunctionInfo {
+    conjunction: "and" | "or";
+    left: LicenseInfo | ConjunctionInfo;
+    right: LicenseInfo | ConjunctionInfo;
+}
+
+export const parse = (tokens: Token[]): LicenseInfo | ConjunctionInfo => {
+    let index = 0;
 
     function hasMore() {
         return index < tokens.length;
@@ -36,8 +51,8 @@ module.exports = function (tokens) {
         index++;
     }
 
-    function parseOperator(operator) {
-        var t = token();
+    function parseOperator(operator: string) {
+        const t = token();
         if (t && t.type === "OPERATOR" && operator === t.string) {
             next();
             return t.string;
@@ -46,7 +61,7 @@ module.exports = function (tokens) {
 
     function parseWith() {
         if (parseOperator("WITH")) {
-            var t = token();
+            const t = token();
             if (t && t.type === "EXCEPTION") {
                 next();
                 return t.string;
@@ -59,10 +74,10 @@ module.exports = function (tokens) {
         // TODO: Actually, everything is concatenated into one string
         // for backward-compatibility but it could be better to return
         // a nice structure.
-        var begin = index;
-        var string = "";
-        var t = token();
-        if (t.type === "DOCUMENTREF") {
+        let begin = index;
+        let string = "";
+        let t = token();
+        if (t && t.type === "DOCUMENTREF") {
             next();
             string += "DocumentRef-" + t.string + ":";
             if (!parseOperator(":")) {
@@ -70,7 +85,7 @@ module.exports = function (tokens) {
             }
         }
         t = token();
-        if (t.type === "LICENSEREF") {
+        if (t && t.type === "LICENSEREF") {
             next();
             string += "LicenseRef-" + t.string;
             return { license: string };
@@ -79,14 +94,18 @@ module.exports = function (tokens) {
     }
 
     function parseLicense() {
-        var t = token();
+        const t = token();
         if (t && t.type === "LICENSE") {
             next();
-            var node = { license: t.string };
+            const node: {
+                license: string;
+                plus?: true | undefined;
+                exception?: string | undefined;
+            } = { license: t.string };
             if (parseOperator("+")) {
                 node.plus = true;
             }
-            var exception = parseWith();
+            const exception = parseWith();
             if (exception) {
                 node.exception = exception;
             }
@@ -95,12 +114,12 @@ module.exports = function (tokens) {
     }
 
     function parseParenthesizedExpression() {
-        var left = parseOperator("(");
+        const left = parseOperator("(");
         if (!left) {
             return;
         }
 
-        var expr = parseExpression();
+        const expr = parseExpression();
 
         if (!parseOperator(")")) {
             throw new Error("Expected `)`");
@@ -117,9 +136,15 @@ module.exports = function (tokens) {
         );
     }
 
-    function makeBinaryOpParser(operator, nextParser) {
-        return function parseBinaryOp() {
-            var left = nextParser();
+    function makeBinaryOpParser(
+        operator: "AND" | "OR",
+        nextParser: () => ConjunctionInfo | LicenseInfo | undefined,
+    ) {
+        return function parseBinaryOp():
+            | ConjunctionInfo
+            | LicenseInfo
+            | undefined {
+            const left = nextParser();
             if (!left) {
                 return;
             }
@@ -128,22 +153,22 @@ module.exports = function (tokens) {
                 return left;
             }
 
-            var right = parseBinaryOp();
+            const right = parseBinaryOp();
             if (!right) {
                 throw new Error("Expected expression");
             }
             return {
                 left: left,
-                conjunction: operator.toLowerCase(),
+                conjunction: operator.toLowerCase() as "and" | "or",
                 right: right,
             };
         };
     }
 
-    var parseAnd = makeBinaryOpParser("AND", parseAtom);
-    var parseExpression = makeBinaryOpParser("OR", parseAnd);
+    const parseAnd = makeBinaryOpParser("AND", parseAtom);
+    const parseExpression = makeBinaryOpParser("OR", parseAnd);
 
-    var node = parseExpression();
+    const node = parseExpression();
     if (!node || hasMore()) {
         throw new Error("Syntax error");
     }

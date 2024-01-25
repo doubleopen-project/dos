@@ -11,13 +11,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-"use strict";
+import exceptions from "spdx-exceptions";
+import licenses from "spdx-license-ids";
+import { Token } from "./parse";
 
-var licenses = [].concat(require("spdx-license-ids"));
-var exceptions = require("spdx-exceptions");
-
-module.exports = function (source) {
-    var index = 0;
+export const scan = (source: string): Token[] => {
+    let index = 0;
 
     function hasMore() {
         return index < source.length;
@@ -26,10 +25,10 @@ module.exports = function (source) {
     // `value` can be a regexp or a string.
     // If it is recognized, the matching source string is returned and
     // the index is incremented. Otherwise `undefined` is returned.
-    function read(value) {
+    function read(value: string | RegExp): string | undefined {
         if (value instanceof RegExp) {
-            var chars = source.slice(index);
-            var match = chars.match(value);
+            const chars = source.slice(index);
+            const match = chars.match(value);
             if (match) {
                 index += match[0].length;
                 return match[0];
@@ -46,10 +45,10 @@ module.exports = function (source) {
         read(/[ ]*/);
     }
 
-    function operator() {
-        var string;
-        var possibilities = [/^WITH/i, /^AND/i, /^OR/i, "(", ")", ":", "+"];
-        for (var i = 0; i < possibilities.length; i++) {
+    function operator(): Token | undefined {
+        let string;
+        const possibilities = [/^WITH/i, /^AND/i, /^OR/i, "(", ")", ":", "+"];
+        for (let i = 0; i < possibilities.length; i++) {
             string = read(possibilities[i]);
             if (string) {
                 break;
@@ -60,12 +59,12 @@ module.exports = function (source) {
             throw new Error("Space before `+`");
         }
 
-        return (
-            string && {
+        if (string) {
+            return {
                 type: "OPERATOR",
                 string: string.toUpperCase(),
-            }
-        );
+            };
+        } else return undefined;
     }
 
     function idstring() {
@@ -73,61 +72,62 @@ module.exports = function (source) {
     }
 
     function expectIdstring() {
-        var string = idstring();
+        const string = idstring();
         if (!string) {
             throw new Error("Expected idstring at offset " + index);
         }
         return string;
     }
 
-    function documentRef() {
+    function documentRef(): Token | undefined {
         if (read("DocumentRef-")) {
-            var string = expectIdstring();
+            const string = expectIdstring();
             return { type: "DOCUMENTREF", string: string };
         }
     }
 
-    function licenseRef() {
+    function licenseRef(): Token | undefined {
         if (read("LicenseRef-")) {
-            var string = expectIdstring();
+            const string = expectIdstring();
             return { type: "LICENSEREF", string: string };
         }
     }
 
-    function identifier() {
-        var begin = index;
-        var string = idstring();
+    function identifier(): Token | undefined {
+        let begin = index;
+        const string = idstring();
 
-        if (licenses.indexOf(string) !== -1) {
-            return {
-                type: "LICENSE",
-                string: string,
-            };
-        } else if (exceptions.indexOf(string) !== -1) {
-            return {
-                type: "EXCEPTION",
-                string: string,
-            };
-        }
-
+        if (string) {
+            if (licenses.indexOf(string) !== -1) {
+                return {
+                    type: "LICENSE",
+                    string: string,
+                };
+            } else if (exceptions.indexOf(string) !== -1) {
+                return {
+                    type: "EXCEPTION",
+                    string: string,
+                };
+            }
+        } else return undefined;
         index = begin;
     }
 
     // Tries to read the next token. Returns `undefined` if no token is
     // recognized.
-    function parseToken() {
+    function parseToken(): Token | undefined {
         // Ordering matters
         return operator() || documentRef() || licenseRef() || identifier();
     }
 
-    var tokens = [];
+    const tokens = [];
     while (hasMore()) {
         skipWhitespace();
         if (!hasMore()) {
             break;
         }
 
-        var token = parseToken();
+        const token = parseToken();
         if (!token) {
             throw new Error(
                 "Unexpected `" +

@@ -11,8 +11,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-"use strict";
-
 var assert = require("assert");
 var p = require("./");
 
