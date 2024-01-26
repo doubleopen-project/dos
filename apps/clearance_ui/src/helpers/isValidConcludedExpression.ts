@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { parseSPDX } from "common-helpers";
+import { parseSPDX } from "spdx-validation";
 
 export const isValidConcludedExpression = (concludedLicense: string) => {
     try {
@@ -20,7 +20,7 @@ export const isValidConcludedExpression = (concludedLicense: string) => {
     } catch (error) {
         if (error instanceof Error) {
             const errArr = error.message.split(" ");
-            const errIndex = parseInt(errArr[errArr.length - 1]);
+            const errIndex = parseInt(errArr[4]);
 
             // find word starting from errIndex in concluded expression:
             const concludedArr = concludedLicense.split(" ");

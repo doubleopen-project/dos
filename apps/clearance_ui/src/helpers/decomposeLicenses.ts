@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { parseSPDX } from "common-helpers";
+import { parseSPDX } from "spdx-validation";
 
 type SPDXExpression = {
     license?: string;

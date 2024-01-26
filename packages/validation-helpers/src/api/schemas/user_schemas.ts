@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { parseSPDX } from "common-helpers";
 import isGlob from "is-glob";
+import { parseSPDX } from "spdx-validation";
 import { z } from "zod";
 import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
 

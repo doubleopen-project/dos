@@ -3,4 +3,3 @@
 // SPDX-License-Identifier: MIT
 
 export * from "./dateTimeHelper";
-export * from "./spdxHelper";
