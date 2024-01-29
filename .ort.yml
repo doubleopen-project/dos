@@ -26,6 +26,9 @@ excludes:
   - pattern: "packages/database/src/test_data/**"
     reason: "TEST_OF"
     comment: "This directory only contains test data for the database."
+  - pattern: "packages/spdx-validation/tests/**"
+    reason: "TEST_OF"
+    comment: "This directory contains tests for SPDX validation."
 
 license_choices:
   repository_license_choices:
@@ -42,4 +45,9 @@ curations:
     detected_license: "MIT AND LicenseRef-scancode-free-unknown"
     reason: "INCORRECT"
     comment: "Incorrect scanner match."
+    concluded_license: "MIT"
+  - path: "packages/spdx-validation/README.md"
+    detected_license: "MIT AND (MIT AND JSON) AND (BSD-2-Clause AND GPL-2.0-only WITH GCC-exception-2.0 AND GPL-2.0-only WITH GCC-exception-2.0 AND CC-BY-3.0 AND MIT)"
+    reason: "INCORRECT"
+    comment: "Incorrect scanner matches coming from SPDX license parsing examples in README."
     concluded_license: "MIT"
