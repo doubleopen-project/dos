@@ -32,7 +32,7 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="clearance-label">Detected license</Label>
                     {data?.licenseFindings[0] ? (
-                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                        <p className="h-full w-full overflow-auto p-1 text-xs">
                             {data.licenseFindings.map((license) => (
                                 <span key={license.id}>
                                     <>
