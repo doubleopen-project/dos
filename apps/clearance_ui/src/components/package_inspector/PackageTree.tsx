@@ -15,6 +15,7 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import {
     Tooltip,
@@ -36,7 +37,6 @@ import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
-import { Separator } from "@/components/ui/separator";
 
 type Props = {
     purl: string;
@@ -256,6 +256,8 @@ const PackageTree = ({ purl, path }: Props) => {
                 </TooltipProvider>
             </div>
 
+            <Separator className="mb-2" />
+
             <div className="flex-1 overflow-auto pl-1" ref={treeRef}>
                 {isLoading && (
                     <div className="flex h-full items-center justify-center">
@@ -320,9 +322,9 @@ const PackageTree = ({ purl, path }: Props) => {
                 )}
             </div>
 
-            <Separator />
+            <Separator className="mb-2" />
 
-            <div className="mt-2 flex flex-col items-center text-sm">  
+            <div className="flex flex-col items-center text-sm">
                 <LicenseSelector
                     data={uniqueLicensesToColorMap}
                     filterString={"licenseFilter"}
