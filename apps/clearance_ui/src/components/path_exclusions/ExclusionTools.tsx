@@ -48,7 +48,7 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     return (
         <div
             className={cn(
-                "relative mb-2 flex items-center rounded-md border p-1 text-sm shadow-lg",
+                "relative mb-2 flex items-center rounded-md border p-1 text-sm",
                 className,
             )}
         >
