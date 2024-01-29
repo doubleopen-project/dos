@@ -3,7 +3,15 @@
 // SPDX-License-Identifier: MIT
 
 export const replaceANDExceptionWithWITHException = (expression: string) => {
-    const regex = /AND\s+([\w-]*exception[\w-]*)/gi;
+    // Regular expression to match ") AND <exception>" but not if exception starts with "LicenseRef"
+    const regex1 = /\)\s+AND\s+(?!LicenseRef)([\w-]*exception[\w-]*)/gi;
+    // Regular expression to match "AND <exception>" but not if exception starts with "LicenseRef"
+    const regex2 = /AND\s+(?!LicenseRef)([\w-]*exception[\w-]*)/gi;
 
-    return expression.replace(regex, (match, p1) => `WITH ${p1}`);
+    const replaced = expression.replace(
+        regex1,
+        (match, p1) => `) AND LicenseRef-doubleopen-${p1}`,
+    );
+
+    return replaced.replace(regex2, (match, p1) => `WITH ${p1}`);
 };
