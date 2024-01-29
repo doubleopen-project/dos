@@ -36,6 +36,7 @@ import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
     purl: string;
@@ -319,7 +320,9 @@ const PackageTree = ({ purl, path }: Props) => {
                 )}
             </div>
 
-            <div className="mt-2 flex flex-col items-center rounded-md border p-1 text-sm shadow-lg">
+            <Separator />
+
+            <div className="mt-2 flex flex-col items-center text-sm">  
                 <LicenseSelector
                     data={uniqueLicensesToColorMap}
                     filterString={"licenseFilter"}
