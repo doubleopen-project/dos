@@ -7,9 +7,9 @@ import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
-import { Separator } from "@/components/ui/separator";
 
 type CodeInspectorProps = {
     purl: string;
