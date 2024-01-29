@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
+import { Separator } from "@/components/ui/separator";
 
 type CodeInspectorProps = {
     purl: string;
@@ -60,10 +61,12 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     return (
         <div className="flex h-full flex-col">
-            <div className="mb-2 flex-row items-center rounded-md border p-1 shadow-lg">
+            <div className="mb-1 flex-row items-center p-1">
                 <Label className="clearance-label">File: </Label>
                 <Badge className="rounded-md">{path}</Badge>
             </div>
+
+            <Separator className="mb-2" />
 
             <div className="flex flex-1 items-center justify-center overflow-auto">
                 {(isLoading || lfIsLoading) && (
