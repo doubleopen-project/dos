@@ -37,7 +37,7 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
                     {data?.licenseFindings[0]?.licenseFindingMatches ? (
                         <ButtonGroup
                             data={data.licenseFindings[0].licenseFindingMatches}
-                            className="h-full w-full overflow-y-auto rounded-md border p-1"
+                            className="h-full w-full overflow-y-auto p-1"
                         />
                     ) : (
                         <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">

@@ -59,7 +59,7 @@ const ConclusionFormWrapper = ({
                         <Label className="clearance-label">
                             Create a license conclusion
                         </Label>
-                        <div className=" w-full rounded-md border p-1">
+                        <div className="w-full p-1">
                             <ConclusionForm
                                 purl={purl}
                                 fileSha256={fileSha256}
