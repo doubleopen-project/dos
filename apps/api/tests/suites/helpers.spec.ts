@@ -51,14 +51,31 @@ export default function suite(): void {
         assert.strictEqual(parsedPurl.subpath, null);
     });
 
-    it("should replace AND exception with WITH exception", function () {
+    it("should replace AND <exception> with WITH <exception>", function () {
         const expression =
-            "AFL-2.1 AND ANTLR-PD AND APSL-1.0 AND APSL-2.0 AND Apache-1.1 AND Apache-2.0 AND (Apache-2.0 AND Artistic-1.0 AND Artistic-1.0-Perl) AND BSD-2-Clause AND BSD-2-Clause-Views AND BSD-3-Clause AND BSD-4-Clause AND BSD-4-Clause-UC AND BSL-1.0 AND (CC-BY-2.5 AND CC-BY-3.0) AND (CC-BY-4.0 AND CC-BY-SA-3.0 AND CC-BY-SA-4.0) AND CDDL-1.0 AND CDDL-1.1 AND CPL-1.0 AND Classpath-exception-2.0 AND EPL-1.0 AND EPL-2.0 AND (FSFAP AND GPL-1.0-only) AND GPL-1.0-or-later AND GPL-2.0-only AND (GPL-2.0-only AND Classpath-exception-2.0) AND (GPL-2.0-or-later AND Classpath-exception-2.0 AND GPL-3.0-only) AND HPND AND ICU AND IJG AND ISC AND (JSON AND LGPL-2.0-only) AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LGPL-3.0-only AND LGPL-3.0-or-later AND LPPL-1.3c AND Libpng AND Autoconf-exception-generic AND Bitstream-Vera AND LicenseRef-scancode-bsd-3-clause-no-change AND LicenseRef-scancode-bsd-simplified-darwin AND LicenseRef-scancode-freemarker AND LicenseRef-scancode-ietf AND LicenseRef-scancode-ietf-trust AND LicenseRef-scancode-iptc-2006 AND (LicenseRef-scancode-iso-8879 AND LicenseRef-scancode-jetty-ccla-1.1) AND (LicenseRef-scancode-mit-nagy AND LicenseRef-scancode-mit-old-style) AND (LicenseRef-scancode-mx4j AND LicenseRef-scancode-oasis-ws-security-spec AND LicenseRef-scancode-ogc) AND LicenseRef-scancode-protobuf AND (LicenseRef-scancode-red-hat-attribution AND LicenseRef-scancode-rsa-md4) AND (snprintf AND LicenseRef-scancode-sun-sdk-spec-1.1) AND SunPro AND LicenseRef-scancode-ubuntu-font-1.0 AND LicenseRef-scancode-unicode AND LicenseRef-scancode-unicode-mappings AND LicenseRef-scancode-ws-addressing-spec AND LicenseRef-scancode-ws-trust-specification AND LicenseRef-scancode-x11-lucent AND MIT AND (MIT-open-group AND MPL-1.0) AND (MPL-1.1 AND MPL-2.0) AND MS-PL AND NCSA AND NPL-1.1 AND (NTP AND Noweb) AND (OFL-1.1 AND OLDAP-2.8) AND (OpenSSL AND Python-2.0) AND (Ruby AND Unicode-DFS-2016) AND W3C AND W3C-19980720 AND X11 AND Zlib AND bzip2-1.0.6 AND curl";
+            "CDDL-1.1 AND GPL-2.0-only AND Classpath-exception-2.0";
         const expectedExpression =
-            "AFL-2.1 AND ANTLR-PD AND APSL-1.0 AND APSL-2.0 AND Apache-1.1 AND Apache-2.0 AND (Apache-2.0 AND Artistic-1.0 AND Artistic-1.0-Perl) AND BSD-2-Clause AND BSD-2-Clause-Views AND BSD-3-Clause AND BSD-4-Clause AND BSD-4-Clause-UC AND BSL-1.0 AND (CC-BY-2.5 AND CC-BY-3.0) AND (CC-BY-4.0 AND CC-BY-SA-3.0 AND CC-BY-SA-4.0) AND CDDL-1.0 AND CDDL-1.1 AND CPL-1.0 WITH Classpath-exception-2.0 AND EPL-1.0 AND EPL-2.0 AND (FSFAP AND GPL-1.0-only) AND GPL-1.0-or-later AND GPL-2.0-only AND (GPL-2.0-only WITH Classpath-exception-2.0) AND (GPL-2.0-or-later WITH Classpath-exception-2.0 AND GPL-3.0-only) AND HPND AND ICU AND IJG AND ISC AND (JSON AND LGPL-2.0-only) AND LGPL-2.0-or-later AND LGPL-2.1-only AND LGPL-2.1-or-later AND LGPL-3.0-only AND LGPL-3.0-or-later AND LPPL-1.3c AND Libpng WITH Autoconf-exception-generic AND Bitstream-Vera AND LicenseRef-scancode-bsd-3-clause-no-change AND LicenseRef-scancode-bsd-simplified-darwin AND LicenseRef-scancode-freemarker AND LicenseRef-scancode-ietf AND LicenseRef-scancode-ietf-trust AND LicenseRef-scancode-iptc-2006 AND (LicenseRef-scancode-iso-8879 AND LicenseRef-scancode-jetty-ccla-1.1) AND (LicenseRef-scancode-mit-nagy AND LicenseRef-scancode-mit-old-style) AND (LicenseRef-scancode-mx4j AND LicenseRef-scancode-oasis-ws-security-spec AND LicenseRef-scancode-ogc) AND LicenseRef-scancode-protobuf AND (LicenseRef-scancode-red-hat-attribution AND LicenseRef-scancode-rsa-md4) AND (snprintf AND LicenseRef-scancode-sun-sdk-spec-1.1) AND SunPro AND LicenseRef-scancode-ubuntu-font-1.0 AND LicenseRef-scancode-unicode AND LicenseRef-scancode-unicode-mappings AND LicenseRef-scancode-ws-addressing-spec AND LicenseRef-scancode-ws-trust-specification AND LicenseRef-scancode-x11-lucent AND MIT AND (MIT-open-group AND MPL-1.0) AND (MPL-1.1 AND MPL-2.0) AND MS-PL AND NCSA AND NPL-1.1 AND (NTP AND Noweb) AND (OFL-1.1 AND OLDAP-2.8) AND (OpenSSL AND Python-2.0) AND (Ruby AND Unicode-DFS-2016) AND W3C AND W3C-19980720 AND X11 AND Zlib AND bzip2-1.0.6 AND curl";
+            "CDDL-1.1 AND GPL-2.0-only WITH Classpath-exception-2.0";
 
         const result = replaceANDExceptionWithWITHException(expression);
+        assert.strictEqual(result, expectedExpression);
+    });
 
+    it("should not replace AND <exception> with WITH <exception> if exception starts with LicenseRef", function () {
+        const expression =
+            "GPL-2.0-or-later AND LicenseRef-scancode-generic-exception";
+
+        const result = replaceANDExceptionWithWITHException(expression);
+        assert.strictEqual(result, expression);
+    });
+
+    it("should replace `) AND <exception>` with `) AND LicenseRef-doubleopen-<exception>`", function () {
+        const expression =
+            "BSD-3-Clause AND (GPL-3.0-only AND GCC-exception-3.1 AND GPL-3.0-or-later AND GCC-exception-3.1) AND GCC-exception-3.1";
+        const expectedExpression =
+            "BSD-3-Clause AND (GPL-3.0-only WITH GCC-exception-3.1 AND GPL-3.0-or-later WITH GCC-exception-3.1) AND LicenseRef-doubleopen-GCC-exception-3.1";
+
+        const result = replaceANDExceptionWithWITHException(expression);
         assert.strictEqual(result, expectedExpression);
     });
 }
