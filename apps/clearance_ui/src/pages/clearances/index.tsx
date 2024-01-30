@@ -4,6 +4,7 @@
 
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,10 @@ import PathExclusionList from "@/components/path_exclusion_table/PathExclusionLi
 
 export default function ClearanceLibrary() {
     const router = useRouter();
+    const [tab, setTab] = useQueryState(
+        "tab",
+        parseAsString.withDefault("license_conclusions"),
+    );
     const {
         data: user,
         error,
@@ -57,7 +62,16 @@ export default function ClearanceLibrary() {
                     </div>
 
                     <div className="mx-1 flex-1 overflow-auto rounded-lg border shadow">
-                        <Tabs defaultValue="license_conclusions">
+                        <Tabs
+                            defaultValue={tab}
+                            onValueChange={(value) => {
+                                setTab(value);
+                                router.push({
+                                    pathname: router.pathname,
+                                    query: { tab: value },
+                                });
+                            }}
+                        >
                             <TabsList className="ml-8 mt-2 p-2">
                                 <TabsTrigger
                                     value="license_conclusions"
@@ -66,7 +80,7 @@ export default function ClearanceLibrary() {
                                     License Conclusions
                                 </TabsTrigger>
                                 <TabsTrigger
-                                    value="bulk_curations"
+                                    value="bulk_conclusions"
                                     data-testid="clearance-lib-bulk-conclusions"
                                 >
                                     Bulk Conclusions
@@ -82,7 +96,7 @@ export default function ClearanceLibrary() {
                             <TabsContent value="license_conclusions">
                                 {user && <LicenseConclusionList user={user} />}
                             </TabsContent>
-                            <TabsContent value="bulk_curations">
+                            <TabsContent value="bulk_conclusions">
                                 {user && <BulkConclusionList user={user} />}
                             </TabsContent>
                             <TabsContent value="path_exclusions">
