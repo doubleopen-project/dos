@@ -229,7 +229,8 @@ async function main() {
         const licenseFinding = await prisma.licenseFinding.findFirst({
             where: {
                 fileSha256: obj.fileSha256,
-                licenseExpressionSPDX: obj.licenseExpressionSPDX,
+                unprocessedLicenseExpressionSPDX:
+                    obj.unprocessedLicenseExpressionSPDX,
                 scanner: obj.scanner,
                 scannerConfig: obj.scannerConfig,
             },
@@ -239,7 +240,8 @@ async function main() {
             await prisma.licenseFinding.create({
                 data: {
                     fileSha256: obj.fileSha256,
-                    licenseExpressionSPDX: obj.licenseExpressionSPDX,
+                    unprocessedLicenseExpressionSPDX:
+                        obj.unprocessedLicenseExpressionSPDX,
                     scanner: obj.scanner,
                     scannerConfig: obj.scannerConfig,
                 },

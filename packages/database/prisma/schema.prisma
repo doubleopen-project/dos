@@ -80,7 +80,7 @@ model LicenseFinding {
   id                    Int      @id @default(autoincrement())
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  licenseExpressionSPDX String
+  unprocessedLicenseExpressionSPDX String
   scanner               String
   scannerConfig         String
 
