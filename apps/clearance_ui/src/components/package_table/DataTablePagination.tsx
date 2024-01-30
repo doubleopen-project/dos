@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useEffect } from "react";
 import { Table } from "@tanstack/react-table";
 import {
     ChevronLeftIcon,
@@ -9,6 +10,7 @@ import {
     ChevronsLeftIcon,
     ChevronsRightIcon,
 } from "lucide-react";
+import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -25,6 +27,15 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
     table,
 }: DataTablePaginationProps<TData>) {
+    const [pageSize, setPageSize] = useQueryState(
+        "pageSize",
+        parseAsInteger.withDefault(10),
+    );
+
+    useEffect(() => {
+        table.setPageSize(pageSize);
+    }, [pageSize]);
+
     return (
         <div className="flex items-center justify-between px-2">
             <div className="flex items-center space-x-6 lg:space-x-8">
@@ -34,6 +45,7 @@ export function DataTablePagination<TData>({
                         value={`${table.getState().pagination.pageSize}`}
                         onValueChange={(value) => {
                             table.setPageSize(Number(value));
+                            setPageSize(Number(value));
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
@@ -44,12 +56,9 @@ export function DataTablePagination<TData>({
                             />
                         </SelectTrigger>
                         <SelectContent side="top">
-                            {[10, 20, 30, 40, 50].map((pageSize) => (
-                                <SelectItem
-                                    key={pageSize}
-                                    value={`${pageSize}`}
-                                >
-                                    {pageSize}
+                            {[10, 20, 30, 40, 50].map((ps) => (
+                                <SelectItem key={ps} value={`${ps}`}>
+                                    {ps}
                                 </SelectItem>
                             ))}
                         </SelectContent>
