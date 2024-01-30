@@ -21,8 +21,22 @@ import {
     SystemIssue,
     User,
 } from "database";
+import { replaceANDExceptionWithWITHException } from "../helpers/license_expression_helpers";
 
-const prisma: PrismaClient = new PrismaClient();
+const prisma = new PrismaClient().$extends({
+    result: {
+        licenseFinding: {
+            licenseExpressionSPDX: {
+                needs: { unprocessedLicenseExpressionSPDX: true },
+                compute(licenseFinding): string {
+                    return replaceANDExceptionWithWITHException(
+                        licenseFinding.unprocessedLicenseExpressionSPDX,
+                    );
+                },
+            },
+        },
+    },
+});
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
 const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -167,7 +181,7 @@ export const createFileTree = async (
 };
 
 export const createLicenseFinding = async (input: {
-    licenseExpressionSPDX: string;
+    unprocessedLicenseExpressionSPDX: string;
     scanner: string;
     scannerConfig: string;
     fileSha256: string;
@@ -1177,30 +1191,22 @@ export const findFileTreeByHashAndPackageId = async (
     return fileTree;
 };
 
-export type FileTreeWithRelations = Prisma.FileTreeGetPayload<{
-    select: {
-        path: true;
-        packageId: true;
-        fileSha256: true;
-        file: {
-            select: {
-                licenseFindings: {
-                    select: {
-                        licenseExpressionSPDX: true;
-                    };
-                };
-                licenseConclusions: {
-                    select: {
-                        id: true;
-                        concludedLicenseExpressionSPDX: true;
-                        contextPurl: true;
-                        local: true;
-                    };
-                };
-            };
-        };
+export type FileTreeWithRelations = {
+    path: string;
+    packageId: number;
+    fileSha256: string;
+    file: {
+        licenseFindings: {
+            licenseExpressionSPDX: string;
+        }[];
+        licenseConclusions: {
+            id: number;
+            concludedLicenseExpressionSPDX: string;
+            contextPurl: string;
+            local: boolean;
+        }[];
     };
-}>;
+};
 
 export const findFileTreesByPackagePurl = async (
     purl: string,
@@ -2170,36 +2176,28 @@ export const findFileSha256 = async (
     return fileSha256;
 };
 
-export type FileWithRelations = Prisma.FileGetPayload<{
-    select: {
-        licenseFindings: {
-            select: {
-                id: true;
-                updatedAt: true;
-                licenseExpressionSPDX: true;
-                licenseFindingMatches: {
-                    select: {
-                        id: true;
-                        updatedAt: true;
-                        licenseExpression: true;
-                        startLine: true;
-                        endLine: true;
-                        score: true;
-                    };
-                };
-            };
-        };
-        copyrightFindings: {
-            select: {
-                id: true;
-                updatedAt: true;
-                copyright: true;
-                startLine: true;
-                endLine: true;
-            };
-        };
-    };
-}>;
+export type FileWithRelations = {
+    licenseFindings: {
+        id: number;
+        updatedAt: Date;
+        licenseExpressionSPDX: string;
+        licenseFindingMatches: {
+            id: number;
+            updatedAt: Date;
+            licenseExpression: string;
+            startLine: number;
+            endLine: number;
+            score: number;
+        }[];
+    }[];
+    copyrightFindings: {
+        id: number;
+        updatedAt: Date;
+        copyright: string;
+        startLine: number;
+        endLine: number;
+    }[];
+};
 
 export const findFileData = async (
     sha256: string,
@@ -2255,11 +2253,23 @@ export const findFileData = async (
     return file;
 };
 
-type LicenseFindingWithRelations = Prisma.LicenseFindingGetPayload<{
-    include: {
-        licenseFindingMatches: true;
-    };
-}>;
+type LicenseFindingWithRelations = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    scanner: string;
+    scannerConfig: string;
+    licenseExpressionSPDX: string;
+    licenseFindingMatches: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        startLine: number;
+        endLine: number;
+        score: number;
+        licenseExpression: string;
+    }[];
+};
 
 export const findLicenseFindingsByFileSha256 = async (
     sha256: string,
