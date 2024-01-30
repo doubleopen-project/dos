@@ -11,6 +11,7 @@ import {
     ChevronsRightIcon,
 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "next-usequerystate";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -27,6 +28,7 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
     table,
 }: DataTablePaginationProps<TData>) {
+    const router = useRouter();
     const [pageSize, setPageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -46,6 +48,11 @@ export function DataTablePagination<TData>({
                         onValueChange={(value) => {
                             table.setPageSize(Number(value));
                             setPageSize(Number(value));
+                            router.push({
+                                query: {
+                                    pageSize: Number(value),
+                                },
+                            });
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
