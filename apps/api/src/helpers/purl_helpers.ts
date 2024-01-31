@@ -4,15 +4,6 @@
 
 import { PackageURL } from "packageurl-js";
 
-const isUrl = (str: string) => {
-    try {
-        new URL(str);
-        return true;
-    } catch (err) {
-        return false;
-    }
-};
-
 export const parsePurl = (purl: string) => {
     const parsedPurl = PackageURL.fromString(purl);
 
@@ -20,16 +11,10 @@ export const parsePurl = (purl: string) => {
 
     if (parsedPurl.qualifiers) {
         for (const [key, value] of Object.entries(parsedPurl.qualifiers)) {
-            let valueToSet = value;
-
-            if (isUrl(value)) {
-                valueToSet = encodeURIComponent(value);
-            }
-
             if (qualifiers) {
-                qualifiers += "&" + key + "=" + valueToSet;
+                qualifiers += "&" + key + "=" + encodeURIComponent(value);
             } else {
-                qualifiers = key + "=" + valueToSet;
+                qualifiers = key + "=" + encodeURIComponent(value);
             }
         }
     }
