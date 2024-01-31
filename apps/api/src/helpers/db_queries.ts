@@ -21,7 +21,7 @@ import {
     SystemIssue,
     User,
 } from "database";
-import { replaceANDExceptionWithWITHException } from "../helpers/license_expression_helpers";
+import { replaceANDExceptionWithANDPrefixException } from "../helpers/license_expression_helpers";
 
 const prisma = new PrismaClient().$extends({
     result: {
@@ -29,7 +29,7 @@ const prisma = new PrismaClient().$extends({
             licenseExpressionSPDX: {
                 needs: { unprocessedLicenseExpressionSPDX: true },
                 compute(licenseFinding): string {
-                    return replaceANDExceptionWithWITHException(
+                    return replaceANDExceptionWithANDPrefixException(
                         licenseFinding.unprocessedLicenseExpressionSPDX,
                     );
                 },
