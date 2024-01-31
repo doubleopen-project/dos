@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { assert } from "chai";
-import { replaceANDExceptionWithWITHException } from "../../src/helpers/license_expression_helpers";
+import { replaceANDExceptionWithANDPrefixException } from "../../src/helpers/license_expression_helpers";
 import { parsePurl } from "../../src/helpers/purl_helpers";
 
 export default function suite(): void {
@@ -51,21 +51,21 @@ export default function suite(): void {
         assert.strictEqual(parsedPurl.subpath, null);
     });
 
-    it("should replace AND <exception> with WITH <exception>", function () {
+    it("should replace AND <exception> with AND LicenseRef-doubleopen-<exception>", function () {
         const expression =
             "CDDL-1.1 AND GPL-2.0-only AND Classpath-exception-2.0";
         const expectedExpression =
-            "CDDL-1.1 AND GPL-2.0-only WITH Classpath-exception-2.0";
+            "CDDL-1.1 AND GPL-2.0-only AND LicenseRef-doubleopen-Classpath-exception-2.0";
 
-        const result = replaceANDExceptionWithWITHException(expression);
+        const result = replaceANDExceptionWithANDPrefixException(expression);
         assert.strictEqual(result, expectedExpression);
     });
 
-    it("should not replace AND <exception> with WITH <exception> if exception starts with LicenseRef", function () {
+    it("should not replace AND <exception> with AND LicenseRef-doubleopen-<exception> if exception starts with LicenseRef", function () {
         const expression =
             "GPL-2.0-or-later AND LicenseRef-scancode-generic-exception";
 
-        const result = replaceANDExceptionWithWITHException(expression);
+        const result = replaceANDExceptionWithANDPrefixException(expression);
         assert.strictEqual(result, expression);
     });
 
@@ -73,9 +73,9 @@ export default function suite(): void {
         const expression =
             "BSD-3-Clause AND (GPL-3.0-only AND GCC-exception-3.1 AND GPL-3.0-or-later AND GCC-exception-3.1) AND GCC-exception-3.1";
         const expectedExpression =
-            "BSD-3-Clause AND (GPL-3.0-only WITH GCC-exception-3.1 AND GPL-3.0-or-later WITH GCC-exception-3.1) AND LicenseRef-doubleopen-GCC-exception-3.1";
+            "BSD-3-Clause AND (GPL-3.0-only AND LicenseRef-doubleopen-GCC-exception-3.1 AND GPL-3.0-or-later AND LicenseRef-doubleopen-GCC-exception-3.1) AND LicenseRef-doubleopen-GCC-exception-3.1";
 
-        const result = replaceANDExceptionWithWITHException(expression);
+        const result = replaceANDExceptionWithANDPrefixException(expression);
         assert.strictEqual(result, expectedExpression);
     });
 }
