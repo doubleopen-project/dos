@@ -10,5 +10,5 @@ describe("Running API tests", function () {
 });
 
 describe("Running API helpers tests", function () {
-    describe("Testing PURL helpers", helpersTestSuite.bind(this));
+    describe("Testing helpers", helpersTestSuite.bind(this));
 });
