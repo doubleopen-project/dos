@@ -269,7 +269,29 @@ scannerRouter.post("/scan-results", authenticateORTToken, async (req, res) => {
         }
     } catch (error) {
         console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof CustomError) {
+            res.status(error.statusCode).json({ message: error.message });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+
+            if (err.message === "Internal server error") {
+                try {
+                    await dbQueries.createSystemIssue({
+                        message: "Error in post /scan-results",
+                        severity: "MODERATE",
+                        errorCode: "UNKNOWN_ERROR",
+                        errorType: "ScannerRouterError",
+                        info: JSON.stringify({
+                            requestBody: req.body,
+                            error: error,
+                        }),
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 
@@ -596,6 +618,24 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
             res.status(error.statusCode).json({ message: error.message });
         } else {
             const err = await getErrorCodeAndMessage(error);
+
+            if (err.message === "Internal server error") {
+                try {
+                    await dbQueries.createSystemIssue({
+                        message: "Error in post /job",
+                        severity: "MODERATE",
+                        errorCode: "UNKNOWN_ERROR",
+                        errorType: "ScannerRouterError",
+                        info: JSON.stringify({
+                            requestBody: req.body,
+                            error: error,
+                        }),
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
             res.status(err.statusCode).json({ message: err.message });
         }
     }
