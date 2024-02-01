@@ -8,8 +8,5 @@ export const replaceANDExceptionWithANDPrefixException = (
     // Regular expression to match "AND <exception>" but not if exception starts with "LicenseRef"
     const regex = /AND\s+(?!LicenseRef)([\w-]*exception[\w-]*)/gi;
 
-    return expression.replace(
-        regex,
-        (match, p1) => `AND LicenseRef-doubleopen-${p1}`,
-    );
+    return expression.replace(regex, (match, p1) => `AND LicenseRef-dos-${p1}`);
 };
