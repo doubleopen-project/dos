@@ -42,7 +42,7 @@
         "dev:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "dev:cui": "turbo run dev --no-cache --continue --no-daemon --filter=clearance_ui",
         "dev:scanner_agent": "turbo run dev --no-cache --continue --no-daemon --filter=scanner-agent",
-        "dev:prod": "turbo run dev:prod --no-cache --continue --no-daemon --concurrency=12",
+        "dev:prod": "turbo run dev:prod --no-cache --continue --no-daemon --concurrency=13",
         "lint": "turbo run lint",
         "lint:api": "turbo run lint --filter=api",
         "lint:cui": "turbo run lint --filter=clearance_ui",
