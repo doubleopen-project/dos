@@ -319,6 +319,7 @@ export const userAPI = makeApi([
         method: "get",
         path: "/packages",
         description: "Get packages",
+        alias: "GetPackages",
         response: schemas.GetPackagesRes,
         errors,
     },
