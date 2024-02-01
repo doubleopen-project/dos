@@ -37,6 +37,17 @@ export default function PackageLibrary() {
         }
     }
 
+    const {
+        data: pkgCntData,
+        isLoading: pkgCntLoading,
+        error: pkgCntError,
+    } = userHooks.useGetPackagesCount(
+        {
+            withCredentials: true,
+        },
+        { enabled: !!user },
+    );
+
     const { data, isLoading, error } = userHooks.useGet(
         "/packages",
         {
@@ -58,14 +69,19 @@ export default function PackageLibrary() {
                             <CardContent>
                                 <p>
                                     <span>Packages in the library: </span>
-                                    {isLoading && (
+                                    {pkgCntLoading && (
                                         <span>
                                             <Loader2 className="mr-2 inline-block h-4 w-4 animate-spin" />
                                         </span>
                                     )}
-                                    {packages && (
+                                    {pkgCntError && (
+                                        <span className="bg-destructive text-bold rounded-md p-1">
+                                            {pkgCntError.message}
+                                        </span>
+                                    )}
+                                    {pkgCntData && (
                                         <span className="text-xl">
-                                            {packages.length}
+                                            {pkgCntData.count}
                                         </span>
                                     )}
                                 </p>
