@@ -203,7 +203,9 @@ const ConclusionDB = ({
                                                 <span className="mr-1 font-bold">
                                                     Context PURL:
                                                 </span>
-                                                {d.contextPurl}
+                                                <div className="break-all">
+                                                    {d.contextPurl}
+                                                </div>
                                             </div>
 
                                             {/* Comment */}
