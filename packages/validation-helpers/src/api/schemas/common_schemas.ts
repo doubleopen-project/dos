@@ -83,7 +83,7 @@ export const purlSchema = (required: boolean) => {
         );
 };
 
-//------------------ General path params -------------------
+//------------------ Common path params -------------------
 
 export const PathParamIdInteger = z.number({
     required_error: "Id is required",
@@ -105,7 +105,9 @@ export const PathParamPurl = z.string({
 //------------------ Common query params -------------------
 
 export const QueryParamFilterValue = z.string().optional();
-
+export const QueryParamPageSize = z.number().optional();
+export const QueryParamPageIndex = z.number().optional();
+export const QueryParamSortOrder = z.enum(["asc", "desc"]).optional();
 export const QueryParamFilterDate = z.coerce.date().optional();
 
 //------------------ Common response body -------------------

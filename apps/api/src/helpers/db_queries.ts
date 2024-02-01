@@ -2081,58 +2081,78 @@ export const findAllScannedPackages = async (
     return packages;
 };
 
-type findScannedPackagesOutput = Prisma.PackageGetPayload<{
-    select: {
-        purl: true;
-        updatedAt: true;
-        name: true;
-        version: true;
-        type: true;
-        namespace: true;
-        qualifiers: true;
-        subpath: true;
-    };
-}>[];
+export const findScannedPackages = async (
+    skip: number | undefined,
+    take: number | undefined,
+    orderProperty:
+        | "purl"
+        | "name"
+        | "version"
+        | "type"
+        | "namespace"
+        | "createdAt"
+        | "updatedAt",
+    orderPropertyValue: "asc" | "desc" | undefined,
+    name: string | undefined,
+    version: string | undefined,
+    type: string | undefined,
+    namespace: string | undefined,
+    purl: string | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<Package[]> => {
+    let scannedPackages: Package[] = [];
+    let retries = initialRetryCount;
+    let querySuccess = false;
 
-export const findScannedPackages =
-    async (): Promise<findScannedPackagesOutput> => {
-        let scannedPackages: findScannedPackagesOutput = [];
-        let retries = initialRetryCount;
-        let querySuccess = false;
-
-        while (!querySuccess && retries > 0) {
-            try {
-                scannedPackages = await prisma.package.findMany({
-                    where: {
-                        scanStatus: "scanned",
+    while (!querySuccess && retries > 0) {
+        try {
+            scannedPackages = await prisma.package.findMany({
+                skip: skip,
+                take: take,
+                where: {
+                    scanStatus: "scanned",
+                    name: {
+                        contains: name,
                     },
-                    select: {
-                        purl: true,
-                        updatedAt: true,
-                        name: true,
-                        version: true,
-                        type: true,
-                        namespace: true,
-                        qualifiers: true,
-                        subpath: true,
+                    version: {
+                        contains: version,
                     },
-                    orderBy: {
-                        purl: "asc",
+                    type: {
+                        contains: type,
                     },
-                });
-                querySuccess = true;
-            } catch (error) {
-                console.log(
-                    "Error with trying to find ScannedPackages: " + error,
-                );
-                handleError(error);
-                retries--;
-                if (retries > 0) await waitToRetry();
-                else throw error;
-            }
+                    namespace: {
+                        contains: namespace,
+                    },
+                    purl: {
+                        contains: purl,
+                    },
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+                orderBy: {
+                    [orderProperty]: orderPropertyValue,
+                },
+            });
+            querySuccess = true;
+        } catch (error) {
+            console.log("Error with trying to find ScannedPackages: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
         }
-        return scannedPackages;
-    };
+    }
+    return scannedPackages;
+};
 
 export const findFileSha256 = async (
     purl: string,
