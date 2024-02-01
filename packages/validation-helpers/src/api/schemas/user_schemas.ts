@@ -405,6 +405,18 @@ export const PostFileTreeRes = z.object({
 export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
 
 //------------------ GET packages -------------------
+export const QueryParamSortPkgBy = z
+    .enum([
+        "purl",
+        "name",
+        "version",
+        "type",
+        "namespace",
+        "createdAt",
+        "updatedAt",
+    ])
+    .optional();
+
 export const GetPackagesRes = z.object({
     packages: z.array(
         z.object({
@@ -418,6 +430,15 @@ export const GetPackagesRes = z.object({
             subpath: z.nullable(z.string()),
         }),
     ),
+});
+
+//------------------ GET packages count -------------------
+export const QueryParamFilterPkgBy = z
+    .enum(["name", "namespace", "type", "purl"])
+    .optional();
+
+export const GetPackagesCountRes = z.object({
+    count: z.number(),
 });
 
 //------------------ PUT token -------------------

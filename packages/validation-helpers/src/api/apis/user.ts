@@ -320,6 +320,73 @@ export const userAPI = makeApi([
         path: "/packages",
         description: "Get packages",
         alias: "GetPackages",
+        parameters: [
+            {
+                name: "pageSize",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageSize,
+            },
+            {
+                name: "pageIndex",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageIndex,
+            },
+            {
+                name: "sortBy",
+                type: "Query",
+                schema: schemas.QueryParamSortPkgBy,
+            },
+            {
+                name: "sortOrder",
+                type: "Query",
+                schema: commonSchemas.QueryParamSortOrder,
+            },
+            {
+                name: "name",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "namespace",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "version",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "type",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "createdAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "createdAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+        ],
         response: schemas.GetPackagesRes,
         errors,
     },

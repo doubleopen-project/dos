@@ -7860,6 +7860,85 @@ declare const userAPI: [
         path: "/packages";
         description: "Get packages";
         alias: "GetPackages";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "purl",
+                            "name",
+                            "version",
+                            "type",
+                            "namespace",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 packages: zod.ZodArray<
@@ -13868,6 +13947,85 @@ declare const dosAPI: [
         path: "/user/packages";
         description: "Get packages";
         alias: "GetPackages";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "purl",
+                            "name",
+                            "version",
+                            "type",
+                            "namespace",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 packages: zod.ZodArray<
