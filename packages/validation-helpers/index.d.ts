@@ -7859,6 +7859,7 @@ declare const userAPI: [
         method: "get";
         path: "/packages";
         description: "Get packages";
+        alias: "GetPackages";
         response: zod.ZodObject<
             {
                 packages: zod.ZodArray<
@@ -13866,6 +13867,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/packages";
         description: "Get packages";
+        alias: "GetPackages";
         response: zod.ZodObject<
             {
                 packages: zod.ZodArray<

@@ -48,15 +48,6 @@ export default function PackageLibrary() {
         { enabled: !!user },
     );
 
-    const { data, isLoading, error } = userHooks.useGet(
-        "/packages",
-        {
-            withCredentials: true,
-        },
-        { enabled: !!user },
-    );
-    const packages = data?.packages;
-
     return (
         <div className="flex h-full flex-col p-2">
             {user && (
@@ -98,17 +89,7 @@ export default function PackageLibrary() {
                         </Card>
                     </div>
                     <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow">
-                        {isLoading && (
-                            <div className="flex h-full items-center justify-center">
-                                <Loader2 className="mr-2 h-32 w-32 animate-spin" />
-                            </div>
-                        )}
-                        {error && (
-                            <div className="flex h-full items-center justify-center">
-                                <p>{error.message}</p>
-                            </div>
-                        )}
-                        {packages && <PackageList data={{ packages }} />}
+                        <PackageList />
                     </div>
                 </>
             )}
