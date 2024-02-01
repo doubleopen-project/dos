@@ -3640,3 +3640,60 @@ export const bulkConclusionAffectedRecords = async (
         affectedTotalFileTreesCount: affectedTotalFileTreesCount,
     };
 };
+
+export const countScannedPackages = async (
+    name: string | undefined,
+    version: string | undefined,
+    type: string | undefined,
+    namespace: string | undefined,
+    purl: string | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<number> => {
+    let retries = initialRetryCount;
+    let count = 0;
+
+    while (retries > 0) {
+        try {
+            count = await prisma.package.count({
+                where: {
+                    scanStatus: "scanned",
+                    name: {
+                        contains: name,
+                    },
+                    version: {
+                        contains: version,
+                    },
+                    type: {
+                        contains: type,
+                    },
+                    namespace: {
+                        contains: namespace,
+                    },
+                    purl: {
+                        contains: purl,
+                    },
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to count Packages: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return count;
+};
