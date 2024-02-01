@@ -4,12 +4,7 @@
 
 import { makeApi } from "@zodios/core";
 import { errors } from "../errors";
-import {
-    PathParamIdInteger,
-    PathParamPurl,
-    PathParamSha256,
-    PathParamString,
-} from "../schemas/common_schemas";
+import * as commonSchemas from "../schemas/common_schemas";
 import * as schemas from "../schemas/user_schemas";
 
 export const userAPI = makeApi([
@@ -61,12 +56,12 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamString("purl"),
+                schema: commonSchemas.PathParamString("purl"),
             },
             {
                 name: "sha256",
                 type: "Path",
-                schema: PathParamString("sha256"),
+                schema: commonSchemas.PathParamString("sha256"),
             },
         ],
         response: schemas.GetLicenseConclusionsForFileRes,
@@ -81,12 +76,12 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
             {
                 name: "sha256",
                 type: "Path",
-                schema: PathParamSha256,
+                schema: commonSchemas.PathParamSha256,
             },
             {
                 name: "body",
@@ -106,7 +101,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
             {
                 name: "body",
@@ -126,7 +121,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
         ],
         response: schemas.DeleteLicenseConclusionRes,
@@ -141,7 +136,7 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
         ],
         response: schemas.GetBulkConclusionsByPurlRes,
@@ -156,7 +151,7 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
             {
                 name: "body",
@@ -185,7 +180,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
         ],
         response: schemas.GetBulkConclusionRes,
@@ -201,7 +196,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
             {
                 name: "body",
@@ -221,7 +216,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
         ],
         response: schemas.DeleteBulkConclusionRes,
@@ -244,7 +239,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
             {
                 name: "body",
@@ -264,7 +259,7 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
             {
                 name: "body",
@@ -284,7 +279,7 @@ export const userAPI = makeApi([
             {
                 name: "id",
                 type: "Path",
-                schema: PathParamIdInteger,
+                schema: commonSchemas.PathParamIdInteger,
             },
         ],
         response: schemas.DeletePathExclusionRes,
@@ -299,7 +294,7 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
         ],
         response: schemas.PostPathExclusionsRes,
@@ -314,7 +309,7 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
         ],
         response: schemas.PostFileTreeRes,
@@ -329,6 +324,61 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/packages/count",
+        description: "Get packages count",
+        alias: "GetPackagesCount",
+        parameters: [
+            {
+                name: "name",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "namespace",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "version",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "type",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "createdAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "createdAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+        ],
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/packages/:purl/filetrees/:path/files",
         alias: "GetFile",
         description:
@@ -337,12 +387,12 @@ export const userAPI = makeApi([
             {
                 name: "purl",
                 type: "Path",
-                schema: PathParamPurl,
+                schema: commonSchemas.PathParamPurl,
             },
             {
                 name: "path",
                 type: "Path",
-                schema: PathParamString("Path"),
+                schema: commonSchemas.PathParamString("Path"),
             },
         ],
         response: schemas.GetFileRes,
@@ -357,7 +407,7 @@ export const userAPI = makeApi([
             {
                 name: "sha256",
                 type: "Path",
-                schema: PathParamSha256,
+                schema: commonSchemas.PathParamSha256,
             },
         ],
         response: schemas.GetLicenseFindingsForFileRes,

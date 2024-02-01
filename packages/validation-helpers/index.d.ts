@@ -8019,6 +8019,162 @@ declare const userAPI: [
     },
     {
         method: "get";
+        path: "/packages/count";
+        description: "Get packages count";
+        alias: "GetPackagesCount";
+        parameters: [
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
         path: "/packages/:purl/filetrees/:path/files";
         alias: "GetFile";
         description: "Get file sha256 and S3 download url for file in path in package";
@@ -13775,6 +13931,162 @@ declare const dosAPI: [
                     qualifiers: string | null;
                     subpath: string | null;
                 }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/packages/count";
+        description: "Get packages count";
+        alias: "GetPackagesCount";
+        parameters: [
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
             }
         >;
         errors: [

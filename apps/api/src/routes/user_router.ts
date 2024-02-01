@@ -1160,6 +1160,29 @@ userRouter.get("/packages", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/count", async (req, res) => {
+    try {
+        console.log(req.query);
+        const count = await dbQueries.countScannedPackages(
+            req.query.name,
+            req.query.version,
+            req.query.type,
+            req.query.namespace,
+            req.query.purl,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+        res.status(200).json({ count: count });
+    } catch (error) {
+        console.log("Error: ", error);
+        // Find out if error is a Prisma error or an unknown error
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
 userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     try {
         const purl = req.params.purl;

@@ -101,3 +101,15 @@ export const PathParamSha256 = z.string({
 export const PathParamPurl = z.string({
     required_error: "Purl is required",
 });
+
+//------------------ Common query params -------------------
+
+export const QueryParamFilterValue = z.string().optional();
+
+export const QueryParamFilterDate = z.coerce.date().optional();
+
+//------------------ Common response body -------------------
+
+export const GetCountRes = z.object({
+    count: z.number(),
+});
