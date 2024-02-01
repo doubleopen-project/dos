@@ -172,6 +172,9 @@ export const columns = (user: User): ColumnDef<BulkConclusion>[] => {
                     </Button>
                 );
             },
+            cell: ({ row }) => (
+                <div className="break-all">{row.original.pattern}</div>
+            ),
         },
         {
             accessorKey: "licenseExpressionSPDX",
