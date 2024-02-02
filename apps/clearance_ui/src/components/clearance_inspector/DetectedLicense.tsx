@@ -5,6 +5,7 @@
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
+import CopyToClipboard from "@/components/CopyToClipboard";
 
 type DetectedLicenseProps = {
     fileSha256: string;
@@ -42,6 +43,11 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                                                 .split("T")[0]
                                         }
                                         : {license.licenseExpressionSPDX}
+                                        <CopyToClipboard
+                                            copyText={
+                                                license.licenseExpressionSPDX
+                                            }
+                                        />
                                         <br />
                                     </>
                                 </span>
