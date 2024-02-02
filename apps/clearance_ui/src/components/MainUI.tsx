@@ -31,7 +31,7 @@ const MainUI = ({
 
     return (
         <div className="flex h-full flex-col">
-            <ClearanceToolbar />
+            <ClearanceToolbar tab="inspect" />
             <ResizablePanelGroup
                 direction="horizontal"
                 className="border"
