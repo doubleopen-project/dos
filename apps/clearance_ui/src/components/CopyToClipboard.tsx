@@ -48,7 +48,7 @@ const CopyToClipboard = ({ copyText }: Props) => {
         <TooltipProvider delayDuration={0}>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={handleCopyClick}>
+                    <Button variant="ghost" size="xs" onClick={handleCopyClick}>
                         <div className="fg-slate-300">
                             {isCopied ? (
                                 <LuCheck color="gray" />
