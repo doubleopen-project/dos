@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
     useReactTable,
 } from "@tanstack/react-table";
+import debounce from "lodash.debounce";
 import {
     parseAsInteger,
     parseAsString,
@@ -46,6 +47,11 @@ export function DataTable<TData, TValue>({
     );
     const [inputValue, setInputValue] = useState<string>(name || "");
 
+    const debounceSetFilterValue = useMemo(
+        () => debounce(setName, 300),
+        [setName],
+    );
+
     const table = useReactTable({
         data,
         columns,
@@ -64,9 +70,9 @@ export function DataTable<TData, TValue>({
                     onChange={(event) => {
                         setInputValue(event.target.value);
                         if (event.target.value === "") {
-                            setName(null);
+                            debounceSetFilterValue(null);
                         } else {
-                            setName(event.target.value);
+                            debounceSetFilterValue(event.target.value);
                         }
                         setPageIndex(1);
                     }}
