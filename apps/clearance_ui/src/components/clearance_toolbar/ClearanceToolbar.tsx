@@ -5,10 +5,18 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const ClearanceToolbar = () => {
+type Props = {
+    tab:
+        | "inspect"
+        | "license_conclusions"
+        | "bulk_curations"
+        | "path_exclusions";
+};
+
+const ClearanceToolbar = ({ tab }: Props) => {
     return (
-        <Tabs defaultValue="inspect">
-            <TabsList className="mx-2 mt-2 p-2">
+        <Tabs defaultValue={tab} className="mt-2">
+            <TabsList>
                 <TabsTrigger value="inspect">Inspect</TabsTrigger>
                 <TabsTrigger value="license_conclusions">
                     License Conclusions
