@@ -11,6 +11,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import CopyToClipboard from "@/components/CopyToClipboard";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 type Props = {
@@ -29,30 +30,34 @@ const PurlDetails = ({ purl }: Props) => {
     ).toString();
 
     return (
-        <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-                <AccordionTrigger>
-                    <Badge className="break-all rounded-md px-1">
-                        {mainPurl}
-                    </Badge>
-                </AccordionTrigger>
-                <AccordionContent className="text-xs">
-                    {parsedPurl.qualifiers &&
-                        Object.entries(parsedPurl.qualifiers).map(
-                            ([key, value]) => (
-                                <p key={key}>
-                                    <b>{key}:</b> {value}
-                                </p>
-                            ),
+        <div className="flex justify-between">
+            <Accordion type="single" collapsible>
+                <AccordionItem value="item-1">
+                    <AccordionTrigger>
+                        <Badge className="break-all rounded-md px-1">
+                            {mainPurl}
+                        </Badge>
+                    </AccordionTrigger>
+
+                    <AccordionContent className="text-xs">
+                        {parsedPurl.qualifiers &&
+                            Object.entries(parsedPurl.qualifiers).map(
+                                ([key, value]) => (
+                                    <p key={key}>
+                                        <b>{key}:</b> {value}
+                                    </p>
+                                ),
+                            )}
+                        {parsedPurl.subpath && (
+                            <p>
+                                <b>Subpath:</b> {parsedPurl.subpath}
+                            </p>
                         )}
-                    {parsedPurl.subpath && (
-                        <p>
-                            <b>Subpath:</b> {parsedPurl.subpath}
-                        </p>
-                    )}
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
+            <CopyToClipboard copyText={mainPurl} />
+        </div>
     );
 };
 
