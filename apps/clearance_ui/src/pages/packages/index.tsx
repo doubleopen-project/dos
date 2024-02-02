@@ -89,7 +89,9 @@ export default function PackageLibrary() {
                         </Card>
                     </div>
                     <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow">
-                        <PackageList />
+                        {pkgCntData && (
+                            <PackageList pkgCnt={pkgCntData.count} />
+                        )}
                     </div>
                 </>
             )}

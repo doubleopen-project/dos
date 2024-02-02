@@ -10,6 +10,7 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
+import { Options } from "next-usequerystate";
 import Link from "next/link";
 import { userAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
@@ -31,25 +32,86 @@ export type Package = ZodiosResponseByPath<
     "/packages"
 >["packages"][0];
 
-export const columns = (userRole: string): ColumnDef<Package>[] => {
+export const columns = (
+    userRole: string,
+    sortBy: string | null,
+    sortOrder: string | null,
+    setSortBy: <Shallow>(
+        value:
+            | "purl"
+            | "name"
+            | "version"
+            | "updatedAt"
+            | "type"
+            | "namespace"
+            | ((
+                  old:
+                      | "purl"
+                      | "name"
+                      | "version"
+                      | "updatedAt"
+                      | "type"
+                      | "namespace"
+                      | null,
+              ) =>
+                  | "purl"
+                  | "name"
+                  | "version"
+                  | "updatedAt"
+                  | "type"
+                  | "namespace"
+                  | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setSortOrder: <Shallow>(
+        value:
+            | "asc"
+            | "desc"
+            | ((old: "asc" | "desc" | null) => "asc" | "desc" | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setPageIndex: <Shallow>(
+        value: number | ((old: number) => number | null) | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+): ColumnDef<Package>[] => {
     return [
         {
             accessorKey: "updatedAt",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "updatedAt") {
+                                setSortBy("updatedAt");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder("asc");
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Updated
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "updatedAt" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "updatedAt" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -69,21 +131,39 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
         },
         {
             accessorKey: "name",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "name") {
+                                setSortBy("name");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Package
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "name" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "name" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -113,21 +193,39 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
         },
         {
             accessorKey: "version",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "version") {
+                                setSortBy("version");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Version
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "version" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "version" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -138,19 +236,37 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
         },
         {
             accessorKey: "type",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "type") {
+                                setSortBy("type");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">Type</Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "type" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "type" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -161,21 +277,39 @@ export const columns = (userRole: string): ColumnDef<Package>[] => {
         },
         {
             accessorKey: "namespace",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "namespace") {
+                                setSortBy("namespace");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Namespace
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "namespace" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "namespace" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
