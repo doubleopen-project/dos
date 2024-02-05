@@ -18,9 +18,9 @@ const ClearanceToolbar = () => {
                 className={cn(
                     router.pathname === "/packages/[purl]" ||
                         router.pathname.includes("/tree/")
-                        ? "underline"
+                        ? "border-b-4 border-orange-600 font-semibold"
                         : "",
-                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                    "inline-block rounded-sm px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
                 )}
             >
                 Inspect
@@ -31,9 +31,9 @@ const ClearanceToolbar = () => {
                 )}/license_conclusions`}
                 className={cn(
                     router.pathname === "/packages/[purl]/license_conclusions"
-                        ? "underline"
+                        ? "border-b-4 border-orange-600 font-semibold"
                         : "",
-                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                    "inline-block rounded-sm px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
                 )}
             >
                 License
@@ -42,9 +42,9 @@ const ClearanceToolbar = () => {
                 href={`/packages/${encodeURIComponent(purl)}/bulk_conclusions`}
                 className={cn(
                     router.pathname === "/packages/[purl]/bulk_conclusions"
-                        ? "underline"
+                        ? "border-b-4 border-orange-600 font-semibold"
                         : "",
-                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                    "inline-block rounded-sm px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
                 )}
             >
                 Bulk
@@ -53,9 +53,9 @@ const ClearanceToolbar = () => {
                 href={`/packages/${encodeURIComponent(purl)}/path_exclusions`}
                 className={cn(
                     router.pathname === "/packages/[purl]/path_exclusions"
-                        ? "underline"
+                        ? "border-b-4 border-orange-600 font-semibold"
                         : "",
-                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                    "inline-block rounded-sm px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
                 )}
             >
                 Path
