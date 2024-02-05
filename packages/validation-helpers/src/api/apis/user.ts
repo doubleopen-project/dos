@@ -231,6 +231,61 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/path-exclusions/count",
+        description: "Get count of path exclusions",
+        alias: "GetPathExclusionsCount",
+        parameters: [
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "username",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "pattern",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "reason",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "comment",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "createdAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "createdAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+        ],
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
+    {
         method: "put",
         path: "/path-exclusions/:id",
         description: "Edit a path exclusion",

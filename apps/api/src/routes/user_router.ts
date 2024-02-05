@@ -917,6 +917,29 @@ userRouter.get("/path-exclusions", async (req, res) => {
     }
 });
 
+userRouter.get("/path-exclusions/count", async (req, res) => {
+    try {
+        const pathExclusionsCount = await dbQueries.countPathExclusions(
+            req.query.purl,
+            req.query.username,
+            req.query.pattern,
+            req.query.reason,
+            req.query.comment,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({
+            count: pathExclusionsCount,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     try {
         const { user } = req;

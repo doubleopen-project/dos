@@ -290,6 +290,11 @@ export const GetPathExclusionsRes = z.object({
     ),
 });
 
+//------------------ GET path exclusions count -------------------
+export const QueryParamFilterPEBy = z
+    .enum(["pattern", "reason", "comment", "purl"])
+    .optional();
+
 // -------------------------------------------------
 export const validReasons = [
     "BUILD_TOOL_OF",
@@ -436,10 +441,6 @@ export const GetPackagesRes = z.object({
 export const QueryParamFilterPkgBy = z
     .enum(["name", "namespace", "type", "purl"])
     .optional();
-
-export const GetPackagesCountRes = z.object({
-    count: z.number(),
-});
 
 //------------------ PUT token -------------------
 

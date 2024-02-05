@@ -3717,3 +3717,60 @@ export const countScannedPackages = async (
 
     return count;
 };
+
+export const countPathExclusions = async (
+    purl: string | undefined,
+    username: string | undefined,
+    pattern: string | undefined,
+    reason: string | undefined,
+    comment: string | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<number> => {
+    let retries = initialRetryCount;
+    let count = 0;
+
+    while (retries > 0) {
+        try {
+            count = await prisma.pathExclusion.count({
+                where: {
+                    package: {
+                        purl: {
+                            contains: purl,
+                        },
+                    },
+                    user: {
+                        username: username,
+                    },
+                    pattern: {
+                        contains: pattern,
+                    },
+                    reason: {
+                        contains: reason,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to count PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return count;
+};
