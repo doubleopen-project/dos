@@ -6863,8 +6863,87 @@ declare const userAPI: [
     {
         method: "get";
         path: "/path-exclusions";
-        description: "Get all path exclusions";
+        description: "Get path exclusions";
         alias: "GetPathExclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "pattern",
+                            "reason",
+                            "comment",
+                            "username",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "pattern";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "reason";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 pathExclusions: zod.ZodArray<
@@ -8596,8 +8675,8 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             createdAt: Date;
+                            licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
@@ -8613,8 +8692,8 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             createdAt: Date;
+                            licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
@@ -8637,8 +8716,8 @@ declare const userAPI: [
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     createdAt: Date;
+                    licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
@@ -8656,8 +8735,8 @@ declare const userAPI: [
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     createdAt: Date;
+                    licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
@@ -13106,8 +13185,87 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/path-exclusions";
-        description: "Get all path exclusions";
+        description: "Get path exclusions";
         alias: "GetPathExclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "pattern",
+                            "reason",
+                            "comment",
+                            "username",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "pattern";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "reason";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 pathExclusions: zod.ZodArray<
@@ -14839,8 +14997,8 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             createdAt: Date;
+                            licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
@@ -14856,8 +15014,8 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             createdAt: Date;
+                            licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
@@ -14880,8 +15038,8 @@ declare const dosAPI: [
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     createdAt: Date;
+                    licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
@@ -14899,8 +15057,8 @@ declare const dosAPI: [
                 licenseFindings: {
                     id: number;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     createdAt: Date;
+                    licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {

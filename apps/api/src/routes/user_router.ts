@@ -875,8 +875,27 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
 
 userRouter.get("/path-exclusions", async (req, res) => {
     try {
-        const pathExclusionsWithRelations =
-            await dbQueries.findPathExclusions();
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+        const pathExclusionsWithRelations = await dbQueries.findPathExclusions(
+            skip,
+            pageSize,
+            // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+            req.query.sortBy || "updatedAt",
+            !req.query.sortBy && !req.query.sortOrder
+                ? "desc"
+                : req.query.sortOrder,
+            req.query.purl,
+            req.query.username,
+            req.query.pattern,
+            req.query.reason,
+            req.query.comment,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
 
         const pathExclusions = [];
         for (const pe of pathExclusionsWithRelations) {
