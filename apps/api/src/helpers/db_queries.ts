@@ -2902,9 +2902,28 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
     };
 }>;
 
-export const findPathExclusions = async (): Promise<
-    PathExclusionWithRelations[]
-> => {
+export const findPathExclusions = async (
+    skip: number | undefined,
+    take: number | undefined,
+    orderProperty:
+        | "pkg"
+        | "pattern"
+        | "reason"
+        | "comment"
+        | "username"
+        | "createdAt"
+        | "updatedAt",
+    orderPropertyValue: "asc" | "desc" | undefined,
+    purl: string | undefined,
+    username: string | undefined,
+    pattern: string | undefined,
+    reason: string | undefined,
+    comment: string | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<PathExclusionWithRelations[]> => {
     let retries = initialRetryCount;
     let pathExclusions: PathExclusionWithRelations[] = [];
 
@@ -2934,6 +2953,51 @@ export const findPathExclusions = async (): Promise<
                         },
                     },
                 },
+                skip: skip,
+                take: take,
+                where: {
+                    package: {
+                        purl: {
+                            contains: purl,
+                        },
+                    },
+                    user: {
+                        username: username,
+                    },
+                    pattern: {
+                        contains: pattern,
+                    },
+                    reason: {
+                        contains: reason,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+                orderBy:
+                    orderProperty === "pkg"
+                        ? {
+                              package: {
+                                  name: orderPropertyValue,
+                              },
+                          }
+                        : orderProperty === "username"
+                          ? {
+                                user: {
+                                    username: orderPropertyValue,
+                                },
+                            }
+                          : {
+                                [orderProperty]: orderPropertyValue,
+                            },
             });
             break;
         } catch (error) {

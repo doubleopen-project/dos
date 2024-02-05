@@ -273,6 +273,18 @@ export const GetBulkConclusionsByPurlRes = z.object({
 });
 
 //------------------ GET path exclusions -------------------
+export const QueryParamSortPEBy = z
+    .enum([
+        "pkg",
+        "pattern",
+        "reason",
+        "comment",
+        "username",
+        "createdAt",
+        "updatedAt",
+    ])
+    .optional();
+
 export const GetPathExclusionsRes = z.object({
     pathExclusions: z.array(
         z.object({
