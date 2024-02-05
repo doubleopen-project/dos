@@ -289,7 +289,7 @@ const PackageTree = ({ purl, path }: Props) => {
                                 router.push({
                                     pathname: `/packages/${encodeURIComponent(
                                         purl || "",
-                                    )}/${encodeURIComponent(
+                                    )}/tree/${encodeURIComponent(
                                         node.data.path || "",
                                     )}`,
                                     query: licenseFilter
