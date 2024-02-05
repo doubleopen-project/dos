@@ -3,37 +3,61 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { cn } from "@/lib/utils";
 
-type Props = {
-    tab:
-        | "inspect"
-        | "license_conclusions"
-        | "bulk_curations"
-        | "path_exclusions";
-};
-
-const ClearanceToolbar = ({ tab }: Props) => {
+const ClearanceToolbar = () => {
+    const router = useRouter();
+    const purl = router.query.purl as string;
+    console.log(purl);
     return (
-        <Tabs defaultValue={tab} className="mt-2">
-            <TabsList>
-                <TabsTrigger value="inspect">Inspect</TabsTrigger>
-                <TabsTrigger value="license_conclusions">
-                    License Conclusions
-                </TabsTrigger>
-                <TabsTrigger value="bulk_curations">
-                    Bulk Conclusions
-                </TabsTrigger>
-                <TabsTrigger value="path_exclusions">
-                    Path Exclusions
-                </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="inspect"></TabsContent>
-            <TabsContent value="license_conclusions"></TabsContent>
-            <TabsContent value="bulk_curations"></TabsContent>
-            <TabsContent value="path_exclusions"></TabsContent>
-        </Tabs>
+        <div>
+            <Link
+                href={`/packages/${encodeURIComponent(purl)}`}
+                className={cn(
+                    router.pathname === "/packages/[purl]" ? "underline" : "",
+                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                )}
+            >
+                Inspect
+            </Link>
+            <Link
+                href={`/packages/${encodeURIComponent(
+                    purl,
+                )}/license_conclusions`}
+                className={cn(
+                    router.pathname === "/packages/[purl]/license_conclusions"
+                        ? "underline"
+                        : "",
+                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                )}
+            >
+                License
+            </Link>
+            <Link
+                href={`/packages/${encodeURIComponent(purl)}/bulk_conclusions`}
+                className={cn(
+                    router.pathname === "/packages/[purl]/bulk_conclusions"
+                        ? "underline"
+                        : "",
+                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                )}
+            >
+                Bulk
+            </Link>
+            <Link
+                href={`/packages/${encodeURIComponent(purl)}/path_exclusions`}
+                className={cn(
+                    router.pathname === "/packages/[purl]/path_exclusions"
+                        ? "underline"
+                        : "",
+                    "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
+                )}
+            >
+                Path
+            </Link>
+        </div>
     );
 };
 
