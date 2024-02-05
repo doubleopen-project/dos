@@ -9,7 +9,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ClearanceToolbar from "@/components/clearance_toolbar/ClearanceToolbar";
+import ClearanceToolbar from "@/components/ClearanceToolbar";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
 import PackageTree from "@/components/package_inspector/PackageTree";
 import ClearanceInspector from "./clearance_inspector/ClearanceInspector";
