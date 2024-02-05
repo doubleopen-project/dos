@@ -16,7 +16,10 @@ const ClearanceToolbar = () => {
             <Link
                 href={`/packages/${encodeURIComponent(purl)}`}
                 className={cn(
-                    router.pathname === "/packages/[purl]" ? "underline" : "",
+                    router.pathname === "/packages/[purl]" ||
+                        router.pathname.includes("/tree/")
+                        ? "underline"
+                        : "",
                     "inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900",
                 )}
             >

@@ -126,7 +126,7 @@ const Node = ({
                         href={{
                             pathname: `/packages/${encodeURIComponent(
                                 purl || "",
-                            )}/${encodeURIComponent(path || "")}`,
+                            )}/tree/${encodeURIComponent(path || "")}`,
                             query: licenseFilter
                                 ? {
                                       licenseFilter: `${licenseFilter}`,
