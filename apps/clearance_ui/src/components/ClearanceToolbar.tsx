@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 const ClearanceToolbar = () => {
     const router = useRouter();
     const purl = router.query.purl as string;
-    console.log(purl);
     return (
         <div className="pl-2 pt-1">
             <Link
