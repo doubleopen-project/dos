@@ -4,6 +4,12 @@
 
 import React from "react";
 import { ZodiosResponseByPath } from "@zodios/core";
+import {
+    parseAsInteger,
+    parseAsString,
+    parseAsStringEnum,
+    useQueryState,
+} from "next-usequerystate";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/bulk_conclusion_table/columns";
@@ -14,9 +20,57 @@ type BulkConclusionListProps = {
 };
 
 const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
-    const { data, isLoading, error } = userHooks.useGetBulkConclusions({
-        withCredentials: true,
-    });
+    const [pageSize] = useQueryState(
+        "pageSize",
+        parseAsInteger.withDefault(10),
+    );
+    const [pageIndex, setPageIndex] = useQueryState(
+        "pageIndex",
+        parseAsInteger.withDefault(1),
+    );
+    const [purl] = useQueryState("purl", parseAsString);
+
+    const [sortBy, setSortBy] = useQueryState(
+        "sortBy",
+        parseAsStringEnum([
+            "pkg",
+            "pattern",
+            "detectedLicenseExpressionSPDX",
+            "concludedLicenseExpressionSPDX",
+            "comment",
+            "local",
+            "updatedAt",
+            "username",
+        ]).withDefault("updatedAt"),
+    );
+    const [sortOrder, setSortOrder] = useQueryState(
+        "sortOrder",
+        parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
+    );
+
+    const bcCntQuery = userHooks.useGetBulkConclusionsCount(
+        {
+            withCredentials: true,
+            queries: {
+                purl: purl !== null ? purl : undefined,
+            },
+        },
+        { enabled: !!user },
+    );
+
+    const { data, isLoading, error } = userHooks.useGetBulkConclusions(
+        {
+            withCredentials: true,
+            queries: {
+                pageIndex: pageIndex - 1,
+                pageSize,
+                sortBy: sortBy !== null ? sortBy : undefined,
+                sortOrder: sortOrder !== null ? sortOrder : undefined,
+                purl: purl !== null ? purl : undefined,
+            },
+        },
+        { enabled: !!user && !!pageSize && !!pageIndex },
+    );
     if (isLoading) {
         return (
             <div className="flex h-full items-center justify-center">
@@ -28,12 +82,27 @@ const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
     if (!data) return <div>No data</div>;
 
     // Get user role, to decide what rights the user has for this view
-    const tableColumns = columns(user);
+    const tableColumns = columns(
+        user,
+        sortBy,
+        sortOrder,
+        setSortBy,
+        setSortOrder,
+        setPageIndex,
+    );
 
     return (
         <div className="container mx-auto">
             {user && (
-                <DataTable columns={tableColumns} data={data.bulkConclusions} />
+                <DataTable
+                    columns={tableColumns}
+                    data={data.bulkConclusions}
+                    pageCount={
+                        bcCntQuery.data?.count
+                            ? Math.ceil(bcCntQuery.data.count / pageSize)
+                            : 0
+                    }
+                />
             )}
         </div>
     );
