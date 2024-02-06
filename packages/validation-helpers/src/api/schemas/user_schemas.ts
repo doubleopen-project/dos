@@ -143,7 +143,21 @@ export const DeleteLicenseConclusionRes = z.object({
     message: z.string(),
 });
 
-//------------------ GET all bulk conclusions -------------------
+//------------------ GET bulk conclusions -------------------
+export const QueryParamSortBCBy = z
+    .enum([
+        "pkg",
+        "username",
+        "pattern",
+        "detectedLicenseExpressionSPDX",
+        "concludedLicenseExpressionSPDX",
+        "comment",
+        "local",
+        "createdAt",
+        "updatedAt",
+    ])
+    .optional();
+
 export const GetBulkConclusionsRes = z.object({
     bulkConclusions: z.array(
         z.object({

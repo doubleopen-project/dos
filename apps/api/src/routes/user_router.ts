@@ -365,8 +365,30 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
 
 userRouter.get("/bulk-conclusions", async (req, res) => {
     try {
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
         const bulkConclusionsWithRelations =
-            await dbQueries.findBulkConclusionsWithRelations();
+            await dbQueries.findBulkConclusionsWithRelations(
+                skip,
+                pageSize,
+                // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+                req.query.sortBy || "updatedAt",
+                !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder,
+                req.query.purl,
+                req.query.username,
+                req.query.pattern,
+                req.query.detectedLicense,
+                req.query.concludedLicense,
+                req.query.comment,
+                req.query.local,
+                req.query.createdAtGte,
+                req.query.createdAtLte,
+                req.query.updatedAtGte,
+                req.query.updatedAtLte,
+            );
         const bulkConclusions = [];
 
         for (const bc of bulkConclusionsWithRelations) {

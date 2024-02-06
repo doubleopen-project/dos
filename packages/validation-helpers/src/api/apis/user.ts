@@ -165,8 +165,85 @@ export const userAPI = makeApi([
     {
         method: "get",
         path: "/bulk-conclusions",
-        description: "Get all bulk conclusions",
+        description: "Get bulk conclusions",
         alias: "GetBulkConclusions",
+        parameters: [
+            {
+                name: "pageSize",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageSize,
+            },
+            {
+                name: "pageIndex",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageIndex,
+            },
+            {
+                name: "sortBy",
+                type: "Query",
+                schema: schemas.QueryParamSortBCBy,
+            },
+            {
+                name: "sortOrder",
+                type: "Query",
+                schema: commonSchemas.QueryParamSortOrder,
+            },
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "username",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "pattern",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "detectedLicense",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "concludedLicense",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "comment",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "local",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+            },
+            {
+                name: "createdAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "createdAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+        ],
         response: schemas.GetBulkConclusionsRes,
         errors,
     },

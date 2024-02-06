@@ -2699,9 +2699,32 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
     return bulkConclusions;
 };
 
-export const findBulkConclusionsWithRelations = async (): Promise<
-    BulkConclusionWithRelations[]
-> => {
+export const findBulkConclusionsWithRelations = async (
+    skip: number | undefined,
+    take: number | undefined,
+    orderProperty:
+        | "pkg"
+        | "username"
+        | "pattern"
+        | "detectedLicenseExpressionSPDX"
+        | "concludedLicenseExpressionSPDX"
+        | "comment"
+        | "local"
+        | "createdAt"
+        | "updatedAt",
+    orderPropertyValue: "asc" | "desc" | undefined,
+    purl: string | undefined,
+    username: string | undefined,
+    pattern: string | undefined,
+    detectedLicense: string | undefined,
+    concludedLicense: string | undefined,
+    comment: string | undefined,
+    local: boolean | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<BulkConclusionWithRelations[]> => {
     let retries = initialRetryCount;
     let bulkConclusions: BulkConclusionWithRelations[] = [];
 
@@ -2748,6 +2771,55 @@ export const findBulkConclusionsWithRelations = async (): Promise<
                         },
                     },
                 },
+                skip: skip,
+                take: take,
+                where: {
+                    package: {
+                        purl: {
+                            contains: purl,
+                        },
+                    },
+                    user: {
+                        username: username,
+                    },
+                    pattern: {
+                        contains: pattern,
+                    },
+                    detectedLicenseExpressionSPDX: {
+                        contains: detectedLicense,
+                    },
+                    concludedLicenseExpressionSPDX: {
+                        contains: concludedLicense,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    local: local,
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+                orderBy:
+                    orderProperty === "pkg"
+                        ? {
+                              package: {
+                                  name: orderPropertyValue,
+                              },
+                          }
+                        : orderProperty === "username"
+                          ? {
+                                user: {
+                                    username: orderPropertyValue,
+                                },
+                            }
+                          : {
+                                [orderProperty]: orderPropertyValue,
+                            },
             });
             break;
         } catch (error) {
