@@ -429,6 +429,29 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
     }
 });
 
+userRouter.get("/bulk-conclusions/count", async (req, res) => {
+    try {
+        const bulkConclusionsCount = await dbQueries.countBulkConclusions(
+            req.query.purl,
+            req.query.username,
+            req.query.pattern,
+            req.query.detectedLicense,
+            req.query.concludedLicense,
+            req.query.comment,
+            req.query.local,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({ count: bulkConclusionsCount });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
     try {
         const { user } = req;
