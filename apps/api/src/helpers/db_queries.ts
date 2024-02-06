@@ -3838,3 +3838,66 @@ export const countPathExclusions = async (
     }
     return count;
 };
+
+export const countBulkConclusions = async (
+    purl: string | undefined,
+    username: string | undefined,
+    pattern: string | undefined,
+    detectedLicense: string | undefined,
+    concludedLicense: string | undefined,
+    comment: string | undefined,
+    local: boolean | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<number> => {
+    let retries = initialRetryCount;
+    let count = 0;
+
+    while (retries > 0) {
+        try {
+            count = await prisma.bulkConclusion.count({
+                where: {
+                    package: {
+                        purl: {
+                            contains: purl,
+                        },
+                    },
+                    user: {
+                        username: username,
+                    },
+                    pattern: {
+                        contains: pattern,
+                    },
+                    detectedLicenseExpressionSPDX: {
+                        contains: detectedLicense,
+                    },
+                    concludedLicenseExpressionSPDX: {
+                        contains: concludedLicense,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    local: local,
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to count PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return count;
+};
