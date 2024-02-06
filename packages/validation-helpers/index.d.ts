@@ -4799,7 +4799,12 @@ declare const userAPI: [
             {
                 name: "bulkConclusionId";
                 type: "Query";
-                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "hasBulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
             },
             {
                 name: "createdAtGte";
@@ -5144,7 +5149,12 @@ declare const userAPI: [
             {
                 name: "bulkConclusionId";
                 type: "Query";
-                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "hasBulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
             },
             {
                 name: "createdAtGte";
@@ -11634,7 +11644,12 @@ declare const dosAPI: [
             {
                 name: "bulkConclusionId";
                 type: "Query";
-                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "hasBulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
             },
             {
                 name: "createdAtGte";
@@ -11979,7 +11994,12 @@ declare const dosAPI: [
             {
                 name: "bulkConclusionId";
                 type: "Query";
-                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "hasBulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
             },
             {
                 name: "createdAtGte";

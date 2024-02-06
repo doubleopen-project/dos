@@ -110,7 +110,7 @@ export const QueryParamPageIndex = z.number().optional();
 export const QueryParamSortOrder = z.enum(["asc", "desc"]).optional();
 export const QueryParamFilterDate = z.coerce.date().optional();
 export const QueryParamFilterBoolean = z.boolean().optional();
-export const QueryParamFilterIntOrNull = z.number().nullable().optional();
+export const QueryParamFilterInt = z.number().optional();
 
 //------------------ Common response body -------------------
 
