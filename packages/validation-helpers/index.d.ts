@@ -4731,7 +4731,97 @@ declare const userAPI: [
         method: "get";
         path: "/license-conclusions";
         alias: "GetLicenseConclusions";
-        description: "Get all license conclusions";
+        description: "Get license conclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "username",
+                            "detectedLicenseExpressionSPDX",
+                            "concludedLicenseExpressionSPDX",
+                            "comment",
+                            "local",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "detectedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "concludedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "local";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+            },
+            {
+                name: "bulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 licenseConclusions: zod.ZodArray<
@@ -4827,8 +4917,8 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4850,8 +4940,8 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4880,8 +4970,8 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -4905,8 +4995,8 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -5232,8 +5322,8 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5245,8 +5335,8 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5265,8 +5355,8 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -5280,8 +5370,8 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -5947,8 +6037,8 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5968,8 +6058,8 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5996,8 +6086,8 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -6019,8 +6109,8 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -6509,8 +6599,8 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -6533,8 +6623,8 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -6564,8 +6654,8 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -6590,8 +6680,8 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -9074,8 +9164,8 @@ declare const userAPI: [
                                     {
                                         id: number;
                                         score: number;
-                                        updatedAt: Date;
                                         createdAt: Date;
+                                        updatedAt: Date;
                                         licenseExpression: string | null;
                                         startLine: number;
                                         endLine: number;
@@ -9083,8 +9173,8 @@ declare const userAPI: [
                                     {
                                         id: number;
                                         score: number;
-                                        updatedAt: Date;
                                         createdAt: Date;
+                                        updatedAt: Date;
                                         licenseExpression: string | null;
                                         startLine: number;
                                         endLine: number;
@@ -9097,16 +9187,16 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            updatedAt: Date;
                             createdAt: Date;
+                            updatedAt: Date;
                             licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
-                                updatedAt: Date;
                                 createdAt: Date;
+                                updatedAt: Date;
                                 licenseExpression: string | null;
                                 startLine: number;
                                 endLine: number;
@@ -9114,16 +9204,16 @@ declare const userAPI: [
                         },
                         {
                             id: number;
-                            updatedAt: Date;
                             createdAt: Date;
+                            updatedAt: Date;
                             licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
-                                updatedAt: Date;
                                 createdAt: Date;
+                                updatedAt: Date;
                                 licenseExpression: string | null;
                                 startLine: number;
                                 endLine: number;
@@ -9138,16 +9228,16 @@ declare const userAPI: [
             {
                 licenseFindings: {
                     id: number;
-                    updatedAt: Date;
                     createdAt: Date;
+                    updatedAt: Date;
                     licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
-                        updatedAt: Date;
                         createdAt: Date;
+                        updatedAt: Date;
                         licenseExpression: string | null;
                         startLine: number;
                         endLine: number;
@@ -9157,16 +9247,16 @@ declare const userAPI: [
             {
                 licenseFindings: {
                     id: number;
-                    updatedAt: Date;
                     createdAt: Date;
+                    updatedAt: Date;
                     licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
-                        updatedAt: Date;
                         createdAt: Date;
+                        updatedAt: Date;
                         licenseExpression: string | null;
                         startLine: number;
                         endLine: number;
@@ -11476,7 +11566,97 @@ declare const dosAPI: [
         method: "get";
         path: "/user/license-conclusions";
         alias: "GetLicenseConclusions";
-        description: "Get all license conclusions";
+        description: "Get license conclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "username",
+                            "detectedLicenseExpressionSPDX",
+                            "concludedLicenseExpressionSPDX",
+                            "comment",
+                            "local",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "detectedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "concludedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "local";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+            },
+            {
+                name: "bulkConclusionId";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNullable<zod.ZodNumber>>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 licenseConclusions: zod.ZodArray<
@@ -11572,8 +11752,8 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -11595,8 +11775,8 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -11625,8 +11805,8 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -11650,8 +11830,8 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -11977,8 +12157,8 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -11990,8 +12170,8 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -12010,8 +12190,8 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -12025,8 +12205,8 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -12692,8 +12872,8 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -12713,8 +12893,8 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -12741,8 +12921,8 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -12764,8 +12944,8 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13254,8 +13434,8 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13278,8 +13458,8 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
-                            updatedAt: Date;
                             local: boolean;
+                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13309,8 +13489,8 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13335,8 +13515,8 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
-                    updatedAt: Date;
                     local: boolean;
+                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -15819,8 +15999,8 @@ declare const dosAPI: [
                                     {
                                         id: number;
                                         score: number;
-                                        updatedAt: Date;
                                         createdAt: Date;
+                                        updatedAt: Date;
                                         licenseExpression: string | null;
                                         startLine: number;
                                         endLine: number;
@@ -15828,8 +16008,8 @@ declare const dosAPI: [
                                     {
                                         id: number;
                                         score: number;
-                                        updatedAt: Date;
                                         createdAt: Date;
+                                        updatedAt: Date;
                                         licenseExpression: string | null;
                                         startLine: number;
                                         endLine: number;
@@ -15842,16 +16022,16 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            updatedAt: Date;
                             createdAt: Date;
+                            updatedAt: Date;
                             licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
-                                updatedAt: Date;
                                 createdAt: Date;
+                                updatedAt: Date;
                                 licenseExpression: string | null;
                                 startLine: number;
                                 endLine: number;
@@ -15859,16 +16039,16 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
-                            updatedAt: Date;
                             createdAt: Date;
+                            updatedAt: Date;
                             licenseExpressionSPDX: string;
                             scanner: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
                                 score: number;
-                                updatedAt: Date;
                                 createdAt: Date;
+                                updatedAt: Date;
                                 licenseExpression: string | null;
                                 startLine: number;
                                 endLine: number;
@@ -15883,16 +16063,16 @@ declare const dosAPI: [
             {
                 licenseFindings: {
                     id: number;
-                    updatedAt: Date;
                     createdAt: Date;
+                    updatedAt: Date;
                     licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
-                        updatedAt: Date;
                         createdAt: Date;
+                        updatedAt: Date;
                         licenseExpression: string | null;
                         startLine: number;
                         endLine: number;
@@ -15902,16 +16082,16 @@ declare const dosAPI: [
             {
                 licenseFindings: {
                     id: number;
-                    updatedAt: Date;
                     createdAt: Date;
+                    updatedAt: Date;
                     licenseExpressionSPDX: string;
                     scanner: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
                         score: number;
-                        updatedAt: Date;
                         createdAt: Date;
+                        updatedAt: Date;
                         licenseExpression: string | null;
                         startLine: number;
                         endLine: number;
