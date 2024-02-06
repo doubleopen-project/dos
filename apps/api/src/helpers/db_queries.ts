@@ -2431,7 +2431,8 @@ export const findLicenseConclusions = async (
     concludedLicense: string | undefined,
     comment: string | undefined,
     local: boolean | undefined,
-    bulkConclusionById: number | null | undefined,
+    bulkConclusionId: number | undefined,
+    hasBulkConclusionId: boolean | undefined,
     createdAtGte: Date | undefined,
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
@@ -2439,6 +2440,15 @@ export const findLicenseConclusions = async (
 ): Promise<LicenseConclusionWithRelations[]> => {
     let licenseConclusions: LicenseConclusionWithRelations[] = [];
     let retries = initialRetryCount;
+
+    /*
+     * The initial idea of these queries was to fetch the license conclusions that are
+     * not part of a bulk conclusion (and their count) by setting the bulkConclusionId to
+     * null, but for some reason a parameter with null value is completely dropped from the
+     * query when using Zodios react hooks with Tanstack query client on the front end, and
+     * in the lack of a better solution, a workaround with the parameter hasBulkConclusion
+     * is used here.
+     */
 
     while (retries > 0) {
         try {
@@ -2493,7 +2503,12 @@ export const findLicenseConclusions = async (
                         contains: comment,
                     },
                     local: local,
-                    bulkConclusionId: bulkConclusionById,
+                    bulkConclusionId:
+                        hasBulkConclusionId !== undefined
+                            ? !hasBulkConclusionId
+                                ? null
+                                : bulkConclusionId
+                            : bulkConclusionId,
                     createdAt: {
                         gte: createdAtGte,
                         lte: createdAtLte,
@@ -2501,6 +2516,14 @@ export const findLicenseConclusions = async (
                     updatedAt: {
                         gte: updatedAtGte,
                         lte: updatedAtLte,
+                    },
+                    NOT: {
+                        bulkConclusionId:
+                            hasBulkConclusionId !== undefined
+                                ? hasBulkConclusionId
+                                    ? null
+                                    : undefined
+                                : undefined,
                     },
                 },
                 orderBy:
@@ -4046,7 +4069,8 @@ export const countLicenseConclusions = async (
     concludedLicense: string | undefined,
     comment: string | undefined,
     local: boolean | undefined,
-    bulkConclusionId: number | null | undefined,
+    bulkConclusionId: number | undefined,
+    hasBulkConclusionId: boolean | undefined,
     createdAtGte: Date | undefined,
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
@@ -4054,6 +4078,15 @@ export const countLicenseConclusions = async (
 ): Promise<number> => {
     let retries = initialRetryCount;
     let count = 0;
+
+    /*
+     * The initial idea of these queries was to fetch the license conclusions that are
+     * not part of a bulk conclusion (and their count) by setting the bulkConclusionId to
+     * null, but for some reason a parameter with null value is completely dropped from the
+     * query when using Zodios react hooks with Tanstack query client on the front end, and
+     * in the lack of a better solution, a workaround with the parameter hasBulkConclusion
+     * is used here.
+     */
 
     while (retries > 0) {
         try {
@@ -4075,7 +4108,12 @@ export const countLicenseConclusions = async (
                         contains: comment,
                     },
                     local: local,
-                    bulkConclusionId: bulkConclusionId,
+                    bulkConclusionId:
+                        hasBulkConclusionId !== undefined
+                            ? !hasBulkConclusionId
+                                ? null
+                                : bulkConclusionId
+                            : bulkConclusionId,
                     createdAt: {
                         gte: createdAtGte,
                         lte: createdAtLte,
@@ -4083,6 +4121,14 @@ export const countLicenseConclusions = async (
                     updatedAt: {
                         gte: updatedAtGte,
                         lte: updatedAtLte,
+                    },
+                    NOT: {
+                        bulkConclusionId:
+                            hasBulkConclusionId !== undefined
+                                ? hasBulkConclusionId
+                                    ? null
+                                    : undefined
+                                : undefined,
                     },
                 },
             });

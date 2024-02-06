@@ -97,7 +97,12 @@ export const userAPI = makeApi([
             {
                 name: "bulkConclusionId",
                 type: "Query",
-                schema: commonSchemas.QueryParamFilterIntOrNull,
+                schema: commonSchemas.QueryParamFilterInt,
+            },
+            {
+                name: "hasBulkConclusionId",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
             },
             {
                 name: "createdAtGte",
@@ -162,7 +167,12 @@ export const userAPI = makeApi([
             {
                 name: "bulkConclusionId",
                 type: "Query",
-                schema: commonSchemas.QueryParamFilterIntOrNull,
+                schema: commonSchemas.QueryParamFilterInt,
+            },
+            {
+                name: "hasBulkConclusionId",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
             },
             {
                 name: "createdAtGte",
