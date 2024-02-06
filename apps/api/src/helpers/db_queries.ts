@@ -3973,3 +3973,62 @@ export const countBulkConclusions = async (
     }
     return count;
 };
+
+export const countLicenseConclusions = async (
+    purl: string | undefined,
+    username: string | undefined,
+    detectedLicense: string | undefined,
+    concludedLicense: string | undefined,
+    comment: string | undefined,
+    local: boolean | undefined,
+    bulkConclusionId: number | null | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<number> => {
+    let retries = initialRetryCount;
+    let count = 0;
+
+    while (retries > 0) {
+        try {
+            count = await prisma.licenseConclusion.count({
+                where: {
+                    contextPurl: {
+                        contains: purl,
+                    },
+                    user: {
+                        username: username,
+                    },
+                    detectedLicenseExpressionSPDX: {
+                        contains: detectedLicense,
+                    },
+                    concludedLicenseExpressionSPDX: {
+                        contains: concludedLicense,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    local: local,
+                    bulkConclusionId: bulkConclusionId,
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to count PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return count;
+};

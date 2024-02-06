@@ -48,6 +48,71 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/license-conclusions/count",
+        alias: "GetLicenseConclusionsCount",
+        description: "Get count of license conclusions",
+        parameters: [
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "username",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "detectedLicense",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "concludedLicense",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "comment",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "local",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+            },
+            {
+                name: "bulkConclusionId",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterIntOrNull,
+            },
+            {
+                name: "createdAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "createdAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtGte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+            {
+                name: "updatedAtLte",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterDate,
+            },
+        ],
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/packages/:purl/files/:sha256/license-conclusions/",
         description:
             "Get license conclusions for specified file in specified package",

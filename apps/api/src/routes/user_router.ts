@@ -165,6 +165,30 @@ userRouter.get("/license-conclusions", async (req, res) => {
     }
 });
 
+userRouter.get("/license-conclusions/count", async (req, res) => {
+    try {
+        const licenseConclusionsCount = await dbQueries.countLicenseConclusions(
+            req.query.purl,
+            req.query.username,
+            req.query.detectedLicense,
+            req.query.concludedLicense,
+            req.query.comment,
+            req.query.local,
+            req.query.bulkConclusionId,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({ count: licenseConclusionsCount });
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
 userRouter.get(
     "/packages/:purl/files/:sha256/license-conclusions/",
     async (req, res) => {
