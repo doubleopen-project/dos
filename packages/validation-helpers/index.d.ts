@@ -6128,8 +6128,99 @@ declare const userAPI: [
     {
         method: "get";
         path: "/bulk-conclusions";
-        description: "Get all bulk conclusions";
+        description: "Get bulk conclusions";
         alias: "GetBulkConclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "username",
+                            "pattern",
+                            "detectedLicenseExpressionSPDX",
+                            "concludedLicenseExpressionSPDX",
+                            "comment",
+                            "local",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "pattern";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "detectedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "concludedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "local";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 bulkConclusions: zod.ZodArray<
@@ -12616,8 +12707,99 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/bulk-conclusions";
-        description: "Get all bulk conclusions";
+        description: "Get bulk conclusions";
         alias: "GetBulkConclusions";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "pkg",
+                            "username",
+                            "pattern",
+                            "detectedLicenseExpressionSPDX",
+                            "concludedLicenseExpressionSPDX",
+                            "comment",
+                            "local",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "pattern";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "detectedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "concludedLicense";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "comment";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "local";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+            },
+        ];
         response: zod.ZodObject<
             {
                 bulkConclusions: zod.ZodArray<
