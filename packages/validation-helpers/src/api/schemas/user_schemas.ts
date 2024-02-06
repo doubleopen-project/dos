@@ -48,6 +48,19 @@ export const PutUserRes = z.object({
 });
 
 //------------------ GET license conclusion -------------------
+export const QueryParamSortLCBy = z
+    .enum([
+        "pkg",
+        "username",
+        "detectedLicenseExpressionSPDX",
+        "concludedLicenseExpressionSPDX",
+        "comment",
+        "local",
+        "createdAt",
+        "updatedAt",
+    ])
+    .optional();
+
 export const GetLicenseConclusionsRes = z.object({
     licenseConclusions: z.array(
         z.object({

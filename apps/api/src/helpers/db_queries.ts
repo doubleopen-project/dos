@@ -2412,9 +2412,31 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
     };
 }>;
 
-export const findAllLicenseConclusions = async (): Promise<
-    LicenseConclusionWithRelations[]
-> => {
+export const findLicenseConclusions = async (
+    skip: number | undefined,
+    take: number | undefined,
+    orderProperty:
+        | "pkg"
+        | "username"
+        | "detectedLicenseExpressionSPDX"
+        | "concludedLicenseExpressionSPDX"
+        | "comment"
+        | "local"
+        | "createdAt"
+        | "updatedAt",
+    orderPropertyValue: "asc" | "desc" | undefined,
+    purl: string | undefined,
+    username: string | undefined,
+    detectedLicense: string | undefined,
+    concludedLicense: string | undefined,
+    comment: string | undefined,
+    local: boolean | undefined,
+    bulkConclusionById: number | null | undefined,
+    createdAtGte: Date | undefined,
+    createdAtLte: Date | undefined,
+    updatedAtGte: Date | undefined,
+    updatedAtLte: Date | undefined,
+): Promise<LicenseConclusionWithRelations[]> => {
     let licenseConclusions: LicenseConclusionWithRelations[] = [];
     let retries = initialRetryCount;
 
@@ -2452,6 +2474,49 @@ export const findAllLicenseConclusions = async (): Promise<
                         },
                     },
                 },
+                skip: skip,
+                take: take,
+                where: {
+                    contextPurl: {
+                        contains: purl,
+                    },
+                    user: {
+                        username: username,
+                    },
+                    detectedLicenseExpressionSPDX: {
+                        contains: detectedLicense,
+                    },
+                    concludedLicenseExpressionSPDX: {
+                        contains: concludedLicense,
+                    },
+                    comment: {
+                        contains: comment,
+                    },
+                    local: local,
+                    bulkConclusionId: bulkConclusionById,
+                    createdAt: {
+                        gte: createdAtGte,
+                        lte: createdAtLte,
+                    },
+                    updatedAt: {
+                        gte: updatedAtGte,
+                        lte: updatedAtLte,
+                    },
+                },
+                orderBy:
+                    orderProperty === "pkg"
+                        ? {
+                              contextPurl: orderPropertyValue,
+                          }
+                        : orderProperty === "username"
+                          ? {
+                                user: {
+                                    username: orderPropertyValue,
+                                },
+                            }
+                          : {
+                                [orderProperty]: orderPropertyValue,
+                            },
             });
             break;
         } catch (error) {
