@@ -10,6 +10,7 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
+import { Options } from "next-usequerystate";
 import Link from "next/link";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
@@ -34,25 +35,86 @@ export type LicenseConclusion = ZodiosResponseByAlias<
     "GetPathExclusions"
 >["pathExclusions"][0];
 
-export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
+export const columns = (
+    user: User,
+    sortBy: string | null,
+    sortOrder: string | null,
+    setSortBy: <Shallow>(
+        value:
+            | "updatedAt"
+            | "comment"
+            | "pattern"
+            | "reason"
+            | "pkg"
+            | "username"
+            | ((
+                  old:
+                      | "updatedAt"
+                      | "comment"
+                      | "pattern"
+                      | "reason"
+                      | "pkg"
+                      | "username"
+                      | null,
+              ) =>
+                  | "updatedAt"
+                  | "comment"
+                  | "pattern"
+                  | "reason"
+                  | "pkg"
+                  | "username"
+                  | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setSortOrder: <Shallow>(
+        value:
+            | "asc"
+            | "desc"
+            | ((old: "asc" | "desc" | null) => "asc" | "desc" | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setPageIndex: <Shallow>(
+        value: number | ((old: number) => number | null) | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+): ColumnDef<LicenseConclusion>[] => {
     return [
         {
             accessorKey: "updatedAt",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "updatedAt") {
+                                setSortBy("updatedAt");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder("asc");
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Updated
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "updatedAt" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "updatedAt" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -71,22 +133,40 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
             ),
         },
         {
-            accessorKey: "purl",
-            header: ({ column }) => {
+            accessorKey: "pkg",
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "pkg") {
+                                setSortBy("pkg");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Package
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "pkg" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "pkg" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -120,21 +200,39 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "username",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "username") {
+                                setSortBy("username");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Creator
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "username" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "username" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -150,21 +248,39 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "pattern",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "pattern") {
+                                setSortBy("pattern");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Pattern
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "pattern" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "pattern" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -175,21 +291,39 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "reason",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "reason") {
+                                setSortBy("reason");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Reason
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "reason" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "reason" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
@@ -231,21 +365,39 @@ export const columns = (user: User): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "comment",
-            header: ({ column }) => {
+            header: () => {
                 return (
                     <Button
                         variant="ghost"
                         className="px-0"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === "asc")
-                        }
+                        onClick={() => {
+                            if (sortBy !== "comment") {
+                                setSortBy("comment");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
                     >
                         <Label className="cursor-pointer font-bold">
                             Comment
                         </Label>
-                        {column.getIsSorted() === "desc" ? (
+                        {sortBy === "comment" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : column.getIsSorted() === "asc" ? (
+                        ) : sortBy === "comment" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
