@@ -2,19 +2,20 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ColumnDef,
-    ColumnFiltersState,
     flexRender,
     getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
     RowData,
-    SortingState,
     useReactTable,
 } from "@tanstack/react-table";
+import debounce from "lodash.debounce";
+import {
+    parseAsInteger,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -29,6 +30,7 @@ import { DataTablePagination } from "@/components/package_table/DataTablePaginat
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    pageCount: number;
 }
 
 declare module "@tanstack/table-core" {
@@ -51,11 +53,21 @@ declare module "@tanstack/table-core" {
 export function DataTable<TData, TValue>({
     columns,
     data: initialData,
+    pageCount,
 }: DataTableProps<TData, TValue>) {
     const [data, setData] = useState(initialData);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [editedRows, setEditedRows] = useState({});
+
+    const [purl, setPurl] = useQueryState("purl", parseAsString);
+    // The setPageIndex cannot be recognized as a callable expression without the pageIndex, so it
+    // is added here and an eslint-disable-next-line is added to ignore the unused variable
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [pageIndex, setPageIndex] = useQueryState(
+        "pageIndex",
+        parseAsInteger.withDefault(1),
+    );
+    const [inputValue, setInputValue] = useState<string>(purl || "");
+    const debounceSetPurl = useMemo(() => debounce(setPurl, 300), [setPurl]);
 
     useEffect(() => {
         setData(initialData);
@@ -64,16 +76,9 @@ export function DataTable<TData, TValue>({
     const table = useReactTable({
         data,
         columns,
+        pageCount: pageCount,
         getCoreRowModel: getCoreRowModel(),
-        onSortingChange: setSorting,
-        getSortedRowModel: getSortedRowModel(),
-        onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: getFilteredRowModel(),
-        state: {
-            sorting,
-            columnFilters,
-        },
-        getPaginationRowModel: getPaginationRowModel(),
+        manualPagination: true,
         meta: {
             editedRows,
             setEditedRows,
@@ -113,17 +118,18 @@ export function DataTable<TData, TValue>({
             <div className="flex items-center justify-between py-2">
                 <Input
                     placeholder="Search packages by purl"
-                    value={
-                        (table
-                            .getColumn("contextPurl")
-                            ?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn("contextPurl")
-                            ?.setFilterValue(event.target.value)
-                    }
+                    value={inputValue ?? ""}
+                    onChange={(event) => {
+                        setInputValue(event.target.value);
+                        if (event.target.value === "") {
+                            debounceSetPurl(null);
+                        } else {
+                            debounceSetPurl(event.target.value);
+                        }
+                        setPageIndex(1);
+                    }}
                     className="max-w-sm"
+                    autoFocus
                 />
                 <DataTablePagination table={table} />
             </div>
