@@ -4,9 +4,15 @@
 
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import {
+    parseAsBoolean,
+    parseAsString,
+    useQueryState,
+} from "next-usequerystate";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useMainUiStore from "@/store/mainui.store";
 import useSettingsStore from "@/store/settings.store";
 
 const MainUI = dynamic(() => import("@/components/MainUI"), {
@@ -14,12 +20,30 @@ const MainUI = dynamic(() => import("@/components/MainUI"), {
 });
 
 export default function Package() {
+    const [licenseFilter] = useQueryState(
+        "licenseFilter",
+        parseAsString.withDefault(""),
+    );
+    const [filtering] = useQueryState(
+        "filtering",
+        parseAsBoolean.withDefault(false),
+    );
     const mainWidths = useSettingsStore((state) => state.mainWidths);
     const clearanceHeights = useSettingsStore(
         (state) => state.clearanceHeights,
     );
     const router = useRouter();
     const { purl } = router.query;
+
+    const setPurl = useMainUiStore((state) => state.setPurl);
+    const setPath = useMainUiStore((state) => state.setPath);
+    const setLicenseFilter = useMainUiStore((state) => state.setLicenseFilter);
+    const setFiltering = useMainUiStore((state) => state.setFiltering);
+    setPurl(purl as string);
+    setPath("");
+    setLicenseFilter(licenseFilter);
+    setFiltering(filtering);
+
     const {
         data: user,
         error,
