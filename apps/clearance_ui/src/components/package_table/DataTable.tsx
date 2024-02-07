@@ -24,7 +24,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination2 } from "@/components/package_table/DataTablePagination2";
+import { DataTablePagination } from "@/components/package_table/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -79,7 +79,7 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                     autoFocus
                 />
-                <DataTablePagination2 table={table} />
+                <DataTablePagination table={table} />
             </div>
             <div className="rounded-md border">
                 <Table>

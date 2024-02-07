@@ -4,10 +4,17 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ZodiosResponseByAlias } from "@zodios/core";
+import {
+    ChevronDownIcon,
+    ChevronsUpDownIcon,
+    ChevronUpIcon,
+} from "lucide-react";
+import { Options } from "next-usequerystate";
 import Link from "next/link";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
     Tooltip,
@@ -16,7 +23,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/license_conclusion_table/ActionCell";
-import HeaderButton from "@/components/license_conclusion_table/HeaderButton";
 import TableCell from "@/components/license_conclusion_table/TableCell";
 import PurlDetails from "@/components/PurlDetails";
 
@@ -27,12 +33,94 @@ type LicenseConclusion = ZodiosResponseByAlias<
     "GetLicenseConclusions"
 >["licenseConclusions"][0];
 
-export const columns = (): ColumnDef<LicenseConclusion>[] => {
+export const columns = (
+    sortBy: string | null,
+    sortOrder: string | null,
+    setSortBy: <Shallow>(
+        value:
+            | "pkg"
+            | "username"
+            | "detectedLicenseExpressionSPDX"
+            | "concludedLicenseExpressionSPDX"
+            | "comment"
+            | "local"
+            | "updatedAt"
+            | ((
+                  old:
+                      | "pkg"
+                      | "username"
+                      | "detectedLicenseExpressionSPDX"
+                      | "concludedLicenseExpressionSPDX"
+                      | "comment"
+                      | "local"
+                      | "updatedAt"
+                      | null,
+              ) =>
+                  | "pkg"
+                  | "username"
+                  | "detectedLicenseExpressionSPDX"
+                  | "concludedLicenseExpressionSPDX"
+                  | "comment"
+                  | "local"
+                  | "updatedAt"
+                  | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setSortOrder: <Shallow>(
+        value:
+            | "asc"
+            | "desc"
+            | ((old: "asc" | "desc" | null) => "asc" | "desc" | null)
+            | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+    setPageIndex: <Shallow>(
+        value: number | ((old: number) => number | null) | null,
+        options?: Options<Shallow> | undefined,
+    ) => Promise<URLSearchParams>,
+): ColumnDef<LicenseConclusion>[] => {
     return [
         {
             accessorKey: "updatedAt",
-            header: ({ column }) => {
-                return <HeaderButton column={column} label="Updated" />;
+            header: () => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() => {
+                            if (sortBy !== "updatedAt") {
+                                setSortBy("updatedAt");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder("asc");
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        <Label className="cursor-pointer font-bold">
+                            Updated
+                        </Label>
+                        {sortBy === "updatedAt" && sortOrder === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : sortBy === "updatedAt" && sortOrder === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
             },
             cell: ({ row }) => (
                 <>
@@ -46,8 +134,45 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "contextPurl",
-            header: ({ column }) => {
-                return <HeaderButton column={column} label="Package" />;
+            header: () => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() => {
+                            if (sortBy !== "pkg") {
+                                setSortBy("pkg");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        <Label className="cursor-pointer font-bold">
+                            Package
+                        </Label>
+                        {sortBy === "pkg" && sortOrder === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : sortBy === "pkg" && sortOrder === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
             },
             cell: ({ row }) => {
                 const pkg = PackageURL.fromString(row.original.contextPurl);
@@ -75,8 +200,45 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "username",
-            header: ({ column }) => {
-                return <HeaderButton column={column} label="Creator" />;
+            header: () => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() => {
+                            if (sortBy !== "username") {
+                                setSortBy("username");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        <Label className="cursor-pointer font-bold">
+                            Creator
+                        </Label>
+                        {sortBy === "username" && sortOrder === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : sortBy === "username" && sortOrder === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
             },
             cell: ({ row }) => (
                 <Badge className="bg-green-400 text-sm">
@@ -99,17 +261,103 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
             columns: [
                 {
                     accessorKey: "detectedLicenseExpressionSPDX",
-                    header: ({ column }) => {
+                    header: () => {
                         return (
-                            <HeaderButton column={column} label="Detected" />
+                            <Button
+                                variant="ghost"
+                                className="px-0"
+                                onClick={() => {
+                                    if (
+                                        sortBy !==
+                                        "detectedLicenseExpressionSPDX"
+                                    ) {
+                                        setSortBy(
+                                            "detectedLicenseExpressionSPDX",
+                                        );
+                                        setSortOrder("asc");
+                                        setPageIndex(1);
+                                    } else {
+                                        if (!sortOrder) {
+                                            setSortOrder("asc");
+                                            setPageIndex(1);
+                                        } else {
+                                            if (sortOrder === "asc") {
+                                                setSortOrder("desc");
+                                                setPageIndex(1);
+                                            } else {
+                                                setSortOrder(null);
+                                                setSortBy(null);
+                                                setPageIndex(1);
+                                            }
+                                        }
+                                    }
+                                }}
+                            >
+                                <Label className="cursor-pointer font-bold">
+                                    Detected
+                                </Label>
+                                {sortBy === "detectedLicenseExpressionSPDX" &&
+                                sortOrder === "desc" ? (
+                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                ) : sortBy ===
+                                      "detectedLicenseExpressionSPDX" &&
+                                  sortOrder === "asc" ? (
+                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                ) : (
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                )}
+                            </Button>
                         );
                     },
                 },
                 {
                     accessorKey: "concludedLicenseExpressionSPDX",
-                    header: ({ column }) => {
+                    header: () => {
                         return (
-                            <HeaderButton column={column} label="Concluded" />
+                            <Button
+                                variant="ghost"
+                                className="px-0"
+                                onClick={() => {
+                                    if (
+                                        sortBy !==
+                                        "concludedLicenseExpressionSPDX"
+                                    ) {
+                                        setSortBy(
+                                            "concludedLicenseExpressionSPDX",
+                                        );
+                                        setSortOrder("asc");
+                                        setPageIndex(1);
+                                    } else {
+                                        if (!sortOrder) {
+                                            setSortOrder("asc");
+                                            setPageIndex(1);
+                                        } else {
+                                            if (sortOrder === "asc") {
+                                                setSortOrder("desc");
+                                                setPageIndex(1);
+                                            } else {
+                                                setSortOrder(null);
+                                                setSortBy(null);
+                                                setPageIndex(1);
+                                            }
+                                        }
+                                    }
+                                }}
+                            >
+                                <Label className="cursor-pointer font-bold">
+                                    Concluded
+                                </Label>
+                                {sortBy === "concludedLicenseExpressionSPDX" &&
+                                sortOrder === "desc" ? (
+                                    <ChevronDownIcon className="ml-2 h-4 w-4" />
+                                ) : sortBy ===
+                                      "concludedLicenseExpressionSPDX" &&
+                                  sortOrder === "asc" ? (
+                                    <ChevronUpIcon className="ml-2 h-4 w-4" />
+                                ) : (
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                                )}
+                            </Button>
                         );
                     },
                     cell: TableCell,
@@ -215,8 +463,45 @@ export const columns = (): ColumnDef<LicenseConclusion>[] => {
         },
         {
             accessorKey: "comment",
-            header: ({ column }) => {
-                return <HeaderButton column={column} label="Comment" />;
+            header: () => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() => {
+                            if (sortBy !== "comment") {
+                                setSortBy("comment");
+                                setSortOrder("asc");
+                                setPageIndex(1);
+                            } else {
+                                if (!sortOrder) {
+                                    setSortOrder("asc");
+                                    setPageIndex(1);
+                                } else {
+                                    if (sortOrder === "asc") {
+                                        setSortOrder("desc");
+                                        setPageIndex(1);
+                                    } else {
+                                        setSortOrder(null);
+                                        setSortBy(null);
+                                        setPageIndex(1);
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        <Label className="cursor-pointer font-bold">
+                            Comment
+                        </Label>
+                        {sortBy === "comment" && sortOrder === "desc" ? (
+                            <ChevronDownIcon className="ml-2 h-4 w-4" />
+                        ) : sortBy === "comment" && sortOrder === "asc" ? (
+                            <ChevronUpIcon className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                        )}
+                    </Button>
+                );
             },
             cell: TableCell,
             meta: {
