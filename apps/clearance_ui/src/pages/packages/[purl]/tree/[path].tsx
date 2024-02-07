@@ -40,7 +40,7 @@ export default function PackageAndFile() {
     const setLicenseFilter = useMainUiStore((state) => state.setLicenseFilter);
     const setFiltering = useMainUiStore((state) => state.setFiltering);
     setPurl(purl as string);
-    setPath("tree/" + (path as string));
+    setPath(path as string);
     setLicenseFilter(licenseFilter);
     setFiltering(filtering);
 
