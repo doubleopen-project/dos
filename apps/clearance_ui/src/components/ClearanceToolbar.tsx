@@ -8,15 +8,45 @@ import { useRouter } from "next/router";
 import { LuFileStack, LuFolderTree } from "react-icons/lu";
 import { TbFoldersOff } from "react-icons/tb";
 import { TfiPencil } from "react-icons/tfi";
+import { useShallow } from "zustand/react/shallow";
+import useMainUiStore from "@/store/mainui.store";
 import { cn } from "@/lib/utils";
+
+const createUrl = (
+    purl: string,
+    path: string,
+    licenseFilter: string,
+    filtering: boolean,
+) => {
+    return `/packages/${encodeURIComponent(purl)}${
+        path ? `/tree/${encodeURIComponent(path)}` : ""
+    }${
+        licenseFilter
+            ? `?licenseFilter=${encodeURIComponent(
+                  licenseFilter,
+              )}&filtering=${filtering}`
+            : ""
+    }`;
+};
 
 const ClearanceToolbar = () => {
     const router = useRouter();
-    const purl = router.query.purl as string;
+    //const purl = router.query.purl as string;
+    const [purl, path, licenseFilter, filtering] = useMainUiStore(
+        useShallow((state) => [
+            state.purl,
+            state.path,
+            state.licenseFilter,
+            state.filtering,
+        ]),
+    );
+
+    console.log("url = ", createUrl(purl, path, licenseFilter, filtering));
+
     return (
         <div className="pl-2 pt-1">
             <Link
-                href={`/packages/${encodeURIComponent(purl)}`}
+                href={createUrl(purl, path, licenseFilter, filtering)}
                 className={cn(
                     router.pathname === "/packages/[purl]" ||
                         router.pathname.includes("/tree/")
