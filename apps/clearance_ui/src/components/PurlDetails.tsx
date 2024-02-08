@@ -10,10 +10,9 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/CopyToClipboard";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
-import { Label } from "./ui/label";
 
 type Props = {
     purl: string;

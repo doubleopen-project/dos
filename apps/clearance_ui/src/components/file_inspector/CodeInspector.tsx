@@ -5,10 +5,6 @@
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import CopyToClipboard from "@/components/CopyToClipboard";
 import CodeEditor from "@/components/file_inspector/CodeEditor";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
@@ -62,14 +58,6 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
 
     return (
         <div className="flex h-full flex-col">
-            <div className="mb-1 flex-row items-center p-1">
-                <Label className="clearance-label">File: </Label>
-                <Badge className="rounded-md">{path}</Badge>
-                <CopyToClipboard copyText={path} />
-            </div>
-
-            <Separator className="mb-2" />
-
             <div className="flex flex-1 items-center justify-center overflow-auto">
                 {(isLoading || lfIsLoading) && (
                     <div className="flex h-full items-center justify-center">
