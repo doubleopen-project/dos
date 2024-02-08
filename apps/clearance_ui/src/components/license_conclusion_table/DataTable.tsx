@@ -58,7 +58,10 @@ export function DataTable<TData, TValue>({
     const [data, setData] = useState(initialData);
     const [editedRows, setEditedRows] = useState({});
 
-    const [purl, setPurl] = useQueryState("purl", parseAsString);
+    const [contextPurl, setContextPurl] = useQueryState(
+        "contextPurl",
+        parseAsString,
+    );
     // The setPageIndex cannot be recognized as a callable expression without the pageIndex, so it
     // is added here and an eslint-disable-next-line is added to ignore the unused variable
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,8 +69,11 @@ export function DataTable<TData, TValue>({
         "pageIndex",
         parseAsInteger.withDefault(1),
     );
-    const [inputValue, setInputValue] = useState<string>(purl || "");
-    const debounceSetPurl = useMemo(() => debounce(setPurl, 300), [setPurl]);
+    const [inputValue, setInputValue] = useState<string>(contextPurl || "");
+    const debounceSetPurl = useMemo(
+        () => debounce(setContextPurl, 300),
+        [setContextPurl],
+    );
 
     useEffect(() => {
         setData(initialData);

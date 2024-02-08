@@ -119,7 +119,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 !req.query.sortBy && !req.query.sortOrder
                     ? "desc"
                     : req.query.sortOrder,
-                req.query.purl,
+                req.query.contextPurl,
                 req.query.username,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
@@ -192,7 +192,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
 userRouter.get("/license-conclusions/count", async (req, res) => {
     try {
         const licenseConclusionsCount = await dbQueries.countLicenseConclusions(
-            req.query.purl,
+            req.query.contextPurl,
             req.query.username,
             req.query.detectedLicense,
             req.query.concludedLicense,

@@ -28,12 +28,12 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
         "pageIndex",
         parseAsInteger.withDefault(1),
     );
-    const [purl] = useQueryState("purl", parseAsString);
+    const [contextPurl] = useQueryState("contextPurl", parseAsString);
 
     const [sortBy, setSortBy] = useQueryState(
         "sortBy",
         parseAsStringEnum([
-            "pkg",
+            "contextPurl",
             "detectedLicenseExpressionSPDX",
             "concludedLicenseExpressionSPDX",
             "comment",
@@ -51,7 +51,7 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
         {
             withCredentials: true,
             queries: {
-                purl: purl !== null ? purl : undefined,
+                contextPurl: contextPurl !== null ? contextPurl : undefined,
                 /*
                  * The initial idea of these queries was to fetch the license conclusions that are
                  * not part of a bulk conclusion (and their count) by setting the bulkConclusionId to
@@ -74,7 +74,7 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
                 pageSize,
                 sortBy: sortBy !== null ? sortBy : undefined,
                 sortOrder: sortOrder !== null ? sortOrder : undefined,
-                purl: purl !== null ? purl : undefined,
+                contextPurl: contextPurl !== null ? contextPurl : undefined,
                 //bulkConclusionId: null,
                 hasBulkConclusionId: false,
             },

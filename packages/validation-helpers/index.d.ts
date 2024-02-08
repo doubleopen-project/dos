@@ -4749,7 +4749,7 @@ declare const userAPI: [
                 schema: zod.ZodOptional<
                     zod.ZodEnum<
                         [
-                            "pkg",
+                            "contextPurl",
                             "username",
                             "detectedLicenseExpressionSPDX",
                             "concludedLicenseExpressionSPDX",
@@ -4767,9 +4767,10 @@ declare const userAPI: [
                 schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
             },
             {
-                name: "purl";
+                name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "username";
@@ -4922,13 +4923,13 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
                                     path: string;
@@ -4945,13 +4946,13 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
                                     path: string;
@@ -4975,13 +4976,13 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
                             path: string;
@@ -5000,13 +5001,13 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
                             path: string;
@@ -5117,9 +5118,10 @@ declare const userAPI: [
         description: "Get count of license conclusions";
         parameters: [
             {
-                name: "purl";
+                name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "username";
@@ -5332,26 +5334,26 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                         },
                         {
                             id: number;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -5365,13 +5367,13 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                 }[];
             },
             {
@@ -5380,13 +5382,13 @@ declare const userAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                 }[];
             }
         >;
@@ -6609,12 +6611,12 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
-                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -6633,12 +6635,12 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
-                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -6664,12 +6666,12 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
-                    contextPurl: string;
                 }[];
             },
             {
@@ -6690,12 +6692,12 @@ declare const userAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
-                    contextPurl: string;
                 }[];
             }
         >;
@@ -11638,7 +11640,7 @@ declare const dosAPI: [
                 schema: zod.ZodOptional<
                     zod.ZodEnum<
                         [
-                            "pkg",
+                            "contextPurl",
                             "username",
                             "detectedLicenseExpressionSPDX",
                             "concludedLicenseExpressionSPDX",
@@ -11656,9 +11658,10 @@ declare const dosAPI: [
                 schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
             },
             {
-                name: "purl";
+                name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "username";
@@ -11811,13 +11814,13 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
                                     path: string;
@@ -11834,13 +11837,13 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                             affectedPaths: {
                                 inContextPurl: {
                                     path: string;
@@ -11864,13 +11867,13 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
                             path: string;
@@ -11889,13 +11892,13 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                     affectedPaths: {
                         inContextPurl: {
                             path: string;
@@ -12006,9 +12009,10 @@ declare const dosAPI: [
         description: "Get count of license conclusions";
         parameters: [
             {
-                name: "purl";
+                name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "username";
@@ -12221,26 +12225,26 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                         },
                         {
                             id: number;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -12254,13 +12258,13 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                 }[];
             },
             {
@@ -12269,13 +12273,13 @@ declare const dosAPI: [
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    contextPurl: string;
                 }[];
             }
         >;
@@ -13498,12 +13502,12 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
-                            contextPurl: string;
                         },
                         {
                             id: number;
@@ -13522,12 +13526,12 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
+                            contextPurl: string;
                             local: boolean;
                             updatedAt: Date;
                             user: {
                                 username: string;
                             };
-                            contextPurl: string;
                         }
                     >,
                     "many"
@@ -13553,12 +13557,12 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
-                    contextPurl: string;
                 }[];
             },
             {
@@ -13579,12 +13583,12 @@ declare const dosAPI: [
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
+                    contextPurl: string;
                     local: boolean;
                     updatedAt: Date;
                     user: {
                         username: string;
                     };
-                    contextPurl: string;
                 }[];
             }
         >;
