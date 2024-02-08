@@ -50,7 +50,7 @@ export const PutUserRes = z.object({
 //------------------ GET license conclusion -------------------
 export const QueryParamSortLCBy = z
     .enum([
-        "pkg",
+        "contextPurl",
         "username",
         "detectedLicenseExpressionSPDX",
         "concludedLicenseExpressionSPDX",

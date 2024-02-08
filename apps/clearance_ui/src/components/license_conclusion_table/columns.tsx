@@ -38,7 +38,7 @@ export const columns = (
     sortOrder: string | null,
     setSortBy: <Shallow>(
         value:
-            | "pkg"
+            | "contextPurl"
             | "username"
             | "detectedLicenseExpressionSPDX"
             | "concludedLicenseExpressionSPDX"
@@ -47,7 +47,7 @@ export const columns = (
             | "updatedAt"
             | ((
                   old:
-                      | "pkg"
+                      | "contextPurl"
                       | "username"
                       | "detectedLicenseExpressionSPDX"
                       | "concludedLicenseExpressionSPDX"
@@ -56,7 +56,7 @@ export const columns = (
                       | "updatedAt"
                       | null,
               ) =>
-                  | "pkg"
+                  | "contextPurl"
                   | "username"
                   | "detectedLicenseExpressionSPDX"
                   | "concludedLicenseExpressionSPDX"
@@ -140,8 +140,8 @@ export const columns = (
                         variant="ghost"
                         className="px-0"
                         onClick={() => {
-                            if (sortBy !== "pkg") {
-                                setSortBy("pkg");
+                            if (sortBy !== "contextPurl") {
+                                setSortBy("contextPurl");
                                 setSortOrder("asc");
                                 setPageIndex(1);
                             } else {
@@ -164,9 +164,9 @@ export const columns = (
                         <Label className="cursor-pointer font-bold">
                             Package
                         </Label>
-                        {sortBy === "pkg" && sortOrder === "desc" ? (
+                        {sortBy === "contextPurl" && sortOrder === "desc" ? (
                             <ChevronDownIcon className="ml-2 h-4 w-4" />
-                        ) : sortBy === "pkg" && sortOrder === "asc" ? (
+                        ) : sortBy === "contextPurl" && sortOrder === "asc" ? (
                             <ChevronUpIcon className="ml-2 h-4 w-4" />
                         ) : (
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4" />

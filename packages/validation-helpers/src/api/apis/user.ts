@@ -65,9 +65,11 @@ export const userAPI = makeApi([
                 schema: commonSchemas.QueryParamSortOrder,
             },
             {
-                name: "purl",
+                name: "contextPurl",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description:
+                    "Filter by context purl (use this to get only the license conclusions made in the context of the specified purl)",
             },
             {
                 name: "username",
@@ -135,9 +137,11 @@ export const userAPI = makeApi([
         description: "Get count of license conclusions",
         parameters: [
             {
-                name: "purl",
+                name: "contextPurl",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description:
+                    "Filter by context purl (use this to get the count of license conclusions made in the context of the specified purl)",
             },
             {
                 name: "username",

@@ -2416,7 +2416,7 @@ export const findLicenseConclusions = async (
     skip: number | undefined,
     take: number | undefined,
     orderProperty:
-        | "pkg"
+        | "contextPurl"
         | "username"
         | "detectedLicenseExpressionSPDX"
         | "concludedLicenseExpressionSPDX"
@@ -2425,7 +2425,7 @@ export const findLicenseConclusions = async (
         | "createdAt"
         | "updatedAt",
     orderPropertyValue: "asc" | "desc" | undefined,
-    purl: string | undefined,
+    contextPurl: string | undefined,
     username: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -2488,7 +2488,7 @@ export const findLicenseConclusions = async (
                 take: take,
                 where: {
                     contextPurl: {
-                        contains: purl,
+                        contains: contextPurl,
                     },
                     user: {
                         username: username,
@@ -2527,19 +2527,15 @@ export const findLicenseConclusions = async (
                     },
                 },
                 orderBy:
-                    orderProperty === "pkg"
+                    orderProperty === "username"
                         ? {
-                              contextPurl: orderPropertyValue,
+                              user: {
+                                  username: orderPropertyValue,
+                              },
                           }
-                        : orderProperty === "username"
-                          ? {
-                                user: {
-                                    username: orderPropertyValue,
-                                },
-                            }
-                          : {
-                                [orderProperty]: orderPropertyValue,
-                            },
+                        : {
+                              [orderProperty]: orderPropertyValue,
+                          },
             });
             break;
         } catch (error) {
@@ -4075,7 +4071,7 @@ export const countBulkConclusions = async (
 };
 
 export const countLicenseConclusions = async (
-    purl: string | undefined,
+    contextPurl: string | undefined,
     username: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -4105,7 +4101,7 @@ export const countLicenseConclusions = async (
             count = await prisma.licenseConclusion.count({
                 where: {
                     contextPurl: {
-                        contains: purl,
+                        contains: contextPurl,
                     },
                     user: {
                         username: username,
