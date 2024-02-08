@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import CopyToClipboard from "@/components/CopyToClipboard";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
+import { Label } from "./ui/label";
 
 type Props = {
     purl: string;
@@ -34,9 +35,9 @@ const PurlDetails = ({ purl }: Props) => {
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger>
-                        <Badge className="break-all rounded-md px-1">
+                        <Label className="break-all px-1 text-xs">
                             {mainPurl}
-                        </Badge>
+                        </Label>
                     </AccordionTrigger>
 
                     <AccordionContent className="text-xs">
