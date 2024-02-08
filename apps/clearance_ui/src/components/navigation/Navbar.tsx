@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
+import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/CopyToClipboard";
 import { ModeToggle } from "@/components/ModeToggle";
+import SideMenu from "@/components/navigation/SideMenu";
+import UserMenuItem from "@/components/navigation/UserMenuItem";
 import PurlDetails from "@/components/PurlDetails";
-import { Label } from "../ui/label";
-import SideMenu from "./SideMenu";
-import UserMenuItem from "./UserMenuItem";
 
 const Navbar = () => {
     const router = useRouter();

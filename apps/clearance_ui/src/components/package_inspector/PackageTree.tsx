@@ -14,7 +14,6 @@ import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import {
@@ -27,7 +26,6 @@ import LicenseSelector from "@/components/package_inspector/LicenseSelector";
 import Node from "@/components/package_inspector/Node";
 import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
-import PurlDetails from "@/components/PurlDetails";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
@@ -194,11 +192,6 @@ const PackageTree = ({ purl, path }: Props) => {
 
     return (
         <div className="flex h-full flex-col">
-            <div className="mb-2 flex-row">
-                <Label className="clearance-label">Package: </Label>
-                <PurlDetails purl={purl} />
-            </div>
-
             <div className="mb-3 flex items-center text-sm">
                 <Input
                     className="w-full rounded-md text-xs"
