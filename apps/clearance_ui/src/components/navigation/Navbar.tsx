@@ -17,27 +17,20 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 const Navbar = () => {
     const router = useRouter();
     const user = useUser();
-
     const { purl, path } = router.query;
+    let mainPurl;
 
-    if (!purl) {
-        return <div>Loading...</div>;
+    if (typeof purl === "string") {
+        const parsedPurl = parsePurlAndQualifiers(purl);
+        mainPurl = new PackageURL(
+            parsedPurl.type,
+            parsedPurl.namespace,
+            parsedPurl.name,
+            parsedPurl.version,
+            null,
+            null,
+        ).toString();
     }
-    if (typeof purl !== "string") {
-        return <div>Invalid purl</div>;
-    }
-
-    // purl exists and is of correct type, so we can continue
-
-    const parsedPurl = parsePurlAndQualifiers(purl);
-    const mainPurl = new PackageURL(
-        parsedPurl.type,
-        parsedPurl.namespace,
-        parsedPurl.name,
-        parsedPurl.version,
-        null,
-        null,
-    ).toString();
 
     return (
         <div className="overflow-none flex flex-row items-center justify-between border-b-[1px] py-2">
@@ -47,7 +40,7 @@ const Navbar = () => {
                     <span className="logo">doubleOpen</span>
                     <span className="logo logo-brackets">()</span>
                 </Link>
-                {purl && (
+                {mainPurl && (
                     <div className="flex-row items-center">
                         <Label className="break-all text-xs">{mainPurl}</Label>
                         <CopyToClipboard copyText={mainPurl} />
