@@ -18,6 +18,9 @@ const Details = () => {
     if (typeof purl !== "string") {
         return <div>Invalid purl</div>;
     }
+
+    // purl exists and is of correct type, so we can continue
+
     const parsedPurl = parsePurlAndQualifiers(purl);
     const mainPurl = new PackageURL(
         parsedPurl.type,
@@ -27,24 +30,29 @@ const Details = () => {
         null,
         null,
     ).toString();
+    const provenanceType = parsedPurl.qualifiers?.vcs_type
+        ? "Repository Provenance"
+        : parsedPurl.qualifiers?.download_url
+          ? "Artefact Provenance"
+          : "Unknown";
 
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
             <div className="flex-1 border p-2">
                 <div className="px-4 sm:px-0">
-                    <h3 className="font-semibold">Package Information</h3>
+                    <h3 className="mt-2 font-semibold">Package Information</h3>
                     <p className="mt-1 max-w-2xl text-sm">
                         Details about package and its provenance.
                     </p>
                 </div>
-                <div className="mt-6 rounded-lg border p-2">
-                    <dl className="">
+                <div className="mt-4 rounded-lg border p-2">
+                    <dl>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt className="text-right text-sm font-semibold leading-6">
                                 Name:
                             </dt>
-                            <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                            <dd className="mt-1 text-sm font-bold leading-6 sm:col-span-2 sm:mt-0">
                                 {parsedPurl.name}
                             </dd>
                         </div>
@@ -98,6 +106,31 @@ const Details = () => {
                             </dt>
                             <dd className="mt-1 break-all text-sm leading-6 sm:col-span-2 sm:mt-0">
                                 {purl}
+                            </dd>
+                        </div>
+                        {parsedPurl.qualifiers &&
+                            Object.entries(parsedPurl.qualifiers).map(
+                                ([key, value]) => (
+                                    <div
+                                        className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+                                        key={key}
+                                    >
+                                        <dt className="text-right text-sm font-semibold leading-6">
+                                            {key}:
+                                        </dt>
+                                        <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                            {value}
+                                        </dd>
+                                    </div>
+                                ),
+                            )}
+
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
+                                Provenance type:
+                            </dt>
+                            <dd className="mt-1 text-sm font-bold leading-6 sm:col-span-2 sm:mt-0">
+                                {provenanceType}
                             </dd>
                         </div>
                     </dl>
