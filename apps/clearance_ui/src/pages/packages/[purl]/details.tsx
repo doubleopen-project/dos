@@ -3,15 +3,14 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import useMainUiStore from "@/store/mainui.store";
 import ClearanceToolbar from "@/components/ClearanceToolbar";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Details = () => {
-    const router = useRouter();
-    const purl = router.query.purl as string;
+    const purl = useMainUiStore((state) => state.purl);
+
     const parsedPurl = parsePurlAndQualifiers(purl);
     const mainPurl = new PackageURL(
         parsedPurl.type,
@@ -21,62 +20,81 @@ const Details = () => {
         null,
         null,
     ).toString();
+
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
             <div className="flex-1 border p-2">
-                <h3 className="font-semibold">Package Information</h3>
-
-                <Table className="mt-2 w-fit border p-2">
-                    <TableBody>
-                        <TableRow>
-                            <TableCell className="text-right font-semibold">
+                <div className="px-4 sm:px-0">
+                    <h3 className="font-semibold">Package Information</h3>
+                    <p className="mt-1 max-w-2xl text-sm">
+                        Details about package and its provenance.
+                    </p>
+                </div>
+                <div className="mt-6 rounded-lg border p-2">
+                    <dl className="">
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
                                 Name:
-                            </TableCell>
-                            <TableCell>{parsedPurl.name}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="text-right font-semibold">
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                {parsedPurl.name}
+                            </dd>
+                        </div>
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
                                 Version:
-                            </TableCell>
-                            <TableCell>{parsedPurl.version}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="text-right font-semibold">
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                {parsedPurl.version}
+                            </dd>
+                        </div>
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
                                 Type:
-                            </TableCell>
-                            <TableCell>{parsedPurl.type}</TableCell>
-                        </TableRow>
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                {parsedPurl.type}
+                            </dd>
+                        </div>
                         {parsedPurl.namespace && (
-                            <TableRow>
-                                <TableCell className="text-right font-semibold">
+                            <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt className="text-right text-sm font-semibold leading-6">
                                     Namespace:
-                                </TableCell>
-                                <TableCell>{parsedPurl.namespace}</TableCell>
-                            </TableRow>
+                                </dt>
+                                <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                    {parsedPurl.namespace}
+                                </dd>
+                            </div>
                         )}
                         {parsedPurl.subpath && (
-                            <TableRow>
-                                <TableCell className="text-right font-semibold">
+                            <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt className="text-right text-sm font-semibold leading-6">
                                     Subpath:
-                                </TableCell>
-                                <TableCell>{parsedPurl.subpath}</TableCell>
-                            </TableRow>
+                                </dt>
+                                <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                    {parsedPurl.subpath}
+                                </dd>
+                            </div>
                         )}
-                        <TableRow>
-                            <TableCell className="text-right font-semibold">
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
                                 Clean PURL:
-                            </TableCell>
-                            <TableCell>{mainPurl}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="text-right font-semibold">
+                            </dt>
+                            <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                {mainPurl}
+                            </dd>
+                        </div>
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt className="text-right text-sm font-semibold leading-6">
                                 Full PURL:
-                            </TableCell>
-                            <TableCell>{purl}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                            </dt>
+                            <dd className="mt-1 break-all text-sm leading-6 sm:col-span-2 sm:mt-0">
+                                {purl}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
         </div>
     );
