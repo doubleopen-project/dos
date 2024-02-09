@@ -3,14 +3,21 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
-import useMainUiStore from "@/store/mainui.store";
 import ClearanceToolbar from "@/components/ClearanceToolbar";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Details = () => {
-    const purl = useMainUiStore((state) => state.purl);
+    const router = useRouter();
+    const purl = router.query.purl;
 
+    if (!purl) {
+        return <div>Loading...</div>;
+    }
+    if (typeof purl !== "string") {
+        return <div>Invalid purl</div>;
+    }
     const parsedPurl = parsePurlAndQualifiers(purl);
     const mainPurl = new PackageURL(
         parsedPurl.type,
