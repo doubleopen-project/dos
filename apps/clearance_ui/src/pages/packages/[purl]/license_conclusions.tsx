@@ -8,7 +8,15 @@ import ClearanceToolbar from "@/components/ClearanceToolbar";
 
 const PackageLicenseConclusions = () => {
     const router = useRouter();
-    const purl = router.query.purl as string;
+    const purl = router.query.purl;
+
+    if (!purl) {
+        return <div>Loading...</div>;
+    }
+    if (typeof purl !== "string") {
+        return <div>Invalid purl</div>;
+    }
+
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
