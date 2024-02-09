@@ -5,19 +5,39 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/CopyToClipboard";
 import { ModeToggle } from "@/components/ModeToggle";
 import SideMenu from "@/components/navigation/SideMenu";
 import UserMenuItem from "@/components/navigation/UserMenuItem";
-import PurlDetails from "@/components/PurlDetails";
+import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Navbar = () => {
     const router = useRouter();
     const user = useUser();
 
     const { purl, path } = router.query;
+
+    if (!purl) {
+        return <div>Loading...</div>;
+    }
+    if (typeof purl !== "string") {
+        return <div>Invalid purl</div>;
+    }
+
+    // purl exists and is of correct type, so we can continue
+
+    const parsedPurl = parsePurlAndQualifiers(purl);
+    const mainPurl = new PackageURL(
+        parsedPurl.type,
+        parsedPurl.namespace,
+        parsedPurl.name,
+        parsedPurl.version,
+        null,
+        null,
+    ).toString();
 
     return (
         <div className="overflow-none flex flex-row items-center justify-between border-b-[1px] py-2">
@@ -27,7 +47,12 @@ const Navbar = () => {
                     <span className="logo">doubleOpen</span>
                     <span className="logo logo-brackets">()</span>
                 </Link>
-                {purl && <PurlDetails purl={purl as string} />}
+                {purl && (
+                    <div className="flex-row items-center">
+                        <Label className="break-all text-xs">{mainPurl}</Label>
+                        <CopyToClipboard copyText={mainPurl} />
+                    </div>
+                )}
                 {path && (
                     <>
                         <Label className="pl-1 pr-2 text-lg font-semibold text-[#FF3366]">
