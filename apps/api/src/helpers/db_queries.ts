@@ -3944,7 +3944,9 @@ export const countScannedPackages = async (
 
 export const countPathExclusions = async (
     purl: string | undefined,
+    purlStrict: boolean,
     username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -3962,11 +3964,15 @@ export const countPathExclusions = async (
                 where: {
                     package: {
                         purl: {
-                            contains: purl,
+                            equals: purlStrict ? purl : undefined,
+                            contains: !purlStrict ? purl : undefined,
                         },
                     },
                     user: {
-                        username: username,
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     pattern: {
                         contains: pattern,

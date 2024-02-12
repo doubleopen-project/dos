@@ -7678,46 +7678,67 @@ declare const userAPI: [
                 name: "purl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "pattern";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "reason";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "comment";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "createdAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "createdAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
         ];
         response: zod.ZodObject<
@@ -14546,46 +14567,67 @@ declare const dosAPI: [
                 name: "purl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "pattern";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "reason";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "comment";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "createdAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "createdAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
         ];
         response: zod.ZodObject<
