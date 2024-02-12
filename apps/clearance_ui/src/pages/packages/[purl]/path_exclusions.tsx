@@ -5,7 +5,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import ClearanceToolbar from "@/components/ClearanceToolbar";
-import PackagePathExclusions from "@/components/main_ui/package_path_exclusions/PackagePathExclusions";
+import PackagePathExclusions from "@/components/main_ui/package_path_exclusions/PathExclusionWrapper";
 
 const PathExclusions = () => {
     const router = useRouter();
