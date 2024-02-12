@@ -86,6 +86,11 @@ export const GetLicenseConclusionsRes = z.object({
                         purl: z.string(),
                     }),
                 ),
+                inQueryPurl: z.array(
+                    z.object({
+                        path: z.string(),
+                    }),
+                ),
             }),
         }),
     ),
