@@ -4133,8 +4133,11 @@ export const countBulkConclusions = async (
 };
 
 export const countLicenseConclusions = async (
+    purl: string | undefined,
     contextPurl: string | undefined,
+    contextPurlStrict: boolean,
     username: string | undefined,
+    usernameStrict: boolean,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -4162,11 +4165,70 @@ export const countLicenseConclusions = async (
         try {
             count = await prisma.licenseConclusion.count({
                 where: {
+                    OR: purl
+                        ? [
+                              /*
+                               * License conclusions made in the context of the specified package
+                               */
+                              {
+                                  file: {
+                                      filetrees: {
+                                          some: {
+                                              package: {
+                                                  purl: purl,
+                                              },
+                                          },
+                                      },
+                                  },
+                                  contextPurl: purl,
+                              },
+                              /*
+                               * License conclusions made in the context of a package different from
+                               * the specified one. Here the local value has to be false, as otherwise
+                               * the license conclusion shouldn't be applied in the files of the
+                               * specified package.
+                               */
+                              {
+                                  file: {
+                                      filetrees: {
+                                          some: {
+                                              package: {
+                                                  purl: purl,
+                                              },
+                                          },
+                                      },
+                                  },
+                                  contextPurl: {
+                                      not: purl,
+                                  },
+                                  local: false,
+                              },
+                          ]
+                        : undefined,
                     contextPurl: {
-                        contains: contextPurl,
+                        /*
+                         * If the purl is specified, and the local value is set to true,
+                         * the contextPurl cannot be used, as it has to be the same as the
+                         * purl. This is also mentioned in the API documentation.
+                         */
+                        equals:
+                            purl && local === true
+                                ? undefined
+                                : contextPurlStrict
+                                  ? contextPurl
+                                  : undefined,
+                        contains:
+                            purl && local === true
+                                ? undefined
+                                : !contextPurlStrict
+                                  ? contextPurl
+                                  : undefined,
                     },
                     user: {
-                        username: username,
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     detectedLicenseExpressionSPDX: {
                         contains: detectedLicense,
