@@ -106,6 +106,18 @@ userRouter.get("/license-conclusions", async (req, res) => {
         // TODO: return only license conclusions that belong to the user
         // or to a group that the user belongs to
 
+        if (req.query.purl) {
+            const pkg = await dbQueries.findPackageByPurl(req.query.purl);
+
+            if (!pkg) {
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
+            }
+        }
+
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
@@ -119,8 +131,11 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 !req.query.sortBy && !req.query.sortOrder
                     ? "desc"
                     : req.query.sortOrder,
+                req.query.purl,
                 req.query.contextPurl,
+                req.query.contextPurlStrict || false,
                 req.query.username,
+                req.query.usernameStrict || false,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
                 req.query.comment,
@@ -138,6 +153,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
         for (const lc of licenseConclusionsWithRelations) {
             const inContextPurl = [];
             const additionalMatches = [];
+            const inQueryPurl = [];
 
             for (const ft of lc.file.filetrees) {
                 if (ft.package.purl === lc.contextPurl) {
@@ -151,6 +167,11 @@ userRouter.get("/license-conclusions", async (req, res) => {
                             purl: ft.package.purl,
                         });
                     }
+                }
+                if (ft.package.purl === req.query.purl) {
+                    inQueryPurl.push({
+                        path: ft.path,
+                    });
                 }
             }
 
@@ -169,9 +190,11 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 affectedPaths: {
                     inContextPurl: inContextPurl,
                     additionalMatches: additionalMatches,
+                    inQueryPurl: inQueryPurl,
                 },
             });
         }
+
         res.status(200).json({
             licenseConclusions: licenseConclusions,
         });

@@ -65,66 +65,103 @@ export const userAPI = makeApi([
                 schema: commonSchemas.QueryParamSortOrder,
             },
             {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+                description:
+                    "Filter by purl (exact match). Use this to get the license conclusions affecting the files in the specified purl, regardless of whether the conclusions were made in the context of the purl or not.",
+            },
+            {
                 name: "contextPurl",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
                 description:
-                    "Filter by context purl (use this to get only the license conclusions made in the context of the specified purl)",
+                    "Filter by context purl. Use this to get only the license conclusions made in the context of the specified purl. Please note that if a purl is specified, and the local value is set to true, the context purl will be ignored, as it has to be the same as the purl.",
+            },
+            {
+                name: "contextPurlStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by context purl strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "username",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by username",
+            },
+            {
+                name: "usernameStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by username strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "detectedLicense",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by detected license (substring match)",
             },
             {
                 name: "concludedLicense",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by concluded license (substring match)",
             },
             {
                 name: "comment",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by comment (substring match)",
             },
             {
                 name: "local",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterBoolean,
+                description: "Filter by local value",
             },
             {
                 name: "bulkConclusionId",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterInt,
+                description: "Filter by bulk conclusion id",
             },
             {
                 name: "hasBulkConclusionId",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Refine results to include only entries with or without a bulk conclusion id.",
             },
             {
                 name: "createdAtGte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries created on or after the specified date.",
             },
             {
                 name: "createdAtLte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries created on or before the specified date.",
             },
             {
                 name: "updatedAtGte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries updated on or after the specified date.",
             },
             {
                 name: "updatedAtLte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries updated on or before the specified date.",
             },
         ],
         response: schemas.GetLicenseConclusionsRes,

@@ -4767,65 +4767,94 @@ declare const userAPI: [
                 schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
             },
             {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
                 name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
                 description: string;
             },
             {
+                name: "contextPurlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
+            },
+            {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "detectedLicense";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "concludedLicense";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "comment";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "local";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "bulkConclusionId";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodNumber>;
+                description: string;
             },
             {
                 name: "hasBulkConclusionId";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "createdAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "createdAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
         ];
         response: zod.ZodObject<
@@ -4892,6 +4921,22 @@ declare const userAPI: [
                                         >,
                                         "many"
                                     >;
+                                    inQueryPurl: zod.ZodArray<
+                                        zod.ZodObject<
+                                            {
+                                                path: zod.ZodString;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                path: string;
+                                            },
+                                            {
+                                                path: string;
+                                            }
+                                        >,
+                                        "many"
+                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
@@ -4903,6 +4948,9 @@ declare const userAPI: [
                                         path: string;
                                         purl: string;
                                     }[];
+                                    inQueryPurl: {
+                                        path: string;
+                                    }[];
                                 },
                                 {
                                     inContextPurl: {
@@ -4911,6 +4959,9 @@ declare const userAPI: [
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
+                                    }[];
+                                    inQueryPurl: {
+                                        path: string;
                                     }[];
                                 }
                             >;
@@ -4938,6 +4989,9 @@ declare const userAPI: [
                                     path: string;
                                     purl: string;
                                 }[];
+                                inQueryPurl: {
+                                    path: string;
+                                }[];
                             };
                         },
                         {
@@ -4960,6 +5014,9 @@ declare const userAPI: [
                                 additionalMatches: {
                                     path: string;
                                     purl: string;
+                                }[];
+                                inQueryPurl: {
+                                    path: string;
                                 }[];
                             };
                         }
@@ -4991,6 +5048,9 @@ declare const userAPI: [
                             path: string;
                             purl: string;
                         }[];
+                        inQueryPurl: {
+                            path: string;
+                        }[];
                     };
                 }[];
             },
@@ -5015,6 +5075,9 @@ declare const userAPI: [
                         additionalMatches: {
                             path: string;
                             purl: string;
+                        }[];
+                        inQueryPurl: {
+                            path: string;
                         }[];
                     };
                 }[];
@@ -11658,65 +11721,94 @@ declare const dosAPI: [
                 schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
             },
             {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
                 name: "contextPurl";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
                 description: string;
             },
             {
+                name: "contextPurlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
+            },
+            {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "detectedLicense";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "concludedLicense";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "comment";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
             },
             {
                 name: "local";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "bulkConclusionId";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodNumber>;
+                description: string;
             },
             {
                 name: "hasBulkConclusionId";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
             },
             {
                 name: "createdAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "createdAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtGte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
             {
                 name: "updatedAtLte";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
             },
         ];
         response: zod.ZodObject<
@@ -11783,6 +11875,22 @@ declare const dosAPI: [
                                         >,
                                         "many"
                                     >;
+                                    inQueryPurl: zod.ZodArray<
+                                        zod.ZodObject<
+                                            {
+                                                path: zod.ZodString;
+                                            },
+                                            "strip",
+                                            zod.ZodTypeAny,
+                                            {
+                                                path: string;
+                                            },
+                                            {
+                                                path: string;
+                                            }
+                                        >,
+                                        "many"
+                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
@@ -11794,6 +11902,9 @@ declare const dosAPI: [
                                         path: string;
                                         purl: string;
                                     }[];
+                                    inQueryPurl: {
+                                        path: string;
+                                    }[];
                                 },
                                 {
                                     inContextPurl: {
@@ -11802,6 +11913,9 @@ declare const dosAPI: [
                                     additionalMatches: {
                                         path: string;
                                         purl: string;
+                                    }[];
+                                    inQueryPurl: {
+                                        path: string;
                                     }[];
                                 }
                             >;
@@ -11829,6 +11943,9 @@ declare const dosAPI: [
                                     path: string;
                                     purl: string;
                                 }[];
+                                inQueryPurl: {
+                                    path: string;
+                                }[];
                             };
                         },
                         {
@@ -11851,6 +11968,9 @@ declare const dosAPI: [
                                 additionalMatches: {
                                     path: string;
                                     purl: string;
+                                }[];
+                                inQueryPurl: {
+                                    path: string;
                                 }[];
                             };
                         }
@@ -11882,6 +12002,9 @@ declare const dosAPI: [
                             path: string;
                             purl: string;
                         }[];
+                        inQueryPurl: {
+                            path: string;
+                        }[];
                     };
                 }[];
             },
@@ -11906,6 +12029,9 @@ declare const dosAPI: [
                         additionalMatches: {
                             path: string;
                             purl: string;
+                        }[];
+                        inQueryPurl: {
+                            path: string;
                         }[];
                     };
                 }[];
