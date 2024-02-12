@@ -242,7 +242,7 @@ userRouter.get(
     async (req, res) => {
         try {
             const fileSha256 = req.params.sha256;
-            const purl = req.params.purl.replace(/%2F/g, "/");
+            const purl = req.params.purl;
 
             let licenseConclusions =
                 await dbQueries.findLicenseConclusionsByFileSha256(fileSha256);
