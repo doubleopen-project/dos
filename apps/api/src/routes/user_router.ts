@@ -1036,7 +1036,9 @@ userRouter.get("/path-exclusions/count", async (req, res) => {
     try {
         const pathExclusionsCount = await dbQueries.countPathExclusions(
             req.query.purl,
+            req.query.purlStrict || false,
             req.query.username,
+            req.query.usernameStrict || false,
             req.query.pattern,
             req.query.reason,
             req.query.comment,
