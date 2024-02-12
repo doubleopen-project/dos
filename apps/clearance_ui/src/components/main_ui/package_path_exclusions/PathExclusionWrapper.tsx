@@ -6,6 +6,9 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
+import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
+import EditButton from "@/components/edit_item/EditButton";
+import PathExclusion from "@/components/main_ui/package_path_exclusions/PathExclusion";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -38,22 +41,14 @@ const PackagePathExclusions = ({ purl }: Props) => {
                 </div>
             )}
             {data && (
-                <div className="flex-1 border p-2">
+                <div className="w-full flex-1 overflow-y-auto border">
                     {data.pathExclusions.map((pe) => (
-                        <div key={pe.id}>
-                            <div>
-                                {
-                                    new Date(pe.updatedAt)
-                                        .toISOString()
-                                        .split("T")[0]
-                                }
-                            </div>
-                            <div>{pe.pattern}</div>
-                            <div>{pe.reason}</div>
-                            <div>{pe.comment}</div>
-                        </div>
+                        <PathExclusion
+                            pathExclusion={pe}
+                            userName={userName}
+                            userRole={userRole}
+                        />
                     ))}
-                    ;
                 </div>
             )}
         </>
