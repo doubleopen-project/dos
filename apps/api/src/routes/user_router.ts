@@ -214,9 +214,24 @@ userRouter.get("/license-conclusions", async (req, res) => {
 
 userRouter.get("/license-conclusions/count", async (req, res) => {
     try {
+        if (req.query.purl) {
+            const pkg = await dbQueries.findPackageByPurl(req.query.purl);
+
+            if (!pkg) {
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
+            }
+        }
+
         const licenseConclusionsCount = await dbQueries.countLicenseConclusions(
+            req.query.purl,
             req.query.contextPurl,
+            req.query.contextPurlStrict || false,
             req.query.username,
+            req.query.usernameStrict || false,
             req.query.detectedLicense,
             req.query.concludedLicense,
             req.query.comment,
@@ -232,8 +247,14 @@ userRouter.get("/license-conclusions/count", async (req, res) => {
         res.status(200).json({ count: licenseConclusionsCount });
     } catch (error) {
         console.log("Error: ", error);
-        const err = await getErrorCodeAndMessage(error);
-        res.status(err.statusCode).json({ message: err.message });
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 
