@@ -409,56 +409,85 @@ export const userAPI = makeApi([
                 name: "purl",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by purl",
+            },
+            {
+                name: "purlStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by purl strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "username",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by username",
+            },
+            {
+                name: "usernameStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by username strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "pattern",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by pattern (substring match)",
             },
             {
                 name: "detectedLicense",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by detected license (substring match)",
             },
             {
                 name: "concludedLicense",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by concluded license (substring match)",
             },
             {
                 name: "comment",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by comment (substring match)",
             },
             {
                 name: "local",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterBoolean,
+                description: "Filter by local",
             },
             {
                 name: "createdAtGte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries created on or after the specified date.",
             },
             {
                 name: "createdAtLte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries created on or before the specified date.",
             },
             {
                 name: "updatedAtGte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries updated on or after the specified date.",
             },
             {
                 name: "updatedAtLte",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterDate,
+                description:
+                    "Refine results to include only entries updated on or before the specified date.",
             },
         ],
         response: commonSchemas.GetCountRes,

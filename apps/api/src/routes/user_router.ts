@@ -504,7 +504,9 @@ userRouter.get("/bulk-conclusions/count", async (req, res) => {
     try {
         const bulkConclusionsCount = await dbQueries.countBulkConclusions(
             req.query.purl,
+            req.query.purlStrict || false,
             req.query.username,
+            req.query.usernameStrict || false,
             req.query.pattern,
             req.query.detectedLicense,
             req.query.concludedLicense,
