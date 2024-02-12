@@ -49,9 +49,10 @@ const PathExclusion = ({
                         <span className="mr-1">Reason:</span>
                         <span>{pathExclusion.reason}</span>
                     </span>
-                    <span className="text-smaller italic">
+                    <span className="text-smaller p-1 italic">
                         {pathExclusion.comment}
                     </span>
+                    <span className="text-smaller p-1">EDIT MODE</span>
                 </div>
             </div>
             <div className="flex border">
