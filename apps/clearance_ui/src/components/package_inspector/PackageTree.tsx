@@ -32,25 +32,13 @@ import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
+import { stringToColour } from "@/helpers/stringToColour";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
 
 type Props = {
     purl: string;
     path: string | undefined;
-};
-
-const stringToColour = (str: string) => {
-    let hash = 0;
-    str.split("").forEach((char) => {
-        hash = char.charCodeAt(0) + ((hash << 5) - hash);
-    });
-    let colour = "#";
-    for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 0xff;
-        colour += value.toString(16).padStart(2, "0");
-    }
-    return colour;
 };
 
 const PackageTree = ({ purl, path }: Props) => {
