@@ -16,20 +16,30 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { DeleteAction } from "@/types";
 
 type Props = {
     deleteActions: DeleteAction[];
+    className?: string;
+    variant?:
+        | "outline"
+        | "default"
+        | "link"
+        | "destructive"
+        | "secondary"
+        | "ghost"
+        | "success";
 };
 
-const DeleteDialog = ({ deleteActions }: Props) => {
+const DeleteDialog = ({ deleteActions, className, variant }: Props) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button
                     data-testid="delete-clearance-button"
-                    variant="outline"
-                    className="px-2"
+                    variant={variant || "outline"}
+                    className={cn(className, "px-2")}
                 >
                     <Delete></Delete>
                 </Button>
