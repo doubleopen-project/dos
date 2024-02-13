@@ -24,23 +24,24 @@ type Props = {
 
 const DeleteLicenseConclusion = ({ data }: Props) => {
     const { toast } = useToast();
-    const keyLCs = userHooks.getKeyByPath(
-        "get",
-        "/packages/:purl/files/:sha256/license-conclusions/",
+    const keyLCs = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByPath(
-        "get",
-        "/packages/:purl/filetrees",
+    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
+    const keyLicenseConclusion = userHooks.getKeyByAlias(
+        "GetLicenseConclusions",
     );
-    const keyLicenseConclusion = userHooks.getKeyByPath(
-        "get",
-        "/license-conclusions",
+    const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsCount",
+    );
+    const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetBulkConclusionsCount",
     );
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
     // Get possible bulk curation related to this license conclusion
-    const { data: bulkCuration } = data.bulkConclusionId
+    const { data: bulkConclusion } = data.bulkConclusionId
         ? userHooks.useGetBulkConclusionById({
               withCredentials: true,
               params: {
@@ -66,16 +67,16 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
         mutation: deleteItem,
     });
 
-    if (bulkCuration) {
+    if (bulkConclusion) {
         deleteActions.push({
             dialogMessage: (
                 <>
                     This is a bulk license conclusion, concluding{" "}
-                    <strong>{bulkCuration.filePaths.length}</strong> files as{" "}
+                    <strong>{bulkConclusion.filePaths.length}</strong> files as{" "}
                     <strong>
-                        {bulkCuration.concludedLicenseExpressionSPDX}
+                        {bulkConclusion.concludedLicenseExpressionSPDX}
                     </strong>{" "}
-                    with the pattern <strong>{bulkCuration.pattern}</strong>.
+                    with the pattern <strong>{bulkConclusion.pattern}</strong>.
                     <br />
                     <br />
                     Do you want to delete only the license conclusion for this
@@ -92,10 +93,9 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
     }
 
     function deleteManyItems() {
-        deleteBulkCuration(undefined);
+        deleteBulkConclusion(undefined);
     }
 
-    // Delete a path exclusion or license conclusion
     const { mutate: deleteLicenseConclusion, isLoading } =
         userHooks.useDeleteLicenseConclusion(
             {
@@ -110,10 +110,13 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                         title: "Delete successful",
                         description: "License conclusion deleted successfully.",
                     });
-                    // When a license conclusion is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", "/filetree" and "/license-conclusions" queries to refetch the data
+                    // When a license conclusion is deleted, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
+                    queryClient.invalidateQueries(
+                        keyLicenseConclusionCountByPurl,
+                    );
                 },
                 onError: () => {
                     toast({
@@ -125,8 +128,8 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
             },
         );
 
-    // Delete a bulk curation
-    const { mutate: deleteBulkCuration, isLoading: isBulkLoading } =
+    // Delete a bulk conclusion
+    const { mutate: deleteBulkConclusion, isLoading: isBulkLoading } =
         userHooks.useDeleteBulkConclusion(
             {
                 withCredentials: true,
@@ -138,11 +141,12 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
                 onSuccess: () => {
                     toast({
                         title: "Delete successful",
-                        description: `Bulk license conclusion deleted successfully, ${bulkCuration?.filePaths.length} files affected.`,
+                        description: `Bulk license conclusion deleted successfully, ${bulkConclusion?.filePaths.length} files affected.`,
                     });
-                    // When a bulk curation is deleted, invalidate the "/packages/:purl/files/:sha256/license-conclusions", and filetree queries to refetch the data
+                    // When a bulk conclusion is deleted, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
+                    queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
                 },
                 onError: () => {
                     toast({

@@ -95,14 +95,12 @@ const ConclusionForm = ({
         defaultValues,
     });
     const { errors } = useFormState({ control: form.control });
-
-    const keyLCs = userHooks.getKeyByPath(
-        "get",
-        "/packages/:purl/files/:sha256/license-conclusions/",
+    const keyLCs = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByPath(
-        "get",
-        "/packages/:purl/filetrees",
+    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
+    const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsCount",
     );
     const queryClient = useQueryClient();
 
@@ -118,9 +116,10 @@ const ConclusionForm = ({
         },
         {
             onSuccess: () => {
-                // When a license conclusion is added, invalidate the file and filetree queries to refetch the data
+                // When a license conclusion is added, invalidate the corresponding queries to refetch the data
                 queryClient.invalidateQueries(keyLCs);
                 queryClient.invalidateQueries(keyFiletree);
+                queryClient.invalidateQueries(keyLicenseConclusionCountByPurl);
                 toast({
                     title: "License conclusion",
                     description: "License conclusion added successfully.",
