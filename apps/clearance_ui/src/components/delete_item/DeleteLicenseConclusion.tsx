@@ -20,9 +20,18 @@ type ItemType = ZodiosResponseByPath<
 
 type Props = {
     data: Omit<ItemType, "createdAt">;
+    className?: string;
+    variant?:
+        | "outline"
+        | "default"
+        | "link"
+        | "destructive"
+        | "secondary"
+        | "ghost"
+        | "success";
 };
 
-const DeleteLicenseConclusion = ({ data }: Props) => {
+const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
@@ -166,7 +175,13 @@ const DeleteLicenseConclusion = ({ data }: Props) => {
         );
     }
 
-    return <DeleteDialog deleteActions={deleteActions} />;
+    return (
+        <DeleteDialog
+            deleteActions={deleteActions}
+            className={className}
+            variant={variant}
+        />
+    );
 };
 
 export default DeleteLicenseConclusion;
