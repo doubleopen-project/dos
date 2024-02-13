@@ -51,8 +51,6 @@ const PathExclusionWrapper = ({ purl }: Props) => {
                             <PathExclusionEditForm
                                 key={`edit-pe-${pe.id}`}
                                 pathExclusion={pe}
-                                userName={userName}
-                                userRole={userRole}
                                 editHandler={editHandler}
                             />
                         ) : (
