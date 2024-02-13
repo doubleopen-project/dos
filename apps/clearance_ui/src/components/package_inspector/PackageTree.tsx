@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/tooltip";
 import LicenseSelector from "@/components/package_inspector/LicenseSelector";
 import Node from "@/components/package_inspector/Node";
-import ExclusionDB from "@/components/path_exclusions/ExclusionDB";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
@@ -323,7 +322,6 @@ const PackageTree = ({ purl, path }: Props) => {
                     filterString={"licenseFilter"}
                     className="mb-1 w-full"
                 />
-                <ExclusionDB purl={purl} fractionalWidth={1.5} />
             </div>
         </div>
     );
