@@ -16,9 +16,11 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 type Props = {
     purl: string;
+    hideBorder?: boolean;
+    hideCopyToClipboard?: boolean;
 };
 
-const PurlDetails = ({ purl }: Props) => {
+const PurlDetails = ({ purl, hideBorder, hideCopyToClipboard }: Props) => {
     const parsedPurl = parsePurlAndQualifiers(purl);
     const mainPurl = new PackageURL(
         parsedPurl.type,
@@ -32,7 +34,10 @@ const PurlDetails = ({ purl }: Props) => {
     return (
         <div className="flex justify-between">
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
+                <AccordionItem
+                    value="item-1"
+                    className={hideBorder ? " border-none" : undefined}
+                >
                     <AccordionTrigger>
                         <Label className="break-all px-1 text-xs">
                             {mainPurl}
@@ -56,7 +61,7 @@ const PurlDetails = ({ purl }: Props) => {
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
-            <CopyToClipboard copyText={mainPurl} />
+            {!hideCopyToClipboard && <CopyToClipboard copyText={mainPurl} />}
         </div>
     );
 };
