@@ -44,7 +44,7 @@ const PathExclusionWrapper = ({ purl }: Props) => {
                     <div>Error: {error.message}</div>
                 </div>
             )}
-            {data && (
+            {data && data.pathExclusions.length > 0 ? (
                 <div className="w-full flex-1 overflow-y-auto border">
                     {data.pathExclusions.map((pe) =>
                         pe.id === editing ? (
@@ -63,6 +63,10 @@ const PathExclusionWrapper = ({ purl }: Props) => {
                             />
                         ),
                     )}
+                </div>
+            ) : (
+                <div className="flex h-full items-center justify-center border">
+                    No path exclusions created for this package
                 </div>
             )}
         </>

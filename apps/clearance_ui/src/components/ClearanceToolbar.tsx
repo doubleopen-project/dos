@@ -48,7 +48,7 @@ const ClearanceToolbar = () => {
                         router.pathname.includes("/tree/")
                         ? "border-b-4 border-[#ff3366] font-semibold"
                         : "",
-                    "inline-block rounded-sm px-2 py-1 text-xs hover:bg-gray-100 hover:text-gray-900",
+                    "hover:bg-muted inline-block rounded-sm px-2 py-1 text-xs",
                 )}
             >
                 <div className="flex items-center">
