@@ -10,13 +10,30 @@ import { LuFileStack, LuFolderTree } from "react-icons/lu";
 import { TbFoldersOff } from "react-icons/tb";
 import { TfiPencil } from "react-icons/tfi";
 import { useShallow } from "zustand/react/shallow";
+import { userHooks } from "@/hooks/zodiosHooks";
 import useMainUiStore from "@/store/mainui.store";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const ClearanceToolbar = () => {
     const router = useRouter();
     const [purl, path] = useMainUiStore(
         useShallow((state) => [state.purl, state.path]),
+    );
+
+    // Get the counts of different clearance items for this package, to show in the toolbar
+    const { data: licenseConclusionCount } =
+        userHooks.useGetLicenseConclusionsCount(
+            { withCredentials: true, queries: { purl: purl } },
+            { enabled: !!purl },
+        );
+    const { data: bulkConclusionCount } = userHooks.useGetBulkConclusionsCount(
+        { withCredentials: true, queries: { purl: purl, purlStrict: true } },
+        { enabled: !!purl },
+    );
+    const { data: pathExclusionCount } = userHooks.useGetPathExclusionsCount(
+        { withCredentials: true, queries: { purl: purl, purlStrict: true } },
+        { enabled: !!purl },
     );
 
     return (
@@ -47,7 +64,7 @@ const ClearanceToolbar = () => {
                     router.pathname === "/packages/[purl]/details"
                         ? "border-b-4 border-[#ff3366] font-semibold"
                         : "",
-                    "inline-block rounded-sm px-2 py-1 text-xs hover:bg-gray-100 hover:text-gray-900",
+                    "hover:bg-muted inline-block rounded-sm px-2 py-1 text-xs",
                 )}
             >
                 <div className="flex items-center">
@@ -65,12 +82,21 @@ const ClearanceToolbar = () => {
                     router.pathname === "/packages/[purl]/license_conclusions"
                         ? "border-b-4 border-[#ff3366] font-semibold"
                         : "",
-                    "inline-block rounded-sm px-2 py-1 text-xs hover:bg-gray-100 hover:text-gray-900",
+                    "hover:bg-muted inline-block rounded-sm px-2 py-1 text-xs",
                 )}
             >
                 <div className="flex items-center">
                     <TfiPencil className="mr-1" />
-                    License Conclusions
+                    <span>License Conclusions</span>
+                    {licenseConclusionCount &&
+                        licenseConclusionCount.count > 0 && (
+                            <Badge
+                                variant="secondary"
+                                className="ml-1 text-xs font-semibold"
+                            >
+                                {licenseConclusionCount.count}
+                            </Badge>
+                        )}
                 </div>
             </Link>
 
@@ -81,12 +107,20 @@ const ClearanceToolbar = () => {
                     router.pathname === "/packages/[purl]/bulk_conclusions"
                         ? "border-b-4 border-[#ff3366] font-semibold"
                         : "",
-                    "inline-block rounded-sm px-2 py-1 text-xs hover:bg-gray-100 hover:text-gray-900",
+                    "hover:bg-muted inline-block rounded-sm px-2 py-1 text-xs",
                 )}
             >
                 <div className="flex items-center">
                     <LuFileStack className="mr-1" />
-                    Bulk Conclusions
+                    <span>Bulk Conclusions</span>
+                    {bulkConclusionCount && bulkConclusionCount.count > 0 && (
+                        <Badge
+                            variant="secondary"
+                            className="ml-1 text-xs font-semibold"
+                        >
+                            {bulkConclusionCount.count}
+                        </Badge>
+                    )}
                 </div>
             </Link>
 
@@ -97,12 +131,20 @@ const ClearanceToolbar = () => {
                     router.pathname === "/packages/[purl]/path_exclusions"
                         ? "border-b-4 border-[#ff3366] font-semibold"
                         : "",
-                    "inline-block rounded-sm px-2 py-1 text-xs hover:bg-gray-100 hover:text-gray-900",
+                    "hover:bg-muted inline-block rounded-sm px-2 py-1 text-xs",
                 )}
             >
                 <div className="flex items-center">
                     <TbFoldersOff className="mr-1" />
-                    Path Exclusions
+                    <span>Path Exclusions</span>
+                    {pathExclusionCount && pathExclusionCount.count > 0 && (
+                        <Badge
+                            variant="secondary"
+                            className="ml-1 text-xs font-semibold"
+                        >
+                            {pathExclusionCount.count}
+                        </Badge>
+                    )}
                 </div>
             </Link>
         </div>

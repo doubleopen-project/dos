@@ -102,6 +102,9 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
+    const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetBulkConclusionsCount",
+    );
 
     const queryClient = useQueryClient();
     const { mutate: addBulkConclusion, isLoading } =
@@ -127,10 +130,11 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
                         ${res.filesPackage} identical (SHA256) files affected in this package, 
                         ${res.filesAll} identical (SHA256) files affected in the database.`,
                     });
-                    // When a bulk curation is added, invalidate the queries to refetch the data
+                    // When a bulk conclusion is added, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
+                    queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
                 },
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {

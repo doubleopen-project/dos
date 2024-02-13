@@ -72,6 +72,9 @@ const ExclusionForm = ({
     const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
         "GetPathExclusionsByPurl",
     );
+    const keyPathExclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetPathExclusionsCount",
+    );
     const queryClient = useQueryClient();
 
     const { mutate: addPathExclusion } = userHooks.usePostPathExclusion(
@@ -88,8 +91,9 @@ const ExclusionForm = ({
                     title: "Path exclusion",
                     description: "Path exclusion added successfully.",
                 });
-                // When a path exclusions is added, invalidate the query to refetch the data
+                // When a path exclusion is added, invalidate the corresponding queries to refetch the data
                 queryClient.invalidateQueries(keyPathExclusionsByPurl);
+                queryClient.invalidateQueries(keyPathExclusionCountByPurl);
             },
             onError: (error) => {
                 if (axios.isAxiosError(error)) {
@@ -129,7 +133,7 @@ const ExclusionForm = ({
                     description:
                         "Path exclusion edited and saved successfully.",
                 });
-                // When a path exclusions is edited, invalidate the query to refetch the data
+                // When a path exclusion is edited, invalidate the corresponding queries to refetch the data
                 queryClient.invalidateQueries(keyPathExclusionsByPurl);
             },
             onError: (error) => {
