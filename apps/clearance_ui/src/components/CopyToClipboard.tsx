@@ -49,13 +49,13 @@ const CopyToClipboard = ({ copyText }: Props) => {
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button variant="ghost" size="xs" onClick={handleCopyClick}>
-                        <div className="fg-slate-300">
+                        <span className="fg-slate-300">
                             {isCopied ? (
                                 <LuCheck color="gray" />
                             ) : (
                                 <LuCopy color="gray" />
                             )}
-                        </div>
+                        </span>
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
