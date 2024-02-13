@@ -234,6 +234,7 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                 <Loader2 className="ml-2 mr-1 h-10 w-10 animate-spin" />
                             ) : (
                                 <Button
+                                    data-testid="path-exclusion-edit"
                                     variant="outline"
                                     type="submit"
                                     className="ml-2 mr-1 px-2"
