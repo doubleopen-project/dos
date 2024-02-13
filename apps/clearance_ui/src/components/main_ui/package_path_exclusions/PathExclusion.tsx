@@ -28,7 +28,10 @@ const PathExclusion = ({
     editHandler,
 }: Props) => {
     return (
-        <div className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2">
+        <div
+            className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
+            data-testid="path-exclusion"
+        >
             <div className="mr-1 flex-1 items-start text-left">
                 <div className="flex w-full flex-col gap-1">
                     <div className="flex items-center justify-between text-sm">
