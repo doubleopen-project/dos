@@ -23,8 +23,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import PurlDetails from "@/components/PurlDetails";
 import DeleteBulkConclusion from "@/components/delete_item/DeleteBulkConclusion";
+import PurlDetails from "@/components/PurlDetails";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
