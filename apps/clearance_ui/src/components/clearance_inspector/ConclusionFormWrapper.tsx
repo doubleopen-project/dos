@@ -63,7 +63,6 @@ const ConclusionFormWrapper = ({
                             <ConclusionForm
                                 purl={purl}
                                 fileSha256={fileSha256}
-                                lcData={licenseConclusionData}
                                 detectedExpression={
                                     licenseFindingData.licenseFindings.length >
                                     0
