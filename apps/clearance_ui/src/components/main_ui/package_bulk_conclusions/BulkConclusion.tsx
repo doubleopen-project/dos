@@ -62,9 +62,11 @@ const BulkConclusion = ({
                         <span className="italic">{bulkConclusion.comment}</span>
                     </div>
                     {bulkConclusion.local && (
-                        <Badge className="bg-blue-400 p-0.5 font-bold">
-                            LOCAL
-                        </Badge>
+                        <span>
+                            <Badge className="bg-red-400 p-0.5 font-bold">
+                                LOCAL
+                            </Badge>
+                        </span>
                     )}
                 </div>
             </div>

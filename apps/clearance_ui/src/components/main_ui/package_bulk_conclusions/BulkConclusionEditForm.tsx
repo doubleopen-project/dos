@@ -7,12 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import axios from "axios";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Info, Loader2, X } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -22,8 +23,15 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { patternGlobSchema } from "@/components/common/pattern_schema";
 import { concludedLicenseExpressionSPDXSchema } from "@/components/common/spdx_schema";
@@ -200,7 +208,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                                     errors.pattern
                                                         ? "border-destructive border"
                                                         : undefined,
-                                                    "!min-h-[40px] text-xs",
+                                                    "bg-white text-xs dark:bg-black",
                                                 )}
                                                 placeholder="Glob pattern matching to the files to be concluded..."
                                                 {...field}
@@ -230,7 +238,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                                 className={
                                                     errors.concludedLicenseList
                                                         ? "border-destructive border"
-                                                        : undefined
+                                                        : "hover:bg-slate-400"
                                                 }
                                             />
                                         </FormControl>
@@ -250,7 +258,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                                 className={
                                                     errors.concludedLicenseSPDX
                                                         ? "border-destructive border"
-                                                        : ""
+                                                        : "bg-white dark:bg-black"
                                                 }
                                             />
                                         </FormControl>
@@ -274,6 +282,58 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                             />
                                         </FormControl>
                                         <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="local"
+                                render={({ field }) => (
+                                    <FormItem className="ml-1 flex flex-row items-end space-x-3 space-y-2 rounded-md">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1 leading-none">
+                                            <Label>Mark as local</Label>
+                                        </div>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger
+                                                    className="ml-1"
+                                                    type="button"
+                                                >
+                                                    <Info size={"15px"} />
+                                                </TooltipTrigger>
+                                                <TooltipContent side="right">
+                                                    <p>
+                                                        By checking this box,
+                                                        this bulk license
+                                                        conclusion will only
+                                                        apply <br /> to the
+                                                        files in this version of
+                                                        this package.
+                                                    </p>
+                                                    <br />
+                                                    <p>
+                                                        If you want to apply
+                                                        this bulk license
+                                                        conclusion across all
+                                                        packages
+                                                        <br />
+                                                        that have the one or
+                                                        more of the affected
+                                                        files (identified <br />
+                                                        by the file's sha256's),
+                                                        leave this box
+                                                        unchecked.
+                                                    </p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                        <FormMessage className="text-xs" />
                                     </FormItem>
                                 )}
                             />
