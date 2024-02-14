@@ -32,9 +32,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { patternGlobSchema } from "@/components/common/pattern_schema";
 
 const exclusionFormSchema = z.object({
-    pattern: z.string().min(1, "Pattern cannot be empty"),
+    pattern: patternGlobSchema,
     reason: z.string().min(1, "Please select a valid reason from this list"),
     comment: z.string().optional(),
 });
