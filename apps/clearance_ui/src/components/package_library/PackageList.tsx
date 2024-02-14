@@ -11,8 +11,8 @@ import {
 } from "next-usequerystate";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { columns } from "@/components/package_table/columns";
-import { DataTable } from "@/components/package_table/DataTable";
+import { columns } from "@/components/package_library/columns";
+import { DataTable } from "@/components/package_library/DataTable";
 
 const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
     const [pageSize] = useQueryState(

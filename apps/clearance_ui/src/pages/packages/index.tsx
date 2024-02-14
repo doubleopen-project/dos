@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import PackageList from "@/components/package_table/PackageList";
+import PackageList from "@/components/package_library/PackageList";
 
 export default function PackageLibrary() {
     const router = useRouter();
