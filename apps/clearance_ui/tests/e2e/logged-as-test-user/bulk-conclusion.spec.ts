@@ -40,12 +40,14 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
     console.log("bulk license conclusion created");
 
     // Delete the same bulk license conclusion
-    await page.getByTestId("conclusion-db-button").click();
     await page
-        .getByTestId("license-conclusion")
-        .filter({ hasText: comment })
-        .getByTestId("delete-clearance-button")
+        .getByRole("button", { name: "license conclusion details" })
+        .first()
         .click();
+    await page
+        .locator('button[data-testid="delete-clearance-button"]')
+        .scrollIntoViewIfNeeded();
+    await page.getByTestId("delete-clearance-button").click();
     await expect(page.getByLabel("Delete")).toContainText(comment);
     await page.getByRole("button", { name: "Delete bulk conclusion" }).click();
     // Wait for the toast to appear, contain a success text and disappear
@@ -143,12 +145,12 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     console.log("bulk license conclusion created");
 
     // Edit the bulk conclusion
-    await page.getByTestId("conclusion-db-button").click();
     await page
-        .getByTestId("license-conclusion")
-        .filter({ hasText: comment })
-        .getByRole("button", { name: "edit" })
+        .getByRole("button", { name: "license conclusion details" })
+        .first()
         .click();
+    await page.locator('button[name="edit-bulk"]').scrollIntoViewIfNeeded();
+    await page.getByRole("button", { name: "edit-bulk" }).click();
     await page.getByLabel("Pattern").click();
     await page.getByLabel("Pattern").fill(editedPattern);
     await page.getByRole("textbox", { name: "spdx" }).click();
@@ -167,12 +169,14 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
 
     // Delete the same bulk conclusion
     await page.getByRole("link", { name: "package.json" }).first().click();
-    await page.getByTestId("conclusion-db-button").click();
     await page
-        .getByTestId("license-conclusion")
-        .filter({ hasText: editedComment })
-        .getByTestId("delete-clearance-button")
+        .getByRole("button", { name: "license conclusion details" })
+        .first()
         .click();
+    await page
+        .locator('button[data-testid="delete-clearance-button"]')
+        .scrollIntoViewIfNeeded();
+    await page.getByTestId("delete-clearance-button").click();
     await expect(page.getByLabel("Delete")).toContainText(editedComment);
     await page.getByRole("button", { name: "Delete bulk conclusion" }).click();
     // Wait for the toast to appear, contain a success text and disappear

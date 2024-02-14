@@ -185,7 +185,7 @@ const LicenseConclusionItem = ({
                         >
                             {license.bulkConclusionId && (
                                 <EditButton
-                                    name="edit"
+                                    name="edit-bulk"
                                     className="mr-1 h-9 w-8 px-2"
                                     onClick={() => {
                                         if (license.bulkConclusionId)

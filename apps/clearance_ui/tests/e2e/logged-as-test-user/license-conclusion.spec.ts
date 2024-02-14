@@ -44,12 +44,14 @@ test("create license conclusion, delete from Main UI", async ({ page }) => {
     console.log("license conclusion created");
 
     // Delete the same conclusion
-    await page.getByTestId("conclusion-db-button").click();
     await page
-        .getByTestId("license-conclusion")
-        .filter({ hasText: comment })
-        .getByTestId("delete-clearance-button")
+        .getByRole("button", { name: "license conclusion details" })
+        .first()
         .click();
+    await page
+        .locator('button[data-testid="delete-clearance-button"]')
+        .scrollIntoViewIfNeeded();
+    await page.getByTestId("delete-clearance-button").click();
     await expect(page.getByLabel("Delete").getByText(license)).toContainText(
         license,
     );
