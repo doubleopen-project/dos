@@ -5,7 +5,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import ClearanceToolbar from "@/components/ClearanceToolbar";
-import PackagePathExclusions from "@/components/main_ui/package_path_exclusions/PathExclusionWrapper";
+import PathExclusionWrapper from "@/components/main_ui/package_path_exclusions/PathExclusionWrapper";
 
 const PathExclusions = () => {
     const router = useRouter();
@@ -21,7 +21,7 @@ const PathExclusions = () => {
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
-            <PackagePathExclusions purl={purl} />
+            <PathExclusionWrapper purl={purl} />
         </div>
     );
 };
