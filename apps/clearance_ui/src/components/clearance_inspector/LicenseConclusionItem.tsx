@@ -31,11 +31,13 @@ type User = ZodiosResponseByAlias<typeof userAPI, "GetUser">;
 type LicenseConclusionItemProps = {
     license: License;
     user: User;
+    onEditItem: (id: number, contextPurl: string) => void;
 };
 
 const LicenseConclusionItem = ({
     license,
     user,
+    onEditItem,
 }: LicenseConclusionItemProps) => {
     const [showContent, setShowContent] = useState(false);
     const [divWidth, setDivWidth] = useState(0);
@@ -184,10 +186,14 @@ const LicenseConclusionItem = ({
                             {license.bulkConclusionId && (
                                 <EditButton
                                     name="edit"
-                                    className="mr-1 hidden h-9 w-8 px-2"
-                                    onClick={() =>
-                                        console.log("Edit bulk conclusion")
-                                    }
+                                    className="mr-1 h-9 w-8 px-2"
+                                    onClick={() => {
+                                        if (license.bulkConclusionId)
+                                            onEditItem(
+                                                license.bulkConclusionId,
+                                                license.contextPurl,
+                                            );
+                                    }}
                                 />
                             )}
                             {!license.bulkConclusionId && (
