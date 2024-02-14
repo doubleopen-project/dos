@@ -33,6 +33,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { patternGlobSchema } from "@/components/common/pattern_schema";
+import { cn } from "@/lib/utils";
 
 const exclusionFormSchema = z.object({
     pattern: patternGlobSchema,
@@ -147,7 +148,7 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                         </FormLabel>
                                         <FormControl>
                                             <Input
-                                                className="text-xs"
+                                                className="bg-white text-xs dark:bg-black"
                                                 placeholder="Glob pattern matching to the path to be excluded..."
                                                 {...field}
                                             />
@@ -176,7 +177,9 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                             <SelectContent>
                                                 {validReasons.map((reason) => (
                                                     <SelectItem
-                                                        className="text-xs"
+                                                        className={cn(
+                                                            "text-xs hover:bg-slate-400",
+                                                        )}
                                                         key={reason}
                                                         value={reason}
                                                         onSelect={() =>
