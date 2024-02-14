@@ -38,7 +38,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { concludedLicenseExpressionSPDXSchema } from "@/components/license_conclusions/ConclusionForm";
+import { patternGlobSchema } from "@/components/common/pattern_schema";
+import { concludedLicenseExpressionSPDXSchema } from "@/components/common/spdx_schema";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
@@ -46,16 +47,7 @@ import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
 const bulkConclusionFormSchema = z.object({
-    pattern: z
-        .string()
-        .min(1, "Pattern cannot be empty")
-        .refine((pattern) => isGlob(pattern), {
-            message: "Pattern is not a valid glob pattern",
-        })
-        .refine((pattern) => pattern !== "**", {
-            message:
-                "You cannot do a bulk conclusion for all files in a package",
-        }),
+    pattern: patternGlobSchema,
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
     concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),

@@ -29,25 +29,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { concludedLicenseExpressionSPDXSchema } from "@/components/common/spdx_schema";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
-
-export const concludedLicenseExpressionSPDXSchema = z
-    .string()
-    .refine(
-        (value) => {
-            try {
-                parseSPDX(value);
-                return true;
-            } catch (e) {
-                return false;
-            }
-        },
-        { message: "Invalid SPDX expression" },
-    )
-    .or(z.enum(["", "NONE", "NOASSERTION"]));
 
 const conclusionFormSchema = z.object({
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
