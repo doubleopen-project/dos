@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import React, { useState } from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteBulkConclusion from "@/components/delete_item/DeleteBulkConclusion";
@@ -16,6 +17,7 @@ type BulkConclusion = ZodiosResponseByAlias<
 >["bulkConclusions"][0];
 
 type Props = {
+    pathPurl: string;
     bulkConclusion: BulkConclusion;
     userName: string;
     userRole: string;
@@ -23,11 +25,23 @@ type Props = {
 };
 
 const BulkConclusion = ({
+    pathPurl,
     bulkConclusion,
     userName,
     userRole,
     editHandler,
 }: Props) => {
+    const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
+    // Fetch the package file tree data
+    const { data: fileTreeData } = userHooks.useGetFileTree({
+        withCredentials: true,
+        params: {
+            purl: pathPurl,
+        },
+    });
+    const paths =
+        fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
+
     return (
         <div
             className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
@@ -60,6 +74,16 @@ const BulkConclusion = ({
                     <div className="text-muted-foreground text-xs">
                         <span className="mr-1 font-semibold">Comment:</span>
                         <span className="italic">{bulkConclusion.comment}</span>
+                    </div>
+                    <div className="text-xs">
+                        <span className="mr-1 font-semibold">
+                            Files affected in this package:
+                        </span>
+                        <span>
+                            <Badge className="bg-blue-400 p-0.5 font-bold">
+                                {paths.length}
+                            </Badge>
+                        </span>
                     </div>
                     {bulkConclusion.local && (
                         <span>

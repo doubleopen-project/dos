@@ -57,6 +57,7 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                         ) : (
                             <BulkConclusion
                                 key={`bc-${bc.id}`}
+                                pathPurl={pathPurl}
                                 bulkConclusion={bc}
                                 userName={userName}
                                 userRole={userRole}
