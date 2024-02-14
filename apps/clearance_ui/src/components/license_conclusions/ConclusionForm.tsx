@@ -5,12 +5,10 @@
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ZodiosResponseByPath } from "@zodios/core";
 import axios from "axios";
 import { Info } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { parseSPDX } from "spdx-validation";
-import { userAPI } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -31,7 +29,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import ConclusionDB from "@/components/license_conclusions/ConclusionDB";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
@@ -54,7 +51,6 @@ export const concludedLicenseExpressionSPDXSchema = z
 
 const conclusionFormSchema = z.object({
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
-    concludedLicenseDB: z.string(),
     concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),
     local: z.boolean(),
@@ -62,15 +58,8 @@ const conclusionFormSchema = z.object({
 
 type ConclusionFormType = z.infer<typeof conclusionFormSchema>;
 
-type LCDataType = ZodiosResponseByPath<
-    typeof userAPI,
-    "get",
-    "/packages/:purl/files/:sha256/license-conclusions/"
->;
-
 type Props = {
     purl: string;
-    lcData: LCDataType;
     fileSha256: string;
     detectedExpression: string | undefined;
     className?: string;
@@ -78,14 +67,12 @@ type Props = {
 
 const ConclusionForm = ({
     purl,
-    lcData,
     fileSha256,
     detectedExpression,
     className,
 }: Props) => {
     const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
-        concludedLicenseDB: "",
         concludedLicenseList: "",
         comment: "",
         local: false,
@@ -144,7 +131,6 @@ const ConclusionForm = ({
         // Create an array of fields with values
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
-            data.concludedLicenseDB,
             data.concludedLicenseList,
         ].filter((field) => field !== undefined && field !== "");
 
@@ -195,27 +181,6 @@ const ConclusionForm = ({
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-1"
                 >
-                    <FormField
-                        control={form.control}
-                        name="concludedLicenseDB"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <ConclusionDB
-                                        data={lcData}
-                                        concludedLicenseExpressionSPDX={
-                                            field.value
-                                        }
-                                        setConcludedLicenseExpressionSPDX={
-                                            field.onChange
-                                        }
-                                        fractionalWidth={1.7}
-                                    />
-                                </FormControl>
-                                <FormMessage className="ml-1 text-xs" />
-                            </FormItem>
-                        )}
-                    />
                     <FormField
                         control={form.control}
                         name="concludedLicenseList"
