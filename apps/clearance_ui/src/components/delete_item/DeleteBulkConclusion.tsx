@@ -23,11 +23,18 @@ const DeleteBulkConclusion = ({ id }: Props) => {
     const keyLicenseConclusion = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
-
+    const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsCount",
+    );
     const keyBulkConclusion = userHooks.getKeyByAlias("GetBulkConclusions");
+    const keyBulkConclusionsByPurl = userHooks.getKeyByAlias(
+        "GetBulkConclusionsByPurl",
+    );
+
     const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
         "GetBulkConclusionsCount",
     );
+
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
@@ -81,8 +88,12 @@ const DeleteBulkConclusion = ({ id }: Props) => {
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                     queryClient.invalidateQueries(keyBulkConclusion);
+                    queryClient.invalidateQueries(keyBulkConclusionsByPurl);
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
+                    queryClient.invalidateQueries(
+                        keyLicenseConclusionCountByPurl,
+                    );
                 },
                 onError: () => {
                     toast({

@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import isGlob from "is-glob";
 import { Info, Loader2 } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
@@ -121,7 +120,7 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                         description:
                             "Bulk license conclusion edited and saved successfully.",
                     });
-                    // When a bulk curation is added, invalidate the queries to refetch the data
+                    // When a bulk conclusion is edited, invalidate the queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
