@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import BulkConclusion from "@/components/main_ui/package_bulk_conclusions/BulkConclusion";
-//import BulkConclusionEditForm from "@/components/main_ui/package_bulk_conclusions/BulkConclusionEditForm";
+import BulkConclusionEditForm from "@/components/main_ui/package_bulk_conclusions/BulkConclusionEditForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -48,14 +48,13 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                 <div className="w-full flex-1 overflow-y-auto border">
                     {data.bulkConclusions.map((bc) =>
                         bc.id === editing ? (
-                            <span>TODO: BulkConclusionEditForm</span>
+                            <BulkConclusionEditForm
+                                key={`edit-bc-${bc.id}`}
+                                pathPurl={pathPurl}
+                                bulkConclusion={bc}
+                                editHandler={editHandler}
+                            />
                         ) : (
-                            //<BulkConclusionEditForm
-                            //    key={`edit-pe-${pe.id}`}
-                            //    pathExclusion={pe}
-                            //    editHandler={editHandler}
-                            ///>
-
                             <BulkConclusion
                                 key={`bc-${bc.id}`}
                                 bulkConclusion={bc}
