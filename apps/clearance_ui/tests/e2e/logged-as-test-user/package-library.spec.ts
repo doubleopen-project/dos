@@ -19,15 +19,29 @@ test("sees DOS monorepo in package library and chooses the package to curation U
         page.getByRole("heading", { name: "Package Library" }),
     ).toBeVisible();
 
+    // Write "dos-monorepo" to the search input and press enter
+    await page.getByPlaceholder("Search packages by name").fill("dos-monorepo");
+    await page.keyboard.press("Enter");
+
     // Expect to see the DOS monorepo
     await expect(
-        page.getByRole("link", { name: "dos-monorepo" }),
+        page.locator(
+            '[href*="/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0"]',
+            { hasText: "dos-monorepo" },
+        ),
     ).toBeVisible();
 
-    // Click the DOS monorepo and check that it opens up in the curation UI view
+    // Click the DOS monorepo link on the row that has type "generic"
+    // and check that it opens up in the curation UI view
+
     await Promise.all([
         page.waitForNavigation(),
-        page.click("a:has-text('dos-monorepo')"),
+        page
+            .locator(
+                '[href*="/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0"]',
+                { hasText: "dos-monorepo" },
+            )
+            .click(),
     ]);
     expect(page.url()).toBe(
         "http://localhost:3000/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0",
