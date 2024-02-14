@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import LicenseConclusionItem from "@/components/clearance_inspector/LicenseConclusionItem";
+import BulkConclusionFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type LicenseConclusionsProps = {
@@ -16,6 +18,8 @@ type LicenseConclusionsProps = {
 
 const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
     const user = useUser();
+    const [editBCId, setEditBCId] = useState<number | null>(null);
+    const [contextPurl, setContextPurl] = useState<string | null>(null);
     const { data, isLoading, error } =
         userHooks.useGetLicenseConclusionsForFileInPackage(
             {
@@ -27,6 +31,16 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
             },
             { enabled: !!fileSha256 },
         );
+    const setOpenEditDialog = (open: boolean) => {
+        if (!open) {
+            setEditBCId(null);
+            setContextPurl(null);
+        }
+    };
+    const onEditItem = (id: number, contextPurl: string) => {
+        setEditBCId(id);
+        setContextPurl(contextPurl);
+    };
 
     return (
         <>
@@ -45,6 +59,7 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                                     key={license.id}
                                     license={license}
                                     user={user}
+                                    onEditItem={onEditItem}
                                 />
                             ))}
                         </div>
@@ -59,6 +74,14 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                 <div className="flex h-full items-center justify-center">
                     <span className="font-semibold">{error.message}</span>
                 </div>
+            )}
+            {contextPurl && editBCId && (
+                <BulkConclusionFormDialog
+                    purl={contextPurl}
+                    id={editBCId || undefined}
+                    open={editBCId !== null}
+                    setOpen={setOpenEditDialog}
+                />
             )}
         </>
     );
