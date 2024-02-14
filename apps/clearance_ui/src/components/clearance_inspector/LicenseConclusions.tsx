@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
+import LicenseConclusionItem from "@/components/clearance_inspector/LicenseConclusionItem";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type LicenseConclusionsProps = {
@@ -13,6 +15,7 @@ type LicenseConclusionsProps = {
 };
 
 const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
+    const user = useUser();
     const { data, isLoading, error } =
         userHooks.useGetLicenseConclusionsForFileInPackage(
             {
@@ -35,23 +38,16 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
             {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="clearance-label">Concluded license</Label>
-                    {data.licenseConclusions?.length > 0 ? (
-                        <p className="h-full w-full overflow-y-auto p-1 text-xs">
+                    {user && data.licenseConclusions?.length > 0 ? (
+                        <div className="h-full w-full overflow-y-auto p-1 text-xs">
                             {data.licenseConclusions.map((license) => (
-                                <span key={license.id}>
-                                    <>
-                                        {
-                                            new Date(license.updatedAt)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        :{" "}
-                                        {license.concludedLicenseExpressionSPDX}
-                                        <br />
-                                    </>
-                                </span>
+                                <LicenseConclusionItem
+                                    key={license.id}
+                                    license={license}
+                                    user={user}
+                                />
                             ))}
-                        </p>
+                        </div>
                     ) : (
                         <p className="h-full w-full overflow-auto p-1 text-xs">
                             No license conclusions
