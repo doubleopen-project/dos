@@ -8,7 +8,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Info } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
-import { parseSPDX } from "spdx-validation";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";

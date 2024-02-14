@@ -93,6 +93,9 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
+    const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetLicenseConclusionsCount",
+    );
     const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
         "GetBulkConclusionsCount",
     );
@@ -126,6 +129,9 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
                     queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
+                    queryClient.invalidateQueries(
+                        keyLicenseConclusionCountByPurl,
+                    );
                 },
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {
