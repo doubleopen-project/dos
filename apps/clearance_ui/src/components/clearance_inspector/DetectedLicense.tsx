@@ -37,12 +37,15 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                             {data.licenseFindings.map((license) => (
                                 <span key={license.id}>
                                     <>
-                                        {
-                                            new Date(license.updatedAt)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        : {license.licenseExpressionSPDX}
+                                        <span className="font-bold">
+                                            {
+                                                new Date(license.updatedAt)
+                                                    .toISOString()
+                                                    .split("T")[0]
+                                            }
+                                            :{" "}
+                                        </span>
+                                        {license.licenseExpressionSPDX}
                                         <CopyToClipboard
                                             copyText={
                                                 license.licenseExpressionSPDX
