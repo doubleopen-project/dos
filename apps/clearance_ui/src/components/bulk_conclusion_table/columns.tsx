@@ -24,7 +24,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import PurlDetails from "@/components/PurlDetails";
-import DeleteBulkConclusion from "../delete_item/DeleteBulkConclusion";
+import DeleteBulkConclusion from "@/components/delete_item/DeleteBulkConclusion";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 

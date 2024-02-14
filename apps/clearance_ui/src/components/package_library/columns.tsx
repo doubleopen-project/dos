@@ -21,8 +21,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeletePackage from "../delete_item/DeletePackage";
-import PurlDetails from "../PurlDetails";
+import DeletePackage from "@/components/delete_item/DeletePackage";
+import PurlDetails from "@/components/PurlDetails";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
