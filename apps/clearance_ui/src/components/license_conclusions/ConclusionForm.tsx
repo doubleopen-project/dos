@@ -28,11 +28,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
+import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 
 const conclusionFormSchema = z.object({
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
