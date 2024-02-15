@@ -22,8 +22,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ActionCell from "@/components/license_conclusion_table/ActionCell";
-import TableCell from "@/components/license_conclusion_table/TableCell";
+import ActionCell from "@/components/clearance_library/license_conclusions/ActionCell";
+import TableCell from "@/components/clearance_library/license_conclusions/TableCell";
 import PurlDetails from "@/components/PurlDetails";
 
 // Get the table column datatype from the query response

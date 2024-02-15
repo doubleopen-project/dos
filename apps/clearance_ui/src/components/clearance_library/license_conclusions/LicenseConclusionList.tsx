@@ -12,8 +12,8 @@ import {
 } from "next-usequerystate";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { columns } from "@/components/license_conclusion_table/columns";
-import { DataTable } from "@/components/license_conclusion_table/DataTable";
+import { columns } from "@/components/clearance_library/license_conclusions/columns";
+import { DataTable } from "@/components/clearance_library/license_conclusions/DataTable";
 
 type LicenseConclusionListProps = {
     user: ZodiosResponseByPath<typeof userAPI, "get", "/user">;
