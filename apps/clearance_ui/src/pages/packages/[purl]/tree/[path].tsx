@@ -22,10 +22,17 @@ export default function PackageAndFile() {
     const router = useRouter();
     const { purl, path } = router.query;
 
+    if (!purl || !path) {
+        return <div>Loading...</div>;
+    }
+    if (typeof purl !== "string" || typeof path !== "string") {
+        return <div>Invalid purl or path</div>;
+    }
+
     const setPurl = useMainUiStore((state) => state.setPurl);
     const setPath = useMainUiStore((state) => state.setPath);
-    setPurl(purl as string);
-    setPath(path as string);
+    setPurl(purl);
+    setPath(path);
 
     const {
         data: user,
@@ -35,7 +42,7 @@ export default function PackageAndFile() {
         {
             withCredentials: true,
         },
-        { retry: false, enabled: !!purl && !!path },
+        { retry: false },
     );
     let errMsg;
 
