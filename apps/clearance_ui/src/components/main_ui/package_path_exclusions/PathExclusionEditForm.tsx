@@ -32,8 +32,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { patternGlobSchema } from "@/components/common/pattern_schema";
 import { cn } from "@/lib/utils";
+import { patternGlobSchema } from "@/schemes/pattern_schema";
 
 const exclusionFormSchema = z.object({
     pattern: patternGlobSchema,
