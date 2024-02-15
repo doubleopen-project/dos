@@ -68,7 +68,9 @@ const BulkConclusion = ({
                     </div>
                     <div className="text-xs">
                         <span className="mr-1 font-semibold">Pattern:</span>
-                        <span>{bulkConclusion.pattern}</span>
+                        <span className="break-all">
+                            {bulkConclusion.pattern}
+                        </span>
                     </div>
                     <div className="text-muted-foreground text-xs">
                         <span className="mr-1 font-semibold">Comment:</span>
