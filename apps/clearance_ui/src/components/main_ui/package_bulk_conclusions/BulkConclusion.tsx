@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useState } from "react";
+import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -31,7 +31,6 @@ const BulkConclusion = ({
     userRole,
     editHandler,
 }: Props) => {
-    const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useGetFileTree({
         withCredentials: true,
@@ -45,7 +44,7 @@ const BulkConclusion = ({
     return (
         <div
             className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
-            data-testid="path-exclusion"
+            data-testid="bulk-conclusion"
         >
             <div className="mr-1 flex-1 items-start text-left">
                 <div className="flex w-full flex-col gap-1">
