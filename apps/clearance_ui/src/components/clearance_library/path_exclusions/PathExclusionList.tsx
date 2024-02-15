@@ -12,8 +12,8 @@ import {
 } from "next-usequerystate";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
-import { columns } from "@/components/path_exclusion_table/columns";
-import { DataTable } from "@/components/path_exclusion_table/DataTable";
+import { columns } from "@/components/clearance_library/path_exclusions/columns";
+import { DataTable } from "@/components/clearance_library/path_exclusions/DataTable";
 
 type PathExclusionListProps = {
     user: ZodiosResponseByPath<typeof userAPI, "get", "/user">;

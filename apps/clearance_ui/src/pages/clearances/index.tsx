@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BulkConclusionList from "@/components/clearance_library/bulk_conclusions/BulkConclusionList";
 import LicenseConclusionList from "@/components/clearance_library/license_conclusions/LicenseConclusionList";
-import PathExclusionList from "@/components/path_exclusion_table/PathExclusionList";
+import PathExclusionList from "@/components/clearance_library/path_exclusions/PathExclusionList";
 
 export default function ClearanceLibrary() {
     const router = useRouter();
