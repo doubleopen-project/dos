@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useEffect } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -21,18 +22,21 @@ export default function PackageAndFile() {
     );
     const router = useRouter();
     const { purl, path } = router.query;
-
-    if (!purl || !path) {
-        return <div>Loading...</div>;
-    }
-    if (typeof purl !== "string" || typeof path !== "string") {
-        return <div>Invalid purl or path</div>;
-    }
-
     const setPurl = useMainUiStore((state) => state.setPurl);
     const setPath = useMainUiStore((state) => state.setPath);
-    setPurl(purl);
-    setPath(path);
+
+    useEffect(() => {
+        if (
+            !purl ||
+            !path ||
+            typeof purl !== "string" ||
+            typeof path !== "string"
+        ) {
+            return;
+        }
+        setPurl(purl);
+        setPath(path);
+    }, [purl, path]);
 
     const {
         data: user,
@@ -42,7 +46,7 @@ export default function PackageAndFile() {
         {
             withCredentials: true,
         },
-        { retry: false },
+        { retry: false, enabled: !!purl && !!path },
     );
     let errMsg;
 
