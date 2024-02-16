@@ -3108,13 +3108,7 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
         };
         package: {
             select: {
-                id: true;
                 purl: true;
-                fileTrees: {
-                    select: {
-                        path: true;
-                    };
-                };
             };
         };
     };
@@ -3161,13 +3155,7 @@ export const findPathExclusions = async (
                     },
                     package: {
                         select: {
-                            id: true,
                             purl: true,
-                            fileTrees: {
-                                select: {
-                                    path: true,
-                                },
-                            },
                         },
                     },
                 },

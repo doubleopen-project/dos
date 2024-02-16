@@ -23,6 +23,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import AffectedFilesTooltip from "@/components/clearance_library/path_exclusions/AffectedFilesTooltip";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -175,7 +176,7 @@ export const columns = (
                 );
             },
             cell: ({ row }) => {
-                const pkg = PackageURL.fromString(row.original.purl);
+                const pkg = PackageURL.fromString(row.original.package.purl);
                 const pkgName = pkg.name + ":" + pkg.version;
                 return (
                     <TooltipProvider>
@@ -184,14 +185,14 @@ export const columns = (
                                 <Link
                                     className="font-semibold text-blue-400"
                                     href={`/packages/${encodeURIComponent(
-                                        row.original.purl,
+                                        row.original.package.purl,
                                     )}`}
                                 >
                                     {pkgName}
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <PurlDetails purl={row.original.purl} />
+                                <PurlDetails purl={row.original.package.purl} />
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -340,27 +341,9 @@ export const columns = (
                 </Label>
             ),
             cell: ({ row }) => {
-                const affectedPaths = row.original.affectedPaths.length;
-                return affectedPaths > 0 ? (
-                    <TooltipProvider>
-                        <Tooltip delayDuration={300}>
-                            <TooltipTrigger>
-                                <Badge className="bg-blue-400 text-sm">
-                                    {affectedPaths}
-                                </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <div className="text-sm">
-                                    {row.original.affectedPaths.map(
-                                        (aff, index) => (
-                                            <div key={index}>{aff}</div>
-                                        ),
-                                    )}
-                                </div>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                ) : null;
+                return (
+                    <AffectedFilesTooltip pathExclusionId={row.original.id} />
+                );
             },
         },
         {

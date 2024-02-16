@@ -1018,7 +1018,7 @@ userRouter.get("/path-exclusions", async (req, res) => {
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
-        const pathExclusionsWithRelations = await dbQueries.findPathExclusions(
+        const pathExclusions = await dbQueries.findPathExclusions(
             skip,
             pageSize,
             // If sortBy and sortOrder are not provided, default to descending order by updatedAt
@@ -1036,28 +1036,6 @@ userRouter.get("/path-exclusions", async (req, res) => {
             req.query.updatedAtGte,
             req.query.updatedAtLte,
         );
-
-        const pathExclusions = [];
-        for (const pe of pathExclusionsWithRelations) {
-            const affectedPaths = [];
-
-            for (const ft of pe.package.fileTrees) {
-                if (minimatch(ft.path, pe.pattern, { dot: true })) {
-                    affectedPaths.push(ft.path);
-                }
-            }
-
-            pathExclusions.push({
-                id: pe.id,
-                updatedAt: pe.updatedAt,
-                pattern: pe.pattern,
-                reason: pe.reason,
-                comment: pe.comment,
-                user: pe.user,
-                purl: pe.package.purl,
-                affectedPaths: affectedPaths,
-            });
-        }
 
         return res.status(200).json({
             pathExclusions: pathExclusions,
