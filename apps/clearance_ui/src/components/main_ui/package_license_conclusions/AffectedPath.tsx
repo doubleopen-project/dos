@@ -3,13 +3,26 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import Link from "next/link";
 
 type Props = {
+    purl: string;
     path: string;
 };
 
-const AffectedPath = ({ path }: Props) => {
-    return <div className="ml-10 break-all text-xs">{path}</div>;
+const AffectedPath = ({ purl, path }: Props) => {
+    return (
+        <Link
+            className="font-semibold text-blue-400"
+            href={`/packages/${encodeURIComponent(purl)}${
+                path ? `/tree/${encodeURIComponent(path)}` : ""
+            }`}
+        >
+            <div className="ml-10 break-all text-xs hover:font-extrabold">
+                {path}
+            </div>
+        </Link>
+    );
 };
 
 export default AffectedPath;
