@@ -6,7 +6,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { userHooks } from "@/hooks/zodiosHooks";
-import MultiSection from "@/components/MultiSection";
+import MultiSection from "@/components/common/MultiSection";
 import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
 
