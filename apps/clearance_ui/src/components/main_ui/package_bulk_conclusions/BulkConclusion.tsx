@@ -8,8 +8,8 @@ import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
-import DeleteBulkConclusion from "@/components/delete_item/DeleteBulkConclusion";
 
 type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,

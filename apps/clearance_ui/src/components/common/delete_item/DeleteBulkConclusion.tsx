@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
-import DeleteDialog from "@/components/delete_item/DeleteDialog";
+import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
 import { DeleteAction } from "@/types";
 
 type Props = {

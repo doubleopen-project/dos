@@ -6,8 +6,8 @@ import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { Separator } from "@/components/ui/separator";
+import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
-import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
 
 type PathExclusion = ZodiosResponseByAlias<
     typeof userAPI,

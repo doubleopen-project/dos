@@ -19,8 +19,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
-import DeletePathExclusion from "@/components/delete_item/DeletePathExclusion";
 import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 

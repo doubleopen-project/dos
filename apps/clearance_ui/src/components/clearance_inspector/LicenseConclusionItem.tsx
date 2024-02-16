@@ -15,9 +15,9 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
-import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
 import { stringToColourRGBA } from "@/helpers/stringToColour";
 import { cn } from "@/lib/utils";
 

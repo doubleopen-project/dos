@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { userAPI } from "validation-helpers";
 import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
-import DeleteDialog from "@/components/delete_item/DeleteDialog";
+import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
 import { DeleteAction } from "@/types";
 
 type ItemType = ZodiosResponseByPath<
