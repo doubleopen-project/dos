@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
+import AffectedPath from "@/components/main_ui/package_license_conclusions/AffectedPath";
 
 type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -17,7 +18,6 @@ type LicenseConclusion = ZodiosResponseByAlias<
 
 type Props = {
     licenseConclusion: LicenseConclusion;
-    path: string;
     userName: string;
     userRole: string;
     editHandler: (id: number) => void;
@@ -25,7 +25,6 @@ type Props = {
 
 const LicenseConclusion = ({
     licenseConclusion,
-    path,
     userName,
     userRole,
     editHandler,
@@ -49,10 +48,7 @@ const LicenseConclusion = ({
                             {licenseConclusion.user.username}
                         </span>
                     </div>
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">File:</span>
-                        <span className="break-all">{path}</span>
-                    </div>
+
                     <div className="text-xs">
                         <span className="mr-1 font-semibold">Detected:</span>
                         <span className="break-all">
@@ -69,9 +65,19 @@ const LicenseConclusion = ({
                         <span className="mr-1 font-semibold">
                             Context PURL:
                         </span>
-                        <span className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                        <span className="break-all">
                             {licenseConclusion.contextPurl}
                         </span>
+                    </div>
+                    <div className="text-xs">
+                        <div className="mr-1 font-semibold">
+                            Affected paths in this package:
+                        </div>
+                        {licenseConclusion.affectedPaths.inQueryPurl.map(
+                            (path, index) => (
+                                <AffectedPath key={index} path={path.path} />
+                            ),
+                        )}
                     </div>
                     <div className="text-muted-foreground text-xs">
                         <span className="mr-1 font-semibold">Comment:</span>

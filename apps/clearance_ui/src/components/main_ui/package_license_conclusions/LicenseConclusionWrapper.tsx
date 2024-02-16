@@ -19,7 +19,7 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
     const { data, isLoading, error } = userHooks.useGetLicenseConclusions(
         {
             withCredentials: true,
-            params: { purl: pathPurl, hasBulkConclusionId: false },
+            queries: { purl, hasBulkConclusionId: false },
         },
         { enabled: !!pathPurl },
     );
@@ -54,7 +54,7 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                             <span>Edit form</span>
                         ) : (
                             //<LicenseConclusionEditForm
-                            //    key={`edit-lc-${bc.id}`}
+                            //    key={`edit-lc-${lc.id}`}
                             //    pathPurl={pathPurl}
                             //    licenseConclusion={lc}
                             //    editHandler={editHandler}
@@ -62,7 +62,6 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                             <LicenseConclusion
                                 key={`lc-${lc.id}`}
                                 licenseConclusion={lc}
-                                path="xxx"
                                 userName={userName}
                                 userRole={userRole}
                                 editHandler={editHandler}
