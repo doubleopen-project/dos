@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { TreeNode } from "../types";
+import { TreeNode } from "@/types";
 
 // Update the exclusion status of an internal node
 // based on the exclusion status of its children:

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { TreeNode } from "../types";
+import { TreeNode } from "@/types";
 
 const handleFolders = (folders: TreeNode[]) => {
     for (const folder of folders) {
