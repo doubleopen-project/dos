@@ -1,0 +1,71 @@
+// SPDX-FileCopyrightText: 2024 Double Open Oy
+//
+// SPDX-License-Identifier: MIT
+
+import { Loader2 } from "lucide-react";
+import { userHooks } from "@/hooks/zodiosHooks";
+import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+type Props = {
+    pathExclusionId: number;
+};
+
+const AffectedFilesTooltip = ({ pathExclusionId }: Props) => {
+    const { data, isLoading, error } =
+        userHooks.useGetAffectedFilesForPathExclusion({
+            withCredentials: true,
+            params: {
+                id: pathExclusionId,
+            },
+        });
+
+    return (
+        <>
+            {isLoading && (
+                <Badge className="bg-blue-400 text-sm">
+                    <Loader2 className="animate-spin" size={20} />
+                </Badge>
+            )}
+            {error && (
+                <TooltipProvider>
+                    <Tooltip delayDuration={300}>
+                        <TooltipTrigger>
+                            <Badge className="bg-red-400 text-sm">!</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <div className="text-sm">
+                                Error: Unable to fetch affected files
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            )}
+            {data && (
+                <TooltipProvider>
+                    <Tooltip delayDuration={300}>
+                        <TooltipTrigger>
+                            <Badge className="bg-blue-400 text-sm">
+                                {data.affectedFiles.length}
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <div className="text-sm">
+                                {data.affectedFiles.map((aff, index) => (
+                                    <div key={index}>{aff}</div>
+                                ))}
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            )}
+        </>
+    );
+};
+
+export default AffectedFilesTooltip;
