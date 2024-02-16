@@ -24,7 +24,10 @@ const ClearanceToolbar = () => {
     // Get the counts of different clearance items for this package, to show in the toolbar
     const { data: licenseConclusionCount } =
         userHooks.useGetLicenseConclusionsCount(
-            { withCredentials: true, queries: { purl: purl } },
+            {
+                withCredentials: true,
+                queries: { purl: purl, hasBulkConclusionId: false },
+            },
             { enabled: !!purl },
         );
     const { data: bulkConclusionCount } = userHooks.useGetBulkConclusionsCount(
