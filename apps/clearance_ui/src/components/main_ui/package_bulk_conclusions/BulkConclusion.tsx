@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
+import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 
 type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -40,6 +41,9 @@ const BulkConclusion = ({
     });
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
+    const pathsMatching = bulkConclusion.pattern
+        ? findMatchingPaths(paths, bulkConclusion.pattern)
+        : [];
 
     return (
         <div
@@ -82,7 +86,7 @@ const BulkConclusion = ({
                         </span>
                         <span>
                             <Badge className="bg-blue-400 p-0.5 font-bold">
-                                {paths.length}
+                                {pathsMatching.length}
                             </Badge>
                         </span>
                     </div>
