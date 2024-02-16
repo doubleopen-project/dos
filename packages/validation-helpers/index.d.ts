@@ -7607,14 +7607,24 @@ declare const userAPI: [
                                     username: string;
                                 }
                             >;
-                            purl: zod.ZodString;
-                            affectedPaths: zod.ZodArray<zod.ZodString, "many">;
+                            package: zod.ZodObject<
+                                {
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    purl: string;
+                                },
+                                {
+                                    purl: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -7622,11 +7632,12 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            affectedPaths: string[];
+                            package: {
+                                purl: string;
+                            };
                         },
                         {
                             id: number;
-                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -7634,7 +7645,9 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
-                            affectedPaths: string[];
+                            package: {
+                                purl: string;
+                            };
                         }
                     >,
                     "many"
@@ -7645,7 +7658,6 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
-                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -7653,13 +7665,14 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    affectedPaths: string[];
+                    package: {
+                        purl: string;
+                    };
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
-                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -7667,7 +7680,9 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
-                    affectedPaths: string[];
+                    package: {
+                        purl: string;
+                    };
                 }[];
             }
         >;
@@ -14706,14 +14721,24 @@ declare const dosAPI: [
                                     username: string;
                                 }
                             >;
-                            purl: zod.ZodString;
-                            affectedPaths: zod.ZodArray<zod.ZodString, "many">;
+                            package: zod.ZodObject<
+                                {
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    purl: string;
+                                },
+                                {
+                                    purl: string;
+                                }
+                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -14721,11 +14746,12 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            affectedPaths: string[];
+                            package: {
+                                purl: string;
+                            };
                         },
                         {
                             id: number;
-                            purl: string;
                             comment: string | null;
                             pattern: string;
                             reason: string;
@@ -14733,7 +14759,9 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
-                            affectedPaths: string[];
+                            package: {
+                                purl: string;
+                            };
                         }
                     >,
                     "many"
@@ -14744,7 +14772,6 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
-                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -14752,13 +14779,14 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    affectedPaths: string[];
+                    package: {
+                        purl: string;
+                    };
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
-                    purl: string;
                     comment: string | null;
                     pattern: string;
                     reason: string;
@@ -14766,7 +14794,9 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
-                    affectedPaths: string[];
+                    package: {
+                        purl: string;
+                    };
                 }[];
             }
         >;

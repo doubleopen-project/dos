@@ -328,8 +328,9 @@ export const GetPathExclusionsRes = z.object({
             user: z.object({
                 username: z.string(),
             }),
-            purl: z.string(),
-            affectedPaths: z.array(z.string()),
+            package: z.object({
+                purl: z.string(),
+            }),
         }),
     ),
 });
