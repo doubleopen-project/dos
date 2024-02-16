@@ -780,6 +780,21 @@ export const userAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/path-exclusions/:id/affected-files",
+        description: "Get affected files for specified path exclusion",
+        alias: "GetAffectedFilesForPathExclusion",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+        ],
+        response: schemas.GetAffectedFilesForPathExclusionRes,
+        errors,
+    },
+    {
         method: "put",
         path: "/path-exclusions/:id",
         description: "Edit a path exclusion",

@@ -1101,6 +1101,48 @@ userRouter.get("/path-exclusions/count", async (req, res) => {
     }
 });
 
+userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
+    try {
+        const pe = await dbQueries.findPathExclusionById(req.params.id);
+
+        if (!pe)
+            throw new CustomError(
+                "Path exclusion with the requested id does not exist",
+                404,
+            );
+
+        const filetrees = await dbQueries.findFileTreesByPackageId(
+            pe.packageId,
+        );
+
+        const affectedPaths: string[] = [];
+
+        for (const ft of filetrees) {
+            if (
+                minimatch(ft.path, pe.pattern, { dot: true }) ||
+                ft.path === pe.pattern
+            ) {
+                affectedPaths.push(ft.path);
+            }
+        }
+
+        res.status(200).json({
+            affectedFiles: affectedPaths,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     try {
         const { user } = req;

@@ -388,6 +388,11 @@ export const validReasons = [
     },
 ];
 
+//-------- GET path exclusion affected files --------
+export const GetAffectedFilesForPathExclusionRes = z.object({
+    affectedFiles: z.array(z.string()),
+});
+
 //--------------- PUT path exclusion ---------------
 export const PutPathExclusionReq = z
     .object({
