@@ -37,61 +37,70 @@ const LicenseConclusion = ({
             <div className="mr-1 flex-1 items-start text-left">
                 <div className="flex w-full flex-col gap-1">
                     <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold">
+                        <div className="font-semibold">
                             {
                                 new Date(licenseConclusion.updatedAt)
                                     .toISOString()
                                     .split("T")[0]
                             }
-                        </span>
-                        <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
+                        </div>
+                        <div className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
                             {licenseConclusion.user.username}
-                        </span>
+                        </div>
                     </div>
-
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">Detected:</span>
-                        <span className="break-all">
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Concluded:
+                        </div>
+                        <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                            {licenseConclusion.concludedLicenseExpressionSPDX}
+                        </div>
+                    </div>
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Detected:
+                        </div>
+                        <div>
                             {licenseConclusion.detectedLicenseExpressionSPDX ||
                                 "No detected license"}
-                        </span>
+                        </div>
                     </div>
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">Concluded:</span>
-                        <span className="rounded-sm bg-slate-200 dark:bg-slate-600">
-                            {licenseConclusion.concludedLicenseExpressionSPDX}
-                        </span>
-                    </div>
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
                             Context PURL:
-                        </span>
-                        <span className="break-all">
+                        </div>
+                        <div className="break-all">
                             {licenseConclusion.contextPurl}
-                        </span>
+                        </div>
                     </div>
                     <div className="text-xs">
-                        <div className="mr-1 font-semibold">
+                        <div className="mr-2 font-semibold">
                             Affected paths in this package:
                         </div>
                         {licenseConclusion.affectedPaths.inQueryPurl.map(
                             (p, index) => (
-                                <AffectedPath key={index} path={p.path} />
+                                <AffectedPath
+                                    key={index}
+                                    purl={licenseConclusion.contextPurl}
+                                    path={p.path}
+                                />
                             ),
                         )}
                     </div>
-                    <div className="text-muted-foreground text-xs">
-                        <span className="mr-1 font-semibold">Comment:</span>
-                        <span className="italic">
+                    <div className="text-muted-foreground flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Comment:
+                        </div>
+                        <div className="italic">
                             {licenseConclusion.comment}
-                        </span>
+                        </div>
                     </div>
                     {licenseConclusion.local && (
-                        <span>
+                        <div>
                             <Badge className="bg-red-400 p-0.5 font-bold">
                                 LOCAL
                             </Badge>
-                        </span>
+                        </div>
                     )}
                 </div>
             </div>
