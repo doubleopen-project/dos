@@ -4,8 +4,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
+import MultiSectionNavBar from "@/components/common/MultiSectionNavBar";
 import { cn } from "@/lib/utils";
-import MultiSectionNavBar from "./MultiSectionNavBar";
 
 interface MultiSectionProps extends React.HTMLAttributes<HTMLElement> {
     title: string;
