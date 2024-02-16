@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { TreeNode } from "../types";
+import type { TreeNode } from "@/types";
 
 export const filterTreeDataByLicense = (
     root: TreeNode[],

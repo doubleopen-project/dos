@@ -11,9 +11,9 @@ import {
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import LicenseHitCircle from "@/components/package_inspector/LicenseHitCircle";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
-import LicenseHitCircle from "./LicenseHitCircle";
 
 type NodeProps = NodeRendererProps<TreeNode> & {
     purl: string | undefined;
