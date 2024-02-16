@@ -5,7 +5,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import BulkConclusionEditForm from "@/components/edit_item/BulkConclusionEditForm";
+import BulkConclusionEditForm from "@/components/common/edit_item/BulkConclusionEditForm";
 import BulkConclusionForm from "@/components/license_conclusions/BulkConclusionForm";
 
 type Props = {
