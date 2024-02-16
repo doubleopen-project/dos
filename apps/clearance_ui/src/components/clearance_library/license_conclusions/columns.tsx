@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/clearance_library/license_conclusions/ActionCell";
 import TableCell from "@/components/clearance_library/license_conclusions/TableCell";
-import PurlDetails from "@/components/PurlDetails";
+import PurlDetails from "@/components/common/PurlDetails";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed

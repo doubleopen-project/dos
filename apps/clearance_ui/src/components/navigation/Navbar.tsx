@@ -9,7 +9,7 @@ import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/common/CopyToClipboard";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ModeToggle } from "@/components/common/ModeToggle";
 import SideMenu from "@/components/navigation/SideMenu";
 import UserMenuItem from "@/components/navigation/UserMenuItem";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
