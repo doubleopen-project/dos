@@ -5,7 +5,7 @@
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
-import CopyToClipboard from "@/components/CopyToClipboard";
+import CopyToClipboard from "@/components/common/CopyToClipboard";
 
 type DetectedLicenseProps = {
     fileSha256: string;

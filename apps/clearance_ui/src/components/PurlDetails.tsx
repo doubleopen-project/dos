@@ -11,7 +11,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
-import CopyToClipboard from "@/components/CopyToClipboard";
+import CopyToClipboard from "@/components/common/CopyToClipboard";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 type Props = {
