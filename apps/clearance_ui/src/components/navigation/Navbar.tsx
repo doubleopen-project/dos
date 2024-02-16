@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
-import CopyToClipboard from "@/components/CopyToClipboard";
+import CopyToClipboard from "@/components/common/CopyToClipboard";
 import { ModeToggle } from "@/components/ModeToggle";
 import SideMenu from "@/components/navigation/SideMenu";
 import UserMenuItem from "@/components/navigation/UserMenuItem";
