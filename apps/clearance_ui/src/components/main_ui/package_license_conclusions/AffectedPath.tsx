@@ -9,7 +9,7 @@ type Props = {
 };
 
 const AffectedPath = ({ path }: Props) => {
-    return <span className="ml-10 break-all text-xs">{path}</span>;
+    return <div className="ml-10 break-all text-xs">{path}</div>;
 };
 
 export default AffectedPath;

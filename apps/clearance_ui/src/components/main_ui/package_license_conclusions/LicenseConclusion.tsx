@@ -52,7 +52,8 @@ const LicenseConclusion = ({
                     <div className="text-xs">
                         <span className="mr-1 font-semibold">Detected:</span>
                         <span className="break-all">
-                            {licenseConclusion.detectedLicenseExpressionSPDX}
+                            {licenseConclusion.detectedLicenseExpressionSPDX ||
+                                "No detected license"}
                         </span>
                     </div>
                     <div className="text-xs">
@@ -74,8 +75,8 @@ const LicenseConclusion = ({
                             Affected paths in this package:
                         </div>
                         {licenseConclusion.affectedPaths.inQueryPurl.map(
-                            (path, index) => (
-                                <AffectedPath key={index} path={path.path} />
+                            (p, index) => (
+                                <AffectedPath key={index} path={p.path} />
                             ),
                         )}
                     </div>
