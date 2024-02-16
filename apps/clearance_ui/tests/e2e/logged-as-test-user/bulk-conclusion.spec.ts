@@ -22,7 +22,7 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
     await page.getByTestId("bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
-    await page.getByRole("combobox").click();
+    await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
     await page.getByPlaceholder("Comment on your bulk").fill(comment);
@@ -72,7 +72,7 @@ test("create bulk conclusion, delete from Clearance Library", async ({
     await page.getByTestId("bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
-    await page.getByRole("combobox").click();
+    await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
     await page.getByPlaceholder("Comment on your bulk").fill(comment);
@@ -127,7 +127,7 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     await page.getByTestId("bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
-    await page.getByRole("combobox").click();
+    await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
     await page.getByPlaceholder("Comment on your bulk").fill(comment);
@@ -207,7 +207,7 @@ test("create bulk conclusion, edit, and delete from clearance toolbar", async ({
     await page.getByTestId("bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
-    await page.getByRole("combobox").click();
+    await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
     await page.getByPlaceholder("Comment on your bulk").fill(comment);

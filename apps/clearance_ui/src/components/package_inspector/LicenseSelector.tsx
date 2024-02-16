@@ -79,7 +79,7 @@ const LicenseSelector = ({
                                     ? licenses.find(
                                           (license) => license.value === value,
                                       )?.label
-                                    : "Select license..."
+                                    : "Select license for filtering..."
                                 : null}
                         </span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
