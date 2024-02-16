@@ -6,7 +6,10 @@ import { expect, test as setup } from "@playwright/test";
 import { STORAGE_STATE } from "../../playwright.config";
 
 setup("logs in", async ({ page }) => {
-    await page.goto("/login");
+    await page.goto("/");
+
+    // Click the button with "Log in" text
+    await page.click("button:has-text('Log in')");
 
     // Fill the login form
     await page.fill("[name='username']", "test");
