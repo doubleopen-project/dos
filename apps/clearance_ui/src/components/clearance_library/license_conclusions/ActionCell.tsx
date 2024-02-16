@@ -17,8 +17,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/use-toast";
+import EditButton from "@/components/common/edit_item/EditButton";
 import DeleteLicenseConclusion from "@/components/delete_item/DeleteLicenseConclusion";
-import EditButton from "@/components/edit_item/EditButton";
 import { isValidConcludedExpression } from "@/helpers/isValidConcludedExpression";
 
 type LicenseConclusion = ZodiosResponseByAlias<
