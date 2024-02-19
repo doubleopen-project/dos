@@ -4,6 +4,7 @@
 
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SelectGroup } from "@radix-ui/react-select";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import axios from "axios";
@@ -26,6 +27,7 @@ import {
     Select,
     SelectContent,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -174,22 +176,34 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                                     <SelectValue placeholder="Select a valid reason..." />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="max-h-[40vh] overflow-y-auto">
                                                 {validReasons.map((reason) => (
-                                                    <SelectItem
-                                                        className={cn(
-                                                            "text-xs hover:bg-slate-400",
-                                                        )}
-                                                        key={reason.name}
-                                                        value={reason.name}
-                                                        onSelect={() =>
-                                                            field.onChange(
-                                                                reason,
-                                                            )
-                                                        }
-                                                    >
-                                                        {reason.name}
-                                                    </SelectItem>
+                                                    <SelectGroup>
+                                                        <SelectItem
+                                                            className={cn(
+                                                                "py-0.5 text-xs hover:bg-slate-400",
+                                                            )}
+                                                            key={reason.name}
+                                                            value={reason.name}
+                                                            onSelect={() =>
+                                                                field.onChange(
+                                                                    reason.name,
+                                                                )
+                                                            }
+                                                        >
+                                                            <div>
+                                                                {reason.name}
+                                                            </div>
+                                                        </SelectItem>
+                                                        <SelectLabel
+                                                            key={
+                                                                reason.description
+                                                            }
+                                                            className="text-muted-foreground ml-5 py-0.5 text-xs font-normal italic"
+                                                        >
+                                                            {reason.description}
+                                                        </SelectLabel>
+                                                    </SelectGroup>
                                                 ))}
                                             </SelectContent>
                                         </Select>

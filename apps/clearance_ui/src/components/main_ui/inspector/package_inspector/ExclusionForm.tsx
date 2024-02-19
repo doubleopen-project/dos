@@ -24,7 +24,9 @@ import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -212,21 +214,32 @@ const ExclusionForm = ({
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="text-xs">
                                             <SelectValue placeholder="Select a valid reason..." />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="max-h-[40vh] overflow-y-auto">
                                         {validReasons.map((reason) => (
-                                            <SelectItem
-                                                key={reason.name}
-                                                value={reason.name}
-                                                onSelect={() =>
-                                                    field.onChange(reason)
-                                                }
-                                            >
-                                                {reason.name}
-                                            </SelectItem>
+                                            <SelectGroup>
+                                                <SelectItem
+                                                    key={reason.name}
+                                                    value={reason.name}
+                                                    onSelect={() =>
+                                                        field.onChange(
+                                                            reason.name,
+                                                        )
+                                                    }
+                                                    className="py-0.5 text-xs"
+                                                >
+                                                    {reason.name}
+                                                </SelectItem>
+                                                <SelectLabel
+                                                    key={reason.description}
+                                                    className="text-muted-foreground mb-1 ml-5 py-0.5 text-xs font-normal italic"
+                                                >
+                                                    {reason.description}
+                                                </SelectLabel>
+                                            </SelectGroup>
                                         ))}
                                     </SelectContent>
                                 </Select>
