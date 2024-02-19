@@ -10,8 +10,8 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import ClearanceInspector from "@/components/clearance_inspector/ClearanceInspector";
-import ClearanceToolbar from "@/components/ClearanceToolbar";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
+import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import PackageTree from "@/components/package_inspector/PackageTree";
 
 type MainUIProps = {
