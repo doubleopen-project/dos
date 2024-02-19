@@ -35,32 +35,36 @@ const PathExclusion = ({
             <div className="mr-1 flex-1 items-start text-left">
                 <div className="flex w-full flex-col gap-1">
                     <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold">
+                        <div className="font-semibold">
                             {
                                 new Date(pathExclusion.updatedAt)
                                     .toISOString()
                                     .split("T")[0]
                             }
-                        </span>
-                        <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
+                        </div>
+                        <div className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
                             {pathExclusion.user.username}
-                        </span>
+                        </div>
                     </div>
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
                             Glob pattern:
-                        </span>
-                        <span className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                        </div>
+                        <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
                             {pathExclusion.pattern}
-                        </span>
+                        </div>
                     </div>
-                    <div className="text-xs">
-                        <span className="mr-1 font-semibold">Reason:</span>
-                        <span>{pathExclusion.reason}</span>
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Reason:
+                        </div>
+                        <div>{pathExclusion.reason}</div>
                     </div>
-                    <div className="text-muted-foreground text-xs">
-                        <span className="mr-1 font-semibold">Comment:</span>
-                        <span className="italic">{pathExclusion.comment}</span>
+                    <div className="text-muted-foreground flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Comment:
+                        </div>
+                        <div className="italic">{pathExclusion.comment}</div>
                     </div>
                 </div>
             </div>
