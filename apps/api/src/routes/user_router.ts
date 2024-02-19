@@ -12,6 +12,7 @@ import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
+import { extractStringFromGlob } from "../helpers/globHelpers";
 import { hashPassword } from "../helpers/password_helper";
 import { s3Client } from "../helpers/s3client";
 
@@ -1089,24 +1090,41 @@ userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
                 404,
             );
 
-        const filetrees = await dbQueries.findFileTreesByPackageId(
+        // See first, if the pattern is an exact match for a filetree path
+        const exactPathMatch = await dbQueries.findFileTreeByPkgIdAndPath(
             pe.packageId,
+            pe.pattern,
         );
 
-        const affectedPaths: string[] = [];
+        if (exactPathMatch) {
+            return res.status(200).json({
+                affectedFiles: [exactPathMatch.path],
+            });
+        } else {
+            // Extract a string from the glob that can be used to reduce the amount
+            // of filetrees that need to be compared with the glob pattern.
+            const extractedString = extractStringFromGlob(pe.pattern);
 
-        for (const ft of filetrees) {
-            if (
-                minimatch(ft.path, pe.pattern, { dot: true }) ||
-                ft.path === pe.pattern
-            ) {
-                affectedPaths.push(ft.path);
+            const filetrees = await dbQueries.findFileTreesByPackageId(
+                pe.packageId,
+                extractedString,
+            );
+
+            const affectedPaths: string[] = [];
+
+            for (const ft of filetrees) {
+                if (
+                    minimatch(ft.path, pe.pattern, { dot: true }) ||
+                    ft.path === pe.pattern
+                ) {
+                    affectedPaths.push(ft.path);
+                }
             }
-        }
 
-        res.status(200).json({
-            affectedFiles: affectedPaths,
-        });
+            res.status(200).json({
+                affectedFiles: affectedPaths,
+            });
+        }
     } catch (error) {
         console.log("Error: ", error);
         if (error instanceof CustomError)
