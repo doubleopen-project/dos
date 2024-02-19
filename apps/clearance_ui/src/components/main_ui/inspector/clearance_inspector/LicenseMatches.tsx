@@ -5,7 +5,7 @@
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
-import ButtonGroup from "@/components/clearance_inspector/ButtonGroup";
+import ButtonGroup from "@/components/main_ui/inspector/clearance_inspector/ButtonGroup";
 
 type DetectedLicenseProps = {
     fileSha256: string;

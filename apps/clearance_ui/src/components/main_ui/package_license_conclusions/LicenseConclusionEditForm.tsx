@@ -32,8 +32,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
-import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
+import ConclusionLicense from "@/components/main_ui/inspector/clearance_inspector/ConclusionLicense";
+import ConclusionSPDX from "@/components/main_ui/inspector/clearance_inspector/ConclusionSPDX";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 
 const licenseConclusionFormSchema = z.object({
