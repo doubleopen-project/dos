@@ -103,7 +103,7 @@ const ConclusionLicense = ({
                             "h-fit w-full justify-between",
                         )}
                     >
-                        <div className="text-xs">
+                        <div className="text-muted-foreground text-xs">
                             {router.isReady
                                 ? value
                                     ? dataAsArray.find((d) => d.value === value)

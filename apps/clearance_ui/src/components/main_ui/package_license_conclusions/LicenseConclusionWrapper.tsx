@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import LicenseConclusion from "@/components/main_ui/package_license_conclusions/LicenseConclusion";
-//import LicenseConclusionEditForm from "@/components/main_ui/package_license_conclusions/LicenseConclusionEditForm";
+import LicenseConclusionEditForm from "@/components/main_ui/package_license_conclusions/LicenseConclusionEditForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -51,16 +51,15 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                 <div className="w-full flex-1 overflow-y-auto border">
                     {data.licenseConclusions.map((lc) =>
                         lc.id === editing ? (
-                            <span>Edit form</span>
+                            <LicenseConclusionEditForm
+                                key={`edit-lc-${lc.id}`}
+                                licenseConclusion={lc}
+                                editHandler={editHandler}
+                            />
                         ) : (
-                            //<LicenseConclusionEditForm
-                            //    key={`edit-lc-${lc.id}`}
-                            //    pathPurl={pathPurl}
-                            //    licenseConclusion={lc}
-                            //    editHandler={editHandler}
-                            ///>
                             <LicenseConclusion
                                 key={`lc-${lc.id}`}
+                                purl={purl}
                                 licenseConclusion={lc}
                                 userName={userName}
                                 userRole={userRole}
