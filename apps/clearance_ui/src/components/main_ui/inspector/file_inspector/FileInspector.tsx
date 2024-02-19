@@ -5,15 +5,15 @@
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
-import CodeEditor from "@/components/file_inspector/CodeEditor";
+import CodeEditor from "@/components/main_ui/inspector/file_inspector/CodeEditor";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
-type CodeInspectorProps = {
+type Props = {
     purl: string;
     path: string;
 };
 
-const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
+const FileInspector = ({ path, purl }: Props) => {
     const [fileContents, setFileContents] = useState<string | undefined>(
         undefined,
     );
@@ -80,4 +80,4 @@ const CodeInspector = ({ path, purl }: CodeInspectorProps) => {
     );
 };
 
-export default CodeInspector;
+export default FileInspector;
