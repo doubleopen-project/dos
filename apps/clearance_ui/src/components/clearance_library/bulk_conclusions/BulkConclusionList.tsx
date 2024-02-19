@@ -28,7 +28,7 @@ const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
         "pageIndex",
         parseAsInteger.withDefault(1),
     );
-    const [purl] = useQueryState("purl", parseAsString);
+    const [searchPurl] = useQueryState("searchPurl", parseAsString);
 
     const [sortBy, setSortBy] = useQueryState(
         "sortBy",
@@ -52,7 +52,7 @@ const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
         {
             withCredentials: true,
             queries: {
-                purl: purl !== null ? purl : undefined,
+                purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
         { enabled: !!user },
@@ -66,7 +66,7 @@ const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
                 pageSize,
                 sortBy: sortBy !== null ? sortBy : undefined,
                 sortOrder: sortOrder !== null ? sortOrder : undefined,
-                purl: purl !== null ? purl : undefined,
+                purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
         { enabled: !!user && !!pageSize && !!pageIndex },

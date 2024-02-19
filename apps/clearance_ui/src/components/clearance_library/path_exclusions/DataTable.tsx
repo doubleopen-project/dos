@@ -37,7 +37,10 @@ export function DataTable<TData, TValue>({
     data,
     pageCount,
 }: DataTableProps<TData, TValue>) {
-    const [purl, setPurl] = useQueryState("purl", parseAsString);
+    const [searchPurl, setSearchPurl] = useQueryState(
+        "searchPurl",
+        parseAsString,
+    );
     // The setPageIndex cannot be recognized as a callable expression without the pageIndex, so it
     // is added here and an eslint-disable-next-line is added to ignore the unused variable
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,8 +48,11 @@ export function DataTable<TData, TValue>({
         "pageIndex",
         parseAsInteger.withDefault(1),
     );
-    const [inputValue, setInputValue] = useState<string>(purl || "");
-    const debounceSetPurl = useMemo(() => debounce(setPurl, 300), [setPurl]);
+    const [inputValue, setInputValue] = useState<string>(searchPurl || "");
+    const debounceSetSearchPurl = useMemo(
+        () => debounce(setSearchPurl, 300),
+        [setSearchPurl],
+    );
 
     const table = useReactTable({
         data,
@@ -65,9 +71,9 @@ export function DataTable<TData, TValue>({
                     onChange={(event) => {
                         setInputValue(event.target.value);
                         if (event.target.value === "") {
-                            debounceSetPurl(null);
+                            debounceSetSearchPurl(null);
                         } else {
-                            debounceSetPurl(event.target.value);
+                            debounceSetSearchPurl(event.target.value);
                         }
                         setPageIndex(1);
                     }}
