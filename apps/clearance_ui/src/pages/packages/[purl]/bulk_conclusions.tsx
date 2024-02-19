@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useRouter } from "next/router";
-import ClearanceToolbar from "@/components/ClearanceToolbar";
+import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import BulkConclusionWrapper from "@/components/main_ui/package_bulk_conclusions/BulkConclusionWrapper";
 
 const BulkConclusions = () => {

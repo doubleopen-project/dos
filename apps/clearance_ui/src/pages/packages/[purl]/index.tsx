@@ -10,7 +10,7 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import useMainUiStore from "@/store/mainui.store";
 import useSettingsStore from "@/store/settings.store";
 
-const MainUI = dynamic(() => import("@/components/MainUI"), {
+const MainUI = dynamic(() => import("@/components/main_ui/MainUI"), {
     ssr: false,
 });
 

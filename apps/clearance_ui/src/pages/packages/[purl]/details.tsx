@@ -5,7 +5,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
-import ClearanceToolbar from "@/components/ClearanceToolbar";
+import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Details = () => {
