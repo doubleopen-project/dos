@@ -6,6 +6,7 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { validReasons } from "validation-helpers";
 import { z } from "zod";
@@ -79,87 +80,89 @@ const ExclusionForm = ({
     );
     const queryClient = useQueryClient();
 
-    const { mutate: addPathExclusion } = userHooks.usePostPathExclusion(
-        {
-            withCredentials: true,
-            params: {
-                purl: pathPurl,
+    const { mutate: addPathExclusion, isLoading: createIsLoading } =
+        userHooks.usePostPathExclusion(
+            {
+                withCredentials: true,
+                params: {
+                    purl: pathPurl,
+                },
             },
-        },
-        {
-            onSuccess: () => {
-                setOpen(false);
-                toast({
-                    title: "Path exclusion",
-                    description: "Path exclusion added successfully.",
-                });
-                // When a path exclusion is added, invalidate the corresponding queries to refetch the data
-                queryClient.invalidateQueries(keyPathExclusionsByPurl);
-                queryClient.invalidateQueries(keyPathExclusionCountByPurl);
-            },
-            onError: (error) => {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data?.path === "pattern") {
-                        form.setError("pattern", {
-                            type: "manual",
-                            message: error.response?.data?.message,
-                        });
-                    } else if (error.response?.data?.message) {
+            {
+                onSuccess: () => {
+                    setOpen(false);
+                    toast({
+                        title: "Path exclusion",
+                        description: "Path exclusion added successfully.",
+                    });
+                    // When a path exclusion is added, invalidate the corresponding queries to refetch the data
+                    queryClient.invalidateQueries(keyPathExclusionsByPurl);
+                    queryClient.invalidateQueries(keyPathExclusionCountByPurl);
+                },
+                onError: (error) => {
+                    if (axios.isAxiosError(error)) {
+                        if (error.response?.data?.path === "pattern") {
+                            form.setError("pattern", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        } else if (error.response?.data?.message) {
+                            form.setError("root", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        }
+                    } else {
                         form.setError("root", {
                             type: "manual",
-                            message: error.response?.data?.message,
+                            message: error.message,
                         });
                     }
-                } else {
-                    form.setError("root", {
-                        type: "manual",
-                        message: error.message,
-                    });
-                }
+                },
             },
-        },
-    );
+        );
 
-    const { mutate: editPathExclusion } = userHooks.usePutPathExclusion(
-        {
-            withCredentials: true,
-            params: {
-                id: id || -1,
+    const { mutate: editPathExclusion, isLoading: updateIsLoading } =
+        userHooks.usePutPathExclusion(
+            {
+                withCredentials: true,
+                params: {
+                    id: id || -1,
+                },
             },
-        },
-        {
-            onSuccess: () => {
-                setOpen(false);
-                toast({
-                    title: "Path exclusion",
-                    description:
-                        "Path exclusion edited and saved successfully.",
-                });
-                // When a path exclusion is edited, invalidate the corresponding queries to refetch the data
-                queryClient.invalidateQueries(keyPathExclusionsByPurl);
-            },
-            onError: (error) => {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data?.path === "pattern") {
-                        form.setError("pattern", {
-                            type: "manual",
-                            message: error.response?.data?.message,
-                        });
-                    } else if (error.response?.data?.message) {
+            {
+                onSuccess: () => {
+                    setOpen(false);
+                    toast({
+                        title: "Path exclusion",
+                        description:
+                            "Path exclusion edited and saved successfully.",
+                    });
+                    // When a path exclusion is edited, invalidate the corresponding queries to refetch the data
+                    queryClient.invalidateQueries(keyPathExclusionsByPurl);
+                },
+                onError: (error) => {
+                    if (axios.isAxiosError(error)) {
+                        if (error.response?.data?.path === "pattern") {
+                            form.setError("pattern", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        } else if (error.response?.data?.message) {
+                            form.setError("root", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        }
+                    } else {
                         form.setError("root", {
                             type: "manual",
-                            message: error.response?.data?.message,
+                            message: error.message,
                         });
                     }
-                } else {
-                    form.setError("root", {
-                        type: "manual",
-                        message: error.message,
-                    });
-                }
+                },
             },
-        },
-    );
+        );
 
     const onSubmit = (data: ExclusionFormType) => {
         if (mode === "Add") {
@@ -278,8 +281,16 @@ const ExclusionForm = ({
                         <Button
                             type="submit"
                             className="mt-2 rounded-md p-1 text-xs"
+                            disabled={createIsLoading || updateIsLoading}
                         >
-                            Submit
+                            {createIsLoading || updateIsLoading ? (
+                                <>
+                                    <Loader2 className="m-1 h-4 w-4 animate-spin" />
+                                    Please wait
+                                </>
+                            ) : (
+                                <span>Submit</span>
+                            )}
                         </Button>
                     </div>
                 </form>
