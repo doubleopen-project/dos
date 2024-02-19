@@ -22,7 +22,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,42 +34,40 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import ConclusionLicense from "@/components/license_conclusions/ConclusionLicense";
 import ConclusionSPDX from "@/components/license_conclusions/ConclusionSPDX";
-import { cn } from "@/lib/utils";
-import { patternGlobSchema } from "@/schemes/pattern_schema";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 
-const bulkConclusionFormSchema = z.object({
-    pattern: patternGlobSchema,
+const licenseConclusionFormSchema = z.object({
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
     concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),
     local: z.boolean(),
 });
 
-type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
+type LicenseConclusionFormType = z.infer<typeof licenseConclusionFormSchema>;
 
-type BulkConclusion = ZodiosResponseByAlias<
+type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
-    "GetBulkConclusionsByPurl"
->["bulkConclusions"][0];
+    "GetLicenseConclusions"
+>["licenseConclusions"][0];
 
 type Props = {
-    pathPurl: string;
-    bulkConclusion: BulkConclusion;
+    licenseConclusion: LicenseConclusion;
     editHandler: (id: number) => void;
 };
 
-const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
-    const defaultValues: BulkConclusionFormType = {
-        pattern: bulkConclusion?.pattern || "",
+const LicenseConclusionEditForm = ({
+    licenseConclusion,
+    editHandler,
+}: Props) => {
+    const defaultValues: LicenseConclusionFormType = {
         concludedLicenseSPDX:
-            bulkConclusion?.concludedLicenseExpressionSPDX || "",
+            licenseConclusion?.concludedLicenseExpressionSPDX || "",
         concludedLicenseList: "",
-        comment: bulkConclusion?.comment || "",
-        local: bulkConclusion?.local || false,
+        comment: licenseConclusion?.comment || "",
+        local: licenseConclusion?.local || false,
     };
-    const form = useForm<BulkConclusionFormType>({
-        resolver: zodResolver(bulkConclusionFormSchema),
+    const form = useForm<LicenseConclusionFormType>({
+        resolver: zodResolver(licenseConclusionFormSchema),
         defaultValues,
     });
     const { errors } = useFormState({ control: form.control });
@@ -82,10 +79,6 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
-    const keyBulkConclusion = userHooks.getKeyByAlias("GetBulkConclusionById");
-    const keyBulkConclusionsByPurl = userHooks.getKeyByAlias(
-        "GetBulkConclusionsByPurl",
-    );
     const keyLicenseConclusionsCountByPurl = userHooks.getKeyByAlias(
         "GetLicenseConclusionsCount",
     );
@@ -93,27 +86,25 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
-    const { mutate: editBulkConclusion, isLoading } =
-        userHooks.usePutBulkConclusion(
+    const { mutate: editLicenseConclusion, isLoading } =
+        userHooks.usePutLicenseConclusion(
             {
                 withCredentials: true,
                 params: {
-                    id: bulkConclusion.id || -1,
+                    id: licenseConclusion.id || -1,
                 },
             },
             {
                 onSuccess: () => {
                     toast({
-                        title: "Bulk conclusion",
+                        title: "License conclusion",
                         description:
-                            "Bulk license conclusion edited and saved successfully.",
+                            "License conclusion edited and saved successfully.",
                     });
                     // When a bulk conclusion is edited, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
-                    queryClient.invalidateQueries(keyBulkConclusion);
-                    queryClient.invalidateQueries(keyBulkConclusionsByPurl);
                     queryClient.invalidateQueries(
                         keyLicenseConclusionsCountByPurl,
                     );
@@ -122,8 +113,11 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                 },
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {
-                        if (error.response?.data?.path === "pattern") {
-                            form.setError("pattern", {
+                        if (
+                            error.response?.data?.path ===
+                            "concludedLicenseSPDX"
+                        ) {
+                            form.setError("concludedLicenseSPDX", {
                                 type: "manual",
                                 message: error.response?.data?.message,
                             });
@@ -143,7 +137,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
             },
         );
 
-    const onSubmit = (data: BulkConclusionFormType) => {
+    const onSubmit = (data: LicenseConclusionFormType) => {
         // Create an array of fields with values
         const fieldsWithValue = [
             data.concludedLicenseSPDX,
@@ -153,8 +147,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
             const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
-            editBulkConclusion({
-                pattern: data.pattern,
+            editLicenseConclusion({
                 concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
                 comment: data.comment ?? "",
                 local: data.local,
@@ -185,39 +178,25 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                             <div className="flex items-center justify-between text-sm">
                                 <span className="font-semibold">
                                     {
-                                        new Date(bulkConclusion.updatedAt)
+                                        new Date(licenseConclusion.updatedAt)
                                             .toISOString()
                                             .split("T")[0]
                                     }
                                 </span>
                                 <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                                    {bulkConclusion.user.username}
+                                    {licenseConclusion.user.username}
                                 </span>
                             </div>
-                            <FormField
-                                control={form.control}
-                                name="pattern"
-                                render={({ field }) => (
-                                    <FormItem className="flex-1">
-                                        <FormLabel className="mr-1 text-xs font-semibold">
-                                            Glob pattern:
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className={cn(
-                                                    errors.pattern
-                                                        ? "border-destructive border"
-                                                        : undefined,
-                                                    "bg-white text-xs dark:bg-black",
-                                                )}
-                                                placeholder="Glob pattern matching to the files to be concluded..."
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="text-xs" />
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="flex text-xs">
+                                <div className="mr-2 flex whitespace-nowrap font-semibold">
+                                    Detected:
+                                </div>
+                                <div>
+                                    {
+                                        licenseConclusion.detectedLicenseExpressionSPDX
+                                    }
+                                </div>
+                            </div>
                             <FormLabel className="text-xs font-semibold">
                                 Select exactly one of the two below:
                             </FormLabel>
@@ -310,18 +289,16 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                                 <TooltipContent side="right">
                                                     <p>
                                                         By checking this box,
-                                                        this bulk license
-                                                        conclusion will only
-                                                        apply <br /> to the
-                                                        files in this version of
-                                                        this package.
+                                                        this license conclusion
+                                                        will only apply <br />{" "}
+                                                        to the files in this
+                                                        version of this package.
                                                     </p>
                                                     <br />
                                                     <p>
                                                         If you want to apply
-                                                        this bulk license
-                                                        conclusion across all
-                                                        packages
+                                                        this license conclusion
+                                                        across all packages
                                                         <br />
                                                         that have the one or
                                                         more of the affected
@@ -359,7 +336,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                 <Loader2 className="ml-2 mr-1 h-10 w-10 animate-spin" />
                             ) : (
                                 <Button
-                                    data-testid="bulk-conclusion-edit"
+                                    data-testid="license-conclusion-edit"
                                     variant="outline"
                                     type="submit"
                                     className="ml-2 mr-1 px-2"
@@ -385,4 +362,4 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
     );
 };
 
-export default BulkConclusionEditForm;
+export default LicenseConclusionEditForm;

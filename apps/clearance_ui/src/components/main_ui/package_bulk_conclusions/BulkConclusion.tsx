@@ -66,7 +66,7 @@ const BulkConclusion = ({
                     </div>
                     <div className="text-xs">
                         <span className="mr-1 font-semibold">Concluded:</span>
-                        <span className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                        <span className="rounded-sm bg-green-400 dark:text-black">
                             {bulkConclusion.concludedLicenseExpressionSPDX}
                         </span>
                     </div>

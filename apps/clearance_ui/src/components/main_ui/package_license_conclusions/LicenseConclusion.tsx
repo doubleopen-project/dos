@@ -17,6 +17,7 @@ type LicenseConclusion = ZodiosResponseByAlias<
 >["licenseConclusions"][0];
 
 type Props = {
+    purl: string;
     licenseConclusion: LicenseConclusion;
     userName: string;
     userRole: string;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const LicenseConclusion = ({
+    purl,
     licenseConclusion,
     userName,
     userRole,
@@ -32,7 +34,7 @@ const LicenseConclusion = ({
     return (
         <div
             className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
-            data-testid="bulk-conclusion"
+            data-testid="license-conclusion"
         >
             <div className="mr-1 flex-1 items-start text-left">
                 <div className="flex w-full flex-col gap-1">
@@ -52,7 +54,7 @@ const LicenseConclusion = ({
                         <div className="mr-2 flex whitespace-nowrap font-semibold">
                             Concluded:
                         </div>
-                        <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                        <div className="rounded-sm bg-green-400 dark:text-black">
                             {licenseConclusion.concludedLicenseExpressionSPDX}
                         </div>
                     </div>
@@ -81,7 +83,7 @@ const LicenseConclusion = ({
                             (p, index) => (
                                 <AffectedPath
                                     key={index}
-                                    purl={licenseConclusion.contextPurl}
+                                    purl={purl}
                                     path={p.path}
                                 />
                             ),
