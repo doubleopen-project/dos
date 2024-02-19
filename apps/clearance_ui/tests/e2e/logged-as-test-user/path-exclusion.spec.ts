@@ -28,7 +28,7 @@ test("create path exclusion, edit, and delete from Main UI", async ({
     await page.getByTestId("path-exclusion-subdirs").click();
     await expect(page.getByLabel("Pattern")).toHaveValue(pattern);
     await page.getByLabel("Reason").click();
-    await page.getByLabel(reason).click();
+    await page.getByLabel(reason, { exact: true }).click();
     await page.getByPlaceholder("Comment...").click();
     await page.getByPlaceholder("Comment...").fill(comment);
     await page.getByRole("button", { name: "Submit" }).click();
@@ -104,7 +104,7 @@ test("create path exclusion, delete from Clearance Library", async ({
     await page.getByTestId("path-exclusion-similar").click();
     await expect(page.getByLabel("Pattern")).toHaveValue(pattern);
     await page.getByLabel("Reason").click();
-    await page.getByLabel(reason).click();
+    await page.getByLabel(reason, { exact: true }).click();
     await page.getByLabel("Comment").click();
     await page.getByLabel("Comment").fill(comment);
     await page.getByRole("button", { name: "Submit" }).click();
