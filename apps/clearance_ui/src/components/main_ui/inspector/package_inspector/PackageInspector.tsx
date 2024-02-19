@@ -22,8 +22,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import LicenseSelector from "@/components/package_inspector/LicenseSelector";
-import Node from "@/components/package_inspector/Node";
+import LicenseSelector from "@/components/main_ui/inspector/package_inspector/LicenseSelector";
+import Node from "@/components/main_ui/inspector/package_inspector/Node";
 import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
@@ -41,7 +41,7 @@ type Props = {
     path: string | undefined;
 };
 
-const PackageTree = ({ purl, path }: Props) => {
+const PackageInspector = ({ purl, path }: Props) => {
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
         "licenseFilter",
@@ -315,4 +315,4 @@ const PackageTree = ({ purl, path }: Props) => {
     );
 };
 
-export default PackageTree;
+export default PackageInspector;

@@ -12,7 +12,7 @@ import {
 import ClearanceInspector from "@/components/clearance_inspector/ClearanceInspector";
 import CodeInspector from "@/components/file_inspector/CodeInspector";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
-import PackageTree from "@/components/package_inspector/PackageTree";
+import PackageInspector from "@/components/main_ui/inspector/package_inspector/PackageInspector";
 
 type MainUIProps = {
     purl: string;
@@ -42,7 +42,7 @@ const MainUI = ({
                 {/* 1st column: Package Inspector */}
                 <ResizablePanel defaultSize={defaultMainWidths[0]}>
                     <div className="mr-1 flex h-full flex-col overflow-auto p-2">
-                        <PackageTree purl={purl} path={path} />
+                        <PackageInspector purl={purl} path={path} />
                     </div>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
