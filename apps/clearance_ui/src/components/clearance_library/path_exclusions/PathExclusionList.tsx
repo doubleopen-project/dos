@@ -28,7 +28,7 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
         "pageIndex",
         parseAsInteger.withDefault(1),
     );
-    const [purl] = useQueryState("purl", parseAsString);
+    const [searchPurl] = useQueryState("searchPurl", parseAsString);
 
     const [sortBy, setSortBy] = useQueryState(
         "sortBy",
@@ -50,7 +50,7 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
         {
             withCredentials: true,
             queries: {
-                purl: purl !== null ? purl : undefined,
+                purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
         { enabled: !!user },
@@ -64,7 +64,7 @@ const PathExclusionList = ({ user }: PathExclusionListProps) => {
                 pageSize,
                 sortBy: sortBy !== null ? sortBy : undefined,
                 sortOrder: sortOrder !== null ? sortOrder : undefined,
-                purl: purl !== null ? purl : undefined,
+                purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
         { enabled: !!user && !!pageSize && !!pageIndex },
