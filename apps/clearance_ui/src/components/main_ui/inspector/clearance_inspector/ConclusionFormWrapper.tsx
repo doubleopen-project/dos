@@ -5,7 +5,7 @@
 import { Loader2 } from "lucide-react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
-import ConclusionForm from "@/components/license_conclusions/ConclusionForm";
+import ConclusionForm from "@/components/main_ui/inspector/clearance_inspector/ConclusionForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type ConclusionFormWrapperProps = {

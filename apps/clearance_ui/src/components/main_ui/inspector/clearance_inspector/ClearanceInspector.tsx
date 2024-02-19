@@ -10,10 +10,10 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ConclusionFormWrapper from "@/components/clearance_inspector/ConclusionFormWrapper";
-import DetectedLicense from "@/components/clearance_inspector/DetectedLicense";
-import LicenseConclusions from "@/components/clearance_inspector/LicenseConclusions";
-import LicenseMatches from "@/components/clearance_inspector/LicenseMatches";
+import ConclusionFormWrapper from "@/components/main_ui/inspector/clearance_inspector/ConclusionFormWrapper";
+import DetectedLicense from "@/components/main_ui/inspector/clearance_inspector/DetectedLicense";
+import LicenseConclusions from "@/components/main_ui/inspector/clearance_inspector/LicenseConclusions";
+import LicenseMatches from "@/components/main_ui/inspector/clearance_inspector/LicenseMatches";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
 type ClearanceInspectorProps = {

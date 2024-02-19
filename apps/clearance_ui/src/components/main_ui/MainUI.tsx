@@ -9,8 +9,8 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ClearanceInspector from "@/components/clearance_inspector/ClearanceInspector";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
+import ClearanceInspector from "@/components/main_ui/inspector/clearance_inspector/ClearanceInspector";
 import FileInspector from "@/components/main_ui/inspector/file_inspector/FileInspector";
 import PackageInspector from "@/components/main_ui/inspector/package_inspector/PackageInspector";
 
