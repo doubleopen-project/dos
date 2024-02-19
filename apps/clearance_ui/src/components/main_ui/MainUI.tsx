@@ -10,8 +10,8 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import ClearanceInspector from "@/components/clearance_inspector/ClearanceInspector";
-import CodeInspector from "@/components/file_inspector/CodeInspector";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
+import FileInspector from "@/components/main_ui/inspector/file_inspector/FileInspector";
 import PackageInspector from "@/components/main_ui/inspector/package_inspector/PackageInspector";
 
 type MainUIProps = {
@@ -51,7 +51,7 @@ const MainUI = ({
                 <ResizablePanel defaultSize={defaultMainWidths[1]}>
                     {path ? (
                         <div className="ml-1 h-full flex-1 overflow-auto p-2">
-                            <CodeInspector purl={purl} path={path} />
+                            <FileInspector purl={purl} path={path} />
                         </div>
                     ) : (
                         <div className="flex h-full items-center justify-center">
