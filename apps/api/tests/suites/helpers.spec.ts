@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { assert } from "chai";
+import { extractStringFromGlob } from "../../src/helpers/globHelpers";
 import { replaceANDExceptionWithANDPrefixException } from "../../src/helpers/license_expression_helpers";
 import { parsePurl } from "../../src/helpers/purl_helpers";
 
@@ -99,6 +100,38 @@ export default function suite(): void {
             const result =
                 replaceANDExceptionWithANDPrefixException(expression);
             assert.strictEqual(result, expectedExpression);
+        });
+    });
+
+    describe("Testing glob helpers", function () {
+        it("should extract a string from a glob with a non-magic parent path and a magic child path", function () {
+            const glob = "src/**/*.ts";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, "src");
+        });
+
+        it("should extract a string from a glob with a magic parent path and a non-magic child path", function () {
+            const glob = "**/index.ts";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, "index.ts");
+        });
+
+        it("should extract a string when used with a glob with a magic parent path and a magic child path, containing an extension", function () {
+            const glob = "**/*.ts";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, ".ts");
+        });
+
+        it("should extract a string from a glob with a magic parent path and a magic child path, with a non-magic part in the middle", function () {
+            const glob = "**/src/**/*.ts";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, "src");
+        });
+
+        it("should return undefined when used with a glob with a magic parent path and a magic child path, without an extension", function () {
+            const glob = "**/*";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, undefined);
         });
     });
 }
