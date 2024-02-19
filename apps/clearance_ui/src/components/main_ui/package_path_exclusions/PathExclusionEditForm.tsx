@@ -180,15 +180,15 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                                         className={cn(
                                                             "text-xs hover:bg-slate-400",
                                                         )}
-                                                        key={reason}
-                                                        value={reason}
+                                                        key={reason.name}
+                                                        value={reason.name}
                                                         onSelect={() =>
                                                             field.onChange(
                                                                 reason,
                                                             )
                                                         }
                                                     >
-                                                        {reason}
+                                                        {reason.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>

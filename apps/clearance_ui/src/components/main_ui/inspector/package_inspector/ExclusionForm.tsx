@@ -219,13 +219,13 @@ const ExclusionForm = ({
                                     <SelectContent>
                                         {validReasons.map((reason) => (
                                             <SelectItem
-                                                key={reason}
-                                                value={reason}
+                                                key={reason.name}
+                                                value={reason.name}
                                                 onSelect={() =>
                                                     field.onChange(reason)
                                                 }
                                             >
-                                                {reason}
+                                                {reason.name}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
