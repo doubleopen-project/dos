@@ -8,7 +8,7 @@ import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import LicenseConclusionItem from "@/components/clearance_inspector/LicenseConclusionItem";
-import BulkConclusionFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
+import BulkConclusionFormDialog from "@/components/main_ui/inspector/package_inspector/BulkConclusionFormDialog";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type LicenseConclusionsProps = {

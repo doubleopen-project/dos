@@ -22,9 +22,9 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ClearanceTools from "@/components/main_ui/inspector/package_inspector/ClearanceTools";
 import LicenseSelector from "@/components/main_ui/inspector/package_inspector/LicenseSelector";
 import Node from "@/components/main_ui/inspector/package_inspector/Node";
-import ExclusionTools from "@/components/path_exclusions/ExclusionTools";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
@@ -203,7 +203,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 </Button>
             </div>
             <div className="flex items-center justify-between">
-                <ExclusionTools
+                <ClearanceTools
                     selectedNode={selectedNode}
                     purl={purl}
                     className="mr-2 flex-1"
