@@ -17384,7 +17384,10 @@ declare const PutUserReq: z.ZodObject<
         password?: string | undefined;
     }
 >;
-declare const validReasons: string[];
+declare const validReasons: {
+    name: string;
+    description: string;
+}[];
 declare const FileTree: z.ZodObject<
     {
         path: z.ZodString;

@@ -341,26 +341,72 @@ export const QueryParamFilterPEBy = z
 
 // -------------------------------------------------
 export const validReasons = [
-    "BUILD_TOOL_OF",
-    "DATA_FILE_OF",
-    "DOCUMENTATION_OF",
-    "EXAMPLE_OF",
-    "OPTIONAL_COMPONENT_OF",
-    "OTHER",
-    "PROVIDED_BY",
-    "TEST_OF",
-    "TEST_TOOL_OF",
+    {
+        name: "BUILD_TOOL_OF",
+        description:
+            "The path only contains tools used for building source code which are not included in distributed build artifacts.",
+    },
+    {
+        name: "DATA_FILE_OF",
+        description:
+            "The path only contains data files such as fonts or images which are not included in distributed build artifacts.",
+    },
+    {
+        name: "DOCUMENTATION_OF",
+        description:
+            "The path only contains documentation which is not included in distributed build artifacts.",
+    },
+    {
+        name: "EXAMPLE_OF",
+        description:
+            "The path only contains source code examples which are not included in distributed build artifacts.",
+    },
+    {
+        name: "OPTIONAL_COMPONENT_OF",
+        description:
+            "The path only contains optional components for the code that is built which are not included in distributed build artifacts.",
+    },
+    {
+        name: "OTHER",
+        description:
+            "Any reason which cannot be represented by any other choice.",
+    },
+    {
+        name: "PROVIDED_BY",
+        description:
+            "The path only contains packages or sources for packages that have to be provided by the user of distributed build artifacts.",
+    },
+    {
+        name: "TEST_OF",
+        description:
+            "The path only contains files used for testing source code which are not included in distributed build artifacts.",
+    },
+    {
+        name: "TEST_TOOL_OF",
+        description:
+            "The path only contains tools used for testing source code which are not included in distributed build artifacts.",
+    },
 ];
 
 //--------------- PUT path exclusion ---------------
 export const PutPathExclusionReq = z
     .object({
         pattern: z.string().min(1, "Pattern cannot be empty"),
-        reason: z.string().refine((reason) => validReasons.includes(reason), {
-            message:
-                "Reason is invalid. Accepted values are: " +
-                validReasons.join(", "),
-        }),
+        reason: z
+            .string()
+            .refine(
+                (reason) =>
+                    validReasons.some(
+                        (validReason) => validReason.name === reason,
+                    ),
+                {
+                    message:
+                        "Reason is invalid. Accepted values are: " +
+                        validReasons
+                            .map((validReason) => validReason.name)
+                            .join(", "),
+                },
+            ),
         comment: z.string(),
     })
     .partial();
@@ -384,11 +430,17 @@ export const PostPathExclusionReq = z.object({
         })
         .trim()
         .min(1, "Reason cannot be empty")
-        .refine((reason) => validReasons.includes(reason), {
-            message:
-                "Reason is invalid. Accepted values are: " +
-                validReasons.join(", "),
-        }),
+        .refine(
+            (reason) =>
+                validReasons.some((validReason) => validReason.name === reason),
+            {
+                message:
+                    "Reason is invalid. Accepted values are: " +
+                    validReasons
+                        .map((validReason) => validReason.name)
+                        .join(", "),
+            },
+        ),
     comment: z.nullable(z.string()).optional(),
 });
 
