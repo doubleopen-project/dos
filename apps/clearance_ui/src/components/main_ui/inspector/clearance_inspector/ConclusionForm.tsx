@@ -28,8 +28,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import ConclusionLicense from "@/components/main_ui/inspector/clearance_inspector/ConclusionLicense";
-import ConclusionSPDX from "@/components/main_ui/inspector/clearance_inspector/ConclusionSPDX";
+import ConclusionLicense from "@/components/common/ConclusionLicense";
+import ConclusionSPDX from "@/components/common/ConclusionSPDX";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
