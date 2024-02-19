@@ -5,41 +5,29 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import ExclusionForm from "@/components/path_exclusions/ExclusionForm";
+import BulkConclusionEditForm from "@/components/common/edit_item/BulkConclusionEditForm";
+import BulkConclusionForm from "@/components/main_ui/inspector/package_inspector/BulkConclusionForm";
 
 type Props = {
     purl: string;
-    mode: "Edit" | "Add";
     id?: number;
-    pattern?: string;
-    reason?: string;
-    comment?: string;
     open: boolean;
     setOpen: (open: boolean) => void;
 };
 
-const ExclusionFormDialog = ({
-    purl,
-    mode,
-    id,
-    pattern,
-    reason,
-    comment,
-    open,
-    setOpen,
-}: Props) => {
+const BulkConclusionFormDialog = ({ purl, id, open, setOpen }: Props) => {
     return (
         <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
-                <ExclusionForm
-                    purl={purl}
-                    mode={mode}
-                    id={id}
-                    pattern={pattern}
-                    reason={reason}
-                    comment={comment}
-                    setOpen={setOpen}
-                />
+                {id ? (
+                    <BulkConclusionEditForm
+                        purl={purl}
+                        id={id}
+                        setOpen={setOpen}
+                    />
+                ) : (
+                    <BulkConclusionForm purl={purl} setOpen={setOpen} />
+                )}
                 <DialogFooter className="flex justify-end">
                     <Button
                         variant="outline"
@@ -54,4 +42,4 @@ const ExclusionFormDialog = ({
     );
 };
 
-export default ExclusionFormDialog;
+export default BulkConclusionFormDialog;

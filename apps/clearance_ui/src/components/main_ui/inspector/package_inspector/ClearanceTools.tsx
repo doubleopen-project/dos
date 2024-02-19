@@ -18,8 +18,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import BulkConclusionFormDialog from "@/components/license_conclusions/BulkConclusionFormDialog";
-import ExclusionFormDialog from "@/components/path_exclusions/ExclusionFormDialog";
+import BulkConclusionFormDialog from "@/components/main_ui/inspector/package_inspector/BulkConclusionFormDialog";
+import ExclusionFormDialog from "@/components/main_ui/inspector/package_inspector/ExclusionFormDialog";
 import { cn } from "@/lib/utils";
 import type { SelectedNode } from "@/types/index";
 
@@ -35,7 +35,7 @@ const hasChildrenDirs = (node: SelectedNode | undefined) => {
     return node?.children?.some((child: SelectedNode) => !child.isLeaf);
 };
 
-const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
+const ClearanceTools = ({ selectedNode, purl, className }: Props) => {
     const [openDirDialog, setOpenDirDialog] = useState<boolean>(false);
     const [openSubdirsDialog, setOpenSubdirsDialog] = useState<boolean>(false);
     const [openFileDialog, setOpenFileDialog] = useState<boolean>(false);
@@ -215,4 +215,4 @@ const ExclusionTools = ({ selectedNode, purl, className }: Props) => {
     );
 };
 
-export default ExclusionTools;
+export default ClearanceTools;
