@@ -33,7 +33,6 @@
         "@types/swagger-ui-express": "4.1.6",
         "chai": "4.3.10",
         "chai-http": "4.4.0",
-        "eslint": "8.55.0",
         "eslint-config-custom-server": "*",
         "mocha": "10.2.0",
         "nock": "13.4.0",
