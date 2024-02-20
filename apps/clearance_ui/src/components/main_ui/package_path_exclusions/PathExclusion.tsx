@@ -6,9 +6,9 @@ import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { Separator } from "@/components/ui/separator";
-import AffectedFilesTooltip from "@/components/clearance_library/path_exclusions/AffectedFilesTooltip";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
+import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
 
 type PathExclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -72,7 +72,7 @@ const PathExclusion = ({
                             Files affected by this path exclusion:
                         </div>
                         <div>
-                            <AffectedFilesTooltip
+                            <PEAffectedFilesTooltip
                                 pathExclusionId={pathExclusion.id}
                             />
                         </div>
