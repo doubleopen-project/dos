@@ -16,7 +16,7 @@ type Props = {
     pathExclusionId: number;
 };
 
-const AffectedFilesTooltip = ({ pathExclusionId }: Props) => {
+const PEAffectedFilesTooltip = ({ pathExclusionId }: Props) => {
     const { data, isLoading, error } =
         userHooks.useGetAffectedFilesForPathExclusion({
             withCredentials: true,
@@ -68,4 +68,4 @@ const AffectedFilesTooltip = ({ pathExclusionId }: Props) => {
     );
 };
 
-export default AffectedFilesTooltip;
+export default PEAffectedFilesTooltip;

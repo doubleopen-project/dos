@@ -23,8 +23,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import AffectedFilesTooltip from "@/components/clearance_library/path_exclusions/AffectedFilesTooltip";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
+import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
 type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
@@ -342,7 +342,7 @@ export const columns = (
             ),
             cell: ({ row }) => {
                 return (
-                    <AffectedFilesTooltip pathExclusionId={row.original.id} />
+                    <PEAffectedFilesTooltip pathExclusionId={row.original.id} />
                 );
             },
         },
