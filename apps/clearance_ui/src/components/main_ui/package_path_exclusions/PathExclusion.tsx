@@ -6,6 +6,7 @@ import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { Separator } from "@/components/ui/separator";
+import AffectedFilesTooltip from "@/components/clearance_library/path_exclusions/AffectedFilesTooltip";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 
@@ -65,6 +66,16 @@ const PathExclusion = ({
                             Comment:
                         </div>
                         <div className="italic">{pathExclusion.comment}</div>
+                    </div>
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Files affected by this path exclusion:
+                        </div>
+                        <div>
+                            <AffectedFilesTooltip
+                                pathExclusionId={pathExclusion.id}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
