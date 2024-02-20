@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import chai, { expect } from "chai";
+import { expect, use } from "chai";
 import chaiHttp from "chai-http";
 import nock from "nock";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../../src/routes/router";
 import app from "../../src/server";
 
-chai.use(chaiHttp);
+const chai = use(chaiHttp);
 
 const serverToken = process.env.SA_API_TOKEN || "token";
 
