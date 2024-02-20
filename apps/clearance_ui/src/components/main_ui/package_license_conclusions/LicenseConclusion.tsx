@@ -33,7 +33,7 @@ const LicenseConclusion = ({
 }: Props) => {
     return (
         <div
-            className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
+            className="hover:bg-muted m-2 ml-12 flex items-stretch justify-between rounded-lg border p-2"
             data-testid="license-conclusion"
         >
             <div className="mr-1 flex-1 items-start text-left">
