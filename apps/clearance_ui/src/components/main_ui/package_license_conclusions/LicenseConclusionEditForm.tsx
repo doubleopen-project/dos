@@ -172,7 +172,7 @@ const LicenseConclusionEditForm = ({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2">
+                <div className="bg-muted m-2 ml-12 flex items-stretch justify-between rounded-lg border p-2">
                     <div className="mr-1 flex-1 items-start text-left">
                         <div className="flex w-full flex-col gap-1">
                             <div className="flex items-center justify-between text-sm">
