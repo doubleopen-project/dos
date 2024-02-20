@@ -9,8 +9,8 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
-import { Options } from "next-usequerystate";
 import Link from "next/link";
+import { Options } from "nuqs";
 import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";

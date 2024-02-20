@@ -8,7 +8,7 @@ import {
     parseAsString,
     parseAsStringEnum,
     useQueryState,
-} from "next-usequerystate";
+} from "nuqs";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/package_library/columns";

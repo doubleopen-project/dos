@@ -4,7 +4,7 @@
 
 import React, { useMemo } from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
-import { parseAsInteger, useQueryState } from "next-usequerystate";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { userAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
 import {

@@ -11,11 +11,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import debounce from "lodash.debounce";
-import {
-    parseAsInteger,
-    parseAsString,
-    useQueryState,
-} from "next-usequerystate";
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
 import {
     Table,

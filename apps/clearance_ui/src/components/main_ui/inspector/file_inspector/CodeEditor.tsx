@@ -6,8 +6,8 @@ import React from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { useTheme } from "next-themes";
-import { parseAsInteger, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { userAPI } from "validation-helpers";
 import styles from "@/styles/CodeInspector.module.css";
 
