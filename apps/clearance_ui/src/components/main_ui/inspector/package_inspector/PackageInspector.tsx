@@ -4,12 +4,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import {
-    parseAsBoolean,
-    parseAsString,
-    useQueryState,
-} from "next-usequerystate";
 import { useRouter } from "next/router";
+import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
 import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";

@@ -9,7 +9,7 @@ import {
     parseAsString,
     parseAsStringEnum,
     useQueryState,
-} from "next-usequerystate";
+} from "nuqs";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/bulk_conclusions/columns";

@@ -9,7 +9,7 @@ import {
     ChevronsLeftIcon,
     ChevronsRightIcon,
 } from "lucide-react";
-import { parseAsInteger, useQueryState } from "next-usequerystate";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
 import {
     Select,

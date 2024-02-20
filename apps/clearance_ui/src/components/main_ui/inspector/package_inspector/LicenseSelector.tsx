@@ -4,8 +4,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Check, ChevronsUpDown, XCircle } from "lucide-react";
-import { parseAsBoolean, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
 import {
     Command,

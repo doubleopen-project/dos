@@ -4,8 +4,8 @@
 
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { parseAsString, useQueryState } from "next-usequerystate";
 import { useRouter } from "next/router";
+import { parseAsString, useQueryState } from "nuqs";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
