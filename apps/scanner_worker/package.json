@@ -14,7 +14,7 @@
         "throng": "5.0.0"
     },
     "devDependencies": {
-        "@types/node": "20.10.4",
+        "@types/node": "20.11.19",
         "@types/throng": "5.0.7",
         "dotenv-cli": "7.3.0"
     }
