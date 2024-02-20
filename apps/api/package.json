@@ -21,7 +21,7 @@
         "cors": "2.8.5",
         "database": "*",
         "express": "4.18.2",
-        "express-session": "1.17.3",
+        "express-session": "1.18.0",
         "glob-parent": "^6.0.2",
         "is-glob": "4.0.3",
         "is-valid-path": "^0.1.1",

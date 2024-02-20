@@ -18,13 +18,13 @@
         "db:push": "prisma db push --skip-generate"
     },
     "dependencies": {
-        "@prisma/client": "5.7.0",
+        "@prisma/client": "5.10.0",
         "adm-zip": "0.5.10",
         "s3-helpers": "*"
     },
     "devDependencies": {
-        "@types/node": "20.10.4",
-        "prisma": "5.7.0",
+        "@types/node": "20.11.19",
+        "prisma": "5.10.0",
         "prisma-zod-generator": "0.8.13",
         "tsconfig": "*",
         "ts-node": "10.9.1",
