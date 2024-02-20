@@ -35,6 +35,15 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
         setEditing(id);
     };
 
+    // Filter the data (license conclusions) into two sublists,
+    // one for LCs in this package and one for LCs in other packages
+    const lcForThisPackage = data?.licenseConclusions.filter(
+        (lc) => lc.contextPurl === purl,
+    );
+    const lcForOtherContext = data?.licenseConclusions.filter(
+        (lc) => lc.contextPurl !== purl,
+    );
+
     return (
         <>
             {isLoading && (
