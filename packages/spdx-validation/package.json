@@ -8,8 +8,8 @@
         "test": "jest --verbose ./dist/tests/test.js"
     },
     "dependencies": {
-        "spdx-exceptions": "^2.4.0",
-        "spdx-license-ids": "^3.0.16"
+        "spdx-exceptions": "^2.5.0",
+        "spdx-license-ids": "^3.0.17"
     },
     "devDependencies": {
         "@types/jest": "^29.5.12",

@@ -8,7 +8,7 @@
         "start": "dotenv -e ../../.env.local node dist/index.js"
     },
     "dependencies": {
-        "bull": "4.11.5",
+        "bull": "4.12.2",
         "common-helpers": "*",
         "s3-helpers": "*",
         "throng": "5.0.0"
