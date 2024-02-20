@@ -50,12 +50,12 @@ const PEAffectedFilesTooltip = ({ pathExclusionId }: Props) => {
                 <TooltipProvider>
                     <Tooltip delayDuration={300}>
                         <TooltipTrigger>
-                            <Badge className="bg-blue-400 text-sm">
+                            <Badge className="bg-blue-400 text-xs">
                                 {data.affectedFiles.length}
                             </Badge>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <div className="text-sm">
+                            <div className="max-h-[40vh] max-w-[50vh] overflow-y-auto text-xs">
                                 {data.affectedFiles.map((aff, index) => (
                                     <div key={index}>{aff}</div>
                                 ))}
