@@ -14,11 +14,10 @@ export const filterTreeDataByLicense = (
         let newNode: TreeNode | null = null;
 
         // Check if the node itself has the license
-        const hasLicense = node.file?.licenseFindings?.some(
-            (licenseFinding) =>
-                licenseFinding.licenseExpressionSPDX
-                    ?.toLowerCase()
-                    .includes(licenseSearchText.toLowerCase()),
+        const hasLicense = node.file?.licenseFindings?.some((licenseFinding) =>
+            licenseFinding.licenseExpressionSPDX
+                ?.toLowerCase()
+                .includes(licenseSearchText.toLowerCase()),
         );
 
         if (hasLicense) {
