@@ -472,7 +472,9 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                     ? "desc"
                     : req.query.sortOrder,
                 req.query.purl,
+                req.query.purlStrict || false,
                 req.query.username,
+                req.query.usernameStrict || false,
                 req.query.pattern,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
