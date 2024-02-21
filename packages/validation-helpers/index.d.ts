@@ -7098,6 +7098,184 @@ declare const userAPI: [
     },
     {
         method: "get";
+        path: "/bulk-conclusions/:id/affected-files";
+        description: "Get affected files for specified bulk conclusion. Alias: GetAffectedFilesForBulkConclusion";
+        alias: "GetAffectedFilesForBulkConclusion";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                affectedFiles: zod.ZodObject<
+                    {
+                        inContextPurl: zod.ZodArray<zod.ZodString, "many">;
+                        additionalMatches: zod.ZodArray<
+                            zod.ZodObject<
+                                {
+                                    path: zod.ZodString;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    path: string;
+                                    purl: string;
+                                },
+                                {
+                                    path: string;
+                                    purl: string;
+                                }
+                            >,
+                            "many"
+                        >;
+                        inQueryPurl: zod.ZodArray<zod.ZodString, "many">;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        inContextPurl: string[];
+                        additionalMatches: {
+                            path: string;
+                            purl: string;
+                        }[];
+                        inQueryPurl: string[];
+                    },
+                    {
+                        inContextPurl: string[];
+                        additionalMatches: {
+                            path: string;
+                            purl: string;
+                        }[];
+                        inQueryPurl: string[];
+                    }
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                affectedFiles: {
+                    inContextPurl: string[];
+                    additionalMatches: {
+                        path: string;
+                        purl: string;
+                    }[];
+                    inQueryPurl: string[];
+                };
+            },
+            {
+                affectedFiles: {
+                    inContextPurl: string[];
+                    additionalMatches: {
+                        path: string;
+                        purl: string;
+                    }[];
+                    inQueryPurl: string[];
+                };
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
         path: "/bulk-conclusions/:id";
         description: "Get bulk conclusion by id. Alias: GetBulkConclusionById";
         alias: "GetBulkConclusionById";
@@ -14179,6 +14357,184 @@ declare const dosAPI: [
             },
             {
                 count: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/bulk-conclusions/:id/affected-files";
+        description: "Get affected files for specified bulk conclusion. Alias: GetAffectedFilesForBulkConclusion";
+        alias: "GetAffectedFilesForBulkConclusion";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                affectedFiles: zod.ZodObject<
+                    {
+                        inContextPurl: zod.ZodArray<zod.ZodString, "many">;
+                        additionalMatches: zod.ZodArray<
+                            zod.ZodObject<
+                                {
+                                    path: zod.ZodString;
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    path: string;
+                                    purl: string;
+                                },
+                                {
+                                    path: string;
+                                    purl: string;
+                                }
+                            >,
+                            "many"
+                        >;
+                        inQueryPurl: zod.ZodArray<zod.ZodString, "many">;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        inContextPurl: string[];
+                        additionalMatches: {
+                            path: string;
+                            purl: string;
+                        }[];
+                        inQueryPurl: string[];
+                    },
+                    {
+                        inContextPurl: string[];
+                        additionalMatches: {
+                            path: string;
+                            purl: string;
+                        }[];
+                        inQueryPurl: string[];
+                    }
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                affectedFiles: {
+                    inContextPurl: string[];
+                    additionalMatches: {
+                        path: string;
+                        purl: string;
+                    }[];
+                    inQueryPurl: string[];
+                };
+            },
+            {
+                affectedFiles: {
+                    inContextPurl: string[];
+                    additionalMatches: {
+                        path: string;
+                        purl: string;
+                    }[];
+                    inQueryPurl: string[];
+                };
             }
         >;
         errors: [
