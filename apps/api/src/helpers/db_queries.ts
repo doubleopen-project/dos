@@ -3165,7 +3165,9 @@ export const findPathExclusions = async (
         | "updatedAt",
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
+    purlStrict: boolean,
     username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -3202,11 +3204,15 @@ export const findPathExclusions = async (
                 where: {
                     package: {
                         purl: {
-                            contains: purl,
+                            equals: purlStrict ? purl : undefined,
+                            contains: purlStrict ? undefined : purl,
                         },
                     },
                     user: {
-                        username: username,
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: usernameStrict ? undefined : username,
+                        },
                     },
                     pattern: {
                         contains: pattern,

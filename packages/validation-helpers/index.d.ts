@@ -7568,9 +7568,21 @@ declare const userAPI: [
                 description: string;
             },
             {
+                name: "purlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
+            },
+            {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
                 description: string;
             },
             {
@@ -14732,9 +14744,21 @@ declare const dosAPI: [
                 description: string;
             },
             {
+                name: "purlStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+                description: string;
+            },
+            {
                 name: "username";
                 type: "Query";
                 schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "usernameStrict";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
                 description: string;
             },
             {
