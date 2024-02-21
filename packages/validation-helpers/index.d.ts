@@ -4731,7 +4731,7 @@ declare const userAPI: [
         method: "get";
         path: "/license-conclusions";
         alias: "GetLicenseConclusions";
-        description: "Get license conclusions";
+        description: "Get license conclusions. Alias: GetLicenseConclusions";
         parameters: [
             {
                 name: "pageSize";
@@ -5178,7 +5178,7 @@ declare const userAPI: [
         method: "get";
         path: "/license-conclusions/count";
         alias: "GetLicenseConclusionsCount";
-        description: "Get count of license conclusions";
+        description: "Get count of license conclusions. Alias: GetLicenseConclusionsCount";
         parameters: [
             {
                 name: "purl";
@@ -5378,7 +5378,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/:purl/files/:sha256/license-conclusions/";
-        description: "Get license conclusions for specified file in specified package";
+        description: "Get license conclusions for specified file in specified package. Alias: GetLicenseConclusionsForFileInPackage";
         alias: "GetLicenseConclusionsForFileInPackage";
         parameters: [
             {
@@ -5578,7 +5578,7 @@ declare const userAPI: [
     {
         method: "post";
         path: "/packages/:purl/files/:sha256/license-conclusions";
-        description: "Add a new license conclusion";
+        description: "Add a new license conclusion. Alias: PostLicenseConclusion";
         alias: "PostLicenseConclusion";
         parameters: [
             {
@@ -5741,7 +5741,7 @@ declare const userAPI: [
     {
         method: "put";
         path: "/license-conclusions/:id";
-        description: "Edit a license conclusion";
+        description: "Edit a license conclusion. Alias: PutLicenseConclusion";
         alias: "PutLicenseConclusion";
         parameters: [
             {
@@ -5910,7 +5910,7 @@ declare const userAPI: [
     {
         method: "delete";
         path: "/license-conclusions/:id";
-        description: "Delete a license conclusion";
+        description: "Delete a license conclusion. Alias: DeleteLicenseConclusion";
         alias: "DeleteLicenseConclusion";
         parameters: [
             {
@@ -6026,7 +6026,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/:purl/bulk-conclusions";
-        description: "Get bulk conclusions for specified purl";
+        description: "Get bulk conclusions for specified purl. Alias: GetBulkConclusionsByPurl";
         alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
@@ -6315,7 +6315,7 @@ declare const userAPI: [
     {
         method: "post";
         path: "/packages/:purl/bulk-conclusions";
-        description: "Add a new bulk conclusion";
+        description: "Add a new bulk conclusion. Alias: PostBulkConclusion";
         alias: "PostBulkConclusion";
         parameters: [
             {
@@ -6488,7 +6488,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/bulk-conclusions";
-        description: "Get bulk conclusions";
+        description: "Get bulk conclusions. Alias: GetBulkConclusions";
         alias: "GetBulkConclusions";
         parameters: [
             {
@@ -6898,7 +6898,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/bulk-conclusions/count";
-        description: "Get count of bulk conclusions";
+        description: "Get count of bulk conclusions. Alias: GetBulkConclusionsCount";
         alias: "GetBulkConclusionsCount";
         parameters: [
             {
@@ -7087,7 +7087,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/bulk-conclusions/:id";
-        description: "Get bulk conclusion by id";
+        description: "Get bulk conclusion by id. Alias: GetBulkConclusionById";
         alias: "GetBulkConclusionById";
         parameters: [
             {
@@ -7240,7 +7240,7 @@ declare const userAPI: [
     {
         method: "put";
         path: "/bulk-conclusions/:id";
-        description: "Edit bulk conclusion";
+        description: "Edit bulk conclusion. Alias: PutBulkConclusion";
         alias: "PutBulkConclusion";
         parameters: [
             {
@@ -7398,7 +7398,7 @@ declare const userAPI: [
     {
         method: "delete";
         path: "/bulk-conclusions/:id";
-        description: "Delete a bulk conclusion";
+        description: "Delete a bulk conclusion. Alias: DeleteBulkConclusion";
         alias: "DeleteBulkConclusion";
         parameters: [
             {
@@ -7514,7 +7514,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/path-exclusions";
-        description: "Get path exclusions";
+        description: "Get path exclusions. Alias: GetPathExclusions";
         alias: "GetPathExclusions";
         parameters: [
             {
@@ -7800,7 +7800,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/path-exclusions/count";
-        description: "Get count of path exclusions";
+        description: "Get count of path exclusions. Alias: GetPathExclusionsCount";
         alias: "GetPathExclusionsCount";
         parameters: [
             {
@@ -7977,7 +7977,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/path-exclusions/:id/affected-files";
-        description: "Get affected files for specified path exclusion";
+        description: "Get affected files for specified path exclusion. Alias: GetAffectedFilesForPathExclusion";
         alias: "GetAffectedFilesForPathExclusion";
         parameters: [
             {
@@ -8093,7 +8093,7 @@ declare const userAPI: [
     {
         method: "put";
         path: "/path-exclusions/:id";
-        description: "Edit a path exclusion";
+        description: "Edit a path exclusion. Alias: PutPathExclusion";
         alias: "PutPathExclusion";
         parameters: [
             {
@@ -8234,7 +8234,7 @@ declare const userAPI: [
     {
         method: "post";
         path: "/packages/:purl/path-exclusions";
-        description: "Add a new path exclusion";
+        description: "Add a new path exclusion. Alias: PostPathExclusion";
         alias: "PostPathExclusion";
         parameters: [
             {
@@ -8378,7 +8378,7 @@ declare const userAPI: [
     {
         method: "delete";
         path: "/path-exclusions/:id";
-        description: "Delete a path exclusion";
+        description: "Delete a path exclusion. Alias: DeletePathExclusion";
         alias: "DeletePathExclusion";
         parameters: [
             {
@@ -8494,7 +8494,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/:purl/path-exclusions";
-        description: "Get path exclusions for specified purl";
+        description: "Get path exclusions for specified purl. Alias: GetPathExclusionsByPurl";
         alias: "GetPathExclusionsByPurl";
         parameters: [
             {
@@ -8675,7 +8675,7 @@ declare const userAPI: [
         method: "get";
         path: "/packages/:purl/filetrees";
         alias: "GetFileTree";
-        description: "Get file tree for specified purl";
+        description: "Get file tree for specified purl. Alias: GetFileTree";
         parameters: [
             {
                 name: "purl";
@@ -8905,7 +8905,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages";
-        description: "Get packages";
+        description: "Get packages. Alias: GetPackages";
         alias: "GetPackages";
         parameters: [
             {
@@ -9156,7 +9156,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/count";
-        description: "Get packages count";
+        description: "Get packages count. Alias: GetPackagesCount";
         alias: "GetPackagesCount";
         parameters: [
             {
@@ -9322,7 +9322,7 @@ declare const userAPI: [
         method: "get";
         path: "/packages/:purl/filetrees/:path/files";
         alias: "GetFile";
-        description: "Get file sha256 and S3 download url for file in path in package";
+        description: "Get file sha256 and S3 download url for file in path in package. Alias: GetFile";
         parameters: [
             {
                 name: "purl";
@@ -9446,7 +9446,7 @@ declare const userAPI: [
         method: "get";
         path: "/files/:sha256/license-findings";
         alias: "GetLicenseFindingsForFile";
-        description: "Get license findings for specified file";
+        description: "Get license findings for specified file. Alias: GetLicenseFindingsForFile";
         parameters: [
             {
                 name: "sha256";
@@ -11883,7 +11883,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/license-conclusions";
         alias: "GetLicenseConclusions";
-        description: "Get license conclusions";
+        description: "Get license conclusions. Alias: GetLicenseConclusions";
         parameters: [
             {
                 name: "pageSize";
@@ -12330,7 +12330,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/license-conclusions/count";
         alias: "GetLicenseConclusionsCount";
-        description: "Get count of license conclusions";
+        description: "Get count of license conclusions. Alias: GetLicenseConclusionsCount";
         parameters: [
             {
                 name: "purl";
@@ -12530,7 +12530,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/:purl/files/:sha256/license-conclusions";
-        description: "Get license conclusions for specified file in specified package";
+        description: "Get license conclusions for specified file in specified package. Alias: GetLicenseConclusionsForFileInPackage";
         alias: "GetLicenseConclusionsForFileInPackage";
         parameters: [
             {
@@ -12730,7 +12730,7 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/user/packages/:purl/files/:sha256/license-conclusions";
-        description: "Add a new license conclusion";
+        description: "Add a new license conclusion. Alias: PostLicenseConclusion";
         alias: "PostLicenseConclusion";
         parameters: [
             {
@@ -12893,7 +12893,7 @@ declare const dosAPI: [
     {
         method: "put";
         path: "/user/license-conclusions/:id";
-        description: "Edit a license conclusion";
+        description: "Edit a license conclusion. Alias: PutLicenseConclusion";
         alias: "PutLicenseConclusion";
         parameters: [
             {
@@ -13062,7 +13062,7 @@ declare const dosAPI: [
     {
         method: "delete";
         path: "/user/license-conclusions/:id";
-        description: "Delete a license conclusion";
+        description: "Delete a license conclusion. Alias: DeleteLicenseConclusion";
         alias: "DeleteLicenseConclusion";
         parameters: [
             {
@@ -13178,7 +13178,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/:purl/bulk-conclusions";
-        description: "Get bulk conclusions for specified purl";
+        description: "Get bulk conclusions for specified purl. Alias: GetBulkConclusionsByPurl";
         alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
@@ -13467,7 +13467,7 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/user/packages/:purl/bulk-conclusions";
-        description: "Add a new bulk conclusion";
+        description: "Add a new bulk conclusion. Alias: PostBulkConclusion";
         alias: "PostBulkConclusion";
         parameters: [
             {
@@ -13640,7 +13640,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/bulk-conclusions";
-        description: "Get bulk conclusions";
+        description: "Get bulk conclusions. Alias: GetBulkConclusions";
         alias: "GetBulkConclusions";
         parameters: [
             {
@@ -14050,7 +14050,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/bulk-conclusions/count";
-        description: "Get count of bulk conclusions";
+        description: "Get count of bulk conclusions. Alias: GetBulkConclusionsCount";
         alias: "GetBulkConclusionsCount";
         parameters: [
             {
@@ -14239,7 +14239,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/bulk-conclusions/:id";
-        description: "Get bulk conclusion by id";
+        description: "Get bulk conclusion by id. Alias: GetBulkConclusionById";
         alias: "GetBulkConclusionById";
         parameters: [
             {
@@ -14392,7 +14392,7 @@ declare const dosAPI: [
     {
         method: "put";
         path: "/user/bulk-conclusions/:id";
-        description: "Edit bulk conclusion";
+        description: "Edit bulk conclusion. Alias: PutBulkConclusion";
         alias: "PutBulkConclusion";
         parameters: [
             {
@@ -14550,7 +14550,7 @@ declare const dosAPI: [
     {
         method: "delete";
         path: "/user/bulk-conclusions/:id";
-        description: "Delete a bulk conclusion";
+        description: "Delete a bulk conclusion. Alias: DeleteBulkConclusion";
         alias: "DeleteBulkConclusion";
         parameters: [
             {
@@ -14666,7 +14666,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/path-exclusions";
-        description: "Get path exclusions";
+        description: "Get path exclusions. Alias: GetPathExclusions";
         alias: "GetPathExclusions";
         parameters: [
             {
@@ -14952,7 +14952,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/path-exclusions/count";
-        description: "Get count of path exclusions";
+        description: "Get count of path exclusions. Alias: GetPathExclusionsCount";
         alias: "GetPathExclusionsCount";
         parameters: [
             {
@@ -15129,7 +15129,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/path-exclusions/:id/affected-files";
-        description: "Get affected files for specified path exclusion";
+        description: "Get affected files for specified path exclusion. Alias: GetAffectedFilesForPathExclusion";
         alias: "GetAffectedFilesForPathExclusion";
         parameters: [
             {
@@ -15245,7 +15245,7 @@ declare const dosAPI: [
     {
         method: "put";
         path: "/user/path-exclusions/:id";
-        description: "Edit a path exclusion";
+        description: "Edit a path exclusion. Alias: PutPathExclusion";
         alias: "PutPathExclusion";
         parameters: [
             {
@@ -15386,7 +15386,7 @@ declare const dosAPI: [
     {
         method: "post";
         path: "/user/packages/:purl/path-exclusions";
-        description: "Add a new path exclusion";
+        description: "Add a new path exclusion. Alias: PostPathExclusion";
         alias: "PostPathExclusion";
         parameters: [
             {
@@ -15530,7 +15530,7 @@ declare const dosAPI: [
     {
         method: "delete";
         path: "/user/path-exclusions/:id";
-        description: "Delete a path exclusion";
+        description: "Delete a path exclusion. Alias: DeletePathExclusion";
         alias: "DeletePathExclusion";
         parameters: [
             {
@@ -15646,7 +15646,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/:purl/path-exclusions";
-        description: "Get path exclusions for specified purl";
+        description: "Get path exclusions for specified purl. Alias: GetPathExclusionsByPurl";
         alias: "GetPathExclusionsByPurl";
         parameters: [
             {
@@ -15827,7 +15827,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/packages/:purl/filetrees";
         alias: "GetFileTree";
-        description: "Get file tree for specified purl";
+        description: "Get file tree for specified purl. Alias: GetFileTree";
         parameters: [
             {
                 name: "purl";
@@ -16057,7 +16057,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages";
-        description: "Get packages";
+        description: "Get packages. Alias: GetPackages";
         alias: "GetPackages";
         parameters: [
             {
@@ -16308,7 +16308,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/count";
-        description: "Get packages count";
+        description: "Get packages count. Alias: GetPackagesCount";
         alias: "GetPackagesCount";
         parameters: [
             {
@@ -16474,7 +16474,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/packages/:purl/filetrees/:path/files";
         alias: "GetFile";
-        description: "Get file sha256 and S3 download url for file in path in package";
+        description: "Get file sha256 and S3 download url for file in path in package. Alias: GetFile";
         parameters: [
             {
                 name: "purl";
@@ -16598,7 +16598,7 @@ declare const dosAPI: [
         method: "get";
         path: "/user/files/:sha256/license-findings";
         alias: "GetLicenseFindingsForFile";
-        description: "Get license findings for specified file";
+        description: "Get license findings for specified file. Alias: GetLicenseFindingsForFile";
         parameters: [
             {
                 name: "sha256";
