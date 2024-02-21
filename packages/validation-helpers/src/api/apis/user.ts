@@ -427,13 +427,27 @@ export const userAPI = makeApi([
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
                 description:
-                    "Filter by purl (substring match). Will return the bulk conclusions made in the specified package",
+                    "Filter by purl. Will return the bulk conclusions made in the specified package",
+            },
+            {
+                name: "purlStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by purl strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "username",
                 type: "Query",
                 schema: commonSchemas.QueryParamFilterValue,
-                description: "Filter by username (exact match)",
+                description: "Filter by username",
+            },
+            {
+                name: "usernameStrict",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+                description:
+                    "Choose whether to filter by username strictly (exact match) or not (substring match). Defaults to false.",
             },
             {
                 name: "pattern",
