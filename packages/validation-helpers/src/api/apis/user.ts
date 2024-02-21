@@ -608,6 +608,29 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/bulk-conclusions/:id/affected-files",
+        description:
+            "Get affected files for specified bulk conclusion. Alias: GetAffectedFilesForBulkConclusion",
+        alias: "GetAffectedFilesForBulkConclusion",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+                description:
+                    "Filter by purl (exact match). Use this to get also a list of files affected in this specific package.",
+            },
+        ],
+        response: schemas.GetAffectedFilesForBulkConclusionRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/bulk-conclusions/:id",
         description: "Get bulk conclusion by id. Alias: GetBulkConclusionById",
         alias: "GetBulkConclusionById",

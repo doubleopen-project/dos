@@ -4,7 +4,7 @@
 
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
-import { Prisma } from "database";
+import { Package, Prisma } from "database";
 import isGlob from "is-glob";
 import { minimatch } from "minimatch";
 import { getPresignedGetUrl } from "s3-helpers";
@@ -569,6 +569,79 @@ userRouter.get("/bulk-conclusions/count", async (req, res) => {
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.get("/bulk-conclusions/:id/affected-files", async (req, res) => {
+    try {
+        const bulkConclusionId = req.params.id;
+
+        const bulkConclusion =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
+
+        if (!bulkConclusion)
+            throw new CustomError(
+                "Bulk conclusion with the requested id does not exist",
+                404,
+            );
+
+        let queryPkg: Package | null = null;
+        if (req.query.purl) {
+            queryPkg = await dbQueries.findPackageByPurl(req.query.purl);
+
+            if (!queryPkg) {
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
+            }
+        }
+
+        const inContextPurl = await dbQueries.findFileTreesByBulkConclusionId(
+            bulkConclusionId,
+            bulkConclusion.package.id,
+        );
+
+        const additionalMatches = bulkConclusion.local
+            ? []
+            : await dbQueries.findFileTreesByBulkConclusionId(
+                  bulkConclusionId,
+                  undefined,
+                  bulkConclusion.package.id,
+              );
+
+        let inQueryPurl: dbQueries.FileTreeWithPackage[] = [];
+
+        if (req.query.purl && queryPkg) {
+            inQueryPurl = await dbQueries.findFileTreesByBulkConclusionId(
+                bulkConclusionId,
+                queryPkg.id,
+            );
+        }
+
+        res.status(200).json({
+            affectedFiles: {
+                inContextPurl: inContextPurl.map((ft) => ft.path),
+                additionalMatches: additionalMatches.map((ft) => {
+                    return {
+                        path: ft.path,
+                        purl: ft.package.purl,
+                    };
+                }),
+                inQueryPurl: inQueryPurl.map((ft) => ft.path),
+            },
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 

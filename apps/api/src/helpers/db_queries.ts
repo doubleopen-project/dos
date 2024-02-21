@@ -1293,6 +1293,61 @@ export const findFileTreesByPackageId = async (
     return fileTrees;
 };
 
+export type FileTreeWithPackage = {
+    path: string;
+    package: {
+        id: number;
+        purl: string;
+    };
+};
+
+export const findFileTreesByBulkConclusionId = async (
+    bulkConclusionId: number,
+    packageId?: number,
+    notPackageId?: number,
+): Promise<FileTreeWithPackage[]> => {
+    let retries = initialRetryCount;
+    let fileTrees: FileTreeWithPackage[] = [];
+
+    while (retries > 0) {
+        try {
+            fileTrees = await prisma.fileTree.findMany({
+                where: {
+                    file: {
+                        licenseConclusions: {
+                            some: {
+                                bulkConclusionId: bulkConclusionId,
+                            },
+                        },
+                    },
+                    packageId: {
+                        equals: packageId,
+                        not: notPackageId,
+                    },
+                },
+                select: {
+                    path: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return fileTrees;
+};
+
 export const findFileTreeByPkgIdAndPath = async (
     packageId: number,
     path: string,

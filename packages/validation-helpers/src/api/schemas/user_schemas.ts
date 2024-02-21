@@ -209,6 +209,20 @@ export const GetBulkConclusionsRes = z.object({
     ),
 });
 
+//-------------- GET bulk conclusion affected files --------------
+export const GetAffectedFilesForBulkConclusionRes = z.object({
+    affectedFiles: z.object({
+        inContextPurl: z.array(z.string()),
+        additionalMatches: z.array(
+            z.object({
+                path: z.string(),
+                purl: z.string(),
+            }),
+        ),
+        inQueryPurl: z.array(z.string()),
+    }),
+});
+
 //-------------- GET bulk conclusion --------------
 export const GetBulkConclusionRes = z.object({
     pattern: z.nullable(z.string()),
