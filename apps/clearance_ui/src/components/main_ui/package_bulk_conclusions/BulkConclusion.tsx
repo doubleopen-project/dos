@@ -17,6 +17,7 @@ type BulkConclusion = ZodiosResponseByAlias<
 >["bulkConclusions"][0];
 
 type Props = {
+    purl?: string;
     bulkConclusion: BulkConclusion;
     userName: string;
     userRole: string;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const BulkConclusion = ({
+    purl,
     bulkConclusion,
     userName,
     userRole,
@@ -83,11 +85,20 @@ const BulkConclusion = ({
                             Files affected in this package:
                         </div>
                         <div>
-                            <BCAffectedFilesTooltip
-                                bulkConclusionId={bulkConclusion.id}
-                                mode="context"
-                                badgeStyle="bg-blue-400 text-xs"
-                            />
+                            {bulkConclusion.package.purl === purl ? (
+                                <BCAffectedFilesTooltip
+                                    bulkConclusionId={bulkConclusion.id}
+                                    mode="context"
+                                    badgeStyle="bg-blue-400 text-xs"
+                                />
+                            ) : (
+                                <BCAffectedFilesTooltip
+                                    bulkConclusionId={bulkConclusion.id}
+                                    mode="query"
+                                    queryPurl={purl}
+                                    badgeStyle="bg-orange-400 text-xs"
+                                />
+                            )}
                         </div>
                     </div>
                     {bulkConclusion.local && (

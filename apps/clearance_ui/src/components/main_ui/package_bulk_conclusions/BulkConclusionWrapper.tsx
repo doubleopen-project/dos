@@ -88,6 +88,7 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                                 ) : (
                                     <BulkConclusion
                                         key={`bc-${bc.id}`}
+                                        purl={purl}
                                         bulkConclusion={bc}
                                         userName={userName}
                                         userRole={userRole}
@@ -112,8 +113,8 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                                         packages and/or other versions of this
                                         package. These bulk conclusions are
                                         relevant for this package and thus shown
-                                        here, because the glob pattern of the
-                                        concluded files matches.
+                                        here, because because the SHA256 (ie.
+                                        contents) of the files match.
                                     </CardDescription>
                                 </CardHeader>
                             </Card>
@@ -128,6 +129,7 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                                 ) : (
                                     <BulkConclusion
                                         key={`bc-${bc.id}`}
+                                        purl={purl}
                                         bulkConclusion={bc}
                                         userName={userName}
                                         userRole={userRole}
