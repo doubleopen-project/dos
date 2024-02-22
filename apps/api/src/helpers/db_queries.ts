@@ -2878,7 +2878,25 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
         try {
             bulkConclusions = await prisma.bulkConclusion.findMany({
                 where: {
-                    packageId: packageId,
+                    OR: [
+                        {
+                            packageId: packageId,
+                        },
+                        {
+                            licenseConclusions: {
+                                some: {
+                                    file: {
+                                        filetrees: {
+                                            some: {
+                                                packageId: packageId,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            local: false,
+                        },
+                    ],
                 },
                 select: {
                     id: true,

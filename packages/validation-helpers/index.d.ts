@@ -6047,6 +6047,19 @@ declare const userAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
+                            package: zod.ZodObject<
+                                {
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    purl: string;
+                                },
+                                {
+                                    purl: string;
+                                }
+                            >;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -6146,6 +6159,9 @@ declare const userAPI: [
                             user: {
                                 username: string;
                             };
+                            package: {
+                                purl: string;
+                            };
                         },
                         {
                             id: number;
@@ -6166,6 +6182,9 @@ declare const userAPI: [
                             updatedAt: Date;
                             user: {
                                 username: string;
+                            };
+                            package: {
+                                purl: string;
                             };
                         }
                     >,
@@ -6195,6 +6214,9 @@ declare const userAPI: [
                     user: {
                         username: string;
                     };
+                    package: {
+                        purl: string;
+                    };
                 }[];
             },
             {
@@ -6217,6 +6239,9 @@ declare const userAPI: [
                     updatedAt: Date;
                     user: {
                         username: string;
+                    };
+                    package: {
+                        purl: string;
                     };
                 }[];
             }
@@ -13301,6 +13326,19 @@ declare const dosAPI: [
                             concludedLicenseExpressionSPDX: zod.ZodString;
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
+                            package: zod.ZodObject<
+                                {
+                                    purl: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    purl: string;
+                                },
+                                {
+                                    purl: string;
+                                }
+                            >;
                             licenseConclusions: zod.ZodArray<
                                 zod.ZodObject<
                                     {
@@ -13400,6 +13438,9 @@ declare const dosAPI: [
                             user: {
                                 username: string;
                             };
+                            package: {
+                                purl: string;
+                            };
                         },
                         {
                             id: number;
@@ -13420,6 +13461,9 @@ declare const dosAPI: [
                             updatedAt: Date;
                             user: {
                                 username: string;
+                            };
+                            package: {
+                                purl: string;
                             };
                         }
                     >,
@@ -13449,6 +13493,9 @@ declare const dosAPI: [
                     user: {
                         username: string;
                     };
+                    package: {
+                        purl: string;
+                    };
                 }[];
             },
             {
@@ -13471,6 +13518,9 @@ declare const dosAPI: [
                     updatedAt: Date;
                     user: {
                         username: string;
+                    };
+                    package: {
+                        purl: string;
                     };
                 }[];
             }

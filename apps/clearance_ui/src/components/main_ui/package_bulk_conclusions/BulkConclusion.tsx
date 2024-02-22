@@ -80,6 +80,14 @@ const BulkConclusion = ({
                             {bulkConclusion.pattern}
                         </div>
                     </div>
+                    <div className="flex text-xs">
+                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                            Context purl:
+                        </div>
+                        <div className="break-all">
+                            {bulkConclusion.package.purl}
+                        </div>
+                    </div>
                     <div className="text-muted-foreground flex text-xs">
                         <div className="mr-2 flex whitespace-nowrap font-semibold">
                             Comment:
