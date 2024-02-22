@@ -157,6 +157,7 @@ const start = (): void => {
             "-i",
             "-q",
             "--strip-root",
+            "--license-references",
             "--max-in-memory",
             SCANCODE_FILES_IN_MEMORY.toString(),
             "--timeout",
