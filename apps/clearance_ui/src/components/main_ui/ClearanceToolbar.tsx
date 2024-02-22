@@ -13,6 +13,7 @@ import { useShallow } from "zustand/react/shallow";
 import { userHooks } from "@/hooks/zodiosHooks";
 import useMainUiStore from "@/store/mainui.store";
 import { Badge } from "@/components/ui/badge";
+import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
 const ClearanceToolbar = () => {
@@ -30,10 +31,11 @@ const ClearanceToolbar = () => {
             },
             { enabled: !!purl },
         );
-    const { data: bulkConclusionCount } = userHooks.useGetBulkConclusionsCount(
-        { withCredentials: true, queries: { purl: purl, purlStrict: true } },
-        { enabled: !!purl },
-    );
+    const { data: bulkConclusionCount } =
+        userHooks.useGetBulkConclusionsCountByPurl(
+            { withCredentials: true, params: { purl: toPathPurl(purl) } },
+            { enabled: !!purl },
+        );
     const { data: pathExclusionCount } = userHooks.useGetPathExclusionsCount(
         { withCredentials: true, queries: { purl: purl, purlStrict: true } },
         { enabled: !!purl },
