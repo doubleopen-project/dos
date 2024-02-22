@@ -68,7 +68,11 @@ export const ScannerJobResultSchema = z.object({
                 "--json": z.string().optional(),
                 "--json-pp": z.string().optional(),
                 "--license": z.boolean(),
+                "--license-references": z.boolean().optional(),
                 "--package": z.boolean().optional(),
+                "--processes": z.string().optional(),
+                "--quiet": z.boolean().optional(),
+                "--strip-root": z.boolean().optional(),
             }),
             notice: z.string(),
             start_timestamp: z.string(),
@@ -89,6 +93,12 @@ export const ScannerJobResultSchema = z.object({
                 spdx_license_list_version: z.string(),
                 files_count: z.number(),
             }),
+        }),
+    ),
+    license_references: z.array(
+        z.object({
+            key: z.string(),
+            spdx_license_key: z.string(),
         }),
     ),
     files: z.array(
