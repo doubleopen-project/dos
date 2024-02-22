@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
+import PurlDetails from "@/components/common/PurlDetails";
 
 type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -66,12 +67,14 @@ const BulkConclusion = ({
                             {bulkConclusion.pattern}
                         </div>
                     </div>
-                    <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
-                            Context purl:
-                        </div>
-                        <div className="break-all">
-                            {bulkConclusion.package.purl}
+                    <div className="text-xs">
+                        <div className="mr-2 font-semibold">Context purl:</div>
+                        <div className="ml-9">
+                            <PurlDetails
+                                purl={bulkConclusion.package.purl}
+                                hideBorder={true}
+                                hideCopyToClipboard={true}
+                            />
                         </div>
                     </div>
                     <div className="text-muted-foreground flex text-xs">
