@@ -19,7 +19,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             "--json": z.ZodOptional<z.ZodString>;
                             "--json-pp": z.ZodOptional<z.ZodString>;
                             "--license": z.ZodBoolean;
+                            "--license-references": z.ZodOptional<z.ZodBoolean>;
                             "--package": z.ZodOptional<z.ZodBoolean>;
+                            "--processes": z.ZodOptional<z.ZodString>;
+                            "--quiet": z.ZodOptional<z.ZodBoolean>;
+                            "--strip-root": z.ZodOptional<z.ZodBoolean>;
                         },
                         "strip",
                         z.ZodTypeAny,
@@ -29,7 +33,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             "--license": boolean;
                             "--json"?: string | undefined;
                             "--json-pp"?: string | undefined;
+                            "--license-references"?: boolean | undefined;
                             "--package"?: boolean | undefined;
+                            "--processes"?: string | undefined;
+                            "--quiet"?: boolean | undefined;
+                            "--strip-root"?: boolean | undefined;
                         },
                         {
                             "--copyright": boolean;
@@ -37,7 +45,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             "--license": boolean;
                             "--json"?: string | undefined;
                             "--json-pp"?: string | undefined;
+                            "--license-references"?: boolean | undefined;
                             "--package"?: boolean | undefined;
+                            "--processes"?: string | undefined;
+                            "--quiet"?: boolean | undefined;
+                            "--strip-root"?: boolean | undefined;
                         }
                     >;
                     notice: z.ZodString;
@@ -114,7 +126,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                         "--license": boolean;
                         "--json"?: string | undefined;
                         "--json-pp"?: string | undefined;
+                        "--license-references"?: boolean | undefined;
                         "--package"?: boolean | undefined;
+                        "--processes"?: string | undefined;
+                        "--quiet"?: boolean | undefined;
+                        "--strip-root"?: boolean | undefined;
                     };
                     tool_name: string;
                     tool_version: string;
@@ -145,7 +161,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                         "--license": boolean;
                         "--json"?: string | undefined;
                         "--json-pp"?: string | undefined;
+                        "--license-references"?: boolean | undefined;
                         "--package"?: boolean | undefined;
+                        "--processes"?: string | undefined;
+                        "--quiet"?: boolean | undefined;
+                        "--strip-root"?: boolean | undefined;
                     };
                     tool_name: string;
                     tool_version: string;
@@ -167,6 +187,25 @@ declare const ScannerJobResultSchema: z.ZodObject<
                         spdx_license_list_version: string;
                         files_count: number;
                     };
+                }
+            >,
+            "many"
+        >;
+        license_references: z.ZodArray<
+            z.ZodObject<
+                {
+                    key: z.ZodString;
+                    spdx_license_key: z.ZodString;
+                },
+                "strip",
+                z.ZodTypeAny,
+                {
+                    key: string;
+                    spdx_license_key: string;
+                },
+                {
+                    key: string;
+                    spdx_license_key: string;
                 }
             >,
             "many"
@@ -339,7 +378,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 "--license": boolean;
                 "--json"?: string | undefined;
                 "--json-pp"?: string | undefined;
+                "--license-references"?: boolean | undefined;
                 "--package"?: boolean | undefined;
+                "--processes"?: string | undefined;
+                "--quiet"?: boolean | undefined;
+                "--strip-root"?: boolean | undefined;
             };
             tool_name: string;
             tool_version: string;
@@ -361,6 +404,10 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 spdx_license_list_version: string;
                 files_count: number;
             };
+        }[];
+        license_references: {
+            key: string;
+            spdx_license_key: string;
         }[];
     },
     {
@@ -394,7 +441,11 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 "--license": boolean;
                 "--json"?: string | undefined;
                 "--json-pp"?: string | undefined;
+                "--license-references"?: boolean | undefined;
                 "--package"?: boolean | undefined;
+                "--processes"?: string | undefined;
+                "--quiet"?: boolean | undefined;
+                "--strip-root"?: boolean | undefined;
             };
             tool_name: string;
             tool_version: string;
@@ -416,6 +467,10 @@ declare const ScannerJobResultSchema: z.ZodObject<
                 spdx_license_list_version: string;
                 files_count: number;
             };
+        }[];
+        license_references: {
+            key: string;
+            spdx_license_key: string;
         }[];
     }
 >;
@@ -859,7 +914,11 @@ declare const scannerAgentApi: [
                                                 "--json": zod.ZodOptional<zod.ZodString>;
                                                 "--json-pp": zod.ZodOptional<zod.ZodString>;
                                                 "--license": zod.ZodBoolean;
+                                                "--license-references": zod.ZodOptional<zod.ZodBoolean>;
                                                 "--package": zod.ZodOptional<zod.ZodBoolean>;
+                                                "--processes": zod.ZodOptional<zod.ZodString>;
+                                                "--quiet": zod.ZodOptional<zod.ZodBoolean>;
+                                                "--strip-root": zod.ZodOptional<zod.ZodBoolean>;
                                             },
                                             "strip",
                                             zod.ZodTypeAny,
@@ -871,7 +930,17 @@ declare const scannerAgentApi: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             },
@@ -883,7 +952,17 @@ declare const scannerAgentApi: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             }
@@ -968,7 +1047,15 @@ declare const scannerAgentApi: [
                                             "--license": boolean;
                                             "--json"?: string | undefined;
                                             "--json-pp"?: string | undefined;
+                                            "--license-references"?:
+                                                | boolean
+                                                | undefined;
                                             "--package"?: boolean | undefined;
+                                            "--processes"?: string | undefined;
+                                            "--quiet"?: boolean | undefined;
+                                            "--strip-root"?:
+                                                | boolean
+                                                | undefined;
                                         };
                                         tool_name: string;
                                         tool_version: string;
@@ -999,7 +1086,15 @@ declare const scannerAgentApi: [
                                             "--license": boolean;
                                             "--json"?: string | undefined;
                                             "--json-pp"?: string | undefined;
+                                            "--license-references"?:
+                                                | boolean
+                                                | undefined;
                                             "--package"?: boolean | undefined;
+                                            "--processes"?: string | undefined;
+                                            "--quiet"?: boolean | undefined;
+                                            "--strip-root"?:
+                                                | boolean
+                                                | undefined;
                                         };
                                         tool_name: string;
                                         tool_version: string;
@@ -1021,6 +1116,25 @@ declare const scannerAgentApi: [
                                             spdx_license_list_version: string;
                                             files_count: number;
                                         };
+                                    }
+                                >,
+                                "many"
+                            >;
+                            license_references: zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        key: zod.ZodString;
+                                        spdx_license_key: zod.ZodString;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        key: string;
+                                        spdx_license_key: string;
+                                    },
+                                    {
+                                        key: string;
+                                        spdx_license_key: string;
                                     }
                                 >,
                                 "many"
@@ -1204,7 +1318,13 @@ declare const scannerAgentApi: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -1226,6 +1346,10 @@ declare const scannerAgentApi: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         },
                         {
@@ -1259,7 +1383,13 @@ declare const scannerAgentApi: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -1281,6 +1411,10 @@ declare const scannerAgentApi: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         }
                     >
@@ -1329,7 +1463,11 @@ declare const scannerAgentApi: [
                                   "--license": boolean;
                                   "--json"?: string | undefined;
                                   "--json-pp"?: string | undefined;
+                                  "--license-references"?: boolean | undefined;
                                   "--package"?: boolean | undefined;
+                                  "--processes"?: string | undefined;
+                                  "--quiet"?: boolean | undefined;
+                                  "--strip-root"?: boolean | undefined;
                               };
                               tool_name: string;
                               tool_version: string;
@@ -1351,6 +1489,10 @@ declare const scannerAgentApi: [
                                   spdx_license_list_version: string;
                                   files_count: number;
                               };
+                          }[];
+                          license_references: {
+                              key: string;
+                              spdx_license_key: string;
                           }[];
                       }
                     | undefined;
@@ -1396,7 +1538,11 @@ declare const scannerAgentApi: [
                                   "--license": boolean;
                                   "--json"?: string | undefined;
                                   "--json-pp"?: string | undefined;
+                                  "--license-references"?: boolean | undefined;
                                   "--package"?: boolean | undefined;
+                                  "--processes"?: string | undefined;
+                                  "--quiet"?: boolean | undefined;
+                                  "--strip-root"?: boolean | undefined;
                               };
                               tool_name: string;
                               tool_version: string;
@@ -1418,6 +1564,10 @@ declare const scannerAgentApi: [
                                   spdx_license_list_version: string;
                                   files_count: number;
                               };
+                          }[];
+                          license_references: {
+                              key: string;
+                              spdx_license_key: string;
                           }[];
                       }
                     | undefined;
@@ -3691,7 +3841,11 @@ declare const scannerAPI: [
                                                     "--json": zod.ZodOptional<zod.ZodString>;
                                                     "--json-pp": zod.ZodOptional<zod.ZodString>;
                                                     "--license": zod.ZodBoolean;
+                                                    "--license-references": zod.ZodOptional<zod.ZodBoolean>;
                                                     "--package": zod.ZodOptional<zod.ZodBoolean>;
+                                                    "--processes": zod.ZodOptional<zod.ZodString>;
+                                                    "--quiet": zod.ZodOptional<zod.ZodBoolean>;
+                                                    "--strip-root": zod.ZodOptional<zod.ZodBoolean>;
                                                 },
                                                 "strip",
                                                 zod.ZodTypeAny,
@@ -3705,7 +3859,19 @@ declare const scannerAPI: [
                                                     "--json-pp"?:
                                                         | string
                                                         | undefined;
+                                                    "--license-references"?:
+                                                        | boolean
+                                                        | undefined;
                                                     "--package"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--processes"?:
+                                                        | string
+                                                        | undefined;
+                                                    "--quiet"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--strip-root"?:
                                                         | boolean
                                                         | undefined;
                                                 },
@@ -3719,7 +3885,19 @@ declare const scannerAPI: [
                                                     "--json-pp"?:
                                                         | string
                                                         | undefined;
+                                                    "--license-references"?:
+                                                        | boolean
+                                                        | undefined;
                                                     "--package"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--processes"?:
+                                                        | string
+                                                        | undefined;
+                                                    "--quiet"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--strip-root"?:
                                                         | boolean
                                                         | undefined;
                                                 }
@@ -3806,7 +3984,17 @@ declare const scannerAPI: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             };
@@ -3841,7 +4029,17 @@ declare const scannerAPI: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             };
@@ -3865,6 +4063,25 @@ declare const scannerAPI: [
                                                 spdx_license_list_version: string;
                                                 files_count: number;
                                             };
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                                license_references: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            key: zod.ZodString;
+                                            spdx_license_key: zod.ZodString;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            key: string;
+                                            spdx_license_key: string;
+                                        },
+                                        {
+                                            key: string;
+                                            spdx_license_key: string;
                                         }
                                     >,
                                     "many"
@@ -4050,7 +4267,13 @@ declare const scannerAPI: [
                                         "--license": boolean;
                                         "--json"?: string | undefined;
                                         "--json-pp"?: string | undefined;
+                                        "--license-references"?:
+                                            | boolean
+                                            | undefined;
                                         "--package"?: boolean | undefined;
+                                        "--processes"?: string | undefined;
+                                        "--quiet"?: boolean | undefined;
+                                        "--strip-root"?: boolean | undefined;
                                     };
                                     tool_name: string;
                                     tool_version: string;
@@ -4072,6 +4295,10 @@ declare const scannerAPI: [
                                         spdx_license_list_version: string;
                                         files_count: number;
                                     };
+                                }[];
+                                license_references: {
+                                    key: string;
+                                    spdx_license_key: string;
                                 }[];
                             },
                             {
@@ -4107,7 +4334,13 @@ declare const scannerAPI: [
                                         "--license": boolean;
                                         "--json"?: string | undefined;
                                         "--json-pp"?: string | undefined;
+                                        "--license-references"?:
+                                            | boolean
+                                            | undefined;
                                         "--package"?: boolean | undefined;
+                                        "--processes"?: string | undefined;
+                                        "--quiet"?: boolean | undefined;
+                                        "--strip-root"?: boolean | undefined;
                                     };
                                     tool_name: string;
                                     tool_version: string;
@@ -4129,6 +4362,10 @@ declare const scannerAPI: [
                                         spdx_license_list_version: string;
                                         files_count: number;
                                     };
+                                }[];
+                                license_references: {
+                                    key: string;
+                                    spdx_license_key: string;
                                 }[];
                             }
                         >;
@@ -4168,7 +4405,13 @@ declare const scannerAPI: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -4190,6 +4433,10 @@ declare const scannerAPI: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         };
                     },
@@ -4226,7 +4473,13 @@ declare const scannerAPI: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -4248,6 +4501,10 @@ declare const scannerAPI: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         };
                     }
@@ -11089,7 +11346,11 @@ declare const dosAPI: [
                                                     "--json": zod.ZodOptional<zod.ZodString>;
                                                     "--json-pp": zod.ZodOptional<zod.ZodString>;
                                                     "--license": zod.ZodBoolean;
+                                                    "--license-references": zod.ZodOptional<zod.ZodBoolean>;
                                                     "--package": zod.ZodOptional<zod.ZodBoolean>;
+                                                    "--processes": zod.ZodOptional<zod.ZodString>;
+                                                    "--quiet": zod.ZodOptional<zod.ZodBoolean>;
+                                                    "--strip-root": zod.ZodOptional<zod.ZodBoolean>;
                                                 },
                                                 "strip",
                                                 zod.ZodTypeAny,
@@ -11103,7 +11364,19 @@ declare const dosAPI: [
                                                     "--json-pp"?:
                                                         | string
                                                         | undefined;
+                                                    "--license-references"?:
+                                                        | boolean
+                                                        | undefined;
                                                     "--package"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--processes"?:
+                                                        | string
+                                                        | undefined;
+                                                    "--quiet"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--strip-root"?:
                                                         | boolean
                                                         | undefined;
                                                 },
@@ -11117,7 +11390,19 @@ declare const dosAPI: [
                                                     "--json-pp"?:
                                                         | string
                                                         | undefined;
+                                                    "--license-references"?:
+                                                        | boolean
+                                                        | undefined;
                                                     "--package"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--processes"?:
+                                                        | string
+                                                        | undefined;
+                                                    "--quiet"?:
+                                                        | boolean
+                                                        | undefined;
+                                                    "--strip-root"?:
                                                         | boolean
                                                         | undefined;
                                                 }
@@ -11204,7 +11489,17 @@ declare const dosAPI: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             };
@@ -11239,7 +11534,17 @@ declare const dosAPI: [
                                                 "--json-pp"?:
                                                     | string
                                                     | undefined;
+                                                "--license-references"?:
+                                                    | boolean
+                                                    | undefined;
                                                 "--package"?:
+                                                    | boolean
+                                                    | undefined;
+                                                "--processes"?:
+                                                    | string
+                                                    | undefined;
+                                                "--quiet"?: boolean | undefined;
+                                                "--strip-root"?:
                                                     | boolean
                                                     | undefined;
                                             };
@@ -11263,6 +11568,25 @@ declare const dosAPI: [
                                                 spdx_license_list_version: string;
                                                 files_count: number;
                                             };
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                                license_references: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            key: zod.ZodString;
+                                            spdx_license_key: zod.ZodString;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            key: string;
+                                            spdx_license_key: string;
+                                        },
+                                        {
+                                            key: string;
+                                            spdx_license_key: string;
                                         }
                                     >,
                                     "many"
@@ -11448,7 +11772,13 @@ declare const dosAPI: [
                                         "--license": boolean;
                                         "--json"?: string | undefined;
                                         "--json-pp"?: string | undefined;
+                                        "--license-references"?:
+                                            | boolean
+                                            | undefined;
                                         "--package"?: boolean | undefined;
+                                        "--processes"?: string | undefined;
+                                        "--quiet"?: boolean | undefined;
+                                        "--strip-root"?: boolean | undefined;
                                     };
                                     tool_name: string;
                                     tool_version: string;
@@ -11470,6 +11800,10 @@ declare const dosAPI: [
                                         spdx_license_list_version: string;
                                         files_count: number;
                                     };
+                                }[];
+                                license_references: {
+                                    key: string;
+                                    spdx_license_key: string;
                                 }[];
                             },
                             {
@@ -11505,7 +11839,13 @@ declare const dosAPI: [
                                         "--license": boolean;
                                         "--json"?: string | undefined;
                                         "--json-pp"?: string | undefined;
+                                        "--license-references"?:
+                                            | boolean
+                                            | undefined;
                                         "--package"?: boolean | undefined;
+                                        "--processes"?: string | undefined;
+                                        "--quiet"?: boolean | undefined;
+                                        "--strip-root"?: boolean | undefined;
                                     };
                                     tool_name: string;
                                     tool_version: string;
@@ -11527,6 +11867,10 @@ declare const dosAPI: [
                                         spdx_license_list_version: string;
                                         files_count: number;
                                     };
+                                }[];
+                                license_references: {
+                                    key: string;
+                                    spdx_license_key: string;
                                 }[];
                             }
                         >;
@@ -11566,7 +11910,13 @@ declare const dosAPI: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -11588,6 +11938,10 @@ declare const dosAPI: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         };
                     },
@@ -11624,7 +11978,13 @@ declare const dosAPI: [
                                     "--license": boolean;
                                     "--json"?: string | undefined;
                                     "--json-pp"?: string | undefined;
+                                    "--license-references"?:
+                                        | boolean
+                                        | undefined;
                                     "--package"?: boolean | undefined;
+                                    "--processes"?: string | undefined;
+                                    "--quiet"?: boolean | undefined;
+                                    "--strip-root"?: boolean | undefined;
                                 };
                                 tool_name: string;
                                 tool_version: string;
@@ -11646,6 +12006,10 @@ declare const dosAPI: [
                                     spdx_license_list_version: string;
                                     files_count: number;
                                 };
+                            }[];
+                            license_references: {
+                                key: string;
+                                spdx_license_key: string;
                             }[];
                         };
                     }
