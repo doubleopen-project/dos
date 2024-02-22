@@ -6,6 +6,12 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
+import {
+    Card,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import BulkConclusion from "@/components/main_ui/package_bulk_conclusions/BulkConclusion";
 import BulkConclusionEditForm from "@/components/main_ui/package_bulk_conclusions/BulkConclusionEditForm";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
@@ -55,23 +61,81 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
             )}
             {data && data.bulkConclusions.length > 0 ? (
                 <div className="w-full flex-1 overflow-y-auto border">
-                    {data.bulkConclusions.map((bc) =>
-                        bc.id === editing ? (
-                            <BulkConclusionEditForm
-                                key={`edit-bc-${bc.id}`}
-                                pathPurl={pathPurl}
-                                bulkConclusion={bc}
-                                editHandler={editHandler}
-                            />
-                        ) : (
-                            <BulkConclusion
-                                key={`bc-${bc.id}`}
-                                bulkConclusion={bc}
-                                userName={userName}
-                                userRole={userRole}
-                                editHandler={editHandler}
-                            />
-                        ),
+                    {bcForThisPackage && bcForThisPackage.length > 0 && (
+                        <>
+                            <Card className="bg-muted m-2">
+                                <CardHeader>
+                                    <CardTitle>
+                                        Bulk Conclusions created for this
+                                        package
+                                    </CardTitle>
+                                    <CardDescription>
+                                        This is a list of the{" "}
+                                        {bcForThisPackage?.length} bulk
+                                        conclusions that are created originally
+                                        for this package and version.
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+                            {bcForThisPackage.map((bc) =>
+                                bc.id === editing ? (
+                                    <BulkConclusionEditForm
+                                        key={`edit-bc-${bc.id}`}
+                                        pathPurl={pathPurl}
+                                        bulkConclusion={bc}
+                                        editHandler={editHandler}
+                                    />
+                                ) : (
+                                    <BulkConclusion
+                                        key={`bc-${bc.id}`}
+                                        bulkConclusion={bc}
+                                        userName={userName}
+                                        userRole={userRole}
+                                        editHandler={editHandler}
+                                    />
+                                ),
+                            )}
+                        </>
+                    )}
+                    {bcForOtherContext && bcForOtherContext.length > 0 && (
+                        <>
+                            <Card className="bg-muted m-2">
+                                <CardHeader>
+                                    <CardTitle>
+                                        Bulk Conclusions created for other
+                                        packages
+                                    </CardTitle>
+                                    <CardDescription>
+                                        There are additionally a total of{" "}
+                                        {bcForOtherContext?.length} bulk
+                                        conclusions that are created for other
+                                        packages and/or other versions of this
+                                        package. These bulk conclusions are
+                                        relevant for this package and thus shown
+                                        here, because the glob pattern of the
+                                        concluded files matches.
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+                            {bcForOtherContext.map((bc) =>
+                                bc.id === editing ? (
+                                    <BulkConclusionEditForm
+                                        key={`edit-bc-${bc.id}`}
+                                        pathPurl={pathPurl}
+                                        bulkConclusion={bc}
+                                        editHandler={editHandler}
+                                    />
+                                ) : (
+                                    <BulkConclusion
+                                        key={`bc-${bc.id}`}
+                                        bulkConclusion={bc}
+                                        userName={userName}
+                                        userRole={userRole}
+                                        editHandler={editHandler}
+                                    />
+                                ),
+                            )}
+                        </>
                     )}
                 </div>
             ) : (
