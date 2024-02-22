@@ -5,12 +5,11 @@
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
-import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
-import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 
 type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -18,7 +17,6 @@ type BulkConclusion = ZodiosResponseByAlias<
 >["bulkConclusions"][0];
 
 type Props = {
-    pathPurl: string;
     bulkConclusion: BulkConclusion;
     userName: string;
     userRole: string;
@@ -26,25 +24,11 @@ type Props = {
 };
 
 const BulkConclusion = ({
-    pathPurl,
     bulkConclusion,
     userName,
     userRole,
     editHandler,
 }: Props) => {
-    // Fetch the package file tree data
-    const { data: fileTreeData } = userHooks.useGetFileTree({
-        withCredentials: true,
-        params: {
-            purl: pathPurl,
-        },
-    });
-    const paths =
-        fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
-    const pathsMatching = bulkConclusion.pattern
-        ? findMatchingPaths(paths, bulkConclusion.pattern)
-        : [];
-
     return (
         <div
             className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
@@ -99,9 +83,11 @@ const BulkConclusion = ({
                             Files affected in this package:
                         </div>
                         <div>
-                            <Badge className="bg-blue-400 p-0.5 font-bold">
-                                {pathsMatching.length}
-                            </Badge>
+                            <BCAffectedFilesTooltip
+                                bulkConclusionId={bulkConclusion.id}
+                                mode="context"
+                                badgeStyle="bg-blue-400 text-xs"
+                            />
                         </div>
                     </div>
                     {bulkConclusion.local && (
