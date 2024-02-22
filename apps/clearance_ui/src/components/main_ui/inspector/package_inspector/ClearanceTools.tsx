@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from "react";
+import { FiFilePlus } from "react-icons/fi";
 import { LuFileStack } from "react-icons/lu";
 import {
     TbFileOff,
@@ -12,6 +13,7 @@ import {
 } from "react-icons/tb";
 import { TfiPencil } from "react-icons/tfi";
 import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import {
     Tooltip,
     TooltipContent,
@@ -27,6 +29,7 @@ type Props = {
     selectedNode: SelectedNode | undefined;
     purl: string;
     className?: string;
+    onSelectionModeChange: (newValue: boolean) => void;
 };
 
 // Check if the selected node has children directories:
@@ -35,7 +38,12 @@ const hasChildrenDirs = (node: SelectedNode | undefined) => {
     return node?.children?.some((child: SelectedNode) => !child.isLeaf);
 };
 
-const ClearanceTools = ({ selectedNode, purl, className }: Props) => {
+const ClearanceTools = ({
+    selectedNode,
+    purl,
+    className,
+    onSelectionModeChange,
+}: Props) => {
     const [openDirDialog, setOpenDirDialog] = useState<boolean>(false);
     const [openSubdirsDialog, setOpenSubdirsDialog] = useState<boolean>(false);
     const [openFileDialog, setOpenFileDialog] = useState<boolean>(false);
@@ -44,6 +52,7 @@ const ClearanceTools = ({ selectedNode, purl, className }: Props) => {
         useState<boolean>(false);
     const [openBulkConclusionDialog, setOpenBulkConclusionDialog] =
         useState<boolean>(false);
+    const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
 
     return (
         <div
@@ -208,6 +217,35 @@ const ClearanceTools = ({ selectedNode, purl, className }: Props) => {
                             open={openBulkConclusionDialog}
                             setOpen={setOpenBulkConclusionDialog}
                         />
+                    </Tooltip>
+                    <Tooltip>
+                        <div className="group relative">
+                            <TooltipTrigger asChild>
+                                <Toggle
+                                    className={
+                                        isSelectionMode
+                                            ? "border border-red-500 p-2"
+                                            : "p-2"
+                                    }
+                                    pressed={isSelectionMode}
+                                    onPressedChange={() => {
+                                        setIsSelectionMode(!isSelectionMode);
+                                        onSelectionModeChange(!isSelectionMode);
+                                    }}
+                                >
+                                    {isSelectionMode ? (
+                                        <FiFilePlus className="text-lg text-red-500" />
+                                    ) : (
+                                        <FiFilePlus className="text-lg" />
+                                    )}
+                                </Toggle>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {isSelectionMode
+                                    ? "Toggle off selection mode"
+                                    : "Toggle selection mode to select multiple nodes from the tree"}
+                            </TooltipContent>
+                        </div>
                     </Tooltip>
                 </TooltipProvider>
             </>

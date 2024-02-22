@@ -53,6 +53,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const [openedNodeId, setOpenedNodeId] = useState<string>();
+    const [isSelectionMode, setIsSelectionMode] = useState(false);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
@@ -173,6 +174,10 @@ const PackageInspector = ({ purl, path }: Props) => {
         }
     }, [path, treeData, tree]);
 
+    useEffect(() => {
+        console.log("Selection mode activated: ", isSelectionMode);
+    }, [isSelectionMode]);
+
     return (
         <div className="flex h-full flex-col">
             <div className="mb-3 flex items-center text-sm">
@@ -203,6 +208,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                     selectedNode={selectedNode}
                     purl={purl}
                     className="mr-2 flex-1"
+                    onSelectionModeChange={(mode) => {
+                        setIsSelectionMode(mode);
+                    }}
                 />
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
