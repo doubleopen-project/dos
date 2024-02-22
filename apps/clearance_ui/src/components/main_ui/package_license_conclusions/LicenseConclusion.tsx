@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
+import PurlDetails from "@/components/common/PurlDetails";
 import AffectedPath from "@/components/main_ui/package_license_conclusions/AffectedPath";
 
 type LicenseConclusion = ZodiosResponseByAlias<
@@ -67,12 +68,14 @@ const LicenseConclusion = ({
                                 "No detected license"}
                         </div>
                     </div>
-                    <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
-                            Context PURL:
-                        </div>
-                        <div className="break-all">
-                            {licenseConclusion.contextPurl}
+                    <div className="text-xs">
+                        <div className="mr-2 font-semibold">Context PURL:</div>
+                        <div className="ml-9">
+                            <PurlDetails
+                                purl={licenseConclusion.contextPurl}
+                                hideBorder={true}
+                                hideCopyToClipboard={true}
+                            />
                         </div>
                     </div>
                     <div className="text-xs">
