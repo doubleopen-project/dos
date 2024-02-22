@@ -32,6 +32,15 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
         setEditing(id);
     };
 
+    // Filter the data (bulk conclusions) into two sublists,
+    // one for BCs in this package and one for BCs in other packages
+    const bcForThisPackage = data?.bulkConclusions.filter(
+        (bc) => bc.package.purl === purl,
+    );
+    const bcForOtherContext = data?.bulkConclusions.filter(
+        (bc) => bc.package.purl !== purl,
+    );
+
     return (
         <>
             {isLoading && (
