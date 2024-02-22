@@ -462,7 +462,7 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
-        const bulkConclusionsWithRelations =
+        const bulkConclusions =
             await dbQueries.findBulkConclusionsWithRelations(
                 skip,
                 pageSize,
@@ -485,50 +485,6 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                 req.query.updatedAtGte,
                 req.query.updatedAtLte,
             );
-        const bulkConclusions = [];
-
-        for (const bc of bulkConclusionsWithRelations) {
-            const licenseConclusions = [];
-
-            for (const lc of bc.licenseConclusions) {
-                const inContextPurl = [];
-                const additionalMatches = [];
-
-                for (const ft of lc.file.filetrees) {
-                    if (ft.package.purl === bc.package.purl) {
-                        inContextPurl.push(ft.path);
-                    } else if (!bc.local) {
-                        additionalMatches.push({
-                            path: ft.path,
-                            purl: ft.package.purl,
-                        });
-                    }
-                }
-
-                licenseConclusions.push({
-                    id: lc.id,
-                    sha256: lc.file.sha256,
-                    affectedPaths: {
-                        inContextPurl: inContextPurl,
-                        additionalMatches: additionalMatches,
-                    },
-                });
-            }
-
-            bulkConclusions.push({
-                id: bc.id,
-                updatedAt: bc.updatedAt,
-                pattern: bc.pattern,
-                concludedLicenseExpressionSPDX:
-                    bc.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX: bc.detectedLicenseExpressionSPDX,
-                comment: bc.comment,
-                contextPurl: bc.package.purl,
-                local: bc.local,
-                user: bc.user,
-                licenseConclusions: licenseConclusions,
-            });
-        }
 
         res.status(200).json({
             bulkConclusions: bulkConclusions,

@@ -182,7 +182,7 @@ export const columns = (
                 );
             },
             cell: ({ row }) => {
-                const pkg = PackageURL.fromString(row.original.contextPurl);
+                const pkg = PackageURL.fromString(row.original.package.purl);
                 const pkgName = pkg.name + ":" + pkg.version;
                 return (
                     <TooltipProvider>
@@ -191,14 +191,14 @@ export const columns = (
                                 <Link
                                     className="font-semibold text-blue-400"
                                     href={`/packages/${encodeURIComponent(
-                                        row.original.contextPurl,
+                                        row.original.package.purl,
                                     )}`}
                                 >
                                     {pkgName}
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <PurlDetails purl={row.original.contextPurl} />
+                                <PurlDetails purl={row.original.package.purl} />
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
