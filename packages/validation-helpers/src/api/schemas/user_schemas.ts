@@ -285,6 +285,9 @@ export const GetBulkConclusionsByPurlRes = z.object({
             concludedLicenseExpressionSPDX: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             local: z.boolean(),
+            package: z.object({
+                purl: z.string(),
+            }),
             licenseConclusions: z.array(
                 z.object({
                     id: z.number(),
