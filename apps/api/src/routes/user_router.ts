@@ -1045,6 +1045,47 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/bulk-conclusions/count", async (req, res) => {
+    try {
+        const { user } = req;
+        if (!user) throw new CustomError("Unauthorized", 401);
+
+        const purl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + purl + " not found",
+                404,
+            );
+
+        const bulkConclusionsCount =
+            await dbQueries.countBulkConclusionsForPackage(packageId);
+
+        res.status(200).json({
+            count: bulkConclusionsCount,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with purl " + req.params.purl + " not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.get("/path-exclusions", async (req, res) => {
     try {
         const pageSize = req.query.pageSize;
