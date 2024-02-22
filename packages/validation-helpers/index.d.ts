@@ -6026,7 +6026,7 @@ declare const userAPI: [
     {
         method: "get";
         path: "/packages/:purl/bulk-conclusions";
-        description: "Get bulk conclusions for specified purl. Alias: GetBulkConclusionsByPurl";
+        description: "Get bulk conclusions for specified purl. Returns both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsByPurl";
         alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
@@ -6244,6 +6244,122 @@ declare const userAPI: [
                         purl: string;
                     };
                 }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/packages/:purl/bulk-conclusions/count";
+        description: "Get count of bulk conclusions for specified purl. Returns count of both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsCountByPurl";
+        alias: "GetBulkConclusionsCountByPurl";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
             }
         >;
         errors: [
@@ -13305,7 +13421,7 @@ declare const dosAPI: [
     {
         method: "get";
         path: "/user/packages/:purl/bulk-conclusions";
-        description: "Get bulk conclusions for specified purl. Alias: GetBulkConclusionsByPurl";
+        description: "Get bulk conclusions for specified purl. Returns both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsByPurl";
         alias: "GetBulkConclusionsByPurl";
         parameters: [
             {
@@ -13523,6 +13639,122 @@ declare const dosAPI: [
                         purl: string;
                     };
                 }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/packages/:purl/bulk-conclusions/count";
+        description: "Get count of bulk conclusions for specified purl. Returns count of both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsCountByPurl";
+        alias: "GetBulkConclusionsCountByPurl";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
             }
         >;
         errors: [

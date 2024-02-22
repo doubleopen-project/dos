@@ -4239,6 +4239,49 @@ export const countBulkConclusions = async (
     return count;
 };
 
+export const countBulkConclusionsForPackage = async (
+    packageId: number,
+): Promise<number> => {
+    let retries = initialRetryCount;
+    let count = 0;
+
+    while (retries > 0) {
+        try {
+            count = await prisma.bulkConclusion.count({
+                where: {
+                    OR: [
+                        {
+                            packageId: packageId,
+                        },
+                        {
+                            licenseConclusions: {
+                                some: {
+                                    file: {
+                                        filetrees: {
+                                            some: {
+                                                packageId: packageId,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            local: false,
+                        },
+                    ],
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to count BulkConclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return count;
+};
+
 export const countLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,

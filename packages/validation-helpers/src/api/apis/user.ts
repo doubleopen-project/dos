@@ -364,7 +364,7 @@ export const userAPI = makeApi([
         method: "get",
         path: "/packages/:purl/bulk-conclusions",
         description:
-            "Get bulk conclusions for specified purl. Alias: GetBulkConclusionsByPurl",
+            "Get bulk conclusions for specified purl. Returns both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsByPurl",
         alias: "GetBulkConclusionsByPurl",
         parameters: [
             {
@@ -374,6 +374,22 @@ export const userAPI = makeApi([
             },
         ],
         response: schemas.GetBulkConclusionsByPurlRes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/packages/:purl/bulk-conclusions/count",
+        description:
+            "Get count of bulk conclusions for specified purl. Returns count of both bulk conclusions made in this package, and bulk conclusions made in other packages, that affect files in this package. Alias: GetBulkConclusionsCountByPurl",
+        alias: "GetBulkConclusionsCountByPurl",
+        parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: commonSchemas.PathParamPurl,
+            },
+        ],
+        response: commonSchemas.GetCountRes,
         errors,
     },
     {
