@@ -23,6 +23,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -428,43 +429,13 @@ export const columns = (
                         );
                     },
                     cell: ({ row }) => {
-                        const affectedPathsThis =
-                            row.original.licenseConclusions
-                                .map(
-                                    (lc) =>
-                                        lc.affectedPaths.inContextPurl.length,
-                                )
-                                .reduce((a, b) => a + b, 0);
-                        return affectedPathsThis > 0 ? (
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger>
-                                        <Badge className="bg-blue-400 text-sm">
-                                            {affectedPathsThis}
-                                        </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <div className="text-sm">
-                                            {row.original.licenseConclusions.map(
-                                                (lc) => (
-                                                    <div key={lc.id}>
-                                                        {lc.affectedPaths.inContextPurl.map(
-                                                            (aff, index) => (
-                                                                <div
-                                                                    key={index}
-                                                                >
-                                                                    {aff}
-                                                                </div>
-                                                            ),
-                                                        )}
-                                                    </div>
-                                                ),
-                                            )}
-                                        </div>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        ) : null;
+                        return (
+                            <BCAffectedFilesTooltip
+                                bulkConclusionId={row.original.id}
+                                mode="context"
+                                badgeStyle="bg-blue-400 text-sm"
+                            />
+                        );
                     },
                 },
                 {
@@ -477,56 +448,13 @@ export const columns = (
                         );
                     },
                     cell: ({ row }) => {
-                        const affectedPathsOther =
-                            row.original.licenseConclusions
-                                .map(
-                                    (lc) =>
-                                        lc.affectedPaths.additionalMatches
-                                            .length,
-                                )
-                                .reduce((a, b) => a + b, 0);
-                        return affectedPathsOther > 0 ? (
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger>
-                                        <Badge className="bg-orange-400 text-sm">
-                                            {affectedPathsOther}
-                                        </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <div className="text-sm">
-                                            {row.original.licenseConclusions.map(
-                                                (lc) => (
-                                                    <div key={lc.id}>
-                                                        {lc.affectedPaths.additionalMatches.map(
-                                                            (aff, index) => (
-                                                                <div
-                                                                    key={index}
-                                                                >
-                                                                    {
-                                                                        PackageURL.fromString(
-                                                                            aff.purl,
-                                                                        ).name
-                                                                    }
-                                                                    :
-                                                                    {
-                                                                        PackageURL.fromString(
-                                                                            aff.purl,
-                                                                        )
-                                                                            .version
-                                                                    }{" "}
-                                                                    : {aff.path}
-                                                                </div>
-                                                            ),
-                                                        )}
-                                                    </div>
-                                                ),
-                                            )}
-                                        </div>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        ) : null;
+                        return (
+                            <BCAffectedFilesTooltip
+                                bulkConclusionId={row.original.id}
+                                mode="additional"
+                                badgeStyle="bg-orange-400 text-sm"
+                            />
+                        );
                     },
                 },
             ],
