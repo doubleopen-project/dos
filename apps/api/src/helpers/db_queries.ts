@@ -2932,6 +2932,28 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
     return bulkConclusions;
 };
 
+type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
+    select: {
+        id: true;
+        updatedAt: true;
+        pattern: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        comment: true;
+        local: true;
+        package: {
+            select: {
+                purl: true;
+            };
+        };
+        user: {
+            select: {
+                username: true;
+            };
+        };
+    };
+}>;
+
 export const findBulkConclusionsWithRelations = async (
     skip: number | undefined,
     take: number | undefined,
@@ -2959,9 +2981,9 @@ export const findBulkConclusionsWithRelations = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
-): Promise<BulkConclusionWithRelations[]> => {
+): Promise<FindBulkConclusionsWithRelationsResult[]> => {
     let retries = initialRetryCount;
-    let bulkConclusions: BulkConclusionWithRelations[] = [];
+    let bulkConclusions: FindBulkConclusionsWithRelationsResult[] = [];
 
     while (retries > 0) {
         try {
@@ -2983,26 +3005,6 @@ export const findBulkConclusionsWithRelations = async (
                     user: {
                         select: {
                             username: true,
-                        },
-                    },
-                    licenseConclusions: {
-                        select: {
-                            id: true,
-                            file: {
-                                select: {
-                                    sha256: true,
-                                    filetrees: {
-                                        select: {
-                                            path: true,
-                                            package: {
-                                                select: {
-                                                    purl: true,
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
                         },
                     },
                 },

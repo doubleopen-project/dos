@@ -185,23 +185,10 @@ export const GetBulkConclusionsRes = z.object({
             concludedLicenseExpressionSPDX: z.string(),
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
-            contextPurl: z.string(),
             local: z.boolean(),
-            licenseConclusions: z.array(
-                z.object({
-                    id: z.number(),
-                    sha256: z.string(),
-                    affectedPaths: z.object({
-                        inContextPurl: z.array(z.string()),
-                        additionalMatches: z.array(
-                            z.object({
-                                path: z.string(),
-                                purl: z.string(),
-                            }),
-                        ),
-                    }),
-                }),
-            ),
+            package: z.object({
+                purl: z.string(),
+            }),
             user: z.object({
                 username: z.string(),
             }),
