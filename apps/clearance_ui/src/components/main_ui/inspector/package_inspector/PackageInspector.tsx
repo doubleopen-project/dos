@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
-import { NodeApi, Tree, TreeApi } from "react-arborist";
+import { Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
+import { updateSelectedNodes } from "@/helpers/treeSelectionUtils";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
 
@@ -109,16 +110,12 @@ const PackageInspector = ({ purl, path }: Props) => {
         nodeData: TreeNode,
         isSelected: boolean,
     ): void => {
-        if (isSelected) {
-            setSelectedNodes((prevSelectedNodes: TreeNode[]) => [
-                ...prevSelectedNodes,
-                nodeData,
-            ]);
-        } else {
-            setSelectedNodes((prevSelectedNodes: TreeNode[]) =>
-                prevSelectedNodes.filter((node: TreeNode) => node !== nodeData),
-            );
-        }
+        updateSelectedNodes(
+            nodeData,
+            isSelected,
+            selectedNodes,
+            setSelectedNodes,
+        );
     };
 
     useEffect(() => {
