@@ -23,7 +23,6 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     openedNodeId: string | undefined;
     uniqueLicenses: Map<string, string>;
     isSelectionMode: boolean;
-    isSelected: boolean;
     setIsSelected: (isSelected: boolean) => void;
 };
 
@@ -36,7 +35,6 @@ const Node = ({
     openedNodeId,
     uniqueLicenses,
     isSelectionMode,
-    isSelected,
     setIsSelected,
 }: NodeProps) => {
     const { id, data, isLeaf, isClosed } = node;
@@ -47,6 +45,7 @@ const Node = ({
         name,
         path,
         file,
+        selectionStatus,
     } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
@@ -127,11 +126,15 @@ const Node = ({
         >
             {isSelectionMode && (
                 <Checkbox
-                    className="p-0"
-                    checked={isSelected}
+                    className={
+                        selectionStatus === 0.5
+                            ? "border-gray-400 bg-gray-400 p-0"
+                            : "border-gray-400 bg-white p-0"
+                    }
+                    checked={selectionStatus === 1}
                     onClick={() => {
                         {
-                            setIsSelected(!isSelected);
+                            setIsSelected(selectionStatus === 1 ? false : true);
                         }
                     }}
                     id={id}

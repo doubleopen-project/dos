@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
-import { Tree, TreeApi } from "react-arborist";
+import { NodeApi, Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -107,15 +107,10 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     // Update the selected nodes when a node is selected or deselected
     const handleNodeSelection = (
-        nodeData: TreeNode,
+        node: NodeApi<TreeNode>,
         isSelected: boolean,
     ): void => {
-        updateSelectedNodes(
-            nodeData,
-            isSelected,
-            selectedNodes,
-            setSelectedNodes,
-        );
+        updateSelectedNodes(node, isSelected, selectedNodes, setSelectedNodes);
     };
 
     useEffect(() => {
@@ -324,12 +319,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 openedNodeId={openedNodeId}
                                 uniqueLicenses={uniqueLicensesToColorMap}
                                 isSelectionMode={isSelectionMode}
-                                isSelected={selectedNodes.includes(
-                                    nodeProps.node.data,
-                                )}
                                 setIsSelected={(isSelected) =>
                                     handleNodeSelection(
-                                        nodeProps.node.data,
+                                        nodeProps.node,
                                         isSelected,
                                     )
                                 }
