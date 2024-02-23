@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
-import { Tree, TreeApi } from "react-arborist";
+import { NodeApi, Tree, TreeApi } from "react-arborist";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
+    const [selectedNodes, setSelectedNodes] = useState<TreeNode[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
@@ -100,6 +101,23 @@ const PackageInspector = ({ purl, path }: Props) => {
         if (treeRef.current) {
             const { offsetHeight } = treeRef.current;
             setTreeHeight(offsetHeight);
+        }
+    };
+
+    // Update the selected nodes when a node is selected or deselected
+    const handleNodeSelection = (
+        nodeData: TreeNode,
+        isSelected: boolean,
+    ): void => {
+        if (isSelected) {
+            setSelectedNodes((prevSelectedNodes: TreeNode[]) => [
+                ...prevSelectedNodes,
+                nodeData,
+            ]);
+        } else {
+            setSelectedNodes((prevSelectedNodes: TreeNode[]) =>
+                prevSelectedNodes.filter((node: TreeNode) => node !== nodeData),
+            );
         }
     };
 
@@ -178,6 +196,13 @@ const PackageInspector = ({ purl, path }: Props) => {
         console.log("Selection mode activated: ", isSelectionMode);
     }, [isSelectionMode]);
 
+    useEffect(() => {
+        console.log(
+            "Selected nodes: ",
+            selectedNodes.map((node) => node.path),
+        );
+    }, [selectedNodes]);
+
     return (
         <div className="flex h-full flex-col">
             <div className="mb-3 flex items-center text-sm">
@@ -210,6 +235,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                     className="mr-2 flex-1"
                     onSelectionModeChange={(mode) => {
                         setIsSelectionMode(mode);
+                        if (!isSelectionMode) {
+                            setSelectedNodes([]);
+                        }
                     }}
                 />
                 <TooltipProvider delayDuration={300}>
@@ -270,19 +298,22 @@ const PackageInspector = ({ purl, path }: Props) => {
                             setSelectedNode(node);
                             if (node.isLeaf) {
                                 setOpenedNodeId(node.id);
-                                router.push({
-                                    pathname: `/packages/${encodeURIComponent(
-                                        purl || "",
-                                    )}/tree/${encodeURIComponent(
-                                        node.data.path || "",
-                                    )}`,
-                                    query: licenseFilter
-                                        ? {
-                                              licenseFilter: `${licenseFilter}`,
-                                              filtering: `${filtering}`,
-                                          }
-                                        : {},
-                                });
+                                {
+                                    !isSelectionMode &&
+                                        router.push({
+                                            pathname: `/packages/${encodeURIComponent(
+                                                purl || "",
+                                            )}/tree/${encodeURIComponent(
+                                                node.data.path || "",
+                                            )}`,
+                                            query: licenseFilter
+                                                ? {
+                                                      licenseFilter: `${licenseFilter}`,
+                                                      filtering: `${filtering}`,
+                                                  }
+                                                : {},
+                                        });
+                                }
                             }
                         }}
                         ref={(t) => (tree = t)}
@@ -295,6 +326,16 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 purl={purl}
                                 openedNodeId={openedNodeId}
                                 uniqueLicenses={uniqueLicensesToColorMap}
+                                isSelectionMode={isSelectionMode}
+                                isSelected={selectedNodes.includes(
+                                    nodeProps.node.data,
+                                )}
+                                setIsSelected={(isSelected) =>
+                                    handleNodeSelection(
+                                        nodeProps.node.data,
+                                        isSelected,
+                                    )
+                                }
                             />
                         )}
                     </Tree>

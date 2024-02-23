@@ -11,6 +11,7 @@ import {
     BsFolder2Open as FolderOpen,
 } from "react-icons/bs";
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { Checkbox } from "@/components/ui/checkbox";
 import LicenseHitCircle from "@/components/main_ui/inspector/package_inspector/LicenseHitCircle";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
@@ -21,6 +22,9 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     filtering: boolean;
     openedNodeId: string | undefined;
     uniqueLicenses: Map<string, string>;
+    isSelectionMode: boolean;
+    isSelected: boolean;
+    setIsSelected: (isSelected: boolean) => void;
 };
 
 const Node = ({
@@ -31,8 +35,11 @@ const Node = ({
     filtering,
     openedNodeId,
     uniqueLicenses,
+    isSelectionMode,
+    isSelected,
+    setIsSelected,
 }: NodeProps) => {
-    const { isLeaf, isClosed, data } = node;
+    const { id, data, isLeaf, isClosed } = node;
     const {
         hasLicenseFindings,
         hasLicenseConclusions,
@@ -89,21 +96,21 @@ const Node = ({
         icon = (
             <>
                 <span className="ml-4"></span>
-                <FileText color={color} style={isBold && boldStyle} />
+                <FileText color={color} style={isBold ? boldStyle : {}} />
             </>
         );
     } else if (isClosed) {
         icon = (
             <>
                 <MdArrowRight />
-                <FolderClosed color={color} style={isBold && boldStyle} />
+                <FolderClosed color={color} style={isBold ? boldStyle : {}} />
             </>
         );
     } else {
         icon = (
             <>
                 <MdArrowDropDown />
-                <FolderOpen color={color} style={isBold && boldStyle} />
+                <FolderOpen color={color} style={isBold ? boldStyle : {}} />
             </>
         );
     }
@@ -118,8 +125,19 @@ const Node = ({
                 }
             }}
         >
+            {isSelectionMode && (
+                <Checkbox
+                    className="p-0"
+                    checked={isSelected}
+                    onClick={() => {
+                        {
+                            setIsSelected(!isSelected);
+                        }
+                    }}
+                    id={id}
+                />
+            )}
             <span className="flex items-center">{icon}</span>
-
             <span className="ml-1 flex-grow truncate font-mono text-xs">
                 {isLeaf ? (
                     <Link
