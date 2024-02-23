@@ -13,6 +13,7 @@ export type TreeNode = {
     hasLicenseConclusions: boolean;
     openByDefault?: boolean;
     isExcluded?: boolean;
+    selectionStatus: number; // 1 = selected, 0 = deselected, 0.5 = some children selected
     file?: {
         licenseFindings: LicenseFindings[];
         licenseConclusions: LicenseConclusions[];
