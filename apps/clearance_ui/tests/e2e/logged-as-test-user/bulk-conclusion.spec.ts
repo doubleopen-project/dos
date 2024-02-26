@@ -7,7 +7,9 @@ import { expect, test } from "@playwright/test";
 test.describe.configure({ mode: "serial" });
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
+    await page.goto(
+        "/packages/pkg%3Anpm%2Fdos-monorepo%400.0.0%3Fvcs_type%3DGit%26vcs_url%3Dhttps%253A%252F%252Fgithub.com%252Fdoubleopen-project%252Fdos.git%26vcs_revision%3Ddc27d024ea5c001def72122c8c0f8c148cec39b6%26resolved_revision%3Ddc27d024ea5c001def72122c8c0f8c148cec39b6",
+    );
 });
 
 test("create bulk conclusion, delete from Main UI", async ({ page }) => {

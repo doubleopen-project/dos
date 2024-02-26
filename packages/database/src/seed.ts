@@ -23,6 +23,7 @@ const s3Client = S3Client(
 const prisma = new PrismaClient();
 
 async function main() {
+    console.log("Upserting test users to database");
     const testUserSalt = crypto.randomBytes(16);
     const testUserHashedPassword = crypto.pbkdf2Sync(
         "test",
@@ -31,7 +32,7 @@ async function main() {
         32,
         "sha256",
     );
-    const testUser = await prisma.user.upsert({
+    await prisma.user.upsert({
         where: {
             username: "test",
         },
@@ -43,7 +44,6 @@ async function main() {
             hashedPassword: testUserHashedPassword,
         },
     });
-    console.log(testUser);
 
     const testUser2Salt = crypto.randomBytes(16);
     const testUser2HashedPassword = crypto.pbkdf2Sync(
@@ -150,54 +150,43 @@ async function main() {
         });
     });
 
-    console.log(
-        "Upserting Package rows from test_data/packages.source to database",
-    );
+    console.log("Upserting Package to database");
 
-    const rl2 = readline.createInterface({
-        input: fs.createReadStream(
-            path.join(__dirname, "./test_data/packages.source"),
-        ),
-        crlfDelay: Infinity,
-    });
-
-    rl2.on("line", async (line) => {
-        const obj = JSON.parse(line);
-        await prisma.package.upsert({
-            where: {
-                purl: obj.purl,
-            },
-            update: {},
-            create: {
-                name: obj.name,
-                version: obj.version,
-                type: obj.type,
-                namespace: obj.namespace,
-                qualifiers: obj.qualifiers,
-                subpath: obj.subpath,
-                scanStatus: obj.scanStatus,
-            },
-        });
+    const pkg = await prisma.package.upsert({
+        where: {
+            purl: "pkg:npm/dos-monorepo@0.0.0?vcs_type=Git&vcs_url=https%3A%2F%2Fgithub.com%2Fdoubleopen-project%2Fdos.git&vcs_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6&resolved_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6",
+        },
+        update: {},
+        create: {
+            name: "dos-monorepo",
+            version: "0.0.0",
+            type: "npm",
+            namespace: null,
+            qualifiers:
+                "vcs_type=Git&vcs_url=https%3A%2F%2Fgithub.com%2Fdoubleopen-project%2Fdos.git&vcs_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6&resolved_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6",
+            subpath: null,
+            scanStatus: "scanned",
+        },
     });
 
     console.log(
         "Upserting FileTree rows from test_data/filetrees.source to database",
     );
 
-    const rl3 = readline.createInterface({
+    const rl2 = readline.createInterface({
         input: fs.createReadStream(
             path.join(__dirname, "./test_data/filetrees.source"),
         ),
         crlfDelay: Infinity,
     });
 
-    rl3.on("line", async (line) => {
+    rl2.on("line", async (line) => {
         const obj = JSON.parse(line);
 
         const fileTree = await prisma.fileTree.findFirst({
             where: {
                 fileSha256: obj.fileSha256,
-                packageId: obj.packageId,
+                packageId: pkg.id,
                 path: obj.path,
             },
         });
@@ -206,27 +195,30 @@ async function main() {
             await prisma.fileTree.create({
                 data: {
                     fileSha256: obj.fileSha256,
-                    packageId: obj.packageId,
+                    packageId: pkg.id,
                     path: obj.path,
                 },
             });
     });
 
     console.log(
-        "Upserting LicenseFinding rows from test_data/license_findings.source to database",
+        "Upserting LicenseFinding and LicenseFindingMatch rows from test_data/license_findings_and_matches.source to database",
     );
 
-    const rl4 = readline.createInterface({
+    const rl3 = readline.createInterface({
         input: fs.createReadStream(
-            path.join(__dirname, "./test_data/license_findings.source"),
+            path.join(
+                __dirname,
+                "./test_data/license_findings_and_matches.source",
+            ),
         ),
         crlfDelay: Infinity,
     });
 
-    rl4.on("line", async (line) => {
+    rl3.on("line", async (line) => {
         const obj = JSON.parse(line);
 
-        const licenseFinding = await prisma.licenseFinding.findFirst({
+        let licenseFinding = await prisma.licenseFinding.findFirst({
             where: {
                 fileSha256: obj.fileSha256,
                 unprocessedLicenseExpressionSPDX:
@@ -237,7 +229,7 @@ async function main() {
         });
 
         if (!licenseFinding)
-            await prisma.licenseFinding.create({
+            licenseFinding = await prisma.licenseFinding.create({
                 data: {
                     fileSha256: obj.fileSha256,
                     unprocessedLicenseExpressionSPDX:
@@ -246,56 +238,43 @@ async function main() {
                     scannerConfig: obj.scannerConfig,
                 },
             });
-    });
 
-    console.log(
-        "Upserting LicenseFindingMatch rows from test_data/license_finding_matches.source to database",
-    );
+        for (const match of obj.licenseFindingMatches) {
+            const licenseFindingMatch =
+                await prisma.licenseFindingMatch.findFirst({
+                    where: {
+                        licenseExpression: match.licenseExpression,
+                        startLine: match.startLine,
+                        endLine: match.endLine,
+                        score: match.score,
+                    },
+                });
 
-    const rl5 = readline.createInterface({
-        input: fs.createReadStream(
-            path.join(__dirname, "./test_data/license_finding_matches.source"),
-        ),
-        crlfDelay: Infinity,
-    });
-
-    rl5.on("line", async (line) => {
-        const obj = JSON.parse(line);
-
-        const licenseFindingMatch = await prisma.licenseFindingMatch.findFirst({
-            where: {
-                licenseFindingId: obj.licenseFindingId,
-                licenseExpression: obj.licenseExpression,
-                startLine: obj.startLine,
-                endLine: obj.endLine,
-                score: obj.score,
-            },
-        });
-
-        if (!licenseFindingMatch)
-            await prisma.licenseFindingMatch.create({
-                data: {
-                    licenseFindingId: obj.licenseFindingId,
-                    licenseExpression: obj.licenseExpression,
-                    startLine: obj.startLine,
-                    endLine: obj.endLine,
-                    score: obj.score,
-                },
-            });
+            if (!licenseFindingMatch)
+                await prisma.licenseFindingMatch.create({
+                    data: {
+                        licenseFindingId: licenseFinding.id,
+                        licenseExpression: match.licenseExpression,
+                        startLine: match.startLine,
+                        endLine: match.endLine,
+                        score: match.score,
+                    },
+                });
+        }
     });
 
     console.log(
         "Upserting CopyrightFinding rows from test_data/copyright_findings.source to database",
     );
 
-    const rl6 = readline.createInterface({
+    const rl4 = readline.createInterface({
         input: fs.createReadStream(
             path.join(__dirname, "./test_data/copyright_findings.source"),
         ),
         crlfDelay: Infinity,
     });
 
-    rl6.on("line", async (line) => {
+    rl4.on("line", async (line) => {
         const obj = JSON.parse(line);
 
         const copyrightFinding = await prisma.copyrightFinding.findFirst({
