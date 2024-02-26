@@ -8,7 +8,9 @@ import { expect, test } from "@playwright/test";
 test.describe.configure({ mode: "serial" });
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("/packages/pkg%3Ageneric%2Fdos-monorepo%400.0.0");
+    await page.goto(
+        "/packages/pkg%3Anpm%2Fdos-monorepo%400.0.0%3Fvcs_type%3DGit%26vcs_url%3Dhttps%253A%252F%252Fgithub.com%252Fdoubleopen-project%252Fdos.git%26vcs_revision%3Ddc27d024ea5c001def72122c8c0f8c148cec39b6%26resolved_revision%3Ddc27d024ea5c001def72122c8c0f8c148cec39b6",
+    );
 });
 
 test("create license conclusion, delete from Main UI", async ({ page }) => {
@@ -76,7 +78,7 @@ test("create license conclusion, delete from Clearance Library", async ({
 
     // Create a license conclusion
     await page.getByText("apps").click();
-    await page.getByText("curation_front_end").click();
+    await page.getByText("clearance_ui").click();
     await page.getByRole("link", { name: "next.config.js" }).click();
     await page.getByPlaceholder("Write your SPDX expression").click();
     await page.getByPlaceholder("Write your SPDX expression").fill(license);
@@ -132,7 +134,7 @@ test("create license conclusion, edit, and delete from Clearance Library", async
 
     // Create a license conclusion
     await page.getByText("apps").click();
-    await page.getByText("curation_front_end").click();
+    await page.getByText("clearance_ui").click();
     await page.getByRole("link", { name: "next.config.js" }).click();
     await page.getByPlaceholder("Write your SPDX expression").click();
     await page.getByPlaceholder("Write your SPDX expression").fill(license);
@@ -227,7 +229,7 @@ test("create license conclusion, edit with erroneous license conclusion, cancel,
 
     // Create a license conclusion
     await page.getByText("apps").click();
-    await page.getByText("curation_front_end").click();
+    await page.getByText("clearance_ui").click();
     await page.getByRole("link", { name: "next.config.js" }).click();
     await page.getByPlaceholder("Write your SPDX expression").click();
     await page.getByPlaceholder("Write your SPDX expression").fill(license);
@@ -324,7 +326,7 @@ test("create license conclusion without comment, edit license, and finally delet
 
     // Create a license conclusion
     await page.getByText("apps").click();
-    await page.getByText("curation_front_end").click();
+    await page.getByText("clearance_ui").click();
     await page.getByRole("link", { name: "next.config.js" }).click();
     await page.getByPlaceholder("Write your SPDX expression").click();
     await page.getByPlaceholder("Write your SPDX expression").fill(license);
@@ -394,7 +396,7 @@ test("create license conclusion, edit, and delete from clearance toolbar", async
 
     // Create a license conclusion
     await page.getByText("apps").click();
-    await page.getByText("curation_front_end").click();
+    await page.getByText("clearance_ui").click();
     await page.getByRole("link", { name: "next.config.js" }).click();
     await page.getByPlaceholder("Write your SPDX expression").click();
     await page.getByPlaceholder("Write your SPDX expression").fill(license);
