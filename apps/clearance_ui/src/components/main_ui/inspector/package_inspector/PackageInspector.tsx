@@ -139,6 +139,7 @@ const PackageInspector = ({ purl, path }: Props) => {
             // Reset to original tree data if licenseFilter is empty or filtering is off
             setTreeData(originalTreeData);
             setIsExpanded(false);
+            setSelectedNodes([...selectedNodes]);
         }
     }, [licenseFilter, filtering, originalTreeData]);
 
@@ -189,10 +190,14 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     useEffect(() => {
         console.log(
-            "Selected nodes: ",
+            "selected ids:",
+            selectedNodes.map((node) => node.data.id),
+        );
+        console.log(
+            "selected paths:",
             selectedNodes.map((node) => node.data.path),
         );
-    }, [selectedNodes]);
+    }, [selectedNodes, filtering]);
 
     return (
         <div className="flex h-full flex-col">
