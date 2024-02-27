@@ -115,16 +115,17 @@ const Node = ({
     }
 
     return (
-        <div
-            className="flex cursor-pointer items-center"
-            style={style}
-            onClick={() => {
-                if (!isLeaf) {
-                    node.toggle();
-                }
-            }}
-        >
-            <span className="flex items-center">{icon}</span>
+        <div className="flex cursor-pointer items-center" style={style}>
+            <span
+                className="flex items-center"
+                onClick={() => {
+                    if (!isLeaf) {
+                        node.toggle();
+                    }
+                }}
+            >
+                {icon}
+            </span>
             {isSelectionMode && (
                 <Checkbox
                     className={
@@ -169,7 +170,14 @@ const Node = ({
                         </span>
                     </Link>
                 ) : (
-                    <span className="hover:bg-primary/20 inline-block w-full rounded-sm">
+                    <span
+                        onClick={() => {
+                            if (!isLeaf) {
+                                node.toggle();
+                            }
+                        }}
+                        className="hover:bg-primary/20 inline-block w-full rounded-sm"
+                    >
                         {name}
                     </span>
                 )}
