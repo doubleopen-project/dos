@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from "react";
-import { FiFilePlus } from "react-icons/fi";
+import { FiFileMinus, FiFilePlus } from "react-icons/fi";
 import { LuFileStack } from "react-icons/lu";
 import {
     TbFileOff,
@@ -30,6 +30,7 @@ type Props = {
     purl: string;
     className?: string;
     onSelectionModeChange: (newValue: boolean) => void;
+    onClearSelection: () => void;
 };
 
 // Check if the selected node has children directories:
@@ -43,6 +44,7 @@ const ClearanceTools = ({
     purl,
     className,
     onSelectionModeChange,
+    onClearSelection,
 }: Props) => {
     const [openDirDialog, setOpenDirDialog] = useState<boolean>(false);
     const [openSubdirsDialog, setOpenSubdirsDialog] = useState<boolean>(false);
@@ -244,6 +246,22 @@ const ClearanceTools = ({
                                 {isSelectionMode
                                     ? "Toggle off selection mode"
                                     : "Toggle selection mode to select multiple nodes from the tree"}
+                            </TooltipContent>
+                        </div>
+                    </Tooltip>
+                    <Tooltip>
+                        <div className="group relative">
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    className="p-2"
+                                    onClick={() => onClearSelection()}
+                                >
+                                    <FiFileMinus className="text-lg" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Clear all selections from the tree
                             </TooltipContent>
                         </div>
                     </Tooltip>

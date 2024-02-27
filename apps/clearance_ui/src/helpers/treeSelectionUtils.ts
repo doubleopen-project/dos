@@ -89,3 +89,10 @@ export const updateSelectedNodes = (
     // Update the selectedNodes state
     setSelectedNodes(updatedNodes);
 };
+
+// Helper function to clear the selection status of all selected nodes
+export const clearSelectedNodes = (selectedNodes: TreeNode[]) => {
+    selectedNodes.forEach((node) => {
+        node.selectionStatus = 0;
+    });
+};
