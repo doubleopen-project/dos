@@ -38,9 +38,7 @@ export const updateSelectedNodes = (
     // Helper function to recursively update the parent nodes with intermediate selection status
     const updateParentNodes = (currentNode: NodeApi<TreeNode>) => {
         const parentNode = currentNode.parent;
-        if (parentNode) {
-            console.log("Current node: ", currentNode.data.path);
-            console.log("Parent node: ", parentNode.data.path);
+        if (parentNode !== null) {
             const children = parentNode.children || [];
             const hasSelectedOrIntermediateChild = children.some(
                 (child) =>
@@ -78,8 +76,14 @@ export const updateSelectedNodes = (
 
         if (selectedChildrenCount === 0) {
             parentNode.data.selectionStatus = 0;
+            // Remove the parent node from the updatedNodes list if it has no children selected
+            updatedNodes = updatedNodes.filter(
+                (selectedNode) => selectedNode !== parentNode.data,
+            );
         } else if (selectedChildrenCount === totalChildren) {
             parentNode.data.selectionStatus = 1;
+            // Add the parent node to the updatedNodes list if all children are selected
+            updatedNodes.push(parentNode.data);
         } else {
             parentNode.data.selectionStatus = 0.5;
         }
