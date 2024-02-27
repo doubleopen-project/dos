@@ -124,12 +124,13 @@ const Node = ({
                 }
             }}
         >
+            <span className="flex items-center">{icon}</span>
             {isSelectionMode && (
                 <Checkbox
                     className={
                         selectionStatus === 0.5
-                            ? "border-gray-400 bg-gray-400 p-0"
-                            : "border-gray-400 bg-white p-0"
+                            ? "ml-1 h-3.5 w-3.5 border-gray-400 bg-gray-400 p-0"
+                            : "ml-1 h-3.5 w-3.5 border-gray-400 bg-white p-0"
                     }
                     checked={selectionStatus === 1}
                     onClick={() => {
@@ -140,7 +141,7 @@ const Node = ({
                     id={id}
                 />
             )}
-            <span className="flex items-center">{icon}</span>
+
             <span className="ml-1 flex-grow truncate font-mono text-xs">
                 {isLeaf ? (
                     <Link
