@@ -29,7 +29,10 @@ import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
-import { updateSelectedNodes } from "@/helpers/treeSelectionUtils";
+import {
+    clearSelectedNodes,
+    updateSelectedNodes,
+} from "@/helpers/treeSelectionUtils";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
 
@@ -227,9 +230,10 @@ const PackageInspector = ({ purl, path }: Props) => {
                     className="mr-2 flex-1"
                     onSelectionModeChange={(mode) => {
                         setIsSelectionMode(mode);
-                        if (!isSelectionMode) {
-                            setSelectedNodes([]);
-                        }
+                    }}
+                    onClearSelection={() => {
+                        clearSelectedNodes(selectedNodes);
+                        setSelectedNodes([]);
                     }}
                 />
                 <TooltipProvider delayDuration={300}>
