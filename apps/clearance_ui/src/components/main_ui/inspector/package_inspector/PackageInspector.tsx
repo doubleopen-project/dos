@@ -58,7 +58,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [selectedNode, setSelectedNode] = useState<SelectedNode>();
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
-    const [selectedNodes, setSelectedNodes] = useState<TreeNode[]>([]);
+    const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
     const treeRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
@@ -188,13 +188,9 @@ const PackageInspector = ({ purl, path }: Props) => {
     }, [path, treeData, tree]);
 
     useEffect(() => {
-        console.log("Selection mode activated: ", isSelectionMode);
-    }, [isSelectionMode]);
-
-    useEffect(() => {
         console.log(
             "Selected nodes: ",
-            selectedNodes.map((node) => node.path),
+            selectedNodes.map((node) => node.data.path),
         );
     }, [selectedNodes]);
 

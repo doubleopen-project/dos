@@ -8,8 +8,8 @@ import type { TreeNode } from "@/types/index";
 export const updateSelectedNodes = (
     node: NodeApi<TreeNode>,
     isSelected: boolean,
-    selectedNodes: TreeNode[],
-    setSelectedNodes: (nodes: TreeNode[]) => void,
+    selectedNodes: NodeApi<TreeNode>[],
+    setSelectedNodes: (nodes: NodeApi<TreeNode>[]) => void,
 ) => {
     // Helper function to recursively select or deselect nodes
     const toggleSelectionRecursive = (
@@ -17,11 +17,11 @@ export const updateSelectedNodes = (
         select: boolean,
     ) => {
         // Add or remove the current node from the updatedNodes list
-        if (select && !updatedNodes.includes(currentNode.data)) {
-            updatedNodes.push(currentNode.data);
+        if (select && !updatedNodes.includes(currentNode)) {
+            updatedNodes.push(currentNode);
         } else if (!select) {
             updatedNodes = updatedNodes.filter(
-                (selectedNode) => selectedNode !== currentNode.data,
+                (selectedNode) => selectedNode.data !== currentNode.data,
             );
         }
 
@@ -42,7 +42,7 @@ export const updateSelectedNodes = (
             const children = parentNode.children || [];
             const hasSelectedOrIntermediateChild = children.some(
                 (child) =>
-                    updatedNodes.includes(child.data) ||
+                    updatedNodes.includes(child) ||
                     child.data.selectionStatus === 0.5,
             );
 
@@ -55,11 +55,13 @@ export const updateSelectedNodes = (
         }
     };
 
-    let updatedNodes: TreeNode[];
+    let updatedNodes: NodeApi<TreeNode>[];
 
     updatedNodes = isSelected
-        ? [...selectedNodes, node.data]
-        : selectedNodes.filter((selectedNode) => selectedNode !== node.data);
+        ? [...selectedNodes, node]
+        : selectedNodes.filter(
+              (selectedNode) => selectedNode.data !== node.data,
+          );
 
     // Recursively toggle selection of the node and its immediate descendants
     toggleSelectionRecursive(node, isSelected);
@@ -70,20 +72,21 @@ export const updateSelectedNodes = (
     if (parentNode) {
         const children = parentNode.children || [];
         const totalChildren = children.length;
-        const selectedChildrenCount = children.filter((child) =>
-            updatedNodes.includes(child.data),
-        ).length;
-
+        const selectedChildren = children.filter((child) => {
+            const updatedNodeIds = updatedNodes.map((node) => node.data.id);
+            return updatedNodeIds.includes(child.data.id);
+        });
+        const selectedChildrenCount = selectedChildren.length;
         if (selectedChildrenCount === 0) {
-            parentNode.data.selectionStatus = 0;
             // Remove the parent node from the updatedNodes list if it has no children selected
+            parentNode.data.selectionStatus = 0;
             updatedNodes = updatedNodes.filter(
-                (selectedNode) => selectedNode !== parentNode.data,
+                (selectedNode) => selectedNode.data !== parentNode.data,
             );
         } else if (selectedChildrenCount === totalChildren) {
+            // Push the parent node to the updatedNodes list if all children are selected
             parentNode.data.selectionStatus = 1;
-            // Add the parent node to the updatedNodes list if all children are selected
-            updatedNodes.push(parentNode.data);
+            updatedNodes.push(parentNode);
         } else {
             parentNode.data.selectionStatus = 0.5;
         }
@@ -95,8 +98,19 @@ export const updateSelectedNodes = (
 };
 
 // Helper function to clear the selection status of all selected nodes
-export const clearSelectedNodes = (selectedNodes: TreeNode[]) => {
+export const clearSelectedNodes = (selectedNodes: NodeApi<TreeNode>[]) => {
+    // Clear the selected nodes
     selectedNodes.forEach((node) => {
-        node.selectionStatus = 0;
+        node.data.selectionStatus = 0;
+    });
+
+    // Clear also all ancestor nodes
+
+    selectedNodes.forEach((node) => {
+        let currentNode = node;
+        while (currentNode.parent) {
+            currentNode = currentNode.parent;
+            currentNode.data.selectionStatus = 0;
+        }
     });
 };
