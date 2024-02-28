@@ -31,6 +31,7 @@ import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
 import {
     clearSelectedNodes,
+    createGlob,
     updateSelectedNodes,
 } from "@/helpers/treeSelectionUtils";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -189,15 +190,16 @@ const PackageInspector = ({ purl, path }: Props) => {
     }, [path, treeData, tree]);
 
     useEffect(() => {
-        console.log(
-            "selected ids:",
-            selectedNodes.map((node) => node.data.id),
-        );
-        console.log(
-            "selected paths:",
-            selectedNodes.map((node) => node.data.path),
-        );
-    }, [selectedNodes, filtering]);
+        if (/*selectedNodes.length > 0*/ true) {
+            /*
+            console.log(
+                "selected paths:",
+                selectedNodes.map((node) => node.data.path),
+            );
+            */
+            const glob = createGlob(selectedNodes);
+        }
+    }, [selectedNodes]);
 
     return (
         <div className="flex h-full flex-col">
