@@ -226,8 +226,8 @@ const ClearanceTools = ({
                                 <Toggle
                                     className={
                                         isSelectionMode
-                                            ? "hidden border border-red-500 p-2"
-                                            : "hidden p-2"
+                                            ? "border border-red-500 p-2"
+                                            : "p-2"
                                     }
                                     pressed={isSelectionMode}
                                     onPressedChange={() => {
@@ -254,7 +254,7 @@ const ClearanceTools = ({
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="hidden p-2"
+                                    className="p-2"
                                     onClick={() => onClearSelection()}
                                 >
                                     <FiFileMinus className="text-lg" />
