@@ -197,7 +197,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 selectedNodes.map((node) => node.data.path),
             );
             */
-            const glob = createGlob(selectedNodes);
+            createGlob(selectedNodes);
         }
     }, [selectedNodes]);
 
