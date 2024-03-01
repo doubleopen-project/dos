@@ -21,6 +21,10 @@ import * as dbQueries from "./helpers/db_queries";
 import { localStrategy } from "./passport_strategies/local_strategy";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
+// These imports will be taken into use when swithcing to keycloak
+// import { keycloakProtect } from "./helpers/auth_helpers";
+// import { getKeycloak, memoryStore } from "./config/keycloak";
+
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set");
 
 if (process.env.NODE_ENV === "production") {
@@ -54,7 +58,6 @@ app.use(
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
     "http://localhost:3000",
 ];
-console.log(allowedOrigins);
 
 const corsOptions = {
     credentials: true,
@@ -127,6 +130,39 @@ app.use("/api/admin", cors(corsOptions), authorizeAdmin, adminRouter);
 app.use("/api/auth", cors(corsOptions), authRouter);
 app.use("/api", scannerRouter);
 app.use("/api/user", cors(corsOptions), authorizeUser, userRouter);
+
+// This is the setup that will be used when switching to keycloak instead of the
+// passport related setup above
+
+/*
+const keycloak = getKeycloak();
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "secret",
+        resave: false,
+        saveUninitialized: true,
+        store: memoryStore,
+    }),
+);
+
+app.use(keycloak.middleware());
+
+app.use(
+    "/api/admin",
+    cors(corsOptions),
+    keycloak.protect(keycloakProtect(["ADMIN"])),
+    adminRouter,
+);
+app.use("/api/auth", authRouter);
+app.use("/api", cors(corsOptions), scannerRouter);
+app.use(
+    "/api/user",
+    cors(corsOptions),
+    keycloak.protect(keycloakProtect(["USER"])),
+    userRouter,
+);
+*/
 
 const document = openApiBuilder({
     title: "DOS API",
