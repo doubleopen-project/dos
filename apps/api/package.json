@@ -25,6 +25,7 @@
         "glob-parent": "^6.0.2",
         "is-glob": "4.0.3",
         "is-valid-path": "^0.1.1",
+        "keycloak-connect": "^23.0.7",
         "minimatch": "9.0.3",
         "node-cache": "5.1.2",
         "node-cron": "3.0.3",
