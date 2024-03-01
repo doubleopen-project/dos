@@ -261,25 +261,41 @@ export const createGlob = (selectedNodes: NodeApi<TreeNode>[]) => {
         return groupedNodes;
     }
 
-    // Helper function to log the paths of a group of nodes
-    function logNodes(title: string, nodes: NodeApi<TreeNode>[]) {
-        console.log(
-            title,
-            nodes.map((node) => node.data.path),
-        );
+    // Helper function which returns true, if the directory the node is in
+    // contains both files (isLeaf) and subdirectories (isInternal).
+    function hasFilesAndDirs(node: NodeApi<TreeNode>): boolean {
+        const parent = node.parent;
+        const children = parent?.children;
+        const nFiles = children?.filter((node) => node.isLeaf).length;
+        const nDirs = children?.filter((node) => node.isInternal).length;
+        if (nFiles && nFiles > 0 && nDirs && nDirs > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    /**
+    // Helper function that takes in a node and returns all its
+    // siblings, ie. nodes that share the same parent and are leafs (isLeaf)
+    function getSiblings(node: NodeApi<TreeNode>): NodeApi<TreeNode>[] {
+        const parent = node.parent;
+        if (parent) {
+            return parent.children?.filter((child) => child.isLeaf) || [];
+        }
+        return [];
+    }
+
+    /******************************************************
      ** Main part
-     **/
+     ******************************************************/
+
     let remainingNodes = selectedNodes;
     let pattern: string[] = [];
-
-    //logNodes("before path replacement:", remainingNodes);
 
     // 1. Replace the fully selected directories with "directory/**" pattern.
     // Use greedy replacement to ensure that the most top-level directories
     // are matched first.
+
     for (const dir of sortBy(
         remainingNodes.filter(
             (node) => node.isInternal && node.data.selectionStatus === 1,
@@ -294,23 +310,37 @@ export const createGlob = (selectedNodes: NodeApi<TreeNode>[]) => {
     }
     // Remove redundant a/b/** type of substitutions if a/** is already included
     pattern = removeInnerSubstitutions(pattern);
-    //console.log("pattern after path/** substitution: ", pattern);
     remainingNodes = filterNodesByGlob(
         remainingNodes,
         generateGlobPattern(pattern),
     ).filter((node) => node.data.selectionStatus === 1);
-    logNodes("selected left: ", remainingNodes);
 
-    // 2. If a directory contains both subdirectories and files, and all files are selected,
-    // replace the files with a single pattern that matches all files in the directory (path/*).
+    // 2. If a directory contains both subdirectories and files, and all files are selected, replace
+    // the selected files with a single pattern that matches all files in the directory (path/*).
 
     // Group the remaining nodes by their parent directory
     const groupedNodes = groupNodesByDirectory(remainingNodes);
-    console.log("groupedNodes: ", groupedNodes);
+    for (const dir in groupedNodes) {
+        // Find the first node of group
+        const firstNode = groupedNodes[dir][0];
+        const parent = firstNode.parent;
+        if (hasFilesAndDirs(firstNode)) {
+            const siblings = getSiblings(firstNode);
+            if (groupedNodes[dir].length === siblings.length) {
+                // Push to glob only if the pattern is not already included
+                if (parent && !pattern.includes(parent.data.path + "/*")) {
+                    pattern.push(parent.data.path + "/*");
+                }
+                remainingNodes = filterNodesByGlob(
+                    remainingNodes,
+                    generateGlobPattern(pattern),
+                ).filter((node) => node.data.selectionStatus === 1);
+            }
+        }
+    }
 
-    // For each directory, check if all its files (leafs) are selected
+    // 3. Finally, add "orphan paths" to the pattern, and create the final glob pattern
 
-    // Finally, create a simplified glob pattern from the individual patterns
     remainingNodes.map((node) => pattern.push(node.data.path ?? ""));
     const globPattern = generateGlobPattern(pattern);
     console.log("final glob pattern: ", globPattern);
