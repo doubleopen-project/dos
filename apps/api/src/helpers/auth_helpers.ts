@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
+
 import { NextFunction, Request, Response } from "express";
+import type { Token } from "keycloak-connect";
 import NodeCache from "node-cache";
 import { findUser } from "./db_queries";
 
@@ -104,4 +106,16 @@ export const authorizeUser = async (
         console.log(error);
         return res.status(500).json({ message: "Internal server error" });
     }
+};
+
+export const keycloakProtect = (keycloakRoles: string[]) => {
+    return (accessToken: Token, request: Request) => {
+        const hasAllRoles = keycloakRoles.every((role) =>
+            accessToken.hasRole(role),
+        );
+
+        request.hasRequiredRoles = hasAllRoles;
+
+        return hasAllRoles;
+    };
 };
