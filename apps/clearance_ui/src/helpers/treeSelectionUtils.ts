@@ -5,7 +5,6 @@
 import { sortBy } from "lodash";
 import { minimatch } from "minimatch";
 import { NodeApi } from "react-arborist";
-import { get } from "react-hook-form";
 import type { TreeNode } from "@/types/index";
 
 // Function to update the selection status of the selected nodes
@@ -14,6 +13,7 @@ export const updateSelectedNodes = (
     isSelected: boolean,
     selectedNodes: NodeApi<TreeNode>[],
     setSelectedNodes: (nodes: NodeApi<TreeNode>[]) => void,
+    setGlob: (glob: string) => void,
 ) => {
     // Helper function to recursively select or deselect nodes
     const toggleSelectionRecursive = (
@@ -103,10 +103,14 @@ export const updateSelectedNodes = (
 
     // Update the selectedNodes state
     setSelectedNodes(updatedNodes);
+    setGlob(createGlob(updatedNodes));
 };
 
 // Function to clear the selection status of all selected nodes
-export const clearSelectedNodes = (selectedNodes: NodeApi<TreeNode>[]) => {
+export const clearSelectedNodes = (
+    selectedNodes: NodeApi<TreeNode>[],
+    setGlob: (glob: string) => void,
+) => {
     // Clear the selected nodes
     selectedNodes.forEach((node) => {
         node.data.selectionStatus = 0;
@@ -120,6 +124,8 @@ export const clearSelectedNodes = (selectedNodes: NodeApi<TreeNode>[]) => {
             currentNode = currentNode.parent;
         }
     });
+    // Clear the glob
+    setGlob("");
 };
 
 // Function to create a simplified glob pattern from the selected nodes
@@ -178,7 +184,6 @@ export const createGlob = (selectedNodes: NodeApi<TreeNode>[]) => {
 
     remainingNodes.map((node) => pattern.push(node.data.path ?? ""));
     const globPattern = generateGlobPattern(pattern);
-    console.log("final glob pattern: ", globPattern);
     return globPattern;
 };
 

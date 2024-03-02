@@ -60,6 +60,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
+    const [glob, setGlob] = useState<string>("");
     const treeRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
@@ -114,7 +115,13 @@ const PackageInspector = ({ purl, path }: Props) => {
         node: NodeApi<TreeNode>,
         isSelected: boolean,
     ): void => {
-        updateSelectedNodes(node, isSelected, selectedNodes, setSelectedNodes);
+        updateSelectedNodes(
+            node,
+            isSelected,
+            selectedNodes,
+            setSelectedNodes,
+            setGlob,
+        );
     };
 
     useEffect(() => {
@@ -190,16 +197,8 @@ const PackageInspector = ({ purl, path }: Props) => {
     }, [path, treeData, tree]);
 
     useEffect(() => {
-        if (/*selectedNodes.length > 0*/ true) {
-            /*
-            console.log(
-                "selected paths:",
-                selectedNodes.map((node) => node.data.path),
-            );
-            */
-            createGlob(selectedNodes);
-        }
-    }, [selectedNodes]);
+        console.log("glob:", glob);
+    }, [glob]);
 
     return (
         <div className="flex h-full flex-col">
@@ -235,7 +234,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                         setIsSelectionMode(mode);
                     }}
                     onClearSelection={() => {
-                        clearSelectedNodes(selectedNodes);
+                        clearSelectedNodes(selectedNodes, setGlob);
                         setSelectedNodes([]);
                     }}
                 />
