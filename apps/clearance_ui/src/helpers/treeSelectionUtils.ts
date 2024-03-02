@@ -5,6 +5,7 @@
 import { sortBy } from "lodash";
 import { minimatch } from "minimatch";
 import { NodeApi } from "react-arborist";
+import { get } from "react-hook-form";
 import type { TreeNode } from "@/types/index";
 
 // Function to update the selection status of the selected nodes
@@ -38,7 +39,7 @@ export const updateSelectedNodes = (
         currentNode.data.selectionStatus = select ? 1 : 0;
     };
 
-    // Helper function to recursively update the parent nodes with intermediate selection status
+    // Helper function to recursively update the parent nodes's status up the tree
     const updateParentNodes = (currentNode: NodeApi<TreeNode>) => {
         const parentNode = currentNode.parent;
         if (parentNode !== null) {
@@ -78,27 +79,19 @@ export const updateSelectedNodes = (
     // Recursively toggle selection of the node and its immediate descendants
     toggleSelectionRecursive(node, isSelected);
 
-    // Check how many of the parent node are selected or deselected,
+    // Check how many children of the parent node are selected or deselected,
     // and update the parent's selection status accordingly
     const parentNode = node.parent;
     if (parentNode) {
-        const children = parentNode.children || [];
-        const totalChildren = children.length;
-        const selectedChildren = children.filter((child) => {
-            return updatedNodes
-                .map((node) => node.data.path)
-                .includes(child.data.path);
-        });
-        const selectedChildrenCount = selectedChildren.length;
-        console.log("selectedChildrenCount: ", selectedChildrenCount);
-        if (selectedChildrenCount === 0) {
+        const selectedChildren = getSelectedChildrenStatus(parentNode);
+        if (selectedChildren === "none") {
             // Remove the parent node from the updatedNodes list if it has no children selected
             parentNode.data.selectionStatus = 0;
             updatedNodes = updatedNodes.filter(
                 (selectedNode) =>
                     selectedNode.data.path !== parentNode.data.path,
             );
-        } else if (selectedChildrenCount === totalChildren) {
+        } else if (selectedChildren === "all") {
             // Push the parent node to the updatedNodes list if all children are selected
             parentNode.data.selectionStatus = 1;
             updatedNodes.push(parentNode);
