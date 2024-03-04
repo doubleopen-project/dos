@@ -38,7 +38,7 @@ const ClearanceTools = ({
     return (
         <div
             className={cn(
-                "relative mb-2 flex items-center rounded-md border p-1 text-sm",
+                "relative mb-2 flex items-center rounded-md border px-1 pb-1 pt-2 text-sm",
                 className,
             )}
         >
@@ -54,8 +54,8 @@ const ClearanceTools = ({
                                 <Toggle
                                     className={
                                         isSelectionMode
-                                            ? "border border-red-500 p-2"
-                                            : "p-2"
+                                            ? "mr-1 border border-red-500 p-2"
+                                            : "mr-1 p-2"
                                     }
                                     pressed={isSelectionMode}
                                     onPressedChange={() => {
@@ -85,7 +85,7 @@ const ClearanceTools = ({
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="p-2"
+                                    className="mr-1 p-2"
                                     onClick={() => onClearSelection()}
                                     data-testid="clear-selection"
                                 >
@@ -103,8 +103,8 @@ const ClearanceTools = ({
                         <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
-                                    variant="outline"
-                                    className="p-2 text-xs"
+                                    variant={glob ? "default" : "outline"}
+                                    className="mr-1 p-2 text-xs"
                                     onClick={() => setOpenBCDialog(true)}
                                     data-testid="create-bulk-conclusion"
                                 >
@@ -112,7 +112,9 @@ const ClearanceTools = ({
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                Create a bulk conclusion from your selections
+                                {glob
+                                    ? "Create a bulk conclusion from your selections"
+                                    : "Create a bulk conclusion using your own glob pattern"}
                             </TooltipContent>
                         </div>
                         <BulkConclusionFormDialog
@@ -128,7 +130,7 @@ const ClearanceTools = ({
                         <div className="group relative">
                             <TooltipTrigger asChild>
                                 <Button
-                                    variant="outline"
+                                    variant={glob ? "default" : "outline"}
                                     className="p-2 text-xs"
                                     onClick={() => setOpenPEDialog(true)}
                                     data-testid="create-path-exclusion"
@@ -137,7 +139,9 @@ const ClearanceTools = ({
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                Create a path exclusion from your selections
+                                {glob
+                                    ? "Create a path exclusion from your selections"
+                                    : "Create a path exclusion using your own glob pattern"}
                             </TooltipContent>
                         </div>
                         <ExclusionFormDialog
