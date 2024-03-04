@@ -264,7 +264,7 @@ function hasFilesAndDirs(node: NodeApi<TreeNode>): boolean {
 }
 
 // Helper function to check if path1 is a subset of path2
-function isPathSubset(path1: string, path2: string): boolean {
+export function isPathSubset(path1: string, path2: string): boolean {
     // Remove "/**" from the paths before splitting them into parts
     const parts1 = path1.replace("/**", "").split("/");
     const parts2 = path2.replace("/**", "").split("/");
@@ -273,7 +273,7 @@ function isPathSubset(path1: string, path2: string): boolean {
 
 // Helper function to remove lower-level paths from a string[] of paths
 // Example: if the input is ["a/b/**", "a/**"], the output will be ["a/**"]
-function removeInnerSubstitutions(paths: string[]): string[] {
+export function removeInnerSubstitutions(paths: string[]): string[] {
     return paths.filter(
         (path, _, self) =>
             !self.some(
@@ -285,7 +285,7 @@ function removeInnerSubstitutions(paths: string[]): string[] {
 
 // Helper function that takes an array of file paths and groups them
 // into a single glob pattern
-function generateGlobPattern(paths: string[]): string {
+export function generateGlobPattern(paths: string[]): string {
     const patterns: string[] = [];
 
     // Group paths by directory
