@@ -94,13 +94,13 @@ export default function ClearanceLibrary() {
                             </TabsList>
 
                             <TabsContent value="license_conclusions">
-                                {user && <LicenseConclusionList user={user} />}
+                                {user && <LicenseConclusionList />}
                             </TabsContent>
                             <TabsContent value="bulk_conclusions">
-                                {user && <BulkConclusionList user={user} />}
+                                {user && <BulkConclusionList />}
                             </TabsContent>
                             <TabsContent value="path_exclusions">
-                                {user && <PathExclusionList user={user} />}
+                                {user && <PathExclusionList />}
                             </TabsContent>
                         </Tabs>
                     </div>

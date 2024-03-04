@@ -4,7 +4,6 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import {
     Card,
@@ -30,12 +29,6 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
         { enabled: !!pathPurl },
     );
     const [editing, setEditing] = useState(-1);
-
-    // Get user from useUser hook, to decide what DB rights the user has for curations
-    let user = undefined;
-    user = useUser();
-    const userName = user ? user.username : "Guest";
-    const userRole = user ? user.role : "";
 
     const editHandler = (id: number) => {
         setEditing(id);
@@ -92,8 +85,6 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                                         key={`lc-${lc.id}`}
                                         purl={purl}
                                         licenseConclusion={lc}
-                                        userName={userName}
-                                        userRole={userRole}
                                         editHandler={editHandler}
                                     />
                                 ),
@@ -132,8 +123,6 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                                         key={`lc-${lc.id}`}
                                         purl={purl}
                                         licenseConclusion={lc}
-                                        userName={userName}
-                                        userRole={userRole}
                                         editHandler={editHandler}
                                     />
                                 ),

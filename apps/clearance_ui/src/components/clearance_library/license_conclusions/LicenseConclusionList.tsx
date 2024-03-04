@@ -3,23 +3,19 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { ZodiosResponseByPath } from "@zodios/core";
 import {
     parseAsInteger,
     parseAsString,
     parseAsStringEnum,
     useQueryState,
 } from "nuqs";
-import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/license_conclusions/columns";
 import { DataTable } from "@/components/clearance_library/license_conclusions/DataTable";
 
-type LicenseConclusionListProps = {
-    user: ZodiosResponseByPath<typeof userAPI, "get", "/user">;
-};
-
-const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
+const LicenseConclusionList = () => {
+    const user = useUser();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -101,17 +97,15 @@ const LicenseConclusionList = ({ user }: LicenseConclusionListProps) => {
 
     return (
         <div className="container mx-auto">
-            {user && (
-                <DataTable
-                    columns={tableColumns}
-                    data={data.licenseConclusions}
-                    pageCount={
-                        lcCntQuery.data?.count
-                            ? Math.ceil(lcCntQuery.data.count / pageSize)
-                            : 0
-                    }
-                />
-            )}
+            <DataTable
+                columns={tableColumns}
+                data={data.licenseConclusions}
+                pageCount={
+                    lcCntQuery.data?.count
+                        ? Math.ceil(lcCntQuery.data.count / pageSize)
+                        : 0
+                }
+            />
         </div>
     );
 };

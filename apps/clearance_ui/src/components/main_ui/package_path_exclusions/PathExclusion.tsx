@@ -5,6 +5,7 @@
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
@@ -17,17 +18,11 @@ type PathExclusion = ZodiosResponseByAlias<
 
 type Props = {
     pathExclusion: PathExclusion;
-    userName: string;
-    userRole: string;
     editHandler: (id: number) => void;
 };
 
-const PathExclusion = ({
-    pathExclusion,
-    userName,
-    userRole,
-    editHandler,
-}: Props) => {
+const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
+    const user = useUser();
     return (
         <div
             className="hover:bg-muted m-2 flex items-stretch justify-between rounded-lg border p-2"
@@ -80,8 +75,8 @@ const PathExclusion = ({
                 </div>
             </div>
             <div className="flex pl-1">
-                {(userName === pathExclusion.user.username ||
-                    userRole === "ADMIN") && (
+                {(user?.username === pathExclusion.user.username ||
+                    user?.role === "ADMIN") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton

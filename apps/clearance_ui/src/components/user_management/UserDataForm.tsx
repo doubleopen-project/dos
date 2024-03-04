@@ -11,6 +11,7 @@ import { Check, Loader2, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { getUsernameSchema } from "validation-helpers";
 import z from "zod";
+import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,14 +69,8 @@ type PutUserDataType = {
     confirmPassword: string | undefined;
 };
 
-type UserDataProps = {
-    user: {
-        username: string;
-        role: string;
-    };
-};
-
-const UserDataForm = ({ user }: UserDataProps) => {
+const UserDataForm = () => {
+    const user = useUser();
     const [editMode, setEditMode] = useState(false);
     const queryClient = useQueryClient();
 
@@ -96,10 +91,10 @@ const UserDataForm = ({ user }: UserDataProps) => {
     const form = useForm<PutUserDataType>({
         resolver: zodResolver(userDataFormSchema),
         values: {
-            username: user.username,
+            username: user?.username,
             password: "",
             confirmPassword: "",
-            role: user.role,
+            role: user?.role,
         },
     });
 
