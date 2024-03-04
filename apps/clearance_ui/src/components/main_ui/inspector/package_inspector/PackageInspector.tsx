@@ -227,7 +227,6 @@ const PackageInspector = ({ purl, path }: Props) => {
             </div>
             <div className="flex items-center justify-between">
                 <ClearanceTools
-                    selectedNode={selectedNode}
                     purl={purl}
                     className="mr-2 flex-1"
                     onSelectionModeChange={(mode) => {
@@ -237,6 +236,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                         clearSelectedNodes(selectedNodes, setGlob);
                         setSelectedNodes([]);
                     }}
+                    glob={glob}
                 />
                 <TooltipProvider delayDuration={300}>
                     <Tooltip>
