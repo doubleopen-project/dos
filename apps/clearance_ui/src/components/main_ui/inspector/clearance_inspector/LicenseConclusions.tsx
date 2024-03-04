@@ -72,12 +72,17 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                     <span className="font-semibold">{error.message}</span>
                 </div>
             )}
+            {/*Adding the pattern and clearPattern props here to get rid of ts error,
+            perhaps these should be changed to optional props or something else should be
+            done about the BulkConclusionFormDialog component though*/}
             {contextPurl && editBCId && (
                 <BulkConclusionFormDialog
                     purl={contextPurl}
                     id={editBCId || undefined}
                     open={editBCId !== null}
                     setOpen={setOpenEditDialog}
+                    pattern=""
+                    clearPattern={() => void 0}
                 />
             )}
         </>

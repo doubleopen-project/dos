@@ -43,6 +43,7 @@ export const convertJsonToTree = (
                     hasLicenseFindings: false,
                     hasLicenseConclusions: false,
                     isExcluded: isExcluded,
+                    selectionStatus: 0, // Initial selection status
                     file: {
                         licenseFindings: isLastPart
                             ? fileTree.file.licenseFindings
