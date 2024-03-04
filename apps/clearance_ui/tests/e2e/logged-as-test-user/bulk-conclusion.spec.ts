@@ -13,17 +13,21 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("create bulk conclusion, delete from Main UI", async ({ page }) => {
-    const pattern = "**/*.ts";
+    const pattern = "apps/scanner_agent/*";
     const license = "AGPL-1.0-only";
     const comment = "Test create bulk conclusion, delete from Main UI";
 
     // Create a bulk license conclusion
     await page.getByText("apps").click();
-    await page.getByText("api").click();
-    await page.getByRole("link", { name: "tsup.config.ts" }).click();
-    await page.getByTestId("bulk-conclusion").click();
-    await page.getByPlaceholder("Glob pattern matching to the").click();
-    await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
+    await page.getByText("scanner_agent").click();
+    await page.getByTestId("selection-mode-toggle").click();
+    await page.locator('[id="\\32 68"]').click();
+    await page.locator('[id="\\32 69"]').click();
+    await page.locator('[id="\\32 80"]').click();
+    await page.locator('[id="\\32 81"]').click();
+    await page.locator('[id="\\32 82"]').click();
+    await page.getByTestId("create-bulk-conclusion").click();
+    await expect(page.getByTestId("glob-pattern")).toHaveValue(pattern);
     await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
@@ -42,6 +46,9 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
     console.log("bulk license conclusion created");
 
     // Delete the same bulk license conclusion
+    await page.getByText("apps").click();
+    await page.getByText("scanner_agent").click();
+    await page.getByText(".eslintrc.js").click();
     await page
         .getByRole("button", { name: "license conclusion details" })
         .first()
@@ -65,15 +72,18 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
 test("create bulk conclusion, delete from Clearance Library", async ({
     page,
 }) => {
-    const pattern = "**/*.json";
+    const pattern = "apps/api/**";
     const license = "CC-BY-1.0";
     const comment =
         "Test create bulk conclusion, delete from Clearance Library";
 
     // Create a bulk conclusion
-    await page.getByTestId("bulk-conclusion").click();
-    await page.getByPlaceholder("Glob pattern matching to the").click();
-    await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
+    await page.getByText("apps").click();
+    await page.getByText("api").click();
+    await page.getByTestId("selection-mode-toggle").click();
+    await page.locator('[id="\\32 "]').click();
+    await page.getByTestId("create-bulk-conclusion").click();
+    await expect(page.getByTestId("glob-pattern")).toHaveValue(pattern);
     await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
@@ -114,7 +124,7 @@ test("create bulk conclusion, delete from Clearance Library", async ({
 test("create bulk conclusion, edit, and delete from Main UI", async ({
     page,
 }) => {
-    const pattern = "**/*.ts";
+    const pattern = "{apps/api/src/cron_jobs/**,apps/api/src/helpers/**}";
     const license = "BSD-1-Clause";
     const comment =
         "Test create bulk conclusion, edit, and delete from Main UI";
@@ -125,10 +135,12 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     // Create a bulk conclusion
     await page.getByText("apps").click();
     await page.getByText("api").click();
-    await page.getByRole("link", { name: "tsup.config.ts" }).click();
-    await page.getByTestId("bulk-conclusion").click();
-    await page.getByPlaceholder("Glob pattern matching to the").click();
-    await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
+    await page.getByText("src").click();
+    await page.getByTestId("selection-mode-toggle").click();
+    await page.locator('[id="\\36 "]').click();
+    await page.locator('[id="\\31 0"]').click();
+    await page.getByTestId("create-bulk-conclusion").click();
+    await expect(page.getByTestId("glob-pattern")).toHaveValue(pattern);
     await page.getByRole("combobox").getByText("Select license...").click();
     await page.getByText(license, { exact: true }).click();
     await page.getByPlaceholder("Comment on your bulk").click();
@@ -147,6 +159,11 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     console.log("bulk license conclusion created");
 
     // Edit the bulk conclusion
+    await page.getByText("apps").click();
+    await page.getByText("api").click();
+    await page.getByText("src").click();
+    await page.getByText("cron_jobs").click();
+    await page.getByText("index.ts").click();
     await page
         .getByRole("button", { name: "license conclusion details" })
         .first()
@@ -191,7 +208,7 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     console.log("bulk license conclusion deleted from Main UI");
 });
 
-test("create bulk conclusion, edit, and delete from clearance toolbar", async ({
+test("create freetext bulk conclusion, edit, and delete from clearance toolbar", async ({
     page,
 }) => {
     const pattern = "**/*.ts";
@@ -206,7 +223,7 @@ test("create bulk conclusion, edit, and delete from clearance toolbar", async ({
     await page.getByText("apps").click();
     await page.getByText("api").click();
     await page.getByRole("link", { name: "tsup.config.ts" }).click();
-    await page.getByTestId("bulk-conclusion").click();
+    await page.getByTestId("create-bulk-conclusion").click();
     await page.getByPlaceholder("Glob pattern matching to the").click();
     await page.getByPlaceholder("Glob pattern matching to the").fill(pattern);
     await page.getByRole("combobox").getByText("Select license...").click();
