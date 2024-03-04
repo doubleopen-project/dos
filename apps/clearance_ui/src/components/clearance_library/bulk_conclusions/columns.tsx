@@ -4,7 +4,7 @@
 
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ZodiosResponseByAlias, ZodiosResponseByPath } from "@zodios/core";
+import { ZodiosResponseByAlias } from "@zodios/core";
 import {
     ChevronDownIcon,
     ChevronsUpDownIcon,
@@ -23,11 +23,9 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ActionCell from "@/components/clearance_library/bulk_conclusions/ActionCell";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
-import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import PurlDetails from "@/components/common/PurlDetails";
-
-type User = ZodiosResponseByPath<typeof userAPI, "get", "/user">;
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -37,7 +35,6 @@ export type BulkConclusion = ZodiosResponseByAlias<
 >["bulkConclusions"][0];
 
 export const columns = (
-    user: User,
     sortBy: string | null,
     sortOrder: string | null,
     setSortBy: <Shallow>(
@@ -504,16 +501,7 @@ export const columns = (
         },
         {
             id: "actions",
-            cell: ({ row }) => {
-                return (
-                    <>
-                        {(user.role === "ADMIN" ||
-                            user.username === row.original.user.username) && (
-                            <DeleteBulkConclusion id={row.original.id} />
-                        )}
-                    </>
-                );
-            },
+            cell: ActionCell,
         },
     ];
 };
