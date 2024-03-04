@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 test("create path exclusion, edit, and delete from Main UI", async ({
     page,
 }) => {
-    const pattern = "apps/api/src/**";
+    const pattern = "apps/api/tests/**";
     const reason = "OTHER";
     const comment =
         "Test create license conclusion, edit it, and finally delete from Main UI";
@@ -26,9 +26,11 @@ test("create path exclusion, edit, and delete from Main UI", async ({
     // Create a path exclusion
     await page.getByText("apps").click();
     await page.getByText("api").click();
-    await page.getByText("src").click();
-    await page.getByTestId("path-exclusion-subdirs").click();
-    await expect(page.getByLabel("Pattern")).toHaveValue(pattern);
+    await page.getByText("tests").click();
+    await page.getByTestId("selection-mode-toggle").click();
+    await page.locator('[id="\\33 6"]').click();
+    await page.getByTestId("create-path-exclusion").click();
+    await expect(page.getByTestId("glob-pattern")).toHaveValue(pattern);
     await page.getByLabel("Reason").click();
     await page.getByLabel(reason, { exact: true }).click();
     await page.getByPlaceholder("Comment...").click();
@@ -97,14 +99,21 @@ test("create path exclusion, edit, and delete from Main UI", async ({
 test("create path exclusion, delete from Clearance Library", async ({
     page,
 }) => {
-    const pattern = "**/*.json";
+    const pattern = "apps/scanner_agent/*";
     const reason = "OPTIONAL_COMPONENT_OF";
     const comment = "Test create path exclusion, delete from Clearance Library";
 
     // Create a path exclusion
-    await page.getByRole("link", { name: "package-lock.json" }).click();
-    await page.getByTestId("path-exclusion-similar").click();
-    await expect(page.getByLabel("Pattern")).toHaveValue(pattern);
+    await page.getByText("apps").click();
+    await page.getByText("scanner_agent").click();
+    await page.getByTestId("selection-mode-toggle").click();
+    await page.locator('[id="\\32 68"]').click();
+    await page.locator('[id="\\32 69"]').click();
+    await page.locator('[id="\\32 80"]').click();
+    await page.locator('[id="\\32 81"]').click();
+    await page.locator('[id="\\32 82"]').click();
+    await page.getByTestId("create-path-exclusion").click();
+    await expect(page.getByTestId("glob-pattern")).toHaveValue(pattern);
     await page.getByLabel("Reason").click();
     await page.getByLabel(reason, { exact: true }).click();
     await page.getByLabel("Comment").click();

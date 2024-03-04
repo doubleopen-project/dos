@@ -290,5 +290,6 @@ test("create freetext bulk conclusion, edit, and delete from clearance toolbar",
         "Bulk license conclusion deleted successfully,",
     );
     await toastDeleted.waitFor({ state: "hidden" });
+    await page.getByRole("link", { name: "Inspect" }).click();
     console.log("bulk license conclusion deleted from clearance toolbar");
 });

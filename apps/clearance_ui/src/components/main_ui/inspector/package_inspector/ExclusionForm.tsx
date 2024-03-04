@@ -203,6 +203,7 @@ const ExclusionForm = ({
                                     <Input
                                         className="!min-h-[40px] text-xs"
                                         placeholder="Glob pattern matching to the path to be excluded..."
+                                        data-testid="glob-pattern"
                                         {...field}
                                     />
                                 </FormControl>
