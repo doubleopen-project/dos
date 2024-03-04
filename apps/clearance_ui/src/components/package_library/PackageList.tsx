@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { Loader2 } from "lucide-react";
 import {
     parseAsInteger,
     parseAsString,
@@ -40,12 +41,11 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
         "sortOrder",
         parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
     );
-    // Get user from useUser hook, to decide what DB rights the user has for Package Library
-    // and conditionally show the delete button (only for admins)
+
     const user = useUser();
     if (!user) return null;
+
     const tableColumns = columns(
-        user.role,
         sortBy,
         sortOrder,
         setSortBy,
@@ -53,7 +53,7 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
         setPageIndex,
     );
 
-    const { data, error } = userHooks.useGetPackages(
+    const { data, isLoading, error } = userHooks.useGetPackages(
         {
             withCredentials: true,
             queries: {
@@ -77,6 +77,11 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
 
     return (
         <>
+            {isLoading && (
+                <div className="flex h-full items-center justify-center">
+                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                </div>
+            )}
             {error && (
                 <div className="flex h-full items-center justify-center">
                     <p>{error.message}</p>
