@@ -34,9 +34,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
+import { patternGlobSchema } from "@/schemes/pattern_schema";
 
 const exclusionFormSchema = z.object({
-    pattern: z.string().min(1, "Pattern cannot be empty"),
+    pattern: patternGlobSchema,
     reason: z.string().min(1, "Please select a valid reason from this list"),
     comment: z.string().optional(),
 });
@@ -47,7 +48,7 @@ type Props = {
     purl: string;
     mode: "Edit" | "Add";
     id?: number;
-    pattern?: string;
+    pattern: string;
     reason?: string;
     comment?: string;
     setOpen: (open: boolean) => void;
@@ -63,7 +64,7 @@ const ExclusionForm = ({
     setOpen,
 }: Props) => {
     const defaultValues: ExclusionFormType = {
-        pattern: pattern || "",
+        pattern: pattern,
         reason: reason || "",
         comment: comment || "",
     };
@@ -223,9 +224,8 @@ const ExclusionForm = ({
                                     </FormControl>
                                     <SelectContent className="max-h-[40vh] overflow-y-auto">
                                         {validReasons.map((reason) => (
-                                            <SelectGroup>
+                                            <SelectGroup key={reason.name}>
                                                 <SelectItem
-                                                    key={reason.name}
                                                     value={reason.name}
                                                     onSelect={() =>
                                                         field.onChange(
@@ -236,10 +236,7 @@ const ExclusionForm = ({
                                                 >
                                                     {reason.name}
                                                 </SelectItem>
-                                                <SelectLabel
-                                                    key={reason.description}
-                                                    className="text-muted-foreground mb-1 ml-5 py-0.5 text-xs font-normal italic"
-                                                >
+                                                <SelectLabel className="text-muted-foreground mb-1 ml-5 py-0.5 text-xs font-normal italic">
                                                     {reason.description}
                                                 </SelectLabel>
                                             </SelectGroup>

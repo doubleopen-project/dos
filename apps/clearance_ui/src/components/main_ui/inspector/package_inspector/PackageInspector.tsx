@@ -196,10 +196,6 @@ const PackageInspector = ({ purl, path }: Props) => {
         }
     }, [path, treeData, tree]);
 
-    useEffect(() => {
-        console.log("glob:", glob);
-    }, [glob]);
-
     return (
         <div className="flex h-full flex-col">
             <div className="mb-3 flex items-center text-sm">
