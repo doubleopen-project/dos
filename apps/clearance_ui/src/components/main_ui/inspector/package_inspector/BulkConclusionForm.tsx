@@ -58,11 +58,18 @@ type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
 type Props = {
     purl: string;
     pattern: string;
+    clearPattern: () => void;
     className?: string;
     setOpen: (open: boolean) => void;
 };
 
-const BulkConclusionForm = ({ purl, pattern, className, setOpen }: Props) => {
+const BulkConclusionForm = ({
+    purl,
+    pattern,
+    clearPattern,
+    className,
+    setOpen,
+}: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
@@ -117,6 +124,7 @@ const BulkConclusionForm = ({ purl, pattern, className, setOpen }: Props) => {
                         filesPackage: data.affectedFilesInPackageCount,
                         filesAll: data.affectedFilesAcrossAllPackagesCount,
                     };
+                    clearPattern();
                     setOpen(false);
                     toast({
                         title: "Bulk conclusion",

@@ -11,7 +11,8 @@ type Props = {
     purl: string;
     mode: "Edit" | "Add";
     id?: number;
-    pattern?: string;
+    pattern: string;
+    clearPattern: () => void;
     reason?: string;
     comment?: string;
     open: boolean;
@@ -23,6 +24,7 @@ const ExclusionFormDialog = ({
     mode,
     id,
     pattern,
+    clearPattern,
     reason,
     comment,
     open,
@@ -36,6 +38,7 @@ const ExclusionFormDialog = ({
                     mode={mode}
                     id={id}
                     pattern={pattern}
+                    clearPattern={clearPattern}
                     reason={reason}
                     comment={comment}
                     setOpen={setOpen}
