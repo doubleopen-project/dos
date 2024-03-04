@@ -31,7 +31,6 @@ import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
 import {
     clearSelectedNodes,
-    createGlob,
     updateSelectedNodes,
 } from "@/helpers/treeSelectionUtils";
 import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
@@ -56,7 +55,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [treeHeight, setTreeHeight] = useState(0);
     const [treeData, setTreeData] = useState<TreeNode[]>([]);
     const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
-    const [selectedNode, setSelectedNode] = useState<SelectedNode>();
+    const [, setSelectedNode] = useState<SelectedNode>();
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
