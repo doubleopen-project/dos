@@ -30,6 +30,7 @@ const ActionCell = ({
     row,
     table,
 }: CellContext<LicenseConclusion, unknown>) => {
+    // Get user role, to decide what rights the user has for this view
     const user = useUser();
     const lcKey = userHooks.getKeyByAlias("GetLicenseConclusions");
     const queryClient = useQueryClient();

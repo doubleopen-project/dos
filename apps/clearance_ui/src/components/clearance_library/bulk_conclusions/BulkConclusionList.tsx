@@ -81,9 +81,7 @@ const BulkConclusionList = ({ user }: BulkConclusionListProps) => {
     if (error) return <div>{error.message}</div>;
     if (!data) return <div>No data</div>;
 
-    // Get user role, to decide what rights the user has for this view
     const tableColumns = columns(
-        user,
         sortBy,
         sortOrder,
         setSortBy,
