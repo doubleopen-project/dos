@@ -240,6 +240,7 @@ const BulkConclusionForm = ({ purl, pattern, className, setOpen }: Props) => {
                                                 "!min-h-[40px] text-xs",
                                             )}
                                             placeholder="Glob pattern matching to the files to be concluded..."
+                                            data-testid="glob-pattern"
                                             {...field}
                                         />
                                     </FormControl>
