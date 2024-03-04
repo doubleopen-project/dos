@@ -10,8 +10,8 @@ import {
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from "lucide-react";
-import { Options } from "next-usequerystate";
 import Link from "next/link";
+import { Options } from "nuqs";
 import { userAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
