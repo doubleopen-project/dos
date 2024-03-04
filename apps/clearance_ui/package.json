@@ -52,6 +52,7 @@
         "lodash.debounce": "4.0.8",
         "lucide-react": "0.335.0",
         "minimatch": "9.0.3",
+        "next-auth": "^4.24.6",
         "next-themes": "0.2.1",
         "nuqs": "1.17.0",
         "react-arborist": "3.4.0",
