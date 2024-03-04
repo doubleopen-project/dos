@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { BsThreeDots } from "react-icons/bs";
 import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,19 +27,16 @@ type License = ZodiosResponseByAlias<
     "GetLicenseConclusionsForFileInPackage"
 >["licenseConclusions"][0];
 
-type User = ZodiosResponseByAlias<typeof userAPI, "GetUser">;
-
 type LicenseConclusionItemProps = {
     license: License;
-    user: User;
     onEditItem: (id: number, contextPurl: string) => void;
 };
 
 const LicenseConclusionItem = ({
     license,
-    user,
     onEditItem,
 }: LicenseConclusionItemProps) => {
+    const user = useUser();
     const [showContent, setShowContent] = useState(false);
     const [divWidth, setDivWidth] = useState(0);
 
@@ -175,8 +173,8 @@ const LicenseConclusionItem = ({
                     </span>
                 </div>
                 <div>
-                    {(user.username === license.user.username ||
-                        user.role === "ADMIN") && (
+                    {(user?.username === license.user.username ||
+                        user?.role === "ADMIN") && (
                         <div
                             className={cn(
                                 divWidth < 200 ? "mt-2" : "ml-4",

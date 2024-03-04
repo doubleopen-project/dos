@@ -6,6 +6,7 @@ import { KeyRound, LogOut, UserRound, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { GrLogin } from "react-icons/gr";
 import { LiaUser } from "react-icons/lia";
+import { useUser } from "@/hooks/useUser";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -19,13 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 
 type UserMenuItemProps = {
-    user: {
-        username: string;
-        role: string;
-    } | null;
     className?: string;
 };
-const UserMenuItem = ({ user, className }: UserMenuItemProps) => {
+const UserMenuItem = ({ className }: UserMenuItemProps) => {
+    const user = useUser();
     if (!user) {
         return (
             <Link href="/login" className={cn(className)}>

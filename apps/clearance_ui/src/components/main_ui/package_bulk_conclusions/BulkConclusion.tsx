@@ -5,6 +5,7 @@
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
@@ -20,18 +21,11 @@ type BulkConclusion = ZodiosResponseByAlias<
 type Props = {
     purl?: string;
     bulkConclusion: BulkConclusion;
-    userName: string;
-    userRole: string;
     editHandler: (id: number) => void;
 };
 
-const BulkConclusion = ({
-    purl,
-    bulkConclusion,
-    userName,
-    userRole,
-    editHandler,
-}: Props) => {
+const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
+    const user = useUser();
     return (
         <div
             className="hover:bg-muted m-2 ml-12 flex items-stretch justify-between rounded-lg border p-2"
@@ -114,8 +108,8 @@ const BulkConclusion = ({
                 </div>
             </div>
             <div className="flex pl-1">
-                {(userName === bulkConclusion.user.username ||
-                    userRole === "ADMIN") && (
+                {(user?.username === bulkConclusion.user.username ||
+                    user?.role === "ADMIN") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton

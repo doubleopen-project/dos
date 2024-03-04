@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import LicenseConclusionItem from "@/components/main_ui/inspector/clearance_inspector/LicenseConclusionItem";
@@ -17,7 +16,6 @@ type LicenseConclusionsProps = {
 };
 
 const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
-    const user = useUser();
     const [editBCId, setEditBCId] = useState<number | null>(null);
     const [contextPurl, setContextPurl] = useState<string | null>(null);
     const { data, isLoading, error } =
@@ -52,13 +50,12 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
             {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="clearance-label">Concluded license</Label>
-                    {user && data.licenseConclusions?.length > 0 ? (
+                    {data.licenseConclusions?.length > 0 ? (
                         <div className="h-full w-full overflow-y-auto p-1 text-xs">
                             {data.licenseConclusions.map((license) => (
                                 <LicenseConclusionItem
                                     key={license.id}
                                     license={license}
-                                    user={user}
                                     onEditItem={onEditItem}
                                 />
                             ))}

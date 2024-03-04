@@ -6,7 +6,6 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
-import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/common/CopyToClipboard";
 import { ModeToggle } from "@/components/common/ModeToggle";
@@ -16,7 +15,6 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Navbar = () => {
     const router = useRouter();
-    const user = useUser();
     const { purl, path } = router.query;
     let mainPurl;
 
@@ -59,7 +57,7 @@ const Navbar = () => {
                 )}
             </div>
             <div>
-                <UserMenuItem user={user} className="mr-1" />
+                <UserMenuItem className="mr-1" />
                 <ModeToggle className="mr-1" />
             </div>
         </div>

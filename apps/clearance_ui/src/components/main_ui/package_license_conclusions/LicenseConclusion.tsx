@@ -5,6 +5,7 @@
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
+import { useUser } from "@/hooks/useUser";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
@@ -20,18 +21,11 @@ type LicenseConclusion = ZodiosResponseByAlias<
 type Props = {
     purl: string;
     licenseConclusion: LicenseConclusion;
-    userName: string;
-    userRole: string;
     editHandler: (id: number) => void;
 };
 
-const LicenseConclusion = ({
-    purl,
-    licenseConclusion,
-    userName,
-    userRole,
-    editHandler,
-}: Props) => {
+const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
+    const user = useUser();
     return (
         <div
             className="hover:bg-muted m-2 ml-12 flex items-stretch justify-between rounded-lg border p-2"
@@ -110,8 +104,8 @@ const LicenseConclusion = ({
                 </div>
             </div>
             <div className="flex pl-1">
-                {(userName === licenseConclusion.user.username ||
-                    userRole === "ADMIN") && (
+                {(user?.username === licenseConclusion.user.username ||
+                    user?.role === "ADMIN") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
