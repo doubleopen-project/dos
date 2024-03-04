@@ -21,8 +21,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import DeletePackage from "@/components/common/delete_item/DeletePackage";
 import PurlDetails from "@/components/common/PurlDetails";
+import ActionCell from "@/components/package_library/ActionCell";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -33,7 +33,6 @@ export type Package = ZodiosResponseByPath<
 >["packages"][0];
 
 export const columns = (
-    userRole: string,
     sortBy: string | null,
     sortOrder: string | null,
     setSortBy: <Shallow>(
@@ -320,17 +319,7 @@ export const columns = (
         },
         {
             id: "actions",
-            cell: ({ row }) => {
-                return (
-                    <>
-                        {userRole === "ADMIN" && (
-                            <>
-                                <DeletePackage data={row.original} />
-                            </>
-                        )}
-                    </>
-                );
-            },
+            cell: ActionCell,
         },
     ];
 };
