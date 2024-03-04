@@ -49,6 +49,7 @@ type Props = {
     mode: "Edit" | "Add";
     id?: number;
     pattern: string;
+    clearPattern: () => void;
     reason?: string;
     comment?: string;
     setOpen: (open: boolean) => void;
@@ -59,6 +60,7 @@ const ExclusionForm = ({
     mode,
     id,
     pattern,
+    clearPattern,
     reason,
     comment,
     setOpen,
@@ -91,6 +93,7 @@ const ExclusionForm = ({
             },
             {
                 onSuccess: () => {
+                    clearPattern();
                     setOpen(false);
                     toast({
                         title: "Path exclusion",

@@ -11,6 +11,7 @@ import BulkConclusionForm from "@/components/main_ui/inspector/package_inspector
 type Props = {
     purl: string;
     pattern: string;
+    clearPattern: () => void;
     id?: number;
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -19,6 +20,7 @@ type Props = {
 const BulkConclusionFormDialog = ({
     purl,
     pattern,
+    clearPattern,
     id,
     open,
     setOpen,
@@ -36,6 +38,7 @@ const BulkConclusionFormDialog = ({
                     <BulkConclusionForm
                         purl={purl}
                         pattern={pattern}
+                        clearPattern={clearPattern}
                         setOpen={setOpen}
                     />
                 )}

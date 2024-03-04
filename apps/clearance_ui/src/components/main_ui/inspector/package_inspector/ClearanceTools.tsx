@@ -120,6 +120,7 @@ const ClearanceTools = ({
                         <BulkConclusionFormDialog
                             purl={purl}
                             pattern={glob}
+                            clearPattern={() => onClearSelection()}
                             open={openBCDialog}
                             setOpen={setOpenBCDialog}
                         />
@@ -148,6 +149,7 @@ const ClearanceTools = ({
                             purl={purl}
                             mode="Add"
                             pattern={glob}
+                            clearPattern={() => onClearSelection()}
                             open={openPEDialog}
                             setOpen={setOpenPEDialog}
                         />
