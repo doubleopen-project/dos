@@ -10,12 +10,19 @@ import BulkConclusionForm from "@/components/main_ui/inspector/package_inspector
 
 type Props = {
     purl: string;
+    pattern: string;
     id?: number;
     open: boolean;
     setOpen: (open: boolean) => void;
 };
 
-const BulkConclusionFormDialog = ({ purl, id, open, setOpen }: Props) => {
+const BulkConclusionFormDialog = ({
+    purl,
+    pattern,
+    id,
+    open,
+    setOpen,
+}: Props) => {
     return (
         <Dialog open={open} onOpenChange={() => setOpen(!open)}>
             <DialogContent>
@@ -26,7 +33,11 @@ const BulkConclusionFormDialog = ({ purl, id, open, setOpen }: Props) => {
                         setOpen={setOpen}
                     />
                 ) : (
-                    <BulkConclusionForm purl={purl} setOpen={setOpen} />
+                    <BulkConclusionForm
+                        purl={purl}
+                        pattern={pattern}
+                        setOpen={setOpen}
+                    />
                 )}
                 <DialogFooter className="flex justify-end">
                     <Button

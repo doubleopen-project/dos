@@ -57,11 +57,12 @@ type BulkConclusionFormType = z.infer<typeof bulkConclusionFormSchema>;
 
 type Props = {
     purl: string;
+    pattern?: string;
     className?: string;
     setOpen: (open: boolean) => void;
 };
 
-const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
+const BulkConclusionForm = ({ purl, pattern, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
@@ -74,7 +75,7 @@ const BulkConclusionForm = ({ purl, className, setOpen }: Props) => {
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkConclusionFormType = {
-        pattern: "",
+        pattern: pattern || "",
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
         comment: "",

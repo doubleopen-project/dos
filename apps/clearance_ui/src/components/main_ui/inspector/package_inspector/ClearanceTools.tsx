@@ -4,14 +4,6 @@
 
 import React, { useState } from "react";
 import { FiFileMinus, FiFilePlus } from "react-icons/fi";
-import { LuFileStack } from "react-icons/lu";
-import {
-    TbFileOff,
-    TbFilesOff,
-    TbFolderOff,
-    TbFoldersOff,
-} from "react-icons/tb";
-import { TfiPencil } from "react-icons/tfi";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import {
@@ -23,37 +15,24 @@ import {
 import BulkConclusionFormDialog from "@/components/main_ui/inspector/package_inspector/BulkConclusionFormDialog";
 import ExclusionFormDialog from "@/components/main_ui/inspector/package_inspector/ExclusionFormDialog";
 import { cn } from "@/lib/utils";
-import type { SelectedNode } from "@/types/index";
 
 type Props = {
-    selectedNode: SelectedNode | undefined;
     purl: string;
     className?: string;
     onSelectionModeChange: (newValue: boolean) => void;
     onClearSelection: () => void;
-};
-
-// Check if the selected node has children directories:
-// if it does, then either this node or this and all subdirs can be excluded
-const hasChildrenDirs = (node: SelectedNode | undefined) => {
-    return node?.children?.some((child: SelectedNode) => !child.isLeaf);
+    glob: string;
 };
 
 const ClearanceTools = ({
-    selectedNode,
     purl,
     className,
     onSelectionModeChange,
     onClearSelection,
+    glob,
 }: Props) => {
-    const [openDirDialog, setOpenDirDialog] = useState<boolean>(false);
-    const [openSubdirsDialog, setOpenSubdirsDialog] = useState<boolean>(false);
-    const [openFileDialog, setOpenFileDialog] = useState<boolean>(false);
-    const [openFileExtDialog, setOpenFileExtDialog] = useState<boolean>(false);
-    const [openFreeTextDialog, setOpenFreeTextDialog] =
-        useState<boolean>(false);
-    const [openBulkConclusionDialog, setOpenBulkConclusionDialog] =
-        useState<boolean>(false);
+    const [openPEDialog, setOpenPEDialog] = useState<boolean>(false);
+    const [openBCDialog, setOpenBCDialog] = useState<boolean>(false);
     const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
 
     return (
@@ -68,158 +47,7 @@ const ClearanceTools = ({
             </span>
             <>
                 <TooltipProvider delayDuration={300}>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    disabled={!selectedNode?.isInternal}
-                                    className="p-2"
-                                    onClick={() => setOpenDirDialog(true)}
-                                >
-                                    <TbFolderOff className="text-lg" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                Exclude this directory
-                            </TooltipContent>
-                        </div>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            mode="Add"
-                            pattern={selectedNode?.data.path + "/*"}
-                            open={openDirDialog}
-                            setOpen={setOpenDirDialog}
-                        />
-                    </Tooltip>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    disabled={!hasChildrenDirs(selectedNode)}
-                                    className="p-2"
-                                    onClick={() => setOpenSubdirsDialog(true)}
-                                >
-                                    <TbFoldersOff
-                                        className="text-lg"
-                                        data-testid="path-exclusion-subdirs"
-                                    />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                Exclude this and all subdirectories
-                            </TooltipContent>
-                        </div>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            mode="Add"
-                            pattern={selectedNode?.data.path + "/**"}
-                            open={openSubdirsDialog}
-                            setOpen={setOpenSubdirsDialog}
-                        />
-                    </Tooltip>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    disabled={!selectedNode?.isLeaf}
-                                    className="p-2"
-                                    onClick={() => setOpenFileDialog(true)}
-                                >
-                                    <TbFileOff className="text-lg" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Exclude this file</TooltipContent>
-                        </div>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            mode="Add"
-                            pattern={selectedNode?.data.path}
-                            open={openFileDialog}
-                            setOpen={setOpenFileDialog}
-                        />
-                    </Tooltip>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    disabled={!selectedNode?.isLeaf}
-                                    className="p-2"
-                                    onClick={() => setOpenFileExtDialog(true)}
-                                >
-                                    <TbFilesOff
-                                        className="text-lg"
-                                        data-testid="path-exclusion-similar"
-                                    />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                Exclude all files with this extension
-                            </TooltipContent>
-                        </div>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            mode="Add"
-                            pattern={
-                                "**/*." +
-                                selectedNode?.data.path?.split(".").pop()
-                            }
-                            open={openFileExtDialog}
-                            setOpen={setOpenFileExtDialog}
-                        />
-                    </Tooltip>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="p-2"
-                                    onClick={() => setOpenFreeTextDialog(true)}
-                                >
-                                    <TfiPencil className="text-lg" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                Write a freetext path exclusion pattern
-                            </TooltipContent>
-                        </div>
-                        <ExclusionFormDialog
-                            purl={purl}
-                            mode="Add"
-                            pattern={undefined}
-                            open={openFreeTextDialog}
-                            setOpen={setOpenFreeTextDialog}
-                        />
-                    </Tooltip>
-                    <Tooltip>
-                        <div className="group relative">
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="p-2"
-                                    onClick={() =>
-                                        setOpenBulkConclusionDialog(true)
-                                    }
-                                >
-                                    <LuFileStack
-                                        className="text-lg"
-                                        data-testid="bulk-conclusion"
-                                    />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                Write a license conclusion for multiple files
-                            </TooltipContent>
-                        </div>
-                        <BulkConclusionFormDialog
-                            purl={purl}
-                            open={openBulkConclusionDialog}
-                            setOpen={setOpenBulkConclusionDialog}
-                        />
-                    </Tooltip>
+                    {/* Selection mode toggle */}
                     <Tooltip>
                         <div className="group relative">
                             <TooltipTrigger asChild>
@@ -234,6 +62,7 @@ const ClearanceTools = ({
                                         setIsSelectionMode(!isSelectionMode);
                                         onSelectionModeChange(!isSelectionMode);
                                     }}
+                                    data-testid="selection-mode-toggle"
                                 >
                                     {isSelectionMode ? (
                                         <FiFilePlus className="text-lg text-red-500" />
@@ -249,6 +78,8 @@ const ClearanceTools = ({
                             </TooltipContent>
                         </div>
                     </Tooltip>
+
+                    {/* Clear selection */}
                     <Tooltip>
                         <div className="group relative">
                             <TooltipTrigger asChild>
@@ -256,6 +87,7 @@ const ClearanceTools = ({
                                     variant="ghost"
                                     className="p-2"
                                     onClick={() => onClearSelection()}
+                                    data-testid="clear-selection"
                                 >
                                     <FiFileMinus className="text-lg" />
                                 </Button>
@@ -264,6 +96,57 @@ const ClearanceTools = ({
                                 Clear all selections from the tree
                             </TooltipContent>
                         </div>
+                    </Tooltip>
+
+                    {/* Create bulk conclusion from selection */}
+                    <Tooltip>
+                        <div className="group relative">
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="p-2 text-xs"
+                                    onClick={() => setOpenBCDialog(true)}
+                                    data-testid="create-bulk-conclusion"
+                                >
+                                    BulkC
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Create a bulk conclusion from your selections
+                            </TooltipContent>
+                        </div>
+                        <BulkConclusionFormDialog
+                            purl={purl}
+                            pattern={glob}
+                            open={openBCDialog}
+                            setOpen={setOpenBCDialog}
+                        />
+                    </Tooltip>
+
+                    {/* Create path exclusion from selection */}
+                    <Tooltip>
+                        <div className="group relative">
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="p-2 text-xs"
+                                    onClick={() => setOpenPEDialog(true)}
+                                    data-testid="create-path-exclusion"
+                                >
+                                    PathE
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Create a path exclusion from your selections
+                            </TooltipContent>
+                        </div>
+                        <ExclusionFormDialog
+                            purl={purl}
+                            mode="Add"
+                            pattern={glob}
+                            open={openPEDialog}
+                            setOpen={setOpenPEDialog}
+                        />
                     </Tooltip>
                 </TooltipProvider>
             </>
