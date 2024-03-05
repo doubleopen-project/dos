@@ -24,7 +24,6 @@ import Node from "@/components/main_ui/inspector/package_inspector/Node";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
-import { filterTreeDataByLicense } from "@/helpers/filterTreeDataByLicense";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
@@ -33,7 +32,6 @@ import {
     clearSelectedNodes,
     updateSelectedNodes,
 } from "@/helpers/treeSelectionUtils";
-import { updateHasLicenseFindings } from "@/helpers/updateHasLicenseFindings";
 import type { SelectedNode, TreeNode } from "@/types/index";
 
 type Props = {
@@ -54,16 +52,13 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [treeHeight, setTreeHeight] = useState(0);
     const [treeData, setTreeData] = useState<TreeNode[]>([]);
-    const [originalTreeData, setOriginalTreeData] = useState<TreeNode[]>([]);
     const [, setSelectedNode] = useState<SelectedNode>();
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
     const [glob, setGlob] = useState<string>("");
     const treeRef = useRef<HTMLDivElement>(null);
-
     const router = useRouter();
-
     const pathPurl = toPathPurl(purl);
 
     // Fetch the package file tree data
@@ -89,9 +84,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     );
 
     let tree: TreeApi<TreeNode> | null | undefined;
-    const uniqueLicenses = decomposeLicenses(
-        extractUniqueLicenses(originalTreeData),
-    );
+    const uniqueLicenses = decomposeLicenses(extractUniqueLicenses(treeData));
     const uniqueLicensesToColorMap = new Map<string, string>();
 
     uniqueLicenses.forEach((license) => {
@@ -100,6 +93,25 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
+    };
+
+    // When not in license filtering mode, search the tree by name of node.
+    // When in license filtering mode, search the tree by filtered license.
+    const handleSearch = (node: NodeApi<TreeNode>, term: string): boolean => {
+        if (licenseFilter && filtering) {
+            return (
+                node.data.file?.licenseFindings.some((license) =>
+                    license.licenseExpressionSPDX
+                        .toLowerCase()
+                        .includes(licenseFilter.toLowerCase()),
+                ) || false
+            );
+        } else {
+            return (
+                node.data.name.toLowerCase().includes(term.toLowerCase()) ||
+                false
+            );
+        }
     };
 
     const handleResize = () => {
@@ -128,29 +140,7 @@ const PackageInspector = ({ purl, path }: Props) => {
         window.addEventListener("resize", handleResize);
     }, []);
 
-    // Update tree data when the license filter is set and filtered is true
-    useEffect(() => {
-        if (licenseFilter && filtering) {
-            let updatedTreeData = JSON.parse(JSON.stringify(originalTreeData)); // Create a deep copy
-
-            // Filter the tree based on the licenseSearchText
-            updatedTreeData = filterTreeDataByLicense(
-                updatedTreeData,
-                licenseFilter,
-            );
-
-            updateHasLicenseFindings(updatedTreeData, licenseFilter); // Update hasLicenseFindings flag
-            setTreeData(updatedTreeData); // Set the updated and/or filtered tree data to trigger a re-render
-            setIsExpanded(true); // Expand the tree when filtering
-        } else {
-            // Reset to original tree data if licenseFilter is empty or filtering is off
-            setTreeData(originalTreeData);
-            setIsExpanded(false);
-            setSelectedNodes([...selectedNodes]);
-        }
-    }, [licenseFilter, filtering, originalTreeData]);
-
-    // Return the whole original tree data when the license search text is empty
+    // Construct the tree data
     useEffect(() => {
         if (data && pathExclusions) {
             const convertedData = convertJsonToTree(
@@ -161,7 +151,6 @@ const PackageInspector = ({ purl, path }: Props) => {
                 licenseFilter,
             );
             setTreeData(convertedData);
-            setOriginalTreeData(convertedData);
         }
     }, [data, pathExclusions, licenseFilter]);
 
@@ -195,6 +184,18 @@ const PackageInspector = ({ purl, path }: Props) => {
         }
     }, [path, treeData, tree]);
 
+    // When in license filtering mode, trick the tree search by license
+    // to activate by setting an arbitrary text to the search input.
+    // Use this text to inform the user that text search is not in use in
+    // filtering mode
+    useEffect(() => {
+        if (filtering) {
+            setTreeFilter("- Not in use in filtering mode -");
+        } else {
+            setTreeFilter("");
+        }
+    }, [filtering]);
+
     return (
         <div className="flex h-full flex-col">
             <div className="mb-3 flex items-center text-sm">
@@ -203,6 +204,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                     type="text"
                     placeholder="Filter"
                     value={treeFilter}
+                    disabled={filtering}
                     onChange={handleTreeFilter}
                 />
                 <Button
@@ -275,11 +277,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                         data={treeData}
                         openByDefault={false}
                         searchTerm={treeFilter}
-                        searchMatch={(node, term) =>
-                            node.data.name
-                                .toLowerCase()
-                                .includes(term.toLowerCase())
-                        }
+                        searchMatch={(node, term) => handleSearch(node, term)}
                         width="100%"
                         height={treeHeight}
                         indent={12}
