@@ -28,7 +28,7 @@
         "db:migrate:dev": "dotenv -e .env.local -- prisma migrate dev --schema ./packages/database/prisma/schema.prisma",
         "db:migrate:dev:create-only": "dotenv -e .env.local -- prisma migrate dev --create-only --schema ./packages/database/prisma/schema.prisma",
         "db:migrate:deploy": "prisma migrate deploy --schema ./packages/database/prisma/schema.prisma",
-        "db:migrate:reset": "dotenv -e .env.local -- turbo run db:migrate:reset",
+        "db:migrate:reset": "npm run build:s3 && dotenv -e .env.local -- turbo run db:migrate:reset",
         "db:push": "turbo run db:push",
         "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
         "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
