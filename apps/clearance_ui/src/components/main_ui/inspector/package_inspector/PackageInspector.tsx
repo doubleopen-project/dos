@@ -25,7 +25,7 @@ import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
-import { getNodesWithChildren } from "@/helpers/getNodesWithChildren";
+import { findNodesWithLicense } from "@/helpers/findNodesWithLicense";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
 import {
@@ -135,6 +135,15 @@ const PackageInspector = ({ purl, path }: Props) => {
         );
     };
 
+    // Open the nodes that have the filtered license
+    const handleOpenFilteredNodes = () => {
+        const nodes = findNodesWithLicense(treeData, licenseFilter);
+        tree?.closeAll();
+        for (const node of nodes) {
+            tree?.openParents(node.id);
+        }
+    };
+
     useEffect(() => {
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -148,31 +157,20 @@ const PackageInspector = ({ purl, path }: Props) => {
                 pathExclusions.pathExclusions.map(
                     (exclusion) => exclusion.pattern,
                 ),
-                licenseFilter,
+                "",
             );
             setTreeData(convertedData);
         }
-    }, [data, pathExclusions, licenseFilter]);
+    }, [data, pathExclusions]);
 
-    // Handle expanding and collapsing the tree
+    // Handle expanding and collapsing the whole tree
     useEffect(() => {
         if (isExpanded && (!licenseFilter || filtering)) {
             tree?.openAll();
-        } else if (!isExpanded && !filtering) {
-            if (licenseFilter) {
-                const nodes = getNodesWithChildren(treeData);
-                for (const node of nodes) {
-                    if (node.openByDefault) {
-                        tree?.open(node);
-                    } else {
-                        tree?.close(node);
-                    }
-                }
-            } else {
-                tree?.closeAll();
-            }
+        } else if (!isExpanded && !filtering && !licenseFilter) {
+            tree?.closeAll();
         }
-    }, [isExpanded, tree, filtering, treeData, licenseFilter]);
+    }, [isExpanded, filtering, licenseFilter, tree]);
 
     useEffect(() => {
         if (path) {
@@ -193,8 +191,11 @@ const PackageInspector = ({ purl, path }: Props) => {
             setTreeFilter("- Not in use in filtering mode -");
         } else {
             setTreeFilter("");
+            if (licenseFilter) {
+                handleOpenFilteredNodes();
+            }
         }
-    }, [filtering]);
+    }, [filtering, tree, treeData, licenseFilter]);
 
     return (
         <div className="flex h-full flex-col">
@@ -243,7 +244,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 variant="outline"
                                 disabled={licenseFilter === ""}
                                 pressed={filtering}
-                                onPressedChange={() => setFiltering(!filtering)}
+                                onPressedChange={() => {
+                                    setFiltering(!filtering);
+                                }}
                             >
                                 {filtering ? (
                                     <span className="font-bold text-red-500">
