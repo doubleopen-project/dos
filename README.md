@@ -24,6 +24,49 @@ development.
 DOS utilizes [ScanCode Toolkit] for scanning the files and is designed to work with
 [OSS Review Toolkit] as a part of its pipeline.
 
+# Setting up the development environment
+
+To run this project you will need Node.js, npm and Docker installed.
+
+1. Clone the repository
+
+    ```shell
+    git clone https://github.com/doubleopen-project/dos.git
+    ```
+
+2. Go to project root `cd dos` and install dependencies with `npm i`
+
+3. Create a .env.local file in the project root, and set the following environment variable in the file:
+
+    ```shell
+    DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+    ```
+
+    This is the only compulsory variable that needs to be set, others have default values. See [.env.example](https://github.com/doubleopen-project/dos/blob/main/.env.example) file for other configurable variables.
+
+4. Start containers (in detached mode with -d):
+
+    ```shell
+    docker compose up -d
+    ```
+
+    This will setup PostgreSQL, Minio S3 storage and Redis work queue, and a Scanner Worker.
+
+5. Run migrations to the database and seed it with test data (this command can also be used to reset the database):
+
+    ```shell
+    npm run db:migrate:reset
+
+    ```
+
+6. Start apps:
+
+    ```shell
+    npm run dev
+    ```
+
+    This will start the Clearance UI, the API, and the Scanner Agent.
+
 # License
 
 DOS is licensed under the [MIT License](./LICENSE). Copyright (C) Double Open Oy.
