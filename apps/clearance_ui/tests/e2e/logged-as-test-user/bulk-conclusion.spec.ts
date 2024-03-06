@@ -46,6 +46,8 @@ test("create bulk conclusion, delete from Main UI", async ({ page }) => {
     console.log("bulk license conclusion created");
 
     // Delete the same bulk license conclusion
+    await page.getByRole("button", { name: "Expand" }).click();
+    await page.getByRole("button", { name: "Collapse" }).click();
     await page.getByText("apps").click();
     await page.getByText("scanner_agent").click();
     await page.getByText(".eslintrc.js").click();
@@ -159,6 +161,8 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     console.log("bulk license conclusion created");
 
     // Edit the bulk conclusion
+    await page.getByRole("button", { name: "Expand" }).click();
+    await page.getByRole("button", { name: "Collapse" }).click();
     await page.getByText("apps").click();
     await page.getByText("api").click();
     await page.getByText("src").click();
