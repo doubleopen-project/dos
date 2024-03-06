@@ -45,6 +45,16 @@ export const DeleteUserRes = z.object({
     message: z.string(),
 });
 
+//------------------- PUT user -------------------
+
+export const UpdateUserReq = z.object({
+    kcUserId: z.string().uuid(),
+});
+
+export const UpdateUserRes = z.object({
+    message: z.string(),
+});
+
 //----------------- POST purl-cleanup ----------------
 
 export const PostPurlCleanupReq = z.object({

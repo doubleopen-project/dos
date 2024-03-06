@@ -984,6 +984,86 @@ export const updateUser = async (
     return user;
 };
 
+export const updateManyKcUserIds = async (
+    userId: number,
+    kcUserId: string,
+): Promise<{ lcCount: number; bcCount: number; peCount: number }> => {
+    let retries = initialRetryCount;
+    let lcBatchUpdate = null;
+    let bcBatchUpdate = null;
+    let peBatchUpdate = null;
+
+    while (retries > 0) {
+        try {
+            lcBatchUpdate = await prisma.licenseConclusion.updateMany({
+                where: {
+                    userId: userId,
+                },
+                data: {
+                    kcUserId: kcUserId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to update LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    while (retries > 0) {
+        try {
+            bcBatchUpdate = await prisma.bulkConclusion.updateMany({
+                where: {
+                    userId: userId,
+                },
+                data: {
+                    kcUserId: kcUserId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to update BulkConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    while (retries > 0) {
+        try {
+            peBatchUpdate = await prisma.pathExclusion.updateMany({
+                where: {
+                    userId: userId,
+                },
+                data: {
+                    kcUserId: kcUserId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to update User: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return {
+        lcCount: lcBatchUpdate?.count || 0,
+        bcCount: bcBatchUpdate?.count || 0,
+        peCount: peBatchUpdate?.count || 0,
+    };
+};
+
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {
@@ -3150,6 +3230,32 @@ export const findBulkConclusionsByPackageId = async (
     return bulkConclusions;
 };
 
+export const findBulkConclusionsByUserId = async (
+    userId: number,
+): Promise<BulkConclusion[]> => {
+    let retries = initialRetryCount;
+    let bulkConclusions: BulkConclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            bulkConclusions = await prisma.bulkConclusion.findMany({
+                where: {
+                    userId: userId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkConclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkConclusions;
+};
+
 export const findPathExclusionById = async (
     id: number,
 ): Promise<PathExclusion | null> => {
@@ -3363,6 +3469,32 @@ export const findPathExclusionsByPackageId = async (
     return pathExclusions;
 };
 
+export const findPathExclusionsByUserId = async (
+    userId: number,
+): Promise<PathExclusion[]> => {
+    let retries = initialRetryCount;
+    let pathExclusions: PathExclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            pathExclusions = await prisma.pathExclusion.findMany({
+                where: {
+                    userId: userId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find PathExclusions: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return pathExclusions;
+};
+
 export const findLicenseConclusionsByPackagePurl = async (
     purl: string,
 ): Promise<
@@ -3553,6 +3685,34 @@ export const findLicenseConclusionsByFileSha256 = async (
             else throw error;
         }
     }
+    return licenseConclusions;
+};
+
+export const findLicenseConclusionsByUserId = async (
+    userId: number,
+): Promise<LicenseConclusion[]> => {
+    let retries = initialRetryCount;
+    let licenseConclusions: LicenseConclusion[] = [];
+
+    while (retries > 0) {
+        try {
+            licenseConclusions = await prisma.licenseConclusion.findMany({
+                where: {
+                    userId: userId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find LicenseConclusions: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
     return licenseConclusions;
 };
 

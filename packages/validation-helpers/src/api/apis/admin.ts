@@ -5,6 +5,7 @@
 import { makeApi } from "@zodios/core";
 import { errors } from "../errors";
 import * as schemas from "../schemas/admin_schemas";
+import * as commonSchemas from "../schemas/common_schemas";
 
 export const adminAPI = makeApi([
     {
@@ -48,6 +49,26 @@ export const adminAPI = makeApi([
             },
         ],
         response: schemas.DeleteUserRes,
+        errors,
+    },
+    {
+        method: "put",
+        path: "/user/:id",
+        description: "Update user",
+        alias: "updateUser",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.UpdateUserReq,
+            },
+        ],
+        response: schemas.UpdateUserRes,
         errors,
     },
     {
