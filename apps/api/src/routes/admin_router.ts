@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
+import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
@@ -88,6 +89,38 @@ adminRouter.delete("/user/:id", async (req, res) => {
         } else {
             res.status(500).json({ message: "Internal server error" });
         }
+    }
+});
+
+// Update user by id
+adminRouter.put("/user/:id", async (req, res) => {
+    try {
+        await dbQueries.updateUser(req.params.id, req.body);
+
+        const batches = await dbQueries.updateManyKcUserIds(
+            req.params.id,
+            req.body.kcUserId,
+        );
+
+        const lcs = await dbQueries.findLicenseConclusionsByUserId(
+            req.params.id,
+        );
+        const bcs = await dbQueries.findBulkConclusionsByUserId(req.params.id);
+        const pes = await dbQueries.findPathExclusionsByUserId(req.params.id);
+
+        if (lcs.length !== batches.lcCount)
+            throw new CustomError("License conclusion counts don't match", 500);
+
+        if (bcs.length !== batches.bcCount)
+            throw new CustomError("Bulk conclusions counts don't match", 500);
+
+        if (pes.length !== batches.peCount)
+            throw new CustomError("Path exclusions counts don't match", 500);
+
+        res.status(200).json({ message: "User updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
