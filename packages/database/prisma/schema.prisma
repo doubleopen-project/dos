@@ -127,11 +127,14 @@ model BulkConclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  kcUserId String? @db.Uuid
+
   licenseConclusions LicenseConclusion[]
 
   @@index([packageId])
   @@index([userId])
   @@index([updatedAt])
+  @@index([kcUserId])
 }
 
 /// A license conclusion.
@@ -151,6 +154,8 @@ model LicenseConclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  kcUserId String? @db.Uuid
+
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
 
@@ -158,6 +163,7 @@ model LicenseConclusion {
   @@index([userId])
   @@index([bulkConclusionId])
   @@index([updatedAt])
+  @@index([kcUserId])
 }
 
 /// A copyright finding in a file.
@@ -223,9 +229,12 @@ model PathExclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  kcUserId String? @db.Uuid
+
   @@index([packageId])
   @@index([userId])
   @@index([updatedAt])
+  @@index([kcUserId])
 }
 
 /// A scanner job.
@@ -291,10 +300,13 @@ model User {
   token          String?       @unique
   role           Role          @default(USER)
   subscription   Subscription? @default(SILVER)
+  kcUserId       String?       @db.Uuid
 
   licenseConclusions LicenseConclusion[]
   PathExclusions     PathExclusion[]
   BulkConclusions    BulkConclusion[]
+
+  @@index([kcUserId])
 }
 
 enum Role {
