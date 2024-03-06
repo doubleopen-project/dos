@@ -57,7 +57,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
     const [glob, setGlob] = useState<string>("");
-    const treeRef = useRef<HTMLDivElement>(null);
+    const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
 
@@ -83,7 +83,7 @@ const PackageInspector = ({ purl, path }: Props) => {
         { enabled: !!pathPurl },
     );
 
-    let tree: TreeApi<TreeNode> | null | undefined;
+    const treeRef = useRef<TreeApi<TreeNode>>();
     const uniqueLicenses = decomposeLicenses(extractUniqueLicenses(treeData));
     const uniqueLicensesToColorMap = new Map<string, string>();
 
@@ -115,8 +115,8 @@ const PackageInspector = ({ purl, path }: Props) => {
     };
 
     const handleResize = () => {
-        if (treeRef.current) {
-            const { offsetHeight } = treeRef.current;
+        if (treeDivRef.current) {
+            const { offsetHeight } = treeDivRef.current;
             setTreeHeight(offsetHeight);
         }
     };
@@ -138,9 +138,9 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Open the nodes that have the filtered license
     const handleOpenFilteredNodes = () => {
         const nodes = findNodesWithLicense(treeData, licenseFilter);
-        tree?.closeAll();
+        treeRef.current?.closeAll();
         for (const node of nodes) {
-            tree?.openParents(node.id);
+            treeRef.current?.openParents(node.id);
         }
     };
 
@@ -166,21 +166,21 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Handle expanding and collapsing the whole tree
     useEffect(() => {
         if (isExpanded && (!licenseFilter || filtering)) {
-            tree?.openAll();
+            treeRef.current?.openAll();
         } else if (!isExpanded && !filtering && !licenseFilter) {
-            tree?.closeAll();
+            treeRef.current?.closeAll();
         }
-    }, [isExpanded, filtering, licenseFilter, tree]);
+    }, [isExpanded, filtering, licenseFilter, treeRef]);
 
     useEffect(() => {
         if (path) {
             const node = findNodeByPath(treeData, path);
             if (node) {
                 setOpenedNodeId(node.id);
-                tree?.select(node);
+                treeRef.current?.select(node);
             }
         }
-    }, [path, treeData, tree]);
+    }, [path, treeData, treeRef]);
 
     // When in license filtering mode, trick the tree search by license
     // to activate by setting an arbitrary text to the search input.
@@ -195,7 +195,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 handleOpenFilteredNodes();
             }
         }
-    }, [filtering, tree, treeData, licenseFilter]);
+    }, [filtering, treeData, licenseFilter]);
 
     return (
         <div className="flex h-full flex-col">
@@ -212,9 +212,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                     className="ml-2 rounded-md p-1 text-xs"
                     onClick={() => {
                         if (isExpanded) {
-                            tree?.closeAll();
+                            treeRef.current?.closeAll();
                         } else {
-                            tree?.openAll();
+                            treeRef.current?.openAll();
                         }
                         setIsExpanded(!isExpanded);
                     }}
@@ -268,7 +268,7 @@ const PackageInspector = ({ purl, path }: Props) => {
 
             <Separator className="mb-2" />
 
-            <div className="flex-1 overflow-auto pl-1" ref={treeRef}>
+            <div className="flex-1 overflow-auto pl-1" ref={treeDivRef}>
                 {isLoading && (
                     <div className="flex h-full items-center justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
@@ -310,7 +310,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 }
                             }
                         }}
-                        ref={(t) => (tree = t)}
+                        ref={treeRef}
                     >
                         {(nodeProps) => (
                             <Node
