@@ -90,15 +90,29 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             endLine,
                             1,
                         );
-                        // Pick a color for the license match
-                        const className = "bg-red-500 w-5 ml-3";
+                        // Pick a color class according to the matched license
+                        // This is still heavily under construction!
+                        let className;
+                        // TODO: return the _ escaped license string
+                        // and use it as an expression when forming the class name
+                        const expression =
+                            licenseFindingMatch.licenseExpression;
+                        if (licenseFindingMatch.licenseExpression === "MIT") {
+                            className = `bg-${expression} w-2 ml-3`;
+                        } else if (
+                            licenseFindingMatch.licenseExpression ===
+                            "GPL-2.0-only"
+                        ) {
+                            className = "bg-GPL_2_0_only w-2 ml-3";
+                        } else {
+                            className = "bg-slate-400 w-2 ml-3";
+                        }
                         const decoration = {
                             range: range,
                             options: {
                                 isWholeLine: true,
                                 linesDecorationsClassName: `${className}`,
-                                //linesDecorationsClassName:
-                                //    styles["myLineDecoration"],
+                                //linesDecorationsClassName: styles["MIT"],
                             },
                         };
                         return decoration;

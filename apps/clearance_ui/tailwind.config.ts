@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
+
+import { licenseColors } from "./licenseColors";
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
@@ -53,6 +56,7 @@ module.exports = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                ...licenseColors,
             },
             borderRadius: {
                 lg: "var(--radius)",
