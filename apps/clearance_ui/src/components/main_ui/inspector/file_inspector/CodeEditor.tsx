@@ -90,12 +90,15 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             endLine,
                             1,
                         );
+                        // Pick a color for the license match
+                        const className = "bg-red-500 w-5 ml-3";
                         const decoration = {
                             range: range,
                             options: {
                                 isWholeLine: true,
-                                linesDecorationsClassName:
-                                    styles["myLineDecoration"],
+                                linesDecorationsClassName: `${className}`,
+                                //linesDecorationsClassName:
+                                //    styles["myLineDecoration"],
                             },
                         };
                         return decoration;
@@ -163,7 +166,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                 },
                 glyphMargin: true,
                 lineNumbers: "on",
-                lineDecorationsWidth: 0,
+                lineDecorationsWidth: 0.5,
                 lineNumbersMinChars: 3,
                 readOnly: true,
             }}
