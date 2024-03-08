@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { userAPI } from "validation-helpers";
+import { replaceSpecialCharacters } from "@/helpers/replaceSpecialCharacters";
 import styles from "@/styles/CodeInspector.module.css";
 
 type LicenseFindings = ZodiosResponseByAlias<
@@ -91,22 +92,14 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             1,
                         );
                         // Pick a color class according to the matched license
-                        // This is still heavily under construction!
-                        let className;
-                        // TODO: return the _ escaped license string
-                        // and use it as an expression when forming the class name
+                        //const expression = replaceSpecialCharacters(
+                        //    licenseFindingMatch.licenseExpression!!,
+                        //);
+                        //console.log(expression);
                         const expression =
-                            licenseFindingMatch.licenseExpression;
-                        if (licenseFindingMatch.licenseExpression === "MIT") {
-                            className = `bg-${expression} w-2 ml-3`;
-                        } else if (
-                            licenseFindingMatch.licenseExpression ===
-                            "GPL-2.0-only"
-                        ) {
-                            className = "bg-GPL_2_0_only w-2 ml-3";
-                        } else {
-                            className = "bg-slate-400 w-2 ml-3";
-                        }
+                            "LGPL_2_1_or_later_WITH_OCaml_LGPL_linking_exception";
+                        //const expression = "BSD_1_Clause";
+                        const className = `bg-${expression} w-2 ml-3`;
                         const decoration = {
                             range: range,
                             options: {
