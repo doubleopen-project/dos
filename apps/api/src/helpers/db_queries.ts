@@ -247,6 +247,7 @@ export const createLicenseConclusion = async (input: {
     contextPurl: string;
     fileSha256: string;
     userId: number;
+    kcUserId: string;
 }): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
@@ -304,6 +305,7 @@ export const createBulkConclusion = async (input: {
     local: boolean | undefined;
     packageId: number;
     userId: number;
+    kcUserId: string;
 }): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
     let bulkConclusion: BulkConclusion | null = null;
@@ -445,6 +447,7 @@ export const createPathExclusion = async (input: {
     comment: string | null;
     packageId: number;
     userId: number;
+    kcUserId: string;
 }): Promise<PathExclusion> => {
     let retries = initialRetryCount;
     let pathExclusion: PathExclusion | null = null;

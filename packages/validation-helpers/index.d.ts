@@ -1925,6 +1925,7 @@ declare const adminAPI: [
         method: "post";
         path: "/user";
         description: "Add user";
+        alias: "AddUser";
         parameters: [
             {
                 name: "body";
@@ -1941,6 +1942,7 @@ declare const adminAPI: [
                             string
                         >;
                         password: zod.ZodEffects<zod.ZodString, string, string>;
+                        keycloakUserId: zod.ZodString;
                         role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
                         subscription: zod.ZodOptional<
                             zod.ZodEnum<["SILVER", "GOLD"]>
@@ -1952,6 +1954,7 @@ declare const adminAPI: [
                     {
                         username: string;
                         password: string;
+                        keycloakUserId: string;
                         role?: "ADMIN" | "USER" | undefined;
                         subscription?: "SILVER" | "GOLD" | undefined;
                         token?: string | undefined;
@@ -1959,6 +1962,7 @@ declare const adminAPI: [
                     {
                         username: string;
                         password: string;
+                        keycloakUserId: string;
                         role?: "ADMIN" | "USER" | undefined;
                         subscription?: "SILVER" | "GOLD" | undefined;
                         token?: string | undefined;
@@ -1970,6 +1974,7 @@ declare const adminAPI: [
             {
                 username: zod.ZodString;
                 password: zod.ZodString;
+                keycloakUserId: zod.ZodString;
                 role: zod.ZodEnum<["ADMIN", "USER"]>;
                 subscription: zod.ZodEnum<["SILVER", "GOLD"]>;
                 token: zod.ZodString;
@@ -1979,6 +1984,7 @@ declare const adminAPI: [
             {
                 username: string;
                 password: string;
+                keycloakUserId: string;
                 role: "ADMIN" | "USER";
                 subscription: "SILVER" | "GOLD";
                 token: string;
@@ -1986,6 +1992,7 @@ declare const adminAPI: [
             {
                 username: string;
                 password: string;
+                keycloakUserId: string;
                 role: "ADMIN" | "USER";
                 subscription: "SILVER" | "GOLD";
                 token: string;
@@ -17938,6 +17945,7 @@ declare const dosAPI: [
         method: "post";
         path: "/admin/user";
         description: "Add user";
+        alias: "AddUser";
         parameters: [
             {
                 name: "body";
@@ -17954,6 +17962,7 @@ declare const dosAPI: [
                             string
                         >;
                         password: zod.ZodEffects<zod.ZodString, string, string>;
+                        keycloakUserId: zod.ZodString;
                         role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
                         subscription: zod.ZodOptional<
                             zod.ZodEnum<["SILVER", "GOLD"]>
@@ -17965,6 +17974,7 @@ declare const dosAPI: [
                     {
                         username: string;
                         password: string;
+                        keycloakUserId: string;
                         role?: "ADMIN" | "USER" | undefined;
                         subscription?: "SILVER" | "GOLD" | undefined;
                         token?: string | undefined;
@@ -17972,6 +17982,7 @@ declare const dosAPI: [
                     {
                         username: string;
                         password: string;
+                        keycloakUserId: string;
                         role?: "ADMIN" | "USER" | undefined;
                         subscription?: "SILVER" | "GOLD" | undefined;
                         token?: string | undefined;
@@ -17983,6 +17994,7 @@ declare const dosAPI: [
             {
                 username: zod.ZodString;
                 password: zod.ZodString;
+                keycloakUserId: zod.ZodString;
                 role: zod.ZodEnum<["ADMIN", "USER"]>;
                 subscription: zod.ZodEnum<["SILVER", "GOLD"]>;
                 token: zod.ZodString;
@@ -17992,6 +18004,7 @@ declare const dosAPI: [
             {
                 username: string;
                 password: string;
+                keycloakUserId: string;
                 role: "ADMIN" | "USER";
                 subscription: "SILVER" | "GOLD";
                 token: string;
@@ -17999,6 +18012,7 @@ declare const dosAPI: [
             {
                 username: string;
                 password: string;
+                keycloakUserId: string;
                 role: "ADMIN" | "USER";
                 subscription: "SILVER" | "GOLD";
                 token: string;

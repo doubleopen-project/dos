@@ -42,6 +42,7 @@ async function main() {
             token: "test_token",
             salt: testUserSalt,
             hashedPassword: testUserHashedPassword,
+            kcUserId: "8cd34049-ddf4-43ee-87c1-0674190db157",
         },
     });
 
@@ -63,6 +64,7 @@ async function main() {
             token: "test_token2",
             salt: testUser2Salt,
             hashedPassword: testUser2HashedPassword,
+            kcUserId: "d3eccda9-c429-4f09-bfda-ea8d8d21123b",
         },
     });
 
@@ -85,6 +87,7 @@ async function main() {
             role: "ADMIN",
             salt: testAdminUserSalt,
             hashedPassword: testAdminUserHashedPassword,
+            kcUserId: "483643cc-830a-426f-8ff8-8a37fbd62709",
         },
     });
 

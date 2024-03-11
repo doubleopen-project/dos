@@ -27,6 +27,7 @@ export const adminAPI = makeApi([
         method: "post",
         path: "/user",
         description: "Add user",
+        alias: "AddUser",
         parameters: [
             {
                 name: "body",

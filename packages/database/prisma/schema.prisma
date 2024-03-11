@@ -127,7 +127,7 @@ model BulkConclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  kcUserId String? @db.Uuid
+  kcUserId String @db.Uuid
 
   licenseConclusions LicenseConclusion[]
 
@@ -154,7 +154,7 @@ model LicenseConclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  kcUserId String? @db.Uuid
+  kcUserId String @db.Uuid
 
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
@@ -229,7 +229,7 @@ model PathExclusion {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  kcUserId String? @db.Uuid
+  kcUserId String @db.Uuid
 
   @@index([packageId])
   @@index([userId])
@@ -300,7 +300,7 @@ model User {
   token          String?       @unique
   role           Role          @default(USER)
   subscription   Subscription? @default(SILVER)
-  kcUserId       String?       @db.Uuid
+  kcUserId       String        @db.Uuid
 
   licenseConclusions LicenseConclusion[]
   PathExclusions     PathExclusion[]

@@ -338,6 +338,7 @@ userRouter.post(
                 contextPurl: contextPurl,
                 fileSha256: req.params.sha256,
                 userId: req.user.id,
+                kcUserId: req.user.kcUserId,
             });
 
             res.status(200).json({
@@ -633,6 +634,7 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
             local: req.body.local,
             packageId: packageId,
             userId: user.id,
+            kcUserId: user.kcUserId,
         });
 
         let mathchedPathsCount = 0;
@@ -657,6 +659,7 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
                         fileSha256: fileTree.fileSha256,
                         userId: user.id,
                         bulkConclusionId: bulkConclusion.id,
+                        kcUserId: user.kcUserId,
                     });
             }
         }
@@ -882,6 +885,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                         fileSha256: fileTree.fileSha256,
                         userId: req.user.id,
                         bulkConclusionId: bulkConclusionWithRelations.id,
+                        kcUserId: req.user.kcUserId,
                     });
                 }
             }
@@ -1257,6 +1261,7 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
             comment: req.body.comment || null,
             packageId: packageId,
             userId: user.id,
+            kcUserId: user.kcUserId,
         });
 
         res.status(200).json({

@@ -34,6 +34,7 @@ const addUserFormSchema = z.object({
     password: getPasswordSchema(true),
     role: z.enum(["USER", "ADMIN"]),
     subscription: z.enum(["SILVER", "GOLD"]),
+    keycloakUserId: z.string().uuid(),
 });
 
 type AddUserDataType = z.infer<typeof addUserFormSchema>;
@@ -46,6 +47,7 @@ type AddUserFormProps = {
             role: string;
             subscription: string;
             token: string;
+            keycloakUserId: string;
         } | null,
     ) => void;
 };
@@ -66,9 +68,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
         isSuccess,
         reset,
         mutate: addUser,
-    } = adminHooks.useMutation(
-        "post",
-        "/user",
+    } = adminHooks.useAddUser(
         {
             withCredentials: true,
         },
@@ -217,6 +217,19 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="keycloakUserId"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Keycloak User ID</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
