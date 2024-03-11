@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2023 HH Partners
 //
 // SPDX-License-Identifier: MIT
+
+import { licenseColors } from "./licenseColors";
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
@@ -10,6 +13,11 @@ module.exports = {
         "./app/**/*.{ts,tsx}",
         "./src/**/*.{ts,tsx}",
     ],
+
+    // Map over all values in licenseColors. It's an object, but we need to convert it to an array of objects.
+    safelist: Object.keys(licenseColors).map(
+        (expression) => `bg-${expression}`,
+    ),
     theme: {
         container: {
             center: true,
@@ -53,6 +61,7 @@ module.exports = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                ...licenseColors,
             },
             borderRadius: {
                 lg: "var(--radius)",
