@@ -858,36 +858,48 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                 origBulkCur.package.id,
             );
 
+            let matchFound = false;
             for (const fileTree of fileTrees) {
-                if (
-                    minimatch(fileTree.path, reqPattern, { dot: true }) &&
-                    bulkConclusionWithRelations.licenseConclusions.find(
-                        (lc) => lc.file.sha256 === fileTree.fileSha256,
-                    ) === undefined &&
-                    newInputs.find(
-                        (lc) => lc.fileSha256 === fileTree.fileSha256,
-                    ) === undefined
-                ) {
-                    newInputs.push({
-                        concludedLicenseExpressionSPDX:
-                            reqCLESPDX ||
-                            bulkConclusionWithRelations.concludedLicenseExpressionSPDX,
-                        detectedLicenseExpressionSPDX:
-                            reqDLESPDX ||
-                            bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
-                        comment:
-                            reqComment || bulkConclusionWithRelations.comment,
-                        local:
-                            reqLocal !== undefined
-                                ? reqLocal
-                                : bulkConclusionWithRelations.local,
-                        contextPurl: origBulkCur.package.purl,
-                        fileSha256: fileTree.fileSha256,
-                        userId: req.user.id,
-                        bulkConclusionId: bulkConclusionWithRelations.id,
-                        kcUserId: req.user.kcUserId,
-                    });
+                if (minimatch(fileTree.path, reqPattern, { dot: true })) {
+                    matchFound = true;
+                    if (
+                        bulkConclusionWithRelations.licenseConclusions.find(
+                            (lc) => lc.file.sha256 === fileTree.fileSha256,
+                        ) === undefined &&
+                        newInputs.find(
+                            (lc) => lc.fileSha256 === fileTree.fileSha256,
+                        ) === undefined
+                    ) {
+                        newInputs.push({
+                            concludedLicenseExpressionSPDX:
+                                reqCLESPDX ||
+                                bulkConclusionWithRelations.concludedLicenseExpressionSPDX,
+                            detectedLicenseExpressionSPDX:
+                                reqDLESPDX ||
+                                bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
+                            comment:
+                                reqComment ||
+                                bulkConclusionWithRelations.comment,
+                            local:
+                                reqLocal !== undefined
+                                    ? reqLocal
+                                    : bulkConclusionWithRelations.local,
+                            contextPurl: origBulkCur.package.purl,
+                            fileSha256: fileTree.fileSha256,
+                            userId: req.user.id,
+                            bulkConclusionId: bulkConclusionWithRelations.id,
+                            kcUserId: req.user.kcUserId,
+                        });
+                    }
                 }
+            }
+
+            if (!matchFound) {
+                throw new CustomError(
+                    "No matching files for the provided pattern were found in the package",
+                    400,
+                    "pattern",
+                );
             }
 
             await dbQueries.createManyLicenseConclusions(newInputs);
