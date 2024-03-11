@@ -92,6 +92,8 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             1,
                         );
                         // Pick a color class according to the matched license
+                        // expression. Use a "normalized" version of the license name,
+                        // where some special characters are replaced with "_".
                         const expression = replaceSpecialCharacters(
                             licenseFindingMatch.licenseExpression!!,
                         );
@@ -101,7 +103,6 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             options: {
                                 isWholeLine: true,
                                 linesDecorationsClassName: `${className}`,
-                                //linesDecorationsClassName: styles["MIT"],
                             },
                         };
                         return decoration;

@@ -7,6 +7,8 @@
 // stringToColour function in /scripts folder
 
 export const licenseColors = {
+    "0BSD": "#e3d316",
+    "389_exception": "#441073",
     Adobe_2006: "#34ddd1",
     Adobe_Glyph: "#9c16ae",
     AFL_1_1: "#2b3443",
@@ -595,6 +597,7 @@ export const licenseColors = {
     LPPL_1_0_or_later: "#8c187a",
     LPPL_1_2: "#6575aa",
     LPPL_1_2_or_later: "#cafa0c",
+    "LPPL_1_2+": "#6637a4",
     LPPL_1_3a: "#bb37a4",
     LPPL_1_3c: "#bd37a4",
     Microsoft: "#ce50d4",
