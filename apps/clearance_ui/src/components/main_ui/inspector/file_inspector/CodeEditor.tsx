@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { userAPI } from "validation-helpers";
+import { replaceSpecialCharacters } from "@/helpers/replaceSpecialCharacters";
 import styles from "@/styles/CodeInspector.module.css";
 
 type LicenseFindings = ZodiosResponseByAlias<
@@ -90,12 +91,18 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             endLine,
                             1,
                         );
+                        // Pick a color class according to the matched license
+                        // expression. Use a "normalized" version of the license name,
+                        // where some special characters are replaced with "_".
+                        const expression = replaceSpecialCharacters(
+                            licenseFindingMatch.licenseExpression!,
+                        );
+                        const className = `bg-${expression} w-2 ml-3`;
                         const decoration = {
                             range: range,
                             options: {
                                 isWholeLine: true,
-                                linesDecorationsClassName:
-                                    styles["myLineDecoration"],
+                                linesDecorationsClassName: `${className}`,
                             },
                         };
                         return decoration;
@@ -163,7 +170,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                 },
                 glyphMargin: true,
                 lineNumbers: "on",
-                lineDecorationsWidth: 0,
+                lineDecorationsWidth: 0.5,
                 lineNumbersMinChars: 3,
                 readOnly: true,
             }}
