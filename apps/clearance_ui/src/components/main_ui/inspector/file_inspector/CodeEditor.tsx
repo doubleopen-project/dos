@@ -94,10 +94,16 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                         // Pick a color class according to the matched license
                         // expression. Use a "normalized" version of the license name,
                         // where some special characters are replaced with "_".
-                        const expression = replaceSpecialCharacters(
-                            licenseFindingMatch.licenseExpression!,
-                        );
-                        const className = `bg-${expression} w-2 ml-3`;
+                        const spdx = licenseFindingMatch.licenseExpression!;
+                        const compound =
+                            spdx.includes("AND") ||
+                            spdx.includes("OR") ||
+                            spdx.includes("WITH");
+                        const expression =
+                            !compound && replaceSpecialCharacters(spdx);
+                        const className = compound
+                            ? "bg-gray-400"
+                            : `bg-${expression} w-3 ml-3`;
                         const decoration = {
                             range: range,
                             options: {
