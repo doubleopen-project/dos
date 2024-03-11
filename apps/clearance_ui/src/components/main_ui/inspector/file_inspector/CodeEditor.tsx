@@ -95,7 +95,7 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                         // expression. Use a "normalized" version of the license name,
                         // where some special characters are replaced with "_".
                         const expression = replaceSpecialCharacters(
-                            licenseFindingMatch.licenseExpression!!,
+                            licenseFindingMatch.licenseExpression!,
                         );
                         const className = `bg-${expression} w-2 ml-3`;
                         const decoration = {

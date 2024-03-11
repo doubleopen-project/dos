@@ -193,3 +193,7 @@ License: CC-BY-4.0
 Files: packages/spdx-validation/tsconfig.json
 Copyright: 2024 Double Open Oy
 License: CC-BY-4.0
+
+Files: scripts/licenseColors.ts
+Copyright: 2024 Double Open Oy
+License: CC-BY-4.0
