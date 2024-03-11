@@ -212,13 +212,14 @@ test("create bulk conclusion, edit, and delete from Main UI", async ({
     console.log("bulk license conclusion deleted from Main UI");
 });
 
-test("create freetext bulk conclusion, edit, and delete from clearance toolbar", async ({
+test("create freetext bulk conclusion, edit with erroneous pattern, fix pattern, and delete from clearance toolbar", async ({
     page,
 }) => {
     const pattern = "**/*.ts";
     const license = "GPL-3.0-or-later";
     const comment =
         "Test create bulk conclusion, edit, and delete from clearance toolbar";
+    const wronglyEditedPattern = "**/*.json2";
     const editedPattern = "**/*.json";
     const editedLicense = "GPL-3.0-only";
     const editedComment = "Edited test comment";
@@ -255,11 +256,20 @@ test("create freetext bulk conclusion, edit, and delete from clearance toolbar",
         .getByRole("button", { name: "edit" })
         .click();
     await page.getByLabel("Pattern").click();
-    await page.getByLabel("Pattern").fill(editedPattern);
+    await page.getByLabel("Pattern").fill(wronglyEditedPattern);
     await page.getByRole("textbox", { name: "spdx" }).click();
     await page.getByRole("textbox", { name: "spdx" }).fill(editedLicense);
     await page.getByLabel("Comment").click();
     await page.getByLabel("Comment").fill(editedComment);
+    await page.getByTestId("bulk-conclusion-edit").click();
+    // Wait for error message to appear, then re-edit pattern
+    await expect(
+        page.getByText(
+            "No matching files for the provided pattern were found in the package",
+        ),
+    ).toBeVisible();
+    await page.getByLabel("Pattern").click();
+    await page.getByLabel("Pattern").fill(editedPattern);
     await page.getByTestId("bulk-conclusion-edit").click();
     // Wait for the toast to appear, contain a success text and disappear
     const toastEdited = page.getByRole("status").first();
