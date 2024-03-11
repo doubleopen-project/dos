@@ -92,13 +92,9 @@ const CodeEditor = ({ contents, licenseFindings }: CodeEditorProps) => {
                             1,
                         );
                         // Pick a color class according to the matched license
-                        //const expression = replaceSpecialCharacters(
-                        //    licenseFindingMatch.licenseExpression!!,
-                        //);
-                        //console.log(expression);
-                        const expression =
-                            "LGPL_2_1_or_later_WITH_OCaml_LGPL_linking_exception";
-                        //const expression = "BSD_1_Clause";
+                        const expression = replaceSpecialCharacters(
+                            licenseFindingMatch.licenseExpression!!,
+                        );
                         const className = `bg-${expression} w-2 ml-3`;
                         const decoration = {
                             range: range,
