@@ -24,6 +24,7 @@ adminRouter.post("/user", async (req, res) => {
             : role == "ADMIN"
               ? "GOLD"
               : "SILVER";
+        const kcUserId = req.body.keycloakUserId;
         const user = await dbQueries.findUserByUsername(username);
         if (user) {
             res.status(400).send({ message: "User already exists" });
@@ -46,20 +47,22 @@ adminRouter.post("/user", async (req, res) => {
                     const token = req.body.token
                         ? req.body.token
                         : crypto.randomBytes(16).toString("hex");
-                    await dbQueries.createUser({
+                    const newUser = await dbQueries.createUser({
                         username,
                         hashedPassword,
                         salt,
                         token,
                         role,
                         subscription,
+                        kcUserId,
                     });
                     res.send({
-                        username: req.body.username,
+                        username: newUser.username,
                         password: req.body.password,
-                        role: role,
+                        role: newUser.role,
                         subscription: subscription,
                         token: token,
+                        keycloakUserId: newUser.kcUserId,
                     });
                 },
             );

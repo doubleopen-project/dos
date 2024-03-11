@@ -22,6 +22,7 @@ export const DeleteScanResultsRes = z.object({
 export const PostUserReq = z.object({
     username: getUsernameSchema(true),
     password: getPasswordSchema(true),
+    keycloakUserId: z.string().uuid(),
     role: z.enum(["ADMIN", "USER"]).optional(),
     subscription: z.enum(["SILVER", "GOLD"]).optional(),
     token: z.string().optional(),
@@ -30,6 +31,7 @@ export const PostUserReq = z.object({
 export const PostUserRes = z.object({
     username: z.string(),
     password: z.string(),
+    keycloakUserId: z.string().uuid(),
     role: z.enum(["ADMIN", "USER"]),
     subscription: z.enum(["SILVER", "GOLD"]),
     token: z.string(),
