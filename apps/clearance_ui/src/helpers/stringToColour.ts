@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { replaceSpecialCharacters } from "@/helpers/replaceSpecialCharacters";
+
 export const stringToColour = (str: string) => {
     let hash = 0;
+    str = replaceSpecialCharacters(str); // Normalize license ids
     str.split("").forEach((char) => {
         hash = char.charCodeAt(0) + ((hash << 5) - hash);
     });
