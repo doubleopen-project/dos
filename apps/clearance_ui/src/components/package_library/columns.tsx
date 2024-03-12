@@ -173,23 +173,12 @@ export const columns = (
                 );
             },
             cell: ({ row }) => (
-                <TooltipProvider>
-                    <Tooltip delayDuration={300}>
-                        <TooltipTrigger asChild>
-                            <Link
-                                className="font-semibold text-blue-400"
-                                href={`/packages/${encodeURIComponent(
-                                    row.original.purl,
-                                )}`}
-                            >
-                                {row.getValue("name")}
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <PurlDetails purl={row.original.purl} />
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Link
+                    className="font-semibold text-blue-400"
+                    href={`/packages/${encodeURIComponent(row.original.purl)}`}
+                >
+                    {row.getValue("name")}
+                </Link>
             ),
         },
         {
