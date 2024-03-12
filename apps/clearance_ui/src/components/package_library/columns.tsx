@@ -9,6 +9,7 @@ import {
     ChevronDownIcon,
     ChevronsUpDownIcon,
     ChevronUpIcon,
+    Info,
 } from "lucide-react";
 import Link from "next/link";
 import { Options } from "nuqs";
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 import ActionCell from "@/components/package_library/ActionCell";
+import { getProvenanceType } from "@/helpers/getProvenanceType";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -232,6 +234,36 @@ export const columns = (
                     </Button>
                 );
             },
+        },
+        {
+            accessorKey: "provenanceType",
+            header: () => {
+                return <Label className="font-bold">Provenance</Label>;
+            },
+            cell: ({ row }) => (
+                <div className="flex">
+                    {getProvenanceType(row.original.purl)}
+                    <TooltipProvider>
+                        <Tooltip delayDuration={300}>
+                            <TooltipTrigger asChild>
+                                <Label>
+                                    <Info
+                                        className="ml-2 text-blue-500"
+                                        size={"18px"}
+                                    />
+                                </Label>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <PurlDetails
+                                    purl={row.original.purl}
+                                    hideBorder={true}
+                                    hideCopyToClipboard={true}
+                                />
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+            ),
         },
         {
             accessorKey: "type",
