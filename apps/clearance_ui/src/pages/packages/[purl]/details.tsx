@@ -6,6 +6,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
+import { getProvenanceType } from "@/helpers/getProvenanceType";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 const Details = () => {
@@ -30,11 +31,7 @@ const Details = () => {
         null,
         null,
     ).toString();
-    const provenanceType = parsedPurl.qualifiers?.vcs_type
-        ? "Repository Provenance"
-        : parsedPurl.qualifiers?.download_url
-          ? "Artefact Provenance"
-          : "Unknown";
+    const provenanceType = getProvenanceType(purl);
 
     return (
         <div className="flex h-full flex-col">
