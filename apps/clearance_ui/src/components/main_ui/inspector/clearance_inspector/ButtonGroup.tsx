@@ -13,6 +13,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { replaceSpecialCharacters } from "@/helpers/replaceSpecialCharacters";
 import { cn } from "@/lib/utils";
 
 type DataType = ZodiosResponseByAlias<
@@ -53,45 +54,63 @@ const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
         <div className={cn("flex flex-wrap", className)}>
             <Button
                 key="reset"
-                className="m-0.5 h-fit bg-[#C6CAED] p-0.5 text-xs hover:bg-[#313C9B] hover:text-white dark:bg-[#313C9B] dark:hover:bg-[#C6CAED] dark:hover:text-black "
+                className="m-0.5 h-fit bg-[#C6CAED] p-0.5 text-xs hover:bg-[#313C9B] hover:text-white dark:bg-[#313C9B] dark:hover:bg-[#C6CAED] dark:hover:text-black"
                 onClick={() => {
                     setLicenseMatchId(null);
                 }}
             >
                 RESET
             </Button>
-            {uniqueData.map((d) => (
-                <TooltipProvider delayDuration={300} key={d.id}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                key={d.id}
-                                className={`m-0.5 h-fit p-0.5 text-xs ${
-                                    licenseMatchId === d.id
-                                        ? "bg-red-300 hover:bg-red-300"
-                                        : "hover:bg-gray-400"
-                                }`}
-                                variant="secondary"
-                                onClick={() => {
-                                    setLicenseMatchId(d.id);
-                                }}
-                            >
-                                {d.startLine}:{" "}
-                                {d.licenseExpression
-                                    ? d.licenseExpression
-                                    : "null"}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">
-                            <span>
-                                Timestamp: {new Date(d.updatedAt).toISOString()}
-                                <br />
-                                Score: {d.score}
-                            </span>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            ))}
+            {uniqueData.map((d) => {
+                // Pick a color class according to the matched license
+                // expression. Use a "normalized" version of the license name,
+                // where some special characters are replaced with "_".
+                const spdx = d.licenseExpression!;
+                const compound =
+                    spdx.includes("AND") ||
+                    spdx.includes("OR") ||
+                    spdx.includes("WITH");
+                const expression = !compound && replaceSpecialCharacters(spdx);
+                const circleColor = compound
+                    ? "bg-gray-400"
+                    : `bg-${expression}`;
+                return (
+                    <TooltipProvider delayDuration={300} key={d.id}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    key={d.id}
+                                    className={`m-0.5 h-fit p-0.5 text-xs ${
+                                        licenseMatchId === d.id
+                                            ? "bg-red-300 hover:bg-red-300 dark:text-black"
+                                            : "bg-gray-200 hover:bg-gray-400 dark:bg-gray-400 dark:text-black dark:hover:bg-gray-200"
+                                    }`}
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setLicenseMatchId(d.id);
+                                    }}
+                                >
+                                    <span
+                                        className={`mx-1 h-3 w-3 rounded-full border ${circleColor}`}
+                                    ></span>
+                                    {d.startLine}:{" "}
+                                    {d.licenseExpression
+                                        ? d.licenseExpression
+                                        : "null"}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs">
+                                <span>
+                                    Timestamp:{" "}
+                                    {new Date(d.updatedAt).toISOString()}
+                                    <br />
+                                    Score: {d.score}
+                                </span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                );
+            })}
         </div>
     );
 };
