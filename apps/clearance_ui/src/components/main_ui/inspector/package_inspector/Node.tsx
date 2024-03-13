@@ -13,6 +13,12 @@ import {
 } from "react-icons/bs";
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import LicenseHitCircle from "@/components/main_ui/inspector/package_inspector/LicenseHitCircle";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
@@ -192,7 +198,20 @@ const Node = ({
                         // Render the first 10 indicators and an ellipsis when there are more than 10
                         <>
                             {licenseFindingIndicators.slice(0, 10)}
-                            <ThreeDots className="ml-1 text-gray-400" />
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger className="ml-1">
+                                        <ThreeDots className="text-gray-400" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" align="end">
+                                        <div className="w-full p-1">
+                                            {licenseFindingIndicators.length -
+                                                10}
+                                            {" more license matches"}
+                                        </div>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </>
                     )}
                 </span>
