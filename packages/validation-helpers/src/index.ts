@@ -20,3 +20,4 @@ export type {
     PostFileTreeResType,
     PutUserReq,
 } from "./api/schemas/user_schemas";
+export { keycloakAPI } from "./kc/api";
