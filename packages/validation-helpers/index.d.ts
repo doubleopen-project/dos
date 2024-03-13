@@ -19087,6 +19087,180 @@ declare const getPasswordSchema: (
     required: boolean,
 ) => z.ZodEffects<z.ZodString, string, string>;
 
+declare const keycloakAPI: [
+    {
+        method: "post";
+        path: "/realms/:realm/protocol/openid-connect/token";
+        description: "Get auth token";
+        alias: "GetAccessToken";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodUnion<
+                    [
+                        zod.ZodObject<
+                            {
+                                client_id: zod.ZodString;
+                                username: zod.ZodString;
+                                password: zod.ZodString;
+                                grant_type: zod.ZodLiteral<"password">;
+                                client_secret: zod.ZodString;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                username: string;
+                                password: string;
+                                client_id: string;
+                                grant_type: "password";
+                                client_secret: string;
+                            },
+                            {
+                                username: string;
+                                password: string;
+                                client_id: string;
+                                grant_type: "password";
+                                client_secret: string;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                client_id: zod.ZodString;
+                                grant_type: zod.ZodLiteral<"refresh_token">;
+                                refresh_token: zod.ZodString;
+                                client_secret: zod.ZodOptional<zod.ZodString>;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                refresh_token: string;
+                                client_id: string;
+                                grant_type: "refresh_token";
+                                client_secret?: string | undefined;
+                            },
+                            {
+                                refresh_token: string;
+                                client_id: string;
+                                grant_type: "refresh_token";
+                                client_secret?: string | undefined;
+                            }
+                        >,
+                    ]
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                access_token: zod.ZodString;
+                expires_in: zod.ZodNumber;
+                refresh_expires_in: zod.ZodNumber;
+                refresh_token: zod.ZodString;
+                token_type: zod.ZodLiteral<"Bearer">;
+                "not-before-policy": zod.ZodNumber;
+                session_state: zod.ZodString;
+                scope: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                access_token: string;
+                expires_in: number;
+                refresh_expires_in: number;
+                refresh_token: string;
+                token_type: "Bearer";
+                "not-before-policy": number;
+                session_state: string;
+                scope: string;
+            },
+            {
+                access_token: string;
+                expires_in: number;
+                refresh_expires_in: number;
+                refresh_token: string;
+                token_type: "Bearer";
+                "not-before-policy": number;
+                session_state: string;
+                scope: string;
+            }
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/admin/realms/:realm/users/:id/logout";
+        description: "Logout user";
+        alias: "LogoutUser";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+];
+
 export {
     type FileTreeType,
     type PostFileTreeResType,
@@ -19098,6 +19272,7 @@ export {
     dosAPI,
     getPasswordSchema,
     getUsernameSchema,
+    keycloakAPI,
     scannerAPI,
     scannerAgentApi,
     userAPI,
