@@ -9,6 +9,7 @@ import {
     BsFileText as FileText,
     BsFolder as FolderClosed,
     BsFolder2Open as FolderOpen,
+    BsThreeDots as ThreeDots,
 } from "react-icons/bs";
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -184,7 +185,16 @@ const Node = ({
             </span>
             {isLeaf && licenseFindingIndicators.length > 0 && (
                 <span className="flex flex-row items-center">
-                    {licenseFindingIndicators}
+                    {licenseFindingIndicators.length <= 10 ? (
+                        // Render all indicators when there are 10 or fewer
+                        licenseFindingIndicators
+                    ) : (
+                        // Render the first 10 indicators and an ellipsis when there are more than 10
+                        <>
+                            {licenseFindingIndicators.slice(0, 10)}
+                            <ThreeDots className="ml-1 text-gray-400" />
+                        </>
+                    )}
                 </span>
             )}
         </div>
