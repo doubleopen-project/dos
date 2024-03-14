@@ -37,6 +37,32 @@ export const PostUserRes = z.object({
     token: z.string(),
 });
 
+//------------------- POST users -------------------
+
+export const PostUsersReq = z.object({
+    username: getUsernameSchema(true),
+    password: getPasswordSchema(true),
+    passwordIsTemporary: z.boolean().optional(),
+    role: z.enum(["ADMIN", "USER"]).optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().email().optional(),
+    emailVerified: z.boolean().optional(),
+    dosApiToken: z.string().optional(),
+});
+
+export const PostUsersRes = z.object({
+    id: z.string().uuid(),
+    username: z.string(),
+    dosApiToken: z.string().optional(),
+    realmRoles: z.array(z.string()),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().email().optional(),
+    emailVerified: z.boolean().optional(),
+    requiredActions: z.array(z.string()).optional(),
+});
+
 //------------------- DELETE user -------------------
 
 export const DeleteUserReqParamId = z.number({

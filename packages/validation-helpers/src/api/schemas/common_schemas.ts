@@ -102,6 +102,12 @@ export const PathParamPurl = z.string({
     required_error: "Purl is required",
 });
 
+export const PathParamUuid = z
+    .string({
+        required_error: "Id is required",
+    })
+    .uuid();
+
 //------------------ Common query params -------------------
 
 export const QueryParamFilterValue = z.string().optional();

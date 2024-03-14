@@ -39,6 +39,21 @@ export const adminAPI = makeApi([
         errors,
     },
     {
+        method: "post",
+        path: "/users",
+        description: "Create user",
+        alias: "CreateUser",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostUsersReq,
+            },
+        ],
+        response: schemas.PostUsersRes,
+        errors,
+    },
+    {
         method: "delete",
         path: "/user/:id",
         description: "Delete user",
@@ -47,6 +62,21 @@ export const adminAPI = makeApi([
                 name: "id",
                 type: "Path",
                 schema: schemas.DeleteUserReqParamId,
+            },
+        ],
+        response: schemas.DeleteUserRes,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/users/:id",
+        description: "Delete user",
+        alias: "DeleteUser",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
             },
         ],
         response: schemas.DeleteUserRes,

@@ -2090,6 +2090,192 @@ declare const adminAPI: [
         ];
     },
     {
+        method: "post";
+        path: "/users";
+        description: "Create user";
+        alias: "CreateUser";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
+                        password: zod.ZodEffects<zod.ZodString, string, string>;
+                        passwordIsTemporary: zod.ZodOptional<zod.ZodBoolean>;
+                        role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
+                        emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                        dosApiToken: zod.ZodOptional<zod.ZodString>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username: string;
+                        password: string;
+                        passwordIsTemporary?: boolean | undefined;
+                        role?: "ADMIN" | "USER" | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                        dosApiToken?: string | undefined;
+                    },
+                    {
+                        username: string;
+                        password: string;
+                        passwordIsTemporary?: boolean | undefined;
+                        role?: "ADMIN" | "USER" | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                        dosApiToken?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodString;
+                username: zod.ZodString;
+                dosApiToken: zod.ZodOptional<zod.ZodString>;
+                realmRoles: zod.ZodArray<zod.ZodString, "many">;
+                firstName: zod.ZodOptional<zod.ZodString>;
+                lastName: zod.ZodOptional<zod.ZodString>;
+                email: zod.ZodOptional<zod.ZodString>;
+                emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                requiredActions: zod.ZodOptional<
+                    zod.ZodArray<zod.ZodString, "many">
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: string;
+                username: string;
+                realmRoles: string[];
+                dosApiToken?: string | undefined;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                emailVerified?: boolean | undefined;
+                requiredActions?: string[] | undefined;
+            },
+            {
+                id: string;
+                username: string;
+                realmRoles: string[];
+                dosApiToken?: string | undefined;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                emailVerified?: boolean | undefined;
+                requiredActions?: string[] | undefined;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "delete";
         path: "/user/:id";
         description: "Delete user";
@@ -2098,6 +2284,122 @@ declare const adminAPI: [
                 name: "id";
                 type: "Path";
                 schema: zod.ZodNumber;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "delete";
+        path: "/users/:id";
+        description: "Delete user";
+        alias: "DeleteUser";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -18110,6 +18412,192 @@ declare const dosAPI: [
         ];
     },
     {
+        method: "post";
+        path: "/admin/users";
+        description: "Create user";
+        alias: "CreateUser";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
+                        password: zod.ZodEffects<zod.ZodString, string, string>;
+                        passwordIsTemporary: zod.ZodOptional<zod.ZodBoolean>;
+                        role: zod.ZodOptional<zod.ZodEnum<["ADMIN", "USER"]>>;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
+                        emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                        dosApiToken: zod.ZodOptional<zod.ZodString>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username: string;
+                        password: string;
+                        passwordIsTemporary?: boolean | undefined;
+                        role?: "ADMIN" | "USER" | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                        dosApiToken?: string | undefined;
+                    },
+                    {
+                        username: string;
+                        password: string;
+                        passwordIsTemporary?: boolean | undefined;
+                        role?: "ADMIN" | "USER" | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                        dosApiToken?: string | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodString;
+                username: zod.ZodString;
+                dosApiToken: zod.ZodOptional<zod.ZodString>;
+                realmRoles: zod.ZodArray<zod.ZodString, "many">;
+                firstName: zod.ZodOptional<zod.ZodString>;
+                lastName: zod.ZodOptional<zod.ZodString>;
+                email: zod.ZodOptional<zod.ZodString>;
+                emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                requiredActions: zod.ZodOptional<
+                    zod.ZodArray<zod.ZodString, "many">
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: string;
+                username: string;
+                realmRoles: string[];
+                dosApiToken?: string | undefined;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                emailVerified?: boolean | undefined;
+                requiredActions?: string[] | undefined;
+            },
+            {
+                id: string;
+                username: string;
+                realmRoles: string[];
+                dosApiToken?: string | undefined;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                emailVerified?: boolean | undefined;
+                requiredActions?: string[] | undefined;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
         method: "delete";
         path: "/admin/user/:id";
         description: "Delete user";
@@ -18118,6 +18606,122 @@ declare const dosAPI: [
                 name: "id";
                 type: "Path";
                 schema: zod.ZodNumber;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+            },
+            {
+                message: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "delete";
+        path: "/admin/users/:id";
+        description: "Delete user";
+        alias: "DeleteUser";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
             },
         ];
         response: zod.ZodObject<
@@ -19239,6 +19843,403 @@ declare const keycloakAPI: [
                 message: string;
             }
         >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/admin/realms/:realm/users";
+        description: "Create user";
+        alias: "CreateUser";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodString;
+                        credentials: zod.ZodArray<
+                            zod.ZodObject<
+                                {
+                                    type: zod.ZodString;
+                                    value: zod.ZodString;
+                                    temporary: zod.ZodBoolean;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    type: string;
+                                    value: string;
+                                    temporary: boolean;
+                                },
+                                {
+                                    type: string;
+                                    value: string;
+                                    temporary: boolean;
+                                }
+                            >,
+                            "many"
+                        >;
+                        attributes: zod.ZodObject<
+                            {
+                                dosApiToken: zod.ZodString;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                dosApiToken: string;
+                            },
+                            {
+                                dosApiToken: string;
+                            }
+                        >;
+                        enabled: zod.ZodOptional<zod.ZodBoolean>;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
+                        emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username: string;
+                        credentials: {
+                            type: string;
+                            value: string;
+                            temporary: boolean;
+                        }[];
+                        attributes: {
+                            dosApiToken: string;
+                        };
+                        enabled?: boolean | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                    },
+                    {
+                        username: string;
+                        credentials: {
+                            type: string;
+                            value: string;
+                            temporary: boolean;
+                        }[];
+                        attributes: {
+                            dosApiToken: string;
+                        };
+                        enabled?: boolean | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodUndefined;
+        createUserErrors: [
+            {
+                status: 409;
+                description: "User with this username already exists";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/realms/:realm/users";
+        description: "Get users";
+        alias: "GetUsers";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "username";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+            {
+                name: "exact";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodBoolean>;
+            },
+            {
+                name: "q";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+            },
+        ];
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    username: zod.ZodString;
+                    firstName: zod.ZodOptional<zod.ZodString>;
+                    lastName: zod.ZodOptional<zod.ZodString>;
+                    email: zod.ZodOptional<zod.ZodString>;
+                    attributes: zod.ZodOptional<
+                        zod.ZodObject<
+                            {
+                                dosApiToken: zod.ZodOptional<
+                                    zod.ZodArray<zod.ZodString, "many">
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                dosApiToken?: string[] | undefined;
+                            },
+                            {
+                                dosApiToken?: string[] | undefined;
+                            }
+                        >
+                    >;
+                    requiredActions: zod.ZodOptional<
+                        zod.ZodArray<zod.ZodString, "many">
+                    >;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    id: string;
+                    username: string;
+                    firstName?: string | undefined;
+                    lastName?: string | undefined;
+                    email?: string | undefined;
+                    attributes?:
+                        | {
+                              dosApiToken?: string[] | undefined;
+                          }
+                        | undefined;
+                    requiredActions?: string[] | undefined;
+                },
+                {
+                    id: string;
+                    username: string;
+                    firstName?: string | undefined;
+                    lastName?: string | undefined;
+                    email?: string | undefined;
+                    attributes?:
+                        | {
+                              dosApiToken?: string[] | undefined;
+                          }
+                        | undefined;
+                    requiredActions?: string[] | undefined;
+                }
+            >,
+            "many"
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "delete";
+        path: "/admin/realms/:realm/users/:id";
+        description: "Delete user";
+        alias: "DeleteUser";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodUndefined;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/realms/:realm/roles";
+        description: "Get realm roles";
+        alias: "GetRealmRoles";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    name: zod.ZodString;
+                    clientRole: zod.ZodBoolean;
+                    composite: zod.ZodBoolean;
+                    containerId: zod.ZodString;
+                    description: zod.ZodOptional<zod.ZodString>;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    id: string;
+                    name: string;
+                    clientRole: boolean;
+                    composite: boolean;
+                    containerId: string;
+                    description?: string | undefined;
+                },
+                {
+                    id: string;
+                    name: string;
+                    clientRole: boolean;
+                    composite: boolean;
+                    containerId: string;
+                    description?: string | undefined;
+                }
+            >,
+            "many"
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/admin/realms/:realm/users/:id/role-mappings/realm";
+        description: "Add realm role to user";
+        alias: "AddRealmRoleToUser";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodString;
+                            name: zod.ZodString;
+                            clientRole: zod.ZodBoolean;
+                            composite: zod.ZodBoolean;
+                            containerId: zod.ZodString;
+                            description: zod.ZodOptional<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: string;
+                            name: string;
+                            clientRole: boolean;
+                            composite: boolean;
+                            containerId: string;
+                            description?: string | undefined;
+                        },
+                        {
+                            id: string;
+                            name: string;
+                            clientRole: boolean;
+                            composite: boolean;
+                            containerId: string;
+                            description?: string | undefined;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+        ];
+        response: zod.ZodUndefined;
         errors: [
             {
                 status: 400;
