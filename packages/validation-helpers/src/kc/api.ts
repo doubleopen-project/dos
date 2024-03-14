@@ -4,7 +4,7 @@
 
 import { makeApi } from "@zodios/core";
 import * as commonSchemas from "../api/schemas/common_schemas";
-import { errors } from "./errors";
+import { createUserErrors, errors } from "./errors";
 import * as schemas from "./schemas";
 
 export const keycloakAPI = makeApi([
@@ -46,6 +46,116 @@ export const keycloakAPI = makeApi([
             },
         ],
         response: schemas.LogoutUserResponse,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/admin/realms/:realm/users",
+        description: "Create user",
+        alias: "CreateUser",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.CreateUserReq,
+            },
+        ],
+        response: schemas.UndefinedResponse,
+        createUserErrors,
+    },
+    {
+        method: "get",
+        path: "/admin/realms/:realm/users",
+        description: "Get users",
+        alias: "GetUsers",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "username",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+            {
+                name: "exact",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterBoolean,
+            },
+            {
+                name: "q",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+            },
+        ],
+        response: schemas.GetUsersResponse,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/admin/realms/:realm/users/:id",
+        description: "Delete user",
+        alias: "DeleteUser",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.UndefinedResponse,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/admin/realms/:realm/roles",
+        description: "Get realm roles",
+        alias: "GetRealmRoles",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+        ],
+        response: schemas.RealmRolesArray,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/admin/realms/:realm/users/:id/role-mappings/realm",
+        description: "Add realm role to user",
+        alias: "AddRealmRoleToUser",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.RealmRolesArray,
+            },
+        ],
+        response: schemas.UndefinedResponse,
         errors,
     },
 ]);

@@ -17,6 +17,10 @@ const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
 
 type Token = ZodiosResponseByAlias<typeof keycloakAPI, "GetAccessToken">;
 
+type RealmRole = ZodiosResponseByAlias<typeof keycloakAPI, "GetRealmRoles">[0];
+
+type User = ZodiosResponseByAlias<typeof keycloakAPI, "GetUsers">[0];
+
 export const getAccessToken = async (): Promise<Token> => {
     let retries = 3;
     let token: { token: Token; expires_at: number } | undefined =
@@ -173,4 +177,323 @@ export const logoutUser = async (
     }
     if (!response) throw new CustomError("Failed to logout user", 500);
     return response;
+};
+
+export const createUser = async (data: {
+    username: string;
+    credentials: {
+        type: string;
+        value: string;
+        temporary: boolean;
+    }[];
+    attributes: {
+        dosApiToken: string;
+    };
+    enabled?: boolean;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    emailVerified?: boolean;
+}): Promise<User> => {
+    let retries = 3;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            await kcClient.CreateUser(data, {
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to create user due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to create user due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.response?.status === 401 && retries > 0) {
+                    console.log(
+                        "Failed to create user due to unauthorized error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.response?.status === 409) {
+                    throw new CustomError(
+                        "User with this username or email already exists",
+                        400,
+                    );
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to create user. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to create user. Error: " + error.message,
+                        500,
+                    );
+                }
+            } else {
+                throw new CustomError(
+                    "Failed to create user. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+
+    const user = (await getUsers(data.username, undefined, true))[0];
+
+    if (!user) {
+        throw new CustomError("Failed to create user. User not found", 500);
+    }
+    return user;
+};
+
+export const deleteUser = async (userId: string): Promise<boolean> => {
+    let retries = 3;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            await kcClient.DeleteUser(undefined, {
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                    id: userId,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to delete user due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to delete user due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.response?.status === 404) {
+                    throw new CustomError("User to delete not found", 404);
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to delete user. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to delete user. Error: " + error.message,
+                        500,
+                    );
+                }
+            } else {
+                console.log("Failed to delete user. Error: ", error);
+                throw new CustomError(
+                    "Failed to delete user. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+    return true;
+};
+
+export const getRealmRoles = async (): Promise<RealmRole[]> => {
+    let retries = 3;
+    let roles: RealmRole[] | null = null;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            roles = await kcClient.GetRealmRoles({
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to get realm roles due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to get realm roles due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to get realm roles. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to get realm roles. Error: " + error.message,
+                        500,
+                    );
+                }
+            } else {
+                console.log("Failed to get realm roles. Error: ", error);
+                throw new CustomError(
+                    "Failed to get realm roles. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+
+    if (!roles) throw new CustomError("Failed to get realm roles", 500);
+
+    return roles;
+};
+
+export const addRealmRolesToUser = async (
+    userId: string,
+    roleNames: string[],
+): Promise<boolean> => {
+    let roles: RealmRole[] | undefined = cache.get("realmRoles");
+    if (!roles) {
+        roles = await getRealmRoles();
+        cache.set("realmRoles", roles);
+    }
+
+    roles = roles.filter((role) => roleNames.includes(role.name));
+
+    let retries = 3;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+
+            await kcClient.AddRealmRoleToUser(roles, {
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                    id: userId,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to add realm role to user due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to add realm role to user due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.response?.status === 404) {
+                    throw new CustomError("User not found", 404);
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to add realm role to user. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to add realm role to user. Error: " +
+                            error.message,
+                        500,
+                    );
+                }
+            } else {
+                console.log("Failed to add realm role to user. Error: ", error);
+                throw new CustomError(
+                    "Failed to add realm role to user. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+    return true;
+};
+
+export const getUsers = async (
+    username?: string,
+    dosApiToken?: string,
+    exact?: boolean,
+): Promise<User[]> => {
+    let retries = 3;
+    let users = null;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            users = await kcClient.GetUsers({
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                },
+                queries: {
+                    username: username,
+                    exact: exact,
+                    q: dosApiToken ? "dosApiToken:" + dosApiToken : undefined,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to get users due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to get users due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to get users. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to get users. Error: " + error.message,
+                        500,
+                    );
+                }
+            } else {
+                console.log("Failed to get users. Error: ", error);
+                throw new CustomError(
+                    "Failed to get users. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+    if (!users) throw new CustomError("Failed to get users", 500);
+    return users;
 };

@@ -14,3 +14,13 @@ export const errors = makeErrors([
         }),
     },
 ]);
+
+export const createUserErrors = makeErrors([
+    {
+        status: 409,
+        description: "User with this username already exists",
+        schema: z.object({
+            error: z.string(),
+        }),
+    },
+]);
