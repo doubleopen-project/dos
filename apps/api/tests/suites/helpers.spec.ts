@@ -133,5 +133,11 @@ export default function suite(): void {
             const result = extractStringFromGlob(glob);
             assert.strictEqual(result, undefined);
         });
+
+        it("should return undefined when used with a glob with a list of files/globs inside curly braces", function () {
+            const glob = "{doc/source/dev/**,HACKING.rst.txt}";
+            const result = extractStringFromGlob(glob);
+            assert.strictEqual(result, undefined);
+        });
     });
 }
