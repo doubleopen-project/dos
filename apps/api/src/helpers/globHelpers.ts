@@ -9,6 +9,9 @@ import isValid from "is-valid-path";
 // This function is used to extract a string from a glob, to be used in database
 // queries, to reduce the amount of filetree paths that will be compared with the glob.
 export const extractStringFromGlob = (glob: string) => {
+    // The return values below won't be applicable to a glob that contains
+    // list of files/globs inside curly braces
+    if (glob.startsWith("{")) return undefined;
     const nonMagicParentPath = globParent(glob);
     // Case where the parent path is not magic
     if (nonMagicParentPath !== ".") return nonMagicParentPath;
