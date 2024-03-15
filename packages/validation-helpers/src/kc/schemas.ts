@@ -82,3 +82,33 @@ export const RealmRole = z.object({
 });
 
 export const RealmRolesArray = z.array(RealmRole);
+
+export const UpdateUserReq = z.object({
+    username: z.string().optional(),
+    credentials: z
+        .array(
+            z.object({
+                type: z.string(),
+                value: z.string(),
+                temporary: z.boolean(),
+            }),
+        )
+        .optional(),
+    attributes: z
+        .object({
+            dosApiToken: z.string().optional(),
+        })
+        .optional(),
+    realmRoles: z.array(z.string()).optional(),
+    enabled: z.boolean().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().optional(),
+    emailVerified: z.boolean().optional(),
+});
+
+export const ResetUserPasswordReq = z.object({
+    type: z.string(),
+    value: z.string(),
+    temporary: z.boolean(),
+});

@@ -497,3 +497,81 @@ export const getUsers = async (
     if (!users) throw new CustomError("Failed to get users", 500);
     return users;
 };
+
+export const updateUser = async (
+    userId: string,
+    data: {
+        username?: string;
+        credentials?: {
+            type: string;
+            value: string;
+            temporary: boolean;
+        }[];
+        realmRoles?: string[];
+        attributes?: {
+            dosApiToken?: string;
+        };
+        enabled?: boolean;
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        emailVerified?: boolean;
+    },
+): Promise<boolean> => {
+    let retries = 3;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            await kcClient.UpdateUser(data, {
+                params: {
+                    realm: process.env.KEYCLOAK_REALM as string,
+                    id: userId,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to update user due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to update user due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.response?.status === 404) {
+                    throw new CustomError("User to update not found", 404);
+                } else if (error.response?.status === 409) {
+                    throw new CustomError(
+                        "User with this username or email already exists",
+                        400,
+                    );
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to update user. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to update user. Error: " + error.message,
+                        500,
+                    );
+                }
+            } else {
+                console.log("Failed to update user. Error: ", error);
+                throw new CustomError(
+                    "Failed to update user. Error: " + error,
+                    500,
+                );
+            }
+        }
+    }
+    return true;
+};
