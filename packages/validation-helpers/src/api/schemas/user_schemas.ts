@@ -40,6 +40,9 @@ export const PutUserReq = z
     .object({
         username: getUsernameSchema(false),
         password: getPasswordSchema(false),
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string().email(),
     })
     .partial();
 

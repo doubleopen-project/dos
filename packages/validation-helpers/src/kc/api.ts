@@ -138,6 +138,7 @@ export const keycloakAPI = makeApi([
         path: "/admin/realms/:realm/users/:id/role-mappings/realm",
         description: "Add realm role to user",
         alias: "AddRealmRoleToUser",
+
         parameters: [
             {
                 name: "realm",
@@ -153,6 +154,56 @@ export const keycloakAPI = makeApi([
                 name: "body",
                 type: "Body",
                 schema: schemas.RealmRolesArray,
+            },
+        ],
+        response: schemas.UndefinedResponse,
+        errors,
+    },
+    {
+        method: "put",
+        path: "/admin/realms/:realm/users/:id",
+        description: "Update user",
+        alias: "UpdateUser",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.UpdateUserReq,
+            },
+        ],
+        response: schemas.UndefinedResponse,
+        errors,
+    },
+    {
+        method: "put",
+        path: "/admin/realms/:realm/users/:id/reset-password",
+        description: "Reset user password",
+        alias: "ResetUserPassword",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.ResetUserPasswordReq,
             },
         ],
         response: schemas.UndefinedResponse,

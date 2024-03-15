@@ -5176,6 +5176,7 @@ declare const userAPI: [
         method: "put";
         path: "/user";
         description: "Update user data (for users to update their own data)";
+        alias: "PutUser";
         parameters: [
             {
                 name: "body";
@@ -5200,16 +5201,25 @@ declare const userAPI: [
                         password: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         username?: string | undefined;
                         password?: string | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
                     },
                     {
                         username?: string | undefined;
                         password?: string | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
                     }
                 >;
             },
@@ -12678,6 +12688,7 @@ declare const dosAPI: [
         method: "put";
         path: "/user/user";
         description: "Update user data (for users to update their own data)";
+        alias: "PutUser";
         parameters: [
             {
                 name: "body";
@@ -12702,16 +12713,25 @@ declare const dosAPI: [
                         password: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         username?: string | undefined;
                         password?: string | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
                     },
                     {
                         username?: string | undefined;
                         password?: string | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
                     }
                 >;
             },
@@ -19444,16 +19464,25 @@ declare const PutUserReq: z.ZodObject<
             >
         >;
         password: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
+        firstName: z.ZodOptional<z.ZodString>;
+        lastName: z.ZodOptional<z.ZodString>;
+        email: z.ZodOptional<z.ZodString>;
     },
     "strip",
     z.ZodTypeAny,
     {
         username?: string | undefined;
         password?: string | undefined;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        email?: string | undefined;
     },
     {
         username?: string | undefined;
         password?: string | undefined;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        email?: string | undefined;
     }
 >;
 declare const validReasons: {
@@ -20236,6 +20265,205 @@ declare const keycloakAPI: [
                         }
                     >,
                     "many"
+                >;
+            },
+        ];
+        response: zod.ZodUndefined;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "put";
+        path: "/admin/realms/:realm/users/:id";
+        description: "Update user";
+        alias: "UpdateUser";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        username: zod.ZodOptional<zod.ZodString>;
+                        credentials: zod.ZodOptional<
+                            zod.ZodArray<
+                                zod.ZodObject<
+                                    {
+                                        type: zod.ZodString;
+                                        value: zod.ZodString;
+                                        temporary: zod.ZodBoolean;
+                                    },
+                                    "strip",
+                                    zod.ZodTypeAny,
+                                    {
+                                        type: string;
+                                        value: string;
+                                        temporary: boolean;
+                                    },
+                                    {
+                                        type: string;
+                                        value: string;
+                                        temporary: boolean;
+                                    }
+                                >,
+                                "many"
+                            >
+                        >;
+                        attributes: zod.ZodOptional<
+                            zod.ZodObject<
+                                {
+                                    dosApiToken: zod.ZodOptional<zod.ZodString>;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    dosApiToken?: string | undefined;
+                                },
+                                {
+                                    dosApiToken?: string | undefined;
+                                }
+                            >
+                        >;
+                        realmRoles: zod.ZodOptional<
+                            zod.ZodArray<zod.ZodString, "many">
+                        >;
+                        enabled: zod.ZodOptional<zod.ZodBoolean>;
+                        firstName: zod.ZodOptional<zod.ZodString>;
+                        lastName: zod.ZodOptional<zod.ZodString>;
+                        email: zod.ZodOptional<zod.ZodString>;
+                        emailVerified: zod.ZodOptional<zod.ZodBoolean>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        username?: string | undefined;
+                        credentials?:
+                            | {
+                                  type: string;
+                                  value: string;
+                                  temporary: boolean;
+                              }[]
+                            | undefined;
+                        attributes?:
+                            | {
+                                  dosApiToken?: string | undefined;
+                              }
+                            | undefined;
+                        realmRoles?: string[] | undefined;
+                        enabled?: boolean | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                    },
+                    {
+                        username?: string | undefined;
+                        credentials?:
+                            | {
+                                  type: string;
+                                  value: string;
+                                  temporary: boolean;
+                              }[]
+                            | undefined;
+                        attributes?:
+                            | {
+                                  dosApiToken?: string | undefined;
+                              }
+                            | undefined;
+                        realmRoles?: string[] | undefined;
+                        enabled?: boolean | undefined;
+                        firstName?: string | undefined;
+                        lastName?: string | undefined;
+                        email?: string | undefined;
+                        emailVerified?: boolean | undefined;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodUndefined;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "put";
+        path: "/admin/realms/:realm/users/:id/reset-password";
+        description: "Reset user password";
+        alias: "ResetUserPassword";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        type: zod.ZodString;
+                        value: zod.ZodString;
+                        temporary: zod.ZodBoolean;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        type: string;
+                        value: string;
+                        temporary: boolean;
+                    },
+                    {
+                        type: string;
+                        value: string;
+                        temporary: boolean;
+                    }
                 >;
             },
         ];

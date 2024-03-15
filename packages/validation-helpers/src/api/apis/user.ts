@@ -20,6 +20,7 @@ export const userAPI = makeApi([
         method: "put",
         path: "/user",
         description: "Update user data (for users to update their own data)",
+        alias: "PutUser",
         parameters: [
             {
                 name: "body",
