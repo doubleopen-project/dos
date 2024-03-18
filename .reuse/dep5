@@ -158,7 +158,7 @@ Files: apps/clearance_ui/components.json
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
-Files: apps/clearance_ui/favicon.ico
+Files: apps/clearance_ui/public/favicon.ico
 Copyright: 2023 HH Partners
 License: CC-BY-4.0
 
