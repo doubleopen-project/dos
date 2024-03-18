@@ -36,11 +36,11 @@ import { useToast } from "@/components/ui/use-toast";
 import ConclusionLicense from "@/components/common/ConclusionLicense";
 import ConclusionSPDX from "@/components/common/ConclusionSPDX";
 import { cn } from "@/lib/utils";
-import { patternGlobSchema } from "@/schemes/pattern_schema";
+import { bcPatternGlobSchema } from "@/schemes/pattern_schema";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 
 const bulkConclusionFormSchema = z.object({
-    pattern: patternGlobSchema,
+    pattern: bcPatternGlobSchema,
     concludedLicenseSPDX: concludedLicenseExpressionSPDXSchema,
     concludedLicenseList: concludedLicenseExpressionSPDXSchema,
     comment: z.string(),

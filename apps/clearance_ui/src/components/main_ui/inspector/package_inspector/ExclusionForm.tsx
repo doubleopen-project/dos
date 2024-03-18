@@ -34,10 +34,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
-import { patternGlobSchema } from "@/schemes/pattern_schema";
+import { pePatternGlobSchema } from "@/schemes/pattern_schema";
 
 const exclusionFormSchema = z.object({
-    pattern: patternGlobSchema,
+    pattern: pePatternGlobSchema,
     reason: z.string().min(1, "Please select a valid reason from this list"),
     comment: z.string().optional(),
 });
