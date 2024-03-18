@@ -5,9 +5,11 @@
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package } from "database";
+import { minimatch } from "minimatch";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../../helpers/custom_error";
 import { getErrorCodeAndMessage } from "../../helpers/error_handling";
+import { extractStringFromGlob } from "../../helpers/globHelpers";
 import { getUsers, updateUser } from "../../helpers/keycloak_queries";
 import * as dbQueries from "../../helpers/temp/db_queries";
 
@@ -423,6 +425,157 @@ userRouter.get("/bulk-conclusions/:id/affected-files", async (req, res) => {
                 .status(error.statusCode)
                 .json({ message: error.message });
         else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/path-exclusions", async (req, res) => {
+    try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+        const pathExclusions = await dbQueries.findPathExclusions(
+            skip,
+            pageSize,
+            // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+            req.query.sortBy || "updatedAt",
+            !req.query.sortBy && !req.query.sortOrder
+                ? "desc"
+                : req.query.sortOrder,
+            req.query.purl,
+            req.query.purlStrict || false,
+            userIds,
+            req.query.pattern,
+            req.query.reason,
+            req.query.comment,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        const users = await getUsers();
+
+        const pes = pathExclusions.map((pe) => {
+            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...pe,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        return res.status(200).json({
+            pathExclusions: pes,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/path-exclusions/count", async (req, res) => {
+    try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
+        const pathExclusionsCount = await dbQueries.countPathExclusions(
+            req.query.purl,
+            req.query.purlStrict || false,
+            userIds,
+            req.query.pattern,
+            req.query.reason,
+            req.query.comment,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({
+            count: pathExclusionsCount,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
+    try {
+        const pe = await dbQueries.findPathExclusionById(req.params.id);
+
+        if (!pe)
+            throw new CustomError(
+                "Path exclusion with the requested id does not exist",
+                404,
+            );
+
+        // See first, if the pattern is an exact match for a filetree path
+        const exactPathMatch = await dbQueries.findFileTreeByPkgIdAndPath(
+            pe.packageId,
+            pe.pattern,
+        );
+
+        if (exactPathMatch) {
+            return res.status(200).json({
+                affectedFiles: [exactPathMatch.path],
+            });
+        } else {
+            // Extract a string from the glob that can be used to reduce the amount
+            // of filetrees that need to be compared with the glob pattern.
+            const extractedString = extractStringFromGlob(pe.pattern);
+
+            const filetrees = await dbQueries.findFileTreesByPackageId(
+                pe.packageId,
+                extractedString,
+            );
+
+            const affectedPaths: string[] = [];
+
+            for (const ft of filetrees) {
+                if (
+                    minimatch(ft.path, pe.pattern, { dot: true }) ||
+                    ft.path === pe.pattern
+                ) {
+                    affectedPaths.push(ft.path);
+                }
+            }
+
+            res.status(200).json({
+                affectedFiles: affectedPaths,
+            });
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
         }
