@@ -6,11 +6,13 @@ import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
 import { minimatch } from "minimatch";
+import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../../helpers/custom_error";
 import { getErrorCodeAndMessage } from "../../helpers/error_handling";
 import { extractStringFromGlob } from "../../helpers/globHelpers";
 import { getUsers, updateUser } from "../../helpers/keycloak_queries";
+import { s3Client } from "../../helpers/s3client";
 import * as dbQueries from "../../helpers/temp/db_queries";
 
 const userRouter = zodiosRouter(userAPI);
@@ -262,6 +264,64 @@ userRouter.get("/license-conclusions/count", async (req, res) => {
         }
     }
 });
+
+userRouter.get(
+    "/packages/:purl/files/:sha256/license-conclusions/",
+    async (req, res) => {
+        try {
+            const fileSha256 = req.params.sha256;
+            const purl = req.params.purl;
+
+            let licenseConclusions =
+                await dbQueries.findLicenseConclusionsByFileSha256(fileSha256);
+
+            // Filter out license conclusions that have been marked as local
+            // if the context package purl does not match the requested purl
+            licenseConclusions = licenseConclusions.filter((lc) => {
+                if (lc.local) {
+                    return lc.contextPurl === purl;
+                } else {
+                    return true;
+                }
+            });
+
+            const users = await getUsers();
+
+            const lcs = licenseConclusions.map((lc) => {
+                const username = users.find(
+                    (u) => u.id === lc.kcUserId,
+                )?.username;
+                if (!username) {
+                    throw new CustomError(
+                        "Internal server error: creator username not found",
+                        500,
+                    );
+                }
+                return {
+                    ...lc,
+                    user: {
+                        username: username,
+                    },
+                };
+            });
+
+            res.status(200).json({
+                licenseConclusions: lcs,
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError)
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message, path: error.path });
+            else {
+                // If error is not a CustomError, it is a Prisma error or an unknown error
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
 
 userRouter.get("/bulk-conclusions", async (req, res) => {
     try {
@@ -700,6 +760,75 @@ userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+        const path = req.params.path;
+
+        const sha256 = await dbQueries.findFileSha256ByPurlAndPath(purl, path);
+
+        if (!sha256) throw new CustomError("File not found", 400);
+
+        const presignedGetUrl = await getPresignedGetUrl(
+            s3Client,
+            process.env.SPACES_BUCKET || "doubleopen",
+            sha256,
+        );
+
+        if (!presignedGetUrl) {
+            throw new CustomError(
+                "Internal server error: Presigned URL is undefined",
+                500,
+            );
+        }
+
+        res.status(200).json({
+            sha256: sha256,
+            downloadUrl: presignedGetUrl,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/files/:sha256/license-findings", async (req, res) => {
+    try {
+        const sha256 = req.params.sha256;
+        const file = await dbQueries.findFileByHash(sha256);
+
+        if (!file)
+            throw new CustomError(
+                "File with the requested sha256 does not exist",
+                400,
+            );
+
+        const licenseFindings =
+            await dbQueries.findLicenseFindingsByFileSha256(sha256);
+
+        res.status(200).json({
+            licenseFindings: licenseFindings,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 
