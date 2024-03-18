@@ -1953,9 +1953,7 @@ export const getPathExclusionsByPackagePurl = async (
         pattern: string;
         reason: string;
         comment: string | null;
-        user: {
-            username: string;
-        };
+        kcUserId: string;
     }[]
 > => {
     let retries = initialRetryCount;
@@ -1976,11 +1974,7 @@ export const getPathExclusionsByPackagePurl = async (
                             pattern: true,
                             reason: true,
                             comment: true,
-                            user: {
-                                select: {
-                                    username: true,
-                                },
-                            },
+                            kcUserId: true,
                         },
                     },
                 },
