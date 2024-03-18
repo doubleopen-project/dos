@@ -2557,11 +2557,7 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
         comment: true;
         local: true;
         contextPurl: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
         bulkConclusionId: true;
         file: {
             select: {
@@ -2598,8 +2594,7 @@ export const findLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -2634,11 +2629,7 @@ export const findLicenseConclusions = async (
                     comment: true,
                     local: true,
                     contextPurl: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     bulkConclusionId: true,
                     file: {
                         select: {
@@ -2720,9 +2711,8 @@ export const findLicenseConclusions = async (
                                   : undefined,
                     },
                     user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
+                        kcUserId: {
+                            in: userIds,
                         },
                     },
                     detectedLicenseExpressionSPDX: {
@@ -4449,8 +4439,7 @@ export const countLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -4538,9 +4527,8 @@ export const countLicenseConclusions = async (
                                   : undefined,
                     },
                     user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
+                        kcUserId: {
+                            in: userIds,
                         },
                     },
                     detectedLicenseExpressionSPDX: {
