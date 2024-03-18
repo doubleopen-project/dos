@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../../helpers/custom_error";
@@ -44,6 +45,22 @@ userRouter.put("/user", async (req, res) => {
             console.log("Error: ", error);
             res.status(500).send({ message: "Internal server error" });
         }
+    }
+});
+
+userRouter.put("/token", async (req, res) => {
+    try {
+        const token = crypto.randomBytes(16).toString("hex");
+
+        // Update user token
+        await updateUser(req.kauth.grant.access_token.content.sub, {
+            attributes: { dosApiToken: token },
+        });
+
+        res.status(200).json({ token: token });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
