@@ -582,4 +582,58 @@ userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
     }
 });
 
+userRouter.get("/packages", async (req, res) => {
+    try {
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+
+        const packages = await dbQueries.findScannedPackages(
+            skip,
+            pageSize,
+            // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+            req.query.sortBy || "updatedAt",
+            !req.query.sortBy && !req.query.sortOrder
+                ? "desc"
+                : req.query.sortOrder,
+            req.query.name,
+            req.query.version,
+            req.query.type,
+            req.query.namespace,
+            req.query.purl,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({ packages: packages });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.get("/packages/count", async (req, res) => {
+    try {
+        const count = await dbQueries.countScannedPackages(
+            req.query.name,
+            req.query.version,
+            req.query.type,
+            req.query.namespace,
+            req.query.purl,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+        res.status(200).json({ count: count });
+    } catch (error) {
+        console.log("Error: ", error);
+        // Find out if error is a Prisma error or an unknown error
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
 export default userRouter;
