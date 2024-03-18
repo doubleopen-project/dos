@@ -3037,11 +3037,7 @@ type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
     };
 }>;
 
@@ -3061,8 +3057,7 @@ export const findBulkConclusionsWithRelations = async (
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -3093,11 +3088,7 @@ export const findBulkConclusionsWithRelations = async (
                             purl: true,
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                 },
                 skip: skip,
                 take: take,
@@ -3108,11 +3099,8 @@ export const findBulkConclusionsWithRelations = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: usernameStrict ? undefined : username,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -4326,8 +4314,7 @@ export const countPathExclusions = async (
 export const countBulkConclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -4351,11 +4338,8 @@ export const countBulkConclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
