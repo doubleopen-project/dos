@@ -3301,11 +3301,7 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
         pattern: true;
         reason: true;
         comment: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
         package: {
             select: {
                 purl: true;
@@ -3328,8 +3324,7 @@ export const findPathExclusions = async (
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -3350,11 +3345,7 @@ export const findPathExclusions = async (
                     pattern: true,
                     reason: true,
                     comment: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     package: {
                         select: {
                             purl: true,
@@ -3370,11 +3361,8 @@ export const findPathExclusions = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: usernameStrict ? undefined : username,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -4251,8 +4239,7 @@ export const countScannedPackages = async (
 export const countPathExclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -4274,11 +4261,8 @@ export const countPathExclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
