@@ -2862,11 +2862,7 @@ type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
                 };
             };
         };
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
     };
 }>;
 
@@ -2915,11 +2911,7 @@ export const findBulkConclusionWithRelationsById = async (
                             },
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                 },
             });
             break;
@@ -2979,11 +2971,7 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                             purl: true,
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     licenseConclusions: {
                         select: {
                             id: true,

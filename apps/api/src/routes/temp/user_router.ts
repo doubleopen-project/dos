@@ -491,6 +491,104 @@ userRouter.get("/bulk-conclusions/:id/affected-files", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + purl + " not found",
+                404,
+            );
+
+        const bulkConclusions =
+            await dbQueries.findBulkConclusionsWithRelationsByPackageId(
+                packageId,
+            );
+
+        const users = await getUsers();
+
+        const bcs = bulkConclusions.map((bc) => {
+            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+
+            return {
+                ...bc,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        res.status(200).json({
+            bulkConclusions: bcs,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with purl " + req.params.purl + " not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/packages/:purl/bulk-conclusions/count", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + purl + " not found",
+                404,
+            );
+
+        const bulkConclusionsCount =
+            await dbQueries.countBulkConclusionsForPackage(packageId);
+
+        res.status(200).json({
+            count: bulkConclusionsCount,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with purl " + req.params.purl + " not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.get("/path-exclusions", async (req, res) => {
     try {
         const userIds = req.query.username
