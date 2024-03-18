@@ -62,11 +62,14 @@ export const parse = (tokens: Token[]): LicenseInfo | ConjunctionInfo => {
     function parseWith() {
         if (parseOperator("WITH")) {
             const t = token();
-            if (t && t.type === "EXCEPTION") {
+            // This change is here to comply with the current strictness setting
+            // for license checking in DOS: license WITH LicenseRef is allowed,
+            // even if not strictly complying with SPDX rules (expecting AND).
+            if (t && (t.type === "EXCEPTION" || t.type === "LICENSEREF")) {
                 next();
                 return t.string;
             }
-            throw new Error("Expected exception after `WITH`");
+            throw new Error("Expected exception or LicenseRef after `WITH`");
         }
     }
 
