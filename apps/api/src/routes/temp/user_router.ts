@@ -4,6 +4,7 @@
 
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
+import { Package } from "database";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../../helpers/custom_error";
 import { getErrorCodeAndMessage } from "../../helpers/error_handling";
@@ -253,6 +254,174 @@ userRouter.get("/license-conclusions/count", async (req, res) => {
             return res
                 .status(error.statusCode)
                 .json({ message: error.message, path: error.path });
+        else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/bulk-conclusions", async (req, res) => {
+    try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+        const bulkConclusions =
+            await dbQueries.findBulkConclusionsWithRelations(
+                skip,
+                pageSize,
+                // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+                req.query.sortBy || "updatedAt",
+                !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder,
+                req.query.purl,
+                req.query.purlStrict || false,
+                userIds,
+                req.query.pattern,
+                req.query.detectedLicense,
+                req.query.concludedLicense,
+                req.query.comment,
+                req.query.local,
+                req.query.createdAtGte,
+                req.query.createdAtLte,
+                req.query.updatedAtGte,
+                req.query.updatedAtLte,
+            );
+
+        const users = await getUsers();
+
+        const bcs = bulkConclusions.map((bc) => {
+            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...bc,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        res.status(200).json({
+            bulkConclusions: bcs,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/bulk-conclusions/count", async (req, res) => {
+    try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
+        const bulkConclusionsCount = await dbQueries.countBulkConclusions(
+            req.query.purl,
+            req.query.purlStrict || false,
+            userIds,
+            req.query.pattern,
+            req.query.detectedLicense,
+            req.query.concludedLicense,
+            req.query.comment,
+            req.query.local,
+            req.query.createdAtGte,
+            req.query.createdAtLte,
+            req.query.updatedAtGte,
+            req.query.updatedAtLte,
+        );
+
+        res.status(200).json({ count: bulkConclusionsCount });
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+userRouter.get("/bulk-conclusions/:id/affected-files", async (req, res) => {
+    try {
+        const bulkConclusionId = req.params.id;
+
+        const bulkConclusion =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
+
+        if (!bulkConclusion)
+            throw new CustomError(
+                "Bulk conclusion with the requested id does not exist",
+                404,
+            );
+
+        let queryPkg: Package | null = null;
+        if (req.query.purl) {
+            queryPkg = await dbQueries.findPackageByPurl(req.query.purl);
+
+            if (!queryPkg) {
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
+            }
+        }
+
+        const inContextPurl = await dbQueries.findFileTreesByBulkConclusionId(
+            bulkConclusionId,
+            bulkConclusion.package.id,
+        );
+
+        const additionalMatches = bulkConclusion.local
+            ? []
+            : await dbQueries.findFileTreesByBulkConclusionId(
+                  bulkConclusionId,
+                  undefined,
+                  bulkConclusion.package.id,
+              );
+
+        let inQueryPurl: dbQueries.FileTreeWithPackage[] = [];
+
+        if (req.query.purl && queryPkg) {
+            inQueryPurl = await dbQueries.findFileTreesByBulkConclusionId(
+                bulkConclusionId,
+                queryPkg.id,
+            );
+        }
+
+        res.status(200).json({
+            affectedFiles: {
+                inContextPurl: inContextPurl.map((ft) => ft.path),
+                additionalMatches: additionalMatches.map((ft) => {
+                    return {
+                        path: ft.path,
+                        purl: ft.package.purl,
+                    };
+                }),
+                inQueryPurl: inQueryPurl.map((ft) => ft.path),
+            },
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
         else {
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
