@@ -3590,28 +3590,10 @@ export const findLicenseConclusionsByBulkConclusionId = async (
     return licenseConclusions;
 };
 
-type LicenseConclusionWithUserRelation = Prisma.LicenseConclusionGetPayload<{
-    select: {
-        id: true;
-        updatedAt: true;
-        detectedLicenseExpressionSPDX: true;
-        concludedLicenseExpressionSPDX: true;
-        comment: true;
-        local: true;
-        contextPurl: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
-        bulkConclusionId: true;
-    };
-}>;
-
 export const findLicenseConclusionsByFileSha256 = async (
     sha256: string,
-): Promise<LicenseConclusionWithUserRelation[]> => {
-    let licenseConclusions: LicenseConclusionWithUserRelation[] = [];
+): Promise<LicenseConclusion[]> => {
+    let licenseConclusions: LicenseConclusion[] = [];
     let retries = initialRetryCount;
     let querySuccess = false;
 
@@ -3620,21 +3602,6 @@ export const findLicenseConclusionsByFileSha256 = async (
             licenseConclusions = await prisma.licenseConclusion.findMany({
                 where: {
                     fileSha256: sha256,
-                },
-                select: {
-                    id: true,
-                    updatedAt: true,
-                    detectedLicenseExpressionSPDX: true,
-                    concludedLicenseExpressionSPDX: true,
-                    comment: true,
-                    local: true,
-                    contextPurl: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
-                    bulkConclusionId: true,
                 },
             });
             querySuccess = true;
