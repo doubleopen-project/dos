@@ -4,7 +4,7 @@
 
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
-import { Package } from "database";
+import { Package, Prisma } from "database";
 import { minimatch } from "minimatch";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../../helpers/custom_error";
@@ -582,6 +582,51 @@ userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const pathExclusions =
+            await dbQueries.getPathExclusionsByPackagePurl(purl);
+
+        const users = await getUsers();
+
+        const pes = pathExclusions.map((pe) => {
+            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...pe,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        res.status(200).json({
+            pathExclusions: pes,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with the requested purl does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
 userRouter.get("/packages", async (req, res) => {
     try {
         const pageSize = req.query.pageSize;
@@ -633,6 +678,28 @@ userRouter.get("/packages/count", async (req, res) => {
         // Find out if error is a Prisma error or an unknown error
         const err = await getErrorCodeAndMessage(error);
         res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+userRouter.get("/packages/:purl/filetrees", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+        const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
+
+        for (const ft of filetrees) {
+            ft.file.licenseConclusions = ft.file.licenseConclusions.filter(
+                (lc) => !(lc.local && lc.contextPurl !== purl),
+            );
+        }
+
+        if (filetrees) {
+            res.status(200).json({
+                filetrees: filetrees,
+            });
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
