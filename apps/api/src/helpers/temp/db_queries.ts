@@ -3260,22 +3260,21 @@ export const findPathExclusionById = async (
 
 export const findPathExclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let pathExclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let pathExclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
-    let querySuccess = false;
 
-    while (!querySuccess && retries > 0) {
+    while (retries > 0) {
         try {
             pathExclusion = await prisma.pathExclusion.findUnique({
                 where: {
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
-            querySuccess = true;
+            break;
         } catch (error) {
             console.log(
                 "Error with trying to find PathExclusion userId: " + error,
@@ -3286,7 +3285,7 @@ export const findPathExclusionUserId = async (
             else throw error;
         }
     }
-    return pathExclusion ? pathExclusion.userId : null;
+    return pathExclusion ? pathExclusion.kcUserId : null;
 };
 
 type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{

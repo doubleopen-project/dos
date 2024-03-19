@@ -5,6 +5,7 @@
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
+import isGlob from "is-glob";
 import { minimatch } from "minimatch";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
@@ -1372,6 +1373,218 @@ userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
         ) {
             return res.status(404).json({
                 message: "Package with the requested purl does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
+userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId) throw new Error("Package not found");
+
+        let match = false;
+
+        if (isGlob(req.body.pattern)) {
+            const filePaths = await dbQueries.findFilePathsByPackagePurl(purl);
+            // Check that a path that matches the glob pattern exists for the package
+            while (!match && filePaths.length > 0) {
+                const filePath = filePaths.pop();
+
+                if (!filePath) break;
+                if (
+                    minimatch(filePath, req.body.pattern.trim(), { dot: true })
+                ) {
+                    match = true;
+                }
+            }
+        } else {
+            // Check that a matching path exists for the package
+            match = await dbQueries.findMatchingPath({
+                purl: purl,
+                path: req.body.pattern.trim(),
+            });
+        }
+
+        if (!match)
+            throw new Error(
+                "No matching path(s) for the provided pattern were found in the package",
+            );
+
+        const pathExclusion = await dbQueries.createPathExclusion({
+            pattern: req.body.pattern,
+            reason: req.body.reason,
+            comment: req.body.comment || null,
+            packageId: packageId,
+            userId: await dbQueries.findUserByKcUserId(
+                req.kauth.grant.access_token.content.sub,
+            ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+            kcUserId: req.kauth.grant.access_token.content.sub,
+        });
+
+        res.status(200).json({
+            pathExclusionId: pathExclusion.id,
+            message: "Path exclusion created",
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof Error) {
+            if (error.message === "User not found")
+                res.status(401).json({ message: "Unauthorized" });
+            else if (
+                error.message ===
+                "No matching path(s) for the provided pattern were found in the package"
+            ) {
+                res.status(400).json({
+                    message: error.message,
+                    path: "pattern",
+                });
+            } else
+                res.status(400).json({
+                    message: error.message,
+                });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
+userRouter.put("/path-exclusions/:id", async (req, res) => {
+    try {
+        const pathExclusion = await dbQueries.findPathExclusionById(
+            req.params.id,
+        );
+
+        if (!pathExclusion)
+            throw new CustomError("Path exclusion to update not found", 404);
+
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== pathExclusion.kcUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
+        }
+
+        const reqPattern = req.body.pattern;
+        const reqReason = req.body.reason;
+        const reqComment = req.body.comment;
+
+        if (
+            (!reqPattern || reqPattern === pathExclusion.pattern) &&
+            (!reqReason || reqReason === pathExclusion.reason) &&
+            (!reqComment || reqComment === pathExclusion.comment)
+        ) {
+            throw new CustomError("Nothing to update", 400, "root");
+        }
+
+        const pkg = await dbQueries.findPackageById(pathExclusion.packageId);
+        if (!pkg) throw new CustomError("Package not found", 404);
+
+        if (reqPattern && reqPattern !== pathExclusion.pattern) {
+            let match = false;
+
+            if (isGlob(reqPattern)) {
+                const filePaths = await dbQueries.findFilePathsByPackagePurl(
+                    pkg.purl,
+                );
+                // Check that a path that matches the glob pattern exists for the package
+                while (!match && filePaths.length > 0) {
+                    const filePath = filePaths.pop();
+
+                    if (!filePath) break;
+                    if (minimatch(filePath, reqPattern.trim(), { dot: true })) {
+                        match = true;
+                    }
+                }
+            } else {
+                // Check that a matching path exists for the package
+                match = await dbQueries.findMatchingPath({
+                    purl: pkg.purl,
+                    path: reqPattern.trim(),
+                });
+            }
+
+            if (!match)
+                throw new CustomError(
+                    "No matching path(s) for the provided pattern were found in the package",
+                    400,
+                    "pattern",
+                );
+        }
+
+        const updatedPathExclusion = await dbQueries.updatePathExclusion(
+            pathExclusion.id,
+            {
+                pattern: reqPattern,
+                reason: reqReason,
+                comment: reqComment,
+            },
+        );
+
+        if (!updatedPathExclusion)
+            throw new CustomError(
+                "Internal Server Error: Unable to update path exclusion",
+                500,
+            );
+
+        res.status(200).json({ message: "Path exclusion updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.delete("/path-exclusions/:id", async (req, res) => {
+    try {
+        const pathExclusionId = req.params.id;
+
+        const pathExclusionUserId =
+            await dbQueries.findPathExclusionUserId(pathExclusionId);
+
+        if (!pathExclusionUserId)
+            throw new CustomError("Path exclusion to delete not found", 404);
+
+        // Make sure that the path exclusion belongs to the user or the user is admin
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== pathExclusionUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
+        }
+
+        await dbQueries.deletePathExclusion(pathExclusionId);
+
+        res.status(200).json({ message: "Path exclusion deleted" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Path exclusion with the requested id does not exist",
             });
         } else if (error instanceof Error) {
             return res.status(404).json({ message: error.message });
