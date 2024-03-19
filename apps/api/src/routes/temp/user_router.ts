@@ -1162,11 +1162,7 @@ userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
             throw new CustomError("Forbidden", 403);
         }
 
-        await dbQueries.deleteManyLicenseConclusionsByBulkConclusionId(
-            bulkConclusionId,
-        );
-
-        await dbQueries.deleteBulkConclusion(bulkConclusionId);
+        await dbQueries.deleteBulkAndLicenseConclusions(bulkConclusionId);
 
         res.status(200).json({ message: "Bulk conclusion deleted" });
     } catch (error) {
