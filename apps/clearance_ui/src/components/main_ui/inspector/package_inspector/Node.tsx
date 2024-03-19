@@ -20,6 +20,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import LicenseHitCircle from "@/components/main_ui/inspector/package_inspector/LicenseHitCircle";
+import { searchForLicense } from "@/helpers/searchForLicense";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
 
@@ -80,7 +81,7 @@ const Node = ({
     ) {
         uniqueLicenses.forEach((value, key) => {
             for (const lf of file?.licenseFindings) {
-                if (lf.licenseExpressionSPDX.includes(key)) {
+                if (searchForLicense(key, lf.licenseExpressionSPDX)) {
                     licenseFindingIndicators.push(
                         <LicenseHitCircle
                             key={key}
