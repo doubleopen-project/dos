@@ -323,6 +323,193 @@ userRouter.get(
     },
 );
 
+userRouter.post(
+    "/packages/:purl/files/:sha256/license-conclusions",
+    async (req, res) => {
+        try {
+            const contextPurl = req.params.purl;
+
+            // Make sure that a package with purl exists
+            const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
+
+            if (!packageId)
+                throw new CustomError(
+                    "Package with specified purl not found",
+                    404,
+                    "purl",
+                );
+
+            // Make sure that a file with sha256 exists in package with purl
+            const filetree =
+                await dbQueries.findFiletreeByPackageIdAndFileSha256(
+                    packageId,
+                    req.params.sha256,
+                );
+
+            if (!filetree)
+                throw new CustomError(
+                    "File with specified sha256 does not exist in the specified context package",
+                    400,
+                    "sha256",
+                );
+
+            const licenseConclusion = await dbQueries.createLicenseConclusion({
+                concludedLicenseExpressionSPDX:
+                    req.body.concludedLicenseExpressionSPDX,
+                detectedLicenseExpressionSPDX:
+                    req.body.detectedLicenseExpressionSPDX || null,
+                comment: req.body.comment || null,
+                local: req.body.local,
+                contextPurl: contextPurl,
+                fileSha256: req.params.sha256,
+                userId: await dbQueries.findUserByKcUserId(
+                    req.kauth.grant.access_token.content.sub,
+                ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+                kcUserId: req.kauth.grant.access_token.content.sub,
+            });
+
+            res.status(200).json({
+                licenseConclusionId: licenseConclusion.id,
+                message: "License conclusion created",
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === "P2025" &&
+                error.message.includes("No User found")
+            ) {
+                return res.status(404).json({
+                    message:
+                        "User not found. This keycloak id does not have a corresponding user row in the user table.",
+                });
+            } else if (error instanceof CustomError) {
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message, path: error.path });
+            } else {
+                // If error is not a CustomError, it is a Prisma error or an unknown error
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
+
+userRouter.put("/license-conclusions/:id", async (req, res) => {
+    try {
+        const licenseConclusionId = req.params.id;
+        const licenseConclusion =
+            await dbQueries.findLicenseConclusionById(licenseConclusionId);
+
+        if (!licenseConclusion)
+            throw new CustomError(
+                "License conclusion to update not found",
+                404,
+            );
+
+        // Make sure that the license conclusion belongs to the user or the user is admin
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !==
+                licenseConclusion.kcUserId
+        )
+            throw new CustomError("Forbidden", 403);
+
+        await dbQueries.updateLicenseConclusion(licenseConclusionId, {
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX,
+            comment: req.body.comment,
+            local: req.body.local,
+            contextPurl: undefined,
+            /*
+             * The following will detach the license conclusion from a bulk conclusion if it is connected to one
+             * (since this endpoint is used to update one license conclusion only, and the bulk conclusion
+             * is updated through the PUT /bulk-conclusion/:id endpoint)
+             */
+
+            bulkConclusionId: licenseConclusion.bulkConclusionId
+                ? null
+                : undefined,
+        });
+
+        res.status(200).json({ message: "License conclusion updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res
+                .status(404)
+                .json({ message: "License conclusion to update not found" });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
+userRouter.delete("/license-conclusions/:id", async (req, res) => {
+    try {
+        const licenseConclusionId = req.params.id;
+        const licenseConclusionUserId =
+            await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
+
+        if (!licenseConclusionUserId)
+            throw new CustomError(
+                "License conclusion to delete not found",
+                404,
+            );
+
+        // Make sure that the license conclusion belongs to the user or the user is admin
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== licenseConclusionUserId
+        )
+            throw new CustomError("Forbidden", 403);
+
+        await dbQueries.deleteLicenseConclusion(licenseConclusionId);
+
+        res.status(200).json({ message: "License conclusion deleted" });
+
+        res.status(401).json({ message: "Unauthorized" });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message:
+                    "License conclusion with the requested id does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
 userRouter.get("/bulk-conclusions", async (req, res) => {
     try {
         const userIds = req.query.username

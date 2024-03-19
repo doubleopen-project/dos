@@ -2167,6 +2167,18 @@ export const findUser = async (token: string): Promise<User | null> => {
     return user;
 };
 
+export const findUserByKcUserId = async (kcUserId: string): Promise<number> => {
+    const user = await prisma.user.findFirstOrThrow({
+        where: {
+            kcUserId: kcUserId,
+        },
+        select: {
+            id: true,
+        },
+    });
+    return user.id;
+};
+
 export const findUserById = async (id: number): Promise<User | null> => {
     let user: User | null = null;
     let retries = initialRetryCount;
@@ -2513,8 +2525,8 @@ export const findLicenseConclusionById = async (
 
 export const findLicenseConclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let licenseConclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let licenseConclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
     let querySuccess = false;
 
@@ -2525,7 +2537,7 @@ export const findLicenseConclusionUserId = async (
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
             querySuccess = true;
@@ -2539,7 +2551,7 @@ export const findLicenseConclusionUserId = async (
             else throw error;
         }
     }
-    return licenseConclusion ? licenseConclusion.userId : null;
+    return licenseConclusion ? licenseConclusion.kcUserId : null;
 };
 
 type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
