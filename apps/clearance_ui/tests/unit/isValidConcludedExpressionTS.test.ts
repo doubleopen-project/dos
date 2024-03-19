@@ -42,4 +42,14 @@ describe("isValidConcludedExpression tests", () => {
             errWord: null,
         });
     });
+
+    it("Returns isValid: false and errWord: WITH for an invalid LicenseRef (not an exception) used with WITH", () => {
+        const result = isValidConcludedExpression(
+            "GPL-2.0-only WITH LicenseRef-invalid",
+        );
+        expect(result).toEqual({
+            isValid: false,
+            errWord: null,
+        });
+    });
 });
