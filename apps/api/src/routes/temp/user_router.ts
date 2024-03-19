@@ -776,6 +776,419 @@ userRouter.get("/packages/:purl/bulk-conclusions/count", async (req, res) => {
     }
 });
 
+userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
+    try {
+        const contextPurl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Bad request. No package with the provided purl was found",
+                400,
+            );
+
+        const licenseConclusionInputs = [];
+
+        const fileTrees = await dbQueries.findFileTreesByPackageId(packageId);
+
+        const pattern = req.body.pattern.trim();
+
+        // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+        const userId = await dbQueries.findUserByKcUserId(
+            req.kauth.grant.access_token.content.sub,
+        );
+
+        const bulkConclusion = await dbQueries.createBulkConclusion({
+            pattern: pattern,
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX || null,
+            comment: req.body.comment || null,
+            local: req.body.local,
+            packageId: packageId,
+            userId: userId,
+            kcUserId: req.kauth.grant.access_token.content.sub,
+        });
+
+        let mathchedPathsCount = 0;
+
+        for (const fileTree of fileTrees) {
+            if (minimatch(fileTree.path, pattern, { dot: true })) {
+                mathchedPathsCount++;
+                // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
+                if (
+                    licenseConclusionInputs.find(
+                        (lc) => lc.fileSha256 === fileTree.fileSha256,
+                    ) === undefined
+                )
+                    licenseConclusionInputs.push({
+                        concludedLicenseExpressionSPDX:
+                            req.body.concludedLicenseExpressionSPDX,
+                        detectedLicenseExpressionSPDX:
+                            req.body.detectedLicenseExpressionSPDX || null,
+                        comment: req.body.comment || null,
+                        local: req.body.local,
+                        contextPurl: contextPurl,
+                        fileSha256: fileTree.fileSha256,
+                        bulkConclusionId: bulkConclusion.id,
+                        userId: userId,
+                        kcUserId: req.kauth.grant.access_token.content.sub,
+                    });
+            }
+        }
+
+        if (licenseConclusionInputs.length === 0) {
+            const deletedBulkConclusion = await dbQueries.deleteBulkConclusion(
+                bulkConclusion.id,
+            );
+            if (!deletedBulkConclusion)
+                console.log(
+                    "Unable to delete bulk conclusion id: " + bulkConclusion.id,
+                );
+            throw new CustomError(
+                "No matching files for the provided pattern were found in the package",
+                400,
+                "pattern",
+            );
+        }
+
+        const batchCount = await dbQueries.createManyLicenseConclusions(
+            licenseConclusionInputs,
+        );
+
+        if (batchCount.count !== licenseConclusionInputs.length) {
+            const deletedBulkConclusion = await dbQueries.deleteBulkConclusion(
+                bulkConclusion.id,
+            );
+            if (!deletedBulkConclusion)
+                console.log(
+                    "Unable to delete bulk conclusion id: " + bulkConclusion.id,
+                );
+            throw new CustomError(
+                "Internal server error: Error creating license conclusions",
+                500,
+            );
+        }
+
+        const affectedRecords = await dbQueries.bulkConclusionAffectedRecords(
+            bulkConclusion.id,
+            packageId,
+            req.body.local || false,
+        );
+
+        res.status(200).json({
+            bulkConclusionId: bulkConclusion.id,
+            matchedPathsCount: mathchedPathsCount,
+            addedLicenseConclusionsCount: licenseConclusionInputs.length,
+            affectedFilesInPackageCount:
+                affectedRecords.affectedPackageFileTreesCount,
+            affectedFilesAcrossAllPackagesCount:
+                affectedRecords.affectedTotalFileTreesCount,
+            message: "Bulk conclusion created and license conclusions added",
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/bulk-conclusions/:id", async (req, res) => {
+    try {
+        const bulkConclusionId = req.params.id;
+
+        const bulkConclusion =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
+
+        if (!bulkConclusion)
+            throw new CustomError(
+                "Bulk conclusion with the requested id does not exist",
+                404,
+            );
+
+        const bulkConclusionWithRelations =
+            await dbQueries.findBulkConclusionWithRelationsById(
+                bulkConclusionId,
+                bulkConclusion.package.id,
+            );
+
+        if (!bulkConclusionWithRelations)
+            throw new CustomError("Bulk conclusion not found", 404);
+
+        const filepaths = [];
+        const licenseConclusions = [];
+
+        for (const lc of bulkConclusionWithRelations.licenseConclusions) {
+            for (const filetree of lc.file.filetrees) {
+                filepaths.push(filetree.path);
+            }
+            licenseConclusions.push({ id: lc.id });
+        }
+
+        res.status(200).json({
+            pattern: bulkConclusion.pattern,
+            concludedLicenseExpressionSPDX:
+                bulkConclusion.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                bulkConclusion.detectedLicenseExpressionSPDX,
+            comment: bulkConclusion.comment,
+            local: bulkConclusion.local,
+            filePaths: filepaths,
+            licenseConclusions: licenseConclusions,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk conclusion with the requested id does not exist",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.put("/bulk-conclusions/:id", async (req, res) => {
+    try {
+        const bulkConclusionId = req.params.id;
+
+        const origBulk =
+            await dbQueries.findBulkConclusionById(bulkConclusionId);
+
+        if (!origBulk)
+            throw new CustomError("Bulk conclusion to update not found", 404);
+
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== origBulk.kcUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
+        }
+
+        const reqPattern = req.body.pattern;
+        const reqCLESPDX = req.body.concludedLicenseExpressionSPDX;
+        const reqDLESPDX = req.body.detectedLicenseExpressionSPDX;
+        const reqComment = req.body.comment;
+        const reqLocal = req.body.local;
+
+        if (
+            !reqPattern &&
+            !reqCLESPDX &&
+            !reqDLESPDX &&
+            reqComment === undefined &&
+            reqLocal === undefined
+        ) {
+            throw new CustomError(
+                "At least one field is required",
+                400,
+                "root",
+            );
+        }
+
+        if (
+            (!reqPattern || reqPattern === origBulk.pattern) &&
+            (!reqCLESPDX ||
+                reqCLESPDX === origBulk.concludedLicenseExpressionSPDX) &&
+            (!reqDLESPDX ||
+                reqDLESPDX === origBulk.detectedLicenseExpressionSPDX) &&
+            (reqComment === undefined || reqComment === origBulk.comment) &&
+            (reqLocal === undefined || reqLocal === origBulk.local)
+        ) {
+            throw new CustomError("Nothing to update", 400, "root");
+        }
+
+        const bulkConclusionWithRelations =
+            await dbQueries.findBulkConclusionWithRelationsById(
+                bulkConclusionId,
+                origBulk.package.id,
+            );
+
+        if (!bulkConclusionWithRelations)
+            throw new CustomError("Bulk conclusion to update not found", 404);
+
+        if (reqPattern && reqPattern !== bulkConclusionWithRelations.pattern) {
+            const newInputs = [];
+            const fileTrees = await dbQueries.findFileTreesByPackageId(
+                origBulk.package.id,
+            );
+            const userId = await dbQueries.findUserByKcUserId(
+                req.kauth.grant.access_token.content.sub,
+            );
+
+            let matchFound = false;
+            for (const fileTree of fileTrees) {
+                if (minimatch(fileTree.path, reqPattern, { dot: true })) {
+                    matchFound = true;
+                    if (
+                        bulkConclusionWithRelations.licenseConclusions.find(
+                            (lc) => lc.file.sha256 === fileTree.fileSha256,
+                        ) === undefined &&
+                        newInputs.find(
+                            (lc) => lc.fileSha256 === fileTree.fileSha256,
+                        ) === undefined
+                    ) {
+                        newInputs.push({
+                            concludedLicenseExpressionSPDX:
+                                reqCLESPDX ||
+                                bulkConclusionWithRelations.concludedLicenseExpressionSPDX,
+                            detectedLicenseExpressionSPDX:
+                                reqDLESPDX ||
+                                bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
+                            comment:
+                                reqComment ||
+                                bulkConclusionWithRelations.comment,
+                            local:
+                                reqLocal !== undefined
+                                    ? reqLocal
+                                    : bulkConclusionWithRelations.local,
+                            contextPurl: origBulk.package.purl,
+                            fileSha256: fileTree.fileSha256,
+                            bulkConclusionId: bulkConclusionWithRelations.id,
+                            userId: userId,
+                            kcUserId: req.kauth.grant.access_token.content.sub,
+                        });
+                    }
+                }
+            }
+
+            if (!matchFound) {
+                throw new CustomError(
+                    "No matching files for the provided pattern were found in the package",
+                    400,
+                    "pattern",
+                );
+            }
+
+            await dbQueries.createManyLicenseConclusions(newInputs);
+
+            for (const lc of bulkConclusionWithRelations.licenseConclusions) {
+                let noMatches = true;
+                for (const ft of lc.file.filetrees) {
+                    // If one of the paths match with the new pattern, don't delete the license conclusion
+                    if (minimatch(ft.path, reqPattern, { dot: true })) {
+                        noMatches = false;
+                        break;
+                    }
+                }
+
+                if (noMatches) {
+                    await dbQueries.deleteLicenseConclusion(lc.id);
+                }
+            }
+        }
+
+        if (
+            (reqCLESPDX &&
+                reqCLESPDX !== origBulk.concludedLicenseExpressionSPDX) ||
+            (reqDLESPDX &&
+                reqDLESPDX !== origBulk.detectedLicenseExpressionSPDX) ||
+            (reqComment && reqComment !== origBulk.comment) ||
+            (reqLocal !== undefined && reqLocal !== origBulk.local)
+        ) {
+            await dbQueries.updateManyLicenseConclusions(bulkConclusionId, {
+                concludedLicenseExpressionSPDX: reqCLESPDX,
+                detectedLicenseExpressionSPDX: reqDLESPDX,
+                comment: reqComment,
+                local: reqLocal,
+            });
+        }
+
+        await dbQueries.updateBulkConclusion(bulkConclusionId, {
+            pattern: reqPattern,
+            concludedLicenseExpressionSPDX: reqCLESPDX,
+            detectedLicenseExpressionSPDX: reqDLESPDX,
+            comment: reqComment,
+            local: reqLocal,
+        });
+
+        res.status(200).json({ message: "Bulk conclusion updated" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk conclusion to update not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
+    try {
+        const bulkConclusionId = req.params.id;
+
+        const bulkConclusionUserId =
+            await dbQueries.findBulkConclusionUserId(bulkConclusionId);
+
+        if (!bulkConclusionUserId) {
+            throw new CustomError("Bulk conclusion to delete not found", 404);
+        }
+
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== bulkConclusionUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
+        }
+
+        await dbQueries.deleteManyLicenseConclusionsByBulkConclusionId(
+            bulkConclusionId,
+        );
+
+        await dbQueries.deleteBulkConclusion(bulkConclusionId);
+
+        res.status(200).json({ message: "Bulk conclusion deleted" });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Bulk conclusion to delete not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.get("/path-exclusions", async (req, res) => {
     try {
         const userIds = req.query.username

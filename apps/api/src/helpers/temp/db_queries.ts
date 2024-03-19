@@ -2795,6 +2795,7 @@ type BulkConclusionWithPackageRelation = Prisma.BulkConclusionGetPayload<{
             };
         };
         userId: true;
+        kcUserId: true;
     };
 }>;
 
@@ -2824,6 +2825,7 @@ export const findBulkConclusionById = async (
                         },
                     },
                     userId: true,
+                    kcUserId: true,
                 },
             });
             break;
@@ -3150,22 +3152,21 @@ export const findBulkConclusionsWithRelations = async (
 
 export const findBulkConclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let bulkConclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let bulkConclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
-    let querySuccess = false;
 
-    while (!querySuccess && retries > 0) {
+    while (retries > 0) {
         try {
             bulkConclusion = await prisma.bulkConclusion.findUnique({
                 where: {
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
-            querySuccess = true;
+            break;
         } catch (error) {
             console.log(
                 "Error with trying to find BulkConclusionUserId: " + error,
@@ -3176,7 +3177,7 @@ export const findBulkConclusionUserId = async (
             else throw error;
         }
     }
-    return bulkConclusion?.userId || null;
+    return bulkConclusion?.kcUserId || null;
 };
 
 export const findBulkConclusionsByPackageId = async (
