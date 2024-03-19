@@ -3803,35 +3803,6 @@ export const deleteLicenseConclusionsByFileHashes = async (
     return batchDelete;
 };
 
-export const deleteManyLicenseConclusionsByBulkConclusionId = async (
-    bulkConclusionId: number,
-): Promise<{ count: number }> => {
-    let retries = initialRetryCount;
-    let batchDelete = null;
-
-    while (!batchDelete && retries > 0) {
-        try {
-            batchDelete = await prisma.licenseConclusion.deleteMany({
-                where: {
-                    bulkConclusionId: bulkConclusionId,
-                },
-            });
-        } catch (error) {
-            console.log(
-                "Error with trying to delete LicenseConclusions: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-    if (!batchDelete)
-        throw new Error("Error: Unable to delete LicenseConclusions");
-
-    return batchDelete;
-};
-
 export const deleteBulkConclusion = async (
     id: number,
 ): Promise<BulkConclusion | null> => {
@@ -4505,4 +4476,39 @@ export const countLicenseConclusions = async (
         }
     }
     return count;
+};
+
+// ------------------------------ Transactions --------------------------------
+
+export const deleteBulkAndLicenseConclusions = async (
+    bulkConclusionId: number,
+): Promise<void> => {
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            await prisma.$transaction([
+                prisma.licenseConclusion.deleteMany({
+                    where: {
+                        bulkConclusionId: bulkConclusionId,
+                    },
+                }),
+                prisma.bulkConclusion.delete({
+                    where: {
+                        id: bulkConclusionId,
+                    },
+                }),
+            ]);
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to delete BulkConclusion and LicenseConclusions: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
 };
