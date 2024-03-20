@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Double Open Oy
+// SPDX-FileCopyrightText: Copyright (c) 2023 shadcn
 //
 // SPDX-License-Identifier: MIT
 
