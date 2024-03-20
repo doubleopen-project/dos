@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: Copyright (c) 2023 shadcn
 //
 // SPDX-License-Identifier: MIT
 
