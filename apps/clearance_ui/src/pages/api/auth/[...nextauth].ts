@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import NextAuth from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
@@ -50,27 +50,6 @@ async function refreshAccessToken(token: JWT) {
             ...token,
             error: "RefreshAccessTokenError",
         };
-    }
-}
-
-async function doFinalSignoutHandshake(token: JWT) {
-    const { id_token } = token;
-
-    try {
-        // Add the id_token_hint to the query string
-        const params = new URLSearchParams();
-        params.append("id_token_hint", id_token);
-        const { status, statusText } = await axios.get(
-            `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/logout?${params.toString()}`,
-        );
-
-        // The response body should contain a confirmation that the user has been logged out
-        console.log("Completed post-logout handshake", status, statusText);
-    } catch (e: unknown) {
-        console.error(
-            "Unable to perform post-logout handshake",
-            (e as AxiosError)?.code || e,
-        );
     }
 }
 
@@ -148,11 +127,6 @@ export default NextAuth({
             }
 
             return session;
-        },
-    },
-    events: {
-        signOut({ token }) {
-            doFinalSignoutHandshake(token);
         },
     },
 });
