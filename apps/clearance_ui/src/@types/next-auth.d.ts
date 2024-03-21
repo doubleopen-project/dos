@@ -13,6 +13,7 @@ declare module "next-auth" {
         refreshToken: string;
         user: User;
         error: string;
+        accessTokenExpired: number;
     }
 
     /**
@@ -22,13 +23,13 @@ declare module "next-auth" {
     interface User {
         sub: string;
         //email_verified: boolean;
-        //name: string;
+        name: string;
         //telephone: string;
         preferred_username: string;
         //org_name: string;
-        //given_name: string;
-        //family_name: string;
-        //email: string;
+        given_name: string;
+        family_name: string;
+        email: string;
         id: string;
         realm_roles: string[];
     }
