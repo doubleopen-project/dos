@@ -13,7 +13,6 @@ import axios from "axios";
 import NextAuth from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
-import type { IKeycloakRefreshTokenApiResponse } from "@/pages/api/auth/keycloakRefreshToken";
 
 /**
  * Takes a token, and returns a new token with updated
@@ -22,17 +21,67 @@ import type { IKeycloakRefreshTokenApiResponse } from "@/pages/api/auth/keycloak
  */
 async function refreshAccessToken(token: JWT) {
     try {
-        const refreshedTokens =
-            await axios.post<IKeycloakRefreshTokenApiResponse>(
-                "http://localhost:3000/api/auth/keycloakRefreshToken",
-                {
-                    refreshToken: token?.refreshToken,
-                },
-            );
+        console.log("In refreshAccessToken");
+        const keycloakUrlToRefreshToken = `${process.env.KEYCLOAK_URL}/protocol/openid-connect/token`;
+        const keycloakParamsToRefreshToken = new URLSearchParams();
+        const keycloakRefreshTokenBody = {
+            refreshToken: token?.refreshToken,
+        };
 
-        if (refreshedTokens.status !== 200) {
-            throw refreshedTokens;
+        keycloakParamsToRefreshToken.append(
+            "client_id",
+            process.env.KEYCLOAK_CLIENT_ID!,
+        );
+        keycloakParamsToRefreshToken.append("grant_type", "refresh_token");
+        keycloakParamsToRefreshToken.append(
+            "refresh_token",
+            keycloakRefreshTokenBody.refreshToken,
+        );
+
+        const keycloakConfigToRefreshToken = {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        };
+
+        let keycloakRefreshTokenResponse;
+        let retries = 3;
+
+        while (retries > 0) {
+            try {
+                keycloakRefreshTokenResponse = await axios.post(
+                    keycloakUrlToRefreshToken,
+                    keycloakParamsToRefreshToken,
+                    keycloakConfigToRefreshToken,
+                );
+            } catch (error) {
+                retries--;
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 504 && retries > 0) {
+                        console.log(
+                            "Failed to get access token due to gateway timeout. Retrying in five seconds...",
+                        );
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 5000),
+                        );
+                    } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                        console.log(
+                            "Failed to get access token due to timeout error. Retrying in five seconds...",
+                        );
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 5000),
+                        );
+                    } else {
+                        throw error;
+                    }
+                }
+            }
         }
+
+        if (!keycloakRefreshTokenResponse)
+            throw new Error("Failed to get access token");
+
+        const refreshedTokens = keycloakRefreshTokenResponse.data;
 
         return {
             ...token,
@@ -114,7 +163,7 @@ export default NextAuth({
             if (Date.now() < token.accessTokenExpired) {
                 return token;
             }
-
+            console.log("In jwt, access token expired");
             // Access token has expired, try to update it
             return refreshAccessToken(token);
         },
@@ -124,6 +173,7 @@ export default NextAuth({
                 session.error = token.error;
                 session.accessToken = token.accessToken;
                 session.refreshToken = token.refreshToken;
+                session.accessTokenExpired = token.accessTokenExpired;
             }
 
             return session;
