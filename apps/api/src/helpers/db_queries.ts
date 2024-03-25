@@ -53,6 +53,7 @@ const handleError = (error: unknown) => {
             case "P2004":
             case "P2015":
             case "P2025":
+            case "P2035":
                 throw error;
             default:
                 break;
