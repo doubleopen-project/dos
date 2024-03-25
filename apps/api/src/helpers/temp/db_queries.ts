@@ -1995,6 +1995,44 @@ export const getPathExclusionsByPackagePurl = async (
     return packageObj.pathExclusions;
 };
 
+export const getPathExclusionPatternsByPackagePurl = async (
+    purl: string,
+): Promise<string[]> => {
+    let retries = initialRetryCount;
+    let patterns: string[] = [];
+
+    while (retries > 0) {
+        try {
+            patterns = await prisma.pathExclusion
+                .findMany({
+                    where: {
+                        package: {
+                            purl: purl,
+                        },
+                    },
+                    select: {
+                        pattern: true,
+                    },
+                })
+                .then((pathExclusions: { pattern: string }[]) => {
+                    return pathExclusions.map((pathExclusion) => {
+                        return pathExclusion.pattern;
+                    });
+                });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find PathExclusions: " + error);
+            handleError(error);
+            retries--;
+
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return patterns;
+};
+
 export const getPackageScanResults = async (purl: string) => {
     let retries = initialRetryCount;
     let results = null;

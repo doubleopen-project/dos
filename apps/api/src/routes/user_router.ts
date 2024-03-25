@@ -1519,17 +1519,68 @@ userRouter.get("/packages/count", async (req, res) => {
 
 userRouter.get("/packages/:purl/filetrees", async (req, res) => {
     try {
+        const timeString =
+            new Date().toISOString() + " started filetrees query lasted: ";
+        console.time(timeString);
+
         const purl = req.params.purl;
         const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
+        const patterns =
+            await dbQueries.getPathExclusionPatternsByPackagePurl(purl);
+
+        const promises: Promise<void>[] = [];
+
+        const fileTreesWithExclusions: {
+            path: string;
+            file: {
+                licenseConclusions: {
+                    concludedLicenseExpressionSPDX: string;
+                }[];
+                licenseFindings: { licenseExpressionSPDX: string }[];
+            };
+            packageId: number;
+            fileSha256: string;
+            isExcluded?: boolean | undefined;
+        }[] = [];
+
         for (const ft of filetrees) {
-            ft.file.licenseConclusions = ft.file.licenseConclusions.filter(
-                (lc) => !(lc.local && lc.contextPurl !== purl),
-            );
+            const task = (async () => {
+                ft.file.licenseConclusions = ft.file.licenseConclusions.filter(
+                    (lc) => !(lc.local && lc.contextPurl !== purl),
+                );
+
+                let isExcluded = undefined;
+                if (req.query.includeIsExcluded) {
+                    isExcluded = false;
+                    for (const pattern of patterns) {
+                        if (minimatch(ft.path, pattern, { dot: true })) {
+                            isExcluded = true;
+                            break;
+                        }
+                    }
+                }
+
+                fileTreesWithExclusions.push({
+                    ...ft,
+                    isExcluded: isExcluded,
+                });
+            })();
+
+            promises.push(task);
+
+            if (promises.length >= 100) {
+                await Promise.all(promises);
+                promises.length = 0;
+            }
         }
 
+        await Promise.all(promises);
+
+        console.timeEnd(timeString);
+
         res.status(200).json({
-            filetrees: filetrees,
+            filetrees: fileTreesWithExclusions,
         });
     } catch (error) {
         console.log("Error: ", error);
