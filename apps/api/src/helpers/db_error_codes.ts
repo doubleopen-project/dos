@@ -507,4 +507,15 @@ export const dbErrorCodeResMessagesMap: Map<
             severity: "LOW",
         },
     ],
+    [
+        "P2035",
+        {
+            message:
+                "Database query error: Too many bind variables in prepared statement.",
+            description: "Too many bind variables in prepared statement.",
+            requiresAction: true,
+            requiresTracking: false,
+            severity: "CRITICAL",
+        },
+    ],
 ]);
