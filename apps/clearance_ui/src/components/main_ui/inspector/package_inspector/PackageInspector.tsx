@@ -62,23 +62,16 @@ const PackageInspector = ({ purl, path }: Props) => {
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
 
-    // Fetch the package file tree data
+    // Fetch the package file tree data. Also fetch path exclusion status
+    // with the same query, no need anymore to use a separate query for it.
     const { data, isLoading, error } = userHooks.useGetFileTree(
         {
             withCredentials: true,
             params: {
                 purl: pathPurl,
             },
-        },
-        { enabled: !!pathPurl },
-    );
-
-    // Fetch the path exclusions for the package
-    const { data: pathExclusions } = userHooks.useGetPathExclusionsByPurl(
-        {
-            withCredentials: true,
-            params: {
-                purl: pathPurl,
+            queries: {
+                includeIsExcluded: true,
             },
         },
         { enabled: !!pathPurl },
@@ -155,17 +148,11 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     // Construct the tree data
     useEffect(() => {
-        if (data && pathExclusions) {
-            const convertedData = convertJsonToTree(
-                data.filetrees,
-                pathExclusions.pathExclusions.map(
-                    (exclusion) => exclusion.pattern,
-                ),
-                "",
-            );
+        if (data) {
+            const convertedData = convertJsonToTree(data.filetrees, "");
             setTreeData(convertedData);
         }
-    }, [data, pathExclusions]);
+    }, [data]);
 
     // Handle expanding and collapsing the whole tree
     useEffect(() => {
@@ -278,7 +265,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
                 )}
-                {data && pathExclusions && (
+                {data && (
                     <Tree
                         className=""
                         data={treeData}

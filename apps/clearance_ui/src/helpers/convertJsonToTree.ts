@@ -3,14 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 import type { FileTreeType } from "validation-helpers";
-import { isPathExcluded } from "@/helpers/isExcluded";
 import { sortTree } from "@/helpers/sortTree";
 import { updateExclusionStatus } from "@/helpers/updateExclusionStatus";
 import type { TreeNode } from "@/types";
 
 export const convertJsonToTree = (
     filetrees: FileTreeType[],
-    patterns?: string[],
     licenseFilter?: string,
 ): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
@@ -28,12 +26,6 @@ export const convertJsonToTree = (
 
             fullPath += (i > 0 ? "/" : "") + part;
 
-            // Determine if the current node's path matches any of the provided patterns
-            const isExcluded =
-                patterns?.some((pattern) =>
-                    isPathExcluded(fullPath, pattern),
-                ) || false;
-
             if (!map[fullPath]) {
                 const newNode: TreeNode = {
                     id: id.toString(),
@@ -42,7 +34,7 @@ export const convertJsonToTree = (
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
                     hasLicenseFindings: false,
                     hasLicenseConclusions: false,
-                    isExcluded: isExcluded,
+                    isExcluded: fileTree.isExcluded,
                     selectionStatus: 0, // Initial selection status
                     file: {
                         licenseFindings: isLastPart
@@ -87,9 +79,6 @@ export const convertJsonToTree = (
                     map[fullPath].hasLicenseConclusions = true;
                 }
             }
-
-            // Update isExcluded for existing nodes
-            map[fullPath].isExcluded = isExcluded;
 
             // Propagate the hasLicenseFindings and hasLicenseConclusions flags to ancestor directories
             if (
