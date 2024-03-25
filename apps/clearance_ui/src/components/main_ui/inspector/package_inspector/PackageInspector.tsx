@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
@@ -334,11 +335,18 @@ const PackageInspector = ({ purl, path }: Props) => {
                         )}
                     </Tree>
                 )}
-                {error && (
-                    <div className="flex h-full items-center justify-center">
-                        Unable to fetch package data
-                    </div>
-                )}
+                {error &&
+                    (axios.isAxiosError(error) ? (
+                        <div className="flex h-full items-center justify-center text-red-700">
+                            Error with fetching package data:{" "}
+                            {error.response?.data.message ||
+                                "Unknown error. No message in response."}
+                        </div>
+                    ) : (
+                        <div className="flex h-full items-center justify-center">
+                            Unable to fetch package data
+                        </div>
+                    ))}
             </div>
 
             <Separator className="mb-2" />
