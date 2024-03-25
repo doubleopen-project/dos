@@ -1659,14 +1659,14 @@ userRouter.get("/packages/:purl/filetrees", async (req, res) => {
             );
         }
 
-        if (filetrees) {
-            res.status(200).json({
-                filetrees: filetrees,
-            });
-        }
+        res.status(200).json({
+            filetrees: filetrees,
+        });
     } catch (error) {
         console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        // Get error status code and message based on whether error is a Prisma error or an unknown error
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
     }
 });
 
