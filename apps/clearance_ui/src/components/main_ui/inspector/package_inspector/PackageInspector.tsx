@@ -132,10 +132,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Open the nodes that have the filtered license
     const handleOpenFilteredNodes = () => {
         const nodes = findNodesWithLicense(treeData, licenseFilter);
-        // This is a temporary fix for DO-601: don't close all nodes
-        // before opening the nodes with a filtered license, because
-        // the latter doesn't work in all cases
-        //treeRef.current?.closeAll();
+        treeRef.current?.closeAll();
         for (const node of nodes) {
             treeRef.current?.openParents(node.id);
         }
