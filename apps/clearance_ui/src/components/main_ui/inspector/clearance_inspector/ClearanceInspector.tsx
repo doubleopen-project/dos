@@ -82,7 +82,7 @@ const ClearanceInspector = ({
                     <ResizableHandle withHandle />
                     <ResizablePanel
                         defaultSize={defaultClearanceHeights[3]}
-                        minSize={35}
+                        minSize={30}
                     >
                         <ConclusionFormWrapper
                             purl={purl}
