@@ -1387,7 +1387,7 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         const purl = req.params.purl;
         const packageId = await dbQueries.findPackageIdByPurl(purl);
 
-        if (!packageId) throw new Error("Package not found");
+        if (!packageId) throw new CustomError("Package not found", 404);
 
         let match = false;
 
@@ -1413,8 +1413,10 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         }
 
         if (!match)
-            throw new Error(
+            throw new CustomError(
                 "No matching path(s) for the provided pattern were found in the package",
+                400,
+                "pattern",
             );
 
         const pathExclusion = await dbQueries.createPathExclusion({
@@ -1434,23 +1436,14 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         });
     } catch (error) {
         console.log("Error: ", error);
-        if (error instanceof Error) {
-            if (error.message === "User not found")
-                res.status(401).json({ message: "Unauthorized" });
-            else if (
-                error.message ===
-                "No matching path(s) for the provided pattern were found in the package"
-            ) {
-                res.status(400).json({
-                    message: error.message,
-                    path: "pattern",
-                });
-            } else
-                res.status(400).json({
-                    message: error.message,
-                });
-        } else {
-            res.status(500).json({ message: "Internal server error" });
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
         }
     }
 });
