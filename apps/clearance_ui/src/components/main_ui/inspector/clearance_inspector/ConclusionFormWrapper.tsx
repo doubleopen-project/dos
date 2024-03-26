@@ -54,7 +54,7 @@ const ConclusionFormWrapper = ({
                 </div>
             )}
             {licenseConclusionData && licenseFindingData && (
-                <div className="flex h-full items-end">
+                <div className="flex h-full">
                     <div className="flex w-full flex-col items-start p-1">
                         <Label className="clearance-label">
                             Create a license conclusion
