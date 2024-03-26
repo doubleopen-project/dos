@@ -40,7 +40,7 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
                             className="h-full w-full overflow-y-auto p-1"
                         />
                     ) : (
-                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                        <p className="h-full w-full overflow-auto rounded-md p-1 text-xs">
                             No license matches
                         </p>
                     )}
