@@ -53,7 +53,7 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                             ))}
                         </div>
                     ) : (
-                        <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
+                        <p className="h-full w-full overflow-auto rounded-md p-1 text-xs">
                             No license detected
                         </p>
                     )}
