@@ -33,29 +33,25 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="clearance-label">Detected license</Label>
                     {data?.licenseFindings[0] ? (
-                        <p className="h-full w-full overflow-auto p-1 text-xs">
+                        <div className="h-full w-full overflow-auto p-1 text-xs">
                             {data.licenseFindings.map((license) => (
                                 <span key={license.id}>
-                                    <>
-                                        <span className="font-bold">
-                                            {
-                                                new Date(license.updatedAt)
-                                                    .toISOString()
-                                                    .split("T")[0]
-                                            }
-                                            :{" "}
-                                        </span>
-                                        {license.licenseExpressionSPDX}
-                                        <CopyToClipboard
-                                            copyText={
-                                                license.licenseExpressionSPDX
-                                            }
-                                        />
-                                        <br />
-                                    </>
+                                    <span className="font-bold">
+                                        {
+                                            new Date(license.updatedAt)
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
+                                        :{" "}
+                                    </span>
+                                    {license.licenseExpressionSPDX}
+                                    <CopyToClipboard
+                                        copyText={license.licenseExpressionSPDX}
+                                    />
+                                    <br />
                                 </span>
                             ))}
-                        </p>
+                        </div>
                     ) : (
                         <p className="h-full w-full overflow-auto rounded-md border p-1 text-xs">
                             No license detected
