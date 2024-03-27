@@ -9,10 +9,17 @@
  * SPDX-License-Identifier: MIT
  */
 
-import axios from "axios";
+import { Zodios } from "@zodios/core";
+import { isAxiosError } from "axios";
 import NextAuth from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
+import { keycloakAPI } from "validation-helpers";
+
+const kcClient = new Zodios(
+    process.env.KEYCLOAK_URL || "https://auth.dev.doubleopen.io/",
+    keycloakAPI,
+);
 
 /**
  * Takes a token, and returns a new token with updated
@@ -20,86 +27,90 @@ import KeycloakProvider from "next-auth/providers/keycloak";
  * returns the old token and an error property
  */
 async function refreshAccessToken(token: JWT) {
-    try {
-        console.log("In refreshAccessToken");
-        const keycloakUrlToRefreshToken = `${process.env.KEYCLOAK_URL}/protocol/openid-connect/token`;
-        const keycloakParamsToRefreshToken = new URLSearchParams();
-        const keycloakRefreshTokenBody = {
-            refreshToken: token?.refreshToken,
-        };
+    let retries = 3;
 
-        keycloakParamsToRefreshToken.append(
-            "client_id",
-            process.env.KEYCLOAK_CLIENT_ID!,
-        );
-        keycloakParamsToRefreshToken.append("grant_type", "refresh_token");
-        keycloakParamsToRefreshToken.append(
-            "refresh_token",
-            keycloakRefreshTokenBody.refreshToken,
-        );
+    while (retries > 0) {
+        try {
+            const refreshedTokens = await kcClient.GetAccessToken(
+                {
+                    client_id: process.env.KEYCLOAK_CLIENT_ID || "",
+                    grant_type: "refresh_token",
+                    refresh_token: token.refreshToken,
+                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET || "",
+                },
+                {
+                    params: {
+                        realm: process.env.KEYCLOAK_REALM || "",
+                    },
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                },
+            );
 
-        const keycloakConfigToRefreshToken = {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        };
-
-        let keycloakRefreshTokenResponse;
-        let retries = 3;
-
-        while (retries > 0) {
-            try {
-                keycloakRefreshTokenResponse = await axios.post(
-                    keycloakUrlToRefreshToken,
-                    keycloakParamsToRefreshToken,
-                    keycloakConfigToRefreshToken,
-                );
-            } catch (error) {
-                retries--;
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.status === 504 && retries > 0) {
-                        console.log(
-                            "Failed to get access token due to gateway timeout. Retrying in five seconds...",
-                        );
-                        await new Promise((resolve) =>
-                            setTimeout(resolve, 5000),
-                        );
-                    } else if (error.code === "ETIMEDOUT" && retries > 0) {
-                        console.log(
-                            "Failed to get access token due to timeout error. Retrying in five seconds...",
-                        );
-                        await new Promise((resolve) =>
-                            setTimeout(resolve, 5000),
-                        );
-                    } else {
-                        throw error;
-                    }
+            return {
+                ...token,
+                accessToken: refreshedTokens.access_token,
+                accessTokenExpired:
+                    Date.now() + refreshedTokens.expires_in * 1000,
+                refreshToken: refreshedTokens.refresh_token,
+                refreshTokenExpired:
+                    Date.now() + refreshedTokens.refresh_expires_in * 1000,
+            };
+        } catch (error) {
+            retries--;
+            if (isAxiosError(error)) {
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to refresh token due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to refresh token due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (
+                    error.response?.status === 400 &&
+                    error.response.data.error_description ===
+                        "Session not active"
+                ) {
+                    console.log("Session not active");
+                    return {
+                        ...token,
+                        error: "SessionNotActiveError",
+                    };
+                } else if (
+                    error.response?.status === 400 &&
+                    error.response.data.error_description ===
+                        "Token is not active"
+                ) {
+                    console.log("Token is not active");
+                    return {
+                        ...token,
+                        error: "TokenNotActiveError",
+                    };
+                } else {
+                    console.log(error);
+                    return {
+                        ...token,
+                        error: "RefreshAccessTokenError",
+                    };
                 }
+            } else {
+                console.log(error);
+                return {
+                    ...token,
+                    error: "RefreshAccessTokenError",
+                };
             }
         }
-
-        if (!keycloakRefreshTokenResponse)
-            throw new Error("Failed to get access token");
-
-        const refreshedTokens = keycloakRefreshTokenResponse.data;
-
-        return {
-            ...token,
-            accessToken: refreshedTokens.data.access_token,
-            accessTokenExpired:
-                Date.now() + refreshedTokens.data.expires_in * 1000,
-            refreshToken:
-                refreshedTokens.data.refresh_token ?? token.refreshToken,
-            refreshTokenExpired:
-                Date.now() + refreshedTokens.data.refresh_expires_in * 1000,
-        };
-    } catch (error) {
-        //console.log(error);
-        return {
-            ...token,
-            error: "RefreshAccessTokenError",
-        };
     }
+
+    return {
+        ...token,
+        error: "RefreshAccessTokenError",
+    };
 }
 
 export default NextAuth({
@@ -154,16 +165,20 @@ export default NextAuth({
                 token.refreshTokenExpired =
                     Date.now() + account.refresh_expires_in! * 1000;
                 token.user = user;
-                token.id_token = account.id_token;
 
                 return token;
             }
 
-            // Return previous token if the access token has not expired yet
-            if (Date.now() < token.accessTokenExpired) {
+            // Return previous token if the access token has not expired yet / will not expire before the next refetch
+            const refetchInterval =
+                parseInt(process.env.REFETCH_INTERVAL as string) || 60;
+
+            if (
+                Date.now() + refetchInterval * 1000 <
+                token.accessTokenExpired
+            ) {
                 return token;
             }
-            console.log("In jwt, access token expired");
             // Access token has expired, try to update it
             return refreshAccessToken(token);
         },
@@ -172,8 +187,6 @@ export default NextAuth({
                 session.user = token.user;
                 session.error = token.error;
                 session.accessToken = token.accessToken;
-                session.refreshToken = token.refreshToken;
-                session.accessTokenExpired = token.accessTokenExpired;
             }
 
             return session;

@@ -29,6 +29,7 @@
         "PORT",
         "REDIS_PW",
         "REDIS_URL",
+        "REFETCH_INTERVAL",
         "RESCAN_SCHEDULE",
         "SA_API_TOKEN",
         "SCANCODE_FILES_IN_MEMORY",
