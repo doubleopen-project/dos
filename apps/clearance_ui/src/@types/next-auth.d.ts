@@ -10,10 +10,10 @@ declare module "next-auth" {
      */
     interface Session {
         accessToken: string;
-        refreshToken: string;
+        //refreshToken: string;
         user: User;
         error: string;
-        accessTokenExpired: number;
+        //accessTokenExpired: number;
     }
 
     /**
@@ -51,7 +51,7 @@ declare module "next-auth" {
         refresh_expires_in: number;
         refresh_token: string;
         //token_type: string;
-        id_token: string;
+        //id_token: string;
         //"not-before-policy": number;
         //session_state: string;
         //scope: string;
@@ -84,6 +84,6 @@ declare module "next-auth/jwt" {
         refreshTokenExpired: number;
         user: User;
         error: string;
-        id_token: string;
+        //id_token: string;
     }
 }
