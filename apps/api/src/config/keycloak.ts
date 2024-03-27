@@ -32,7 +32,7 @@ Keycloak.prototype.accessDenied = async (
     request: Request,
     response: Response,
 ) => {
-    console.log(request.headers.authorization);
+    //console.log(request.headers.authorization);
     if (!request.headers.authorization) {
         return response.status(401).json({
             errorCode: "token.empty",

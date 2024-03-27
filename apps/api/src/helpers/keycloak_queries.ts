@@ -127,12 +127,12 @@ export const logoutUser = async (
     userId: string,
 ): Promise<{ message: string }> => {
     let retries = 3;
-    let response = null;
+    let querySuccess = false;
 
     while (retries > 0) {
         try {
             const token = await getAccessToken();
-            response = await kcClient.LogoutUser(undefined, {
+            await kcClient.LogoutUser(undefined, {
                 params: {
                     realm: process.env.KEYCLOAK_REALM as string,
                     id: userId,
@@ -141,6 +141,7 @@ export const logoutUser = async (
                     Authorization: "Bearer " + token.access_token,
                 },
             });
+            querySuccess = true;
             break;
         } catch (error) {
             if (isAxiosError(error)) {
@@ -175,8 +176,12 @@ export const logoutUser = async (
             }
         }
     }
-    if (!response) throw new CustomError("Failed to logout user", 500);
-    return response;
+    if (!querySuccess) {
+        throw new CustomError("Failed to logout user", 500);
+    }
+    return {
+        message: "Logged out",
+    };
 };
 
 export const createUser = async (data: {
