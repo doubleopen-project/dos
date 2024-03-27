@@ -26,6 +26,7 @@ export const authAPI = makeApi([
         method: "post",
         path: "/logout",
         description: "Logout",
+        alias: "PostLogout",
         response: schemas.PostLogoutRes,
         errors,
     },

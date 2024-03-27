@@ -45,7 +45,7 @@ export const keycloakAPI = makeApi([
                 schema: commonSchemas.PathParamString("id"),
             },
         ],
-        response: schemas.LogoutUserResponse,
+        response: schemas.UndefinedResponse,
         errors,
     },
     {
