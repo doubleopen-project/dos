@@ -34,17 +34,25 @@ const ButtonGroup = ({ data = [], className }: ButtonGroupProps) => {
         parseAsInteger,
     );
 
-    // Sort and filter data by startLine and license, only when data changes
+    // Sort and filter data by startLine and license, only when data changes.
+    // Also remove all overlapping same-license findings.
     const uniqueData = useMemo(() => {
-        const seen = new Set();
         const sortedAndFilteredData = [...data]
             .sort((a, b) => a.startLine - b.startLine)
-            .filter((d) => {
-                const identifier = `${d.startLine}-${d.licenseExpression}`;
-                if (seen.has(identifier)) {
-                    return false;
+            .filter((d, index, array) => {
+                // Check if the current license finding overlaps with any previous finding
+                for (let i = 0; i < index; i++) {
+                    const previousFinding = array[i];
+                    if (
+                        d.startLine >= previousFinding.startLine &&
+                        d.endLine <= previousFinding.endLine &&
+                        d.licenseExpression ===
+                            previousFinding.licenseExpression
+                    ) {
+                        // Current finding sits inside another finding, so filter it out
+                        return false;
+                    }
                 }
-                seen.add(identifier);
                 return true;
             });
         return sortedAndFilteredData;
