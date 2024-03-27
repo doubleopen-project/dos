@@ -31,10 +31,6 @@ export const GetAccessTokenReq = z.union([
     }),
 ]);
 
-export const LogoutUserResponse = z.object({
-    message: z.string(),
-});
-
 export const CreateUserReq = z.object({
     username: z.string(),
     credentials: z.array(

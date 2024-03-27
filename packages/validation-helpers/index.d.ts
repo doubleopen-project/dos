@@ -3005,6 +3005,7 @@ declare const authAPI: [
         method: "post";
         path: "/logout";
         description: "Logout";
+        alias: "PostLogout";
         response: zod.ZodObject<
             {
                 message: zod.ZodString;
@@ -19370,6 +19371,7 @@ declare const dosAPI: [
         method: "post";
         path: "/auth/logout";
         description: "Logout";
+        alias: "PostLogout";
         response: zod.ZodObject<
             {
                 message: zod.ZodString;
@@ -19893,19 +19895,7 @@ declare const keycloakAPI: [
                 schema: zod.ZodString;
             },
         ];
-        response: zod.ZodObject<
-            {
-                message: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                message: string;
-            },
-            {
-                message: string;
-            }
-        >;
+        response: zod.ZodUndefined;
         errors: [
             {
                 status: 400;
