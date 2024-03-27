@@ -89,15 +89,6 @@
         @apply text-2xl font-semibold leading-none tracking-tight;
     }
 
-    .logo {
-        font-family: "Fira Code", monospace;
-        @apply text-xl text-black dark:text-white;
-    }
-
-    .logo-brackets {
-        color: #ff3366 !important;
-    }
-
     .clearance-label {
         @apply rounded-sm p-0.5 font-bold text-[#313C9B] dark:text-[#C6CAED] !important;
     }
