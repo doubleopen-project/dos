@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { Fira_Code } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
@@ -12,6 +13,13 @@ import { ModeToggle } from "@/components/common/ModeToggle";
 import SideMenu from "@/components/navigation/SideMenu";
 import UserMenuItem from "@/components/navigation/UserMenuItem";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
+import { cn } from "@/lib/utils";
+
+const fira_code = Fira_Code({
+    weight: "500",
+    subsets: ["latin"],
+    display: "swap",
+});
 
 const Navbar = () => {
     const router = useRouter();
@@ -35,8 +43,22 @@ const Navbar = () => {
             <div className="flex items-center justify-start">
                 <SideMenu />
                 <Link href="/" className="pl-2 pr-4">
-                    <span className="logo">doubleOpen</span>
-                    <span className="logo logo-brackets">()</span>
+                    <span
+                        className={cn(
+                            fira_code.className,
+                            "text-xl font-bold text-black dark:text-white",
+                        )}
+                    >
+                        doubleOpen
+                    </span>
+                    <span
+                        className={cn(
+                            fira_code.className,
+                            "text-xl font-bold text-[#ff3366]",
+                        )}
+                    >
+                        ()
+                    </span>
                 </Link>
                 {mainPurl && (
                     <div className="flex-row items-center">
