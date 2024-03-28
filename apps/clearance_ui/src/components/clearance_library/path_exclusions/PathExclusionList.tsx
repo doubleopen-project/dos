@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { useSession } from "next-auth/react";
 import {
     parseAsInteger,
     parseAsString,
@@ -16,6 +17,7 @@ import { DataTable } from "@/components/clearance_library/path_exclusions/DataTa
 
 const PathExclusionList = () => {
     const user = useUser();
+    const session = useSession();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -44,7 +46,9 @@ const PathExclusionList = () => {
 
     const peCntQuery = userHooks.useGetPathExclusionsCount(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             queries: {
                 purl: searchPurl !== null ? searchPurl : undefined,
             },
@@ -54,7 +58,9 @@ const PathExclusionList = () => {
 
     const { data, isLoading, error } = userHooks.useGetPathExclusions(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             queries: {
                 pageIndex: pageIndex - 1,
                 pageSize,

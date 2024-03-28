@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 

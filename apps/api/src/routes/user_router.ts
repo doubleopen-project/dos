@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,68 +13,40 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { extractStringFromGlob } from "../helpers/globHelpers";
-import { hashPassword } from "../helpers/password_helper";
+import { getUsers, updateUser } from "../helpers/keycloak_queries";
 import { s3Client } from "../helpers/s3client";
 
 const userRouter = zodiosRouter(userAPI);
 
 // ----------------------------------- USER ROUTES -----------------------------------
 
-userRouter.get("/user", async (req, res) => {
-    try {
-        const { user } = req;
-
-        if (!user) {
-            res.status(401).send({ message: "Unauthorized" });
-        } else {
-            res.status(200).send({
-                username: user.username,
-                role: user.role,
-            });
-        }
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).send({ message: "Internal server error" });
-    }
-});
-
 userRouter.put("/user", async (req, res) => {
     try {
-        const { user } = req;
-
-        if (!user) throw new Error("User not found");
-
-        if (!req.body.username && !req.body.password)
-            throw new Error("At least one field is required");
-
-        let pw: { hashedPassword: Buffer; salt: Buffer } | null = null;
-
-        if (req.body.password) {
-            pw = await hashPassword(req.body.password);
-
-            await dbQueries.updateUser(user.id, {
-                username: req.body.username,
-                hashedPassword: pw.hashedPassword,
-                salt: pw.salt,
-            });
-        } else {
-            if (req.body.username !== user.username) {
-                await dbQueries.updateUser(user.id, {
-                    username: req.body.username,
-                });
-            } else {
-                throw new Error("Nothing to update");
-            }
+        const { username, password, email, firstName, lastName } = req.body;
+        if (
+            ![username, password, email, firstName, lastName].some(
+                (field) => field,
+            )
+        ) {
+            throw new CustomError("At least one field is required", 400);
         }
+
+        await updateUser(req.kauth.grant.access_token.content.sub, {
+            username: username,
+            credentials: password
+                ? [{ type: "password", value: password, temporary: false }]
+                : undefined,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+        });
+
         res.status(200).send({ message: "User updated" });
     } catch (error) {
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2002"
-        ) {
+        if (error instanceof CustomError) {
             return res
-                .status(400)
-                .json({ message: "Username already exists", path: "username" });
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
         } else if (error instanceof Error) {
             return res.status(400).json({ message: error.message, path: null });
         } else {
@@ -86,14 +58,12 @@ userRouter.put("/user", async (req, res) => {
 
 userRouter.put("/token", async (req, res) => {
     try {
-        const { user } = req;
-
-        if (!user) throw new Error("User not found");
-
         const token = crypto.randomBytes(16).toString("hex");
 
         // Update user token
-        await dbQueries.updateUser(user.id, { token: token });
+        await updateUser(req.kauth.grant.access_token.content.sub, {
+            attributes: { dosApiToken: token },
+        });
 
         res.status(200).json({ token: token });
     } catch (error) {
@@ -102,10 +72,33 @@ userRouter.put("/token", async (req, res) => {
     }
 });
 
+const getUserIdArray = async (username: string, usernameStrict?: boolean) => {
+    let userIds: string[] = [];
+
+    if (usernameStrict) {
+        const matchingUsers = await getUsers(username, undefined, true);
+        if (matchingUsers.length === 1) userIds = [matchingUsers[0].id];
+        else if (matchingUsers.length > 1)
+            throw new CustomError(
+                "Internal server error. Error in getUsers query: multiple users found with the same username with exact set to true",
+                500,
+            );
+    } else {
+        const matchingUsers = await getUsers(username);
+        userIds = matchingUsers.map((user) => user.id);
+    }
+
+    return userIds;
+};
+
 userRouter.get("/license-conclusions", async (req, res) => {
     try {
         // TODO: return only license conclusions that belong to the user
         // or to a group that the user belongs to
+
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
 
         if (req.query.purl) {
             const pkg = await dbQueries.findPackageByPurl(req.query.purl);
@@ -122,6 +115,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+        const users = await getUsers();
 
         const licenseConclusionsWithRelations =
             await dbQueries.findLicenseConclusions(
@@ -135,8 +129,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 req.query.purl,
                 req.query.contextPurl,
                 req.query.contextPurlStrict || false,
-                req.query.username,
-                req.query.usernameStrict || false,
+                userIds,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
                 req.query.comment,
@@ -176,6 +169,15 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 }
             }
 
+            const username = users.find((u) => u.id === lc.kcUserId)?.username;
+
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+
             licenseConclusions.push({
                 id: lc.id,
                 updatedAt: lc.updatedAt,
@@ -184,7 +186,9 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 detectedLicenseExpressionSPDX: lc.detectedLicenseExpressionSPDX,
                 comment: lc.comment,
                 local: lc.local,
-                user: lc.user,
+                user: {
+                    username: username,
+                },
                 bulkConclusionId: lc.bulkConclusionId,
                 sha256: lc.file.sha256,
                 contextPurl: lc.contextPurl,
@@ -215,6 +219,10 @@ userRouter.get("/license-conclusions", async (req, res) => {
 
 userRouter.get("/license-conclusions/count", async (req, res) => {
     try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
         if (req.query.purl) {
             const pkg = await dbQueries.findPackageByPurl(req.query.purl);
 
@@ -231,8 +239,7 @@ userRouter.get("/license-conclusions/count", async (req, res) => {
             req.query.purl,
             req.query.contextPurl,
             req.query.contextPurlStrict || false,
-            req.query.username,
-            req.query.usernameStrict || false,
+            userIds,
             req.query.detectedLicense,
             req.query.concludedLicense,
             req.query.comment,
@@ -278,8 +285,29 @@ userRouter.get(
                     return true;
                 }
             });
+
+            const users = await getUsers();
+
+            const lcs = licenseConclusions.map((lc) => {
+                const username = users.find(
+                    (u) => u.id === lc.kcUserId,
+                )?.username;
+                if (!username) {
+                    throw new CustomError(
+                        "Internal server error: creator username not found",
+                        500,
+                    );
+                }
+                return {
+                    ...lc,
+                    user: {
+                        username: username,
+                    },
+                };
+            });
+
             res.status(200).json({
-                licenseConclusions: licenseConclusions,
+                licenseConclusions: lcs,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -300,8 +328,6 @@ userRouter.post(
     "/packages/:purl/files/:sha256/license-conclusions",
     async (req, res) => {
         try {
-            if (!req.user) throw new CustomError("Unauthorized", 401);
-
             const contextPurl = req.params.purl;
 
             // Make sure that a package with purl exists
@@ -337,8 +363,10 @@ userRouter.post(
                 local: req.body.local,
                 contextPurl: contextPurl,
                 fileSha256: req.params.sha256,
-                userId: req.user.id,
-                kcUserId: req.user.kcUserId,
+                userId: await dbQueries.findUserByKcUserId(
+                    req.kauth.grant.access_token.content.sub,
+                ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+                kcUserId: req.kauth.grant.access_token.content.sub,
             });
 
             res.status(200).json({
@@ -348,7 +376,16 @@ userRouter.post(
         } catch (error) {
             console.log("Error: ", error);
 
-            if (error instanceof CustomError) {
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === "P2025" &&
+                error.message.includes("No User found")
+            ) {
+                return res.status(404).json({
+                    message:
+                        "User not found. This keycloak id does not have a corresponding user row in the user table.",
+                });
+            } else if (error instanceof CustomError) {
                 return res
                     .status(error.statusCode)
                     .json({ message: error.message, path: error.path });
@@ -363,46 +400,54 @@ userRouter.post(
 
 userRouter.put("/license-conclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new Error("User not found");
-
         const licenseConclusionId = req.params.id;
         const licenseConclusion =
             await dbQueries.findLicenseConclusionById(licenseConclusionId);
 
         if (!licenseConclusion)
-            throw new Error("License conclusion to update not found");
+            throw new CustomError(
+                "License conclusion to update not found",
+                404,
+            );
 
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
-            req.user.role === "ADMIN" ||
-            req.user.id === licenseConclusion.userId
-        ) {
-            await dbQueries.updateLicenseConclusion(licenseConclusionId, {
-                concludedLicenseExpressionSPDX:
-                    req.body.concludedLicenseExpressionSPDX,
-                detectedLicenseExpressionSPDX:
-                    req.body.detectedLicenseExpressionSPDX,
-                comment: req.body.comment,
-                local: req.body.local,
-                contextPurl: undefined,
-                /*
-                 * The following will detach the license conclusion from a bulk conclusion if it is connected to one
-                 * (since this endpoint is used to update one license conclusion only, and the bulk conclusion
-                 * is updated through the PUT /bulk-conclusion/:id endpoint)
-                 */
-                bulkConclusionId: licenseConclusion.bulkConclusionId
-                    ? null
-                    : undefined,
-            });
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !==
+                licenseConclusion.kcUserId
+        )
+            throw new CustomError("Forbidden", 403);
 
-            res.status(200).json({ message: "License conclusion updated" });
-        } else {
-            res.status(401).json({ message: "Unauthorized" });
-        }
+        await dbQueries.updateLicenseConclusion(licenseConclusionId, {
+            concludedLicenseExpressionSPDX:
+                req.body.concludedLicenseExpressionSPDX,
+            detectedLicenseExpressionSPDX:
+                req.body.detectedLicenseExpressionSPDX,
+            comment: req.body.comment,
+            local: req.body.local,
+            contextPurl: undefined,
+            /*
+             * The following will detach the license conclusion from a bulk conclusion if it is connected to one
+             * (since this endpoint is used to update one license conclusion only, and the bulk conclusion
+             * is updated through the PUT /bulk-conclusion/:id endpoint)
+             */
+
+            bulkConclusionId: licenseConclusion.bulkConclusionId
+                ? null
+                : undefined,
+        });
+
+        res.status(200).json({ message: "License conclusion updated" });
     } catch (error) {
         console.log("Error: ", error);
 
-        if (
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2025"
         ) {
@@ -419,30 +464,36 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
 
 userRouter.delete("/license-conclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new Error("User not found");
-
         const licenseConclusionId = req.params.id;
         const licenseConclusionUserId =
             await dbQueries.findLicenseConclusionUserId(licenseConclusionId);
 
         if (!licenseConclusionUserId)
-            throw new Error("License conclusion to delete not found");
+            throw new CustomError(
+                "License conclusion to delete not found",
+                404,
+            );
 
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
-            req.user.role === "ADMIN" ||
-            req.user.id === licenseConclusionUserId
-        ) {
-            await dbQueries.deleteLicenseConclusion(licenseConclusionId);
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== licenseConclusionUserId
+        )
+            throw new CustomError("Forbidden", 403);
 
-            res.status(200).json({ message: "License conclusion deleted" });
-        } else {
-            res.status(401).json({ message: "Unauthorized" });
-        }
+        await dbQueries.deleteLicenseConclusion(licenseConclusionId);
+
+        res.status(200).json({ message: "License conclusion deleted" });
     } catch (error) {
         console.log("Error: ", error);
 
-        if (
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2025"
         ) {
@@ -460,6 +511,10 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
 
 userRouter.get("/bulk-conclusions", async (req, res) => {
     try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
@@ -474,8 +529,7 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                     : req.query.sortOrder,
                 req.query.purl,
                 req.query.purlStrict || false,
-                req.query.username,
-                req.query.usernameStrict || false,
+                userIds,
                 req.query.pattern,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
@@ -487,8 +541,26 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                 req.query.updatedAtLte,
             );
 
+        const users = await getUsers();
+
+        const bcs = bulkConclusions.map((bc) => {
+            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...bc,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
         res.status(200).json({
-            bulkConclusions: bulkConclusions,
+            bulkConclusions: bcs,
         });
     } catch (error) {
         console.log("Error: ", error);
@@ -506,11 +578,14 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
 
 userRouter.get("/bulk-conclusions/count", async (req, res) => {
     try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
         const bulkConclusionsCount = await dbQueries.countBulkConclusions(
             req.query.purl,
             req.query.purlStrict || false,
-            req.query.username,
-            req.query.usernameStrict || false,
+            userIds,
             req.query.pattern,
             req.query.detectedLicense,
             req.query.concludedLicense,
@@ -602,12 +677,106 @@ userRouter.get("/bulk-conclusions/:id/affected-files", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + purl + " not found",
+                404,
+            );
+
+        const bulkConclusions =
+            await dbQueries.findBulkConclusionsWithRelationsByPackageId(
+                packageId,
+            );
+
+        const users = await getUsers();
+
+        const bcs = bulkConclusions.map((bc) => {
+            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+
+            return {
+                ...bc,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        res.status(200).json({
+            bulkConclusions: bcs,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with purl " + req.params.purl + " not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+userRouter.get("/packages/:purl/bulk-conclusions/count", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const packageId = await dbQueries.findPackageIdByPurl(purl);
+
+        if (!packageId)
+            throw new CustomError(
+                "Package with purl " + purl + " not found",
+                404,
+            );
+
+        const bulkConclusionsCount =
+            await dbQueries.countBulkConclusionsForPackage(packageId);
+
+        res.status(200).json({
+            count: bulkConclusionsCount,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message });
+        else if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with purl " + req.params.purl + " not found",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
 userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
     try {
-        const { user } = req;
-
-        if (!user) throw new CustomError("Unauthorized", 401);
-
         const contextPurl = req.params.purl;
 
         const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
@@ -624,6 +793,11 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
 
         const pattern = req.body.pattern.trim();
 
+        // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+        const userId = await dbQueries.findUserByKcUserId(
+            req.kauth.grant.access_token.content.sub,
+        );
+
         const bulkConclusion = await dbQueries.createBulkConclusion({
             pattern: pattern,
             concludedLicenseExpressionSPDX:
@@ -633,8 +807,8 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
             comment: req.body.comment || null,
             local: req.body.local,
             packageId: packageId,
-            userId: user.id,
-            kcUserId: user.kcUserId,
+            userId: userId,
+            kcUserId: req.kauth.grant.access_token.content.sub,
         });
 
         let mathchedPathsCount = 0;
@@ -657,9 +831,9 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
                         local: req.body.local,
                         contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
-                        userId: user.id,
                         bulkConclusionId: bulkConclusion.id,
-                        kcUserId: user.kcUserId,
+                        userId: userId,
+                        kcUserId: req.kauth.grant.access_token.content.sub,
                     });
             }
         }
@@ -730,8 +904,6 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
 
 userRouter.get("/bulk-conclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("Unauthorized", 401);
-
         const bulkConclusionId = req.params.id;
 
         const bulkConclusion =
@@ -795,20 +967,21 @@ userRouter.get("/bulk-conclusions/:id", async (req, res) => {
 
 userRouter.put("/bulk-conclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("Unauthorized", 401);
-
         const bulkConclusionId = req.params.id;
 
-        const origBulkCur =
+        const origBulk =
             await dbQueries.findBulkConclusionById(bulkConclusionId);
 
-        if (!origBulkCur)
+        if (!origBulk)
             throw new CustomError("Bulk conclusion to update not found", 404);
 
-        if (req.user.role !== "ADMIN") {
-            if (req.user.id !== origBulkCur.userId) {
-                throw new CustomError("Forbidden", 403);
-            }
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== origBulk.kcUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
         }
 
         const reqPattern = req.body.pattern;
@@ -832,13 +1005,13 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
         }
 
         if (
-            (!reqPattern || reqPattern === origBulkCur.pattern) &&
+            (!reqPattern || reqPattern === origBulk.pattern) &&
             (!reqCLESPDX ||
-                reqCLESPDX === origBulkCur.concludedLicenseExpressionSPDX) &&
+                reqCLESPDX === origBulk.concludedLicenseExpressionSPDX) &&
             (!reqDLESPDX ||
-                reqDLESPDX === origBulkCur.detectedLicenseExpressionSPDX) &&
-            (reqComment === undefined || reqComment === origBulkCur.comment) &&
-            (reqLocal === undefined || reqLocal === origBulkCur.local)
+                reqDLESPDX === origBulk.detectedLicenseExpressionSPDX) &&
+            (reqComment === undefined || reqComment === origBulk.comment) &&
+            (reqLocal === undefined || reqLocal === origBulk.local)
         ) {
             throw new CustomError("Nothing to update", 400, "root");
         }
@@ -846,7 +1019,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
         const bulkConclusionWithRelations =
             await dbQueries.findBulkConclusionWithRelationsById(
                 bulkConclusionId,
-                origBulkCur.package.id,
+                origBulk.package.id,
             );
 
         if (!bulkConclusionWithRelations)
@@ -855,7 +1028,10 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
         if (reqPattern && reqPattern !== bulkConclusionWithRelations.pattern) {
             const newInputs = [];
             const fileTrees = await dbQueries.findFileTreesByPackageId(
-                origBulkCur.package.id,
+                origBulk.package.id,
+            );
+            const userId = await dbQueries.findUserByKcUserId(
+                req.kauth.grant.access_token.content.sub,
             );
 
             let matchFound = false;
@@ -884,11 +1060,11 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                                 reqLocal !== undefined
                                     ? reqLocal
                                     : bulkConclusionWithRelations.local,
-                            contextPurl: origBulkCur.package.purl,
+                            contextPurl: origBulk.package.purl,
                             fileSha256: fileTree.fileSha256,
-                            userId: req.user.id,
                             bulkConclusionId: bulkConclusionWithRelations.id,
-                            kcUserId: req.user.kcUserId,
+                            userId: userId,
+                            kcUserId: req.kauth.grant.access_token.content.sub,
                         });
                     }
                 }
@@ -922,11 +1098,11 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
 
         if (
             (reqCLESPDX &&
-                reqCLESPDX !== origBulkCur.concludedLicenseExpressionSPDX) ||
+                reqCLESPDX !== origBulk.concludedLicenseExpressionSPDX) ||
             (reqDLESPDX &&
-                reqDLESPDX !== origBulkCur.detectedLicenseExpressionSPDX) ||
-            (reqComment && reqComment !== origBulkCur.comment) ||
-            (reqLocal !== undefined && reqLocal !== origBulkCur.local)
+                reqDLESPDX !== origBulk.detectedLicenseExpressionSPDX) ||
+            (reqComment && reqComment !== origBulk.comment) ||
+            (reqLocal !== undefined && reqLocal !== origBulk.local)
         ) {
             await dbQueries.updateManyLicenseConclusions(bulkConclusionId, {
                 concludedLicenseExpressionSPDX: reqCLESPDX,
@@ -967,35 +1143,25 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
 
 userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("Unauthorized", 401);
-
         const bulkConclusionId = req.params.id;
 
-        if (req.user.role !== "ADMIN") {
-            const bulkConclusionUserId =
-                await dbQueries.findBulkConclusionUserId(bulkConclusionId);
+        const bulkConclusionUserId =
+            await dbQueries.findBulkConclusionUserId(bulkConclusionId);
 
-            if (!bulkConclusionUserId) {
-                throw new CustomError(
-                    "Bulk conclusion to delete not found",
-                    404,
-                );
-            }
-
-            if (req.user.id !== bulkConclusionUserId) {
-                throw new CustomError("Forbidden", 403);
-            }
+        if (!bulkConclusionUserId) {
+            throw new CustomError("Bulk conclusion to delete not found", 404);
         }
 
-        await dbQueries.deleteManyLicenseConclusionsByBulkConclusionId(
-            bulkConclusionId,
-        );
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== bulkConclusionUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
+        }
 
-        const deletedBulkConclusion =
-            await dbQueries.deleteBulkConclusion(bulkConclusionId);
-
-        if (!deletedBulkConclusion)
-            throw new CustomError("Bulk conclusion to delete not found", 404);
+        await dbQueries.deleteBulkAndLicenseConclusions(bulkConclusionId);
 
         res.status(200).json({ message: "Bulk conclusion deleted" });
     } catch (error) {
@@ -1018,92 +1184,12 @@ userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
     }
 });
 
-userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
-    try {
-        const { user } = req;
-        if (!user) throw new CustomError("Unauthorized", 401);
-
-        const purl = req.params.purl;
-
-        const packageId = await dbQueries.findPackageIdByPurl(purl);
-
-        if (!packageId)
-            throw new CustomError(
-                "Package with purl " + purl + " not found",
-                404,
-            );
-
-        const bulkConclusions =
-            await dbQueries.findBulkConclusionsWithRelationsByPackageId(
-                packageId,
-            );
-
-        res.status(200).json({
-            bulkConclusions: bulkConclusions,
-        });
-    } catch (error) {
-        console.log("Error: ", error);
-        if (error instanceof CustomError)
-            return res
-                .status(error.statusCode)
-                .json({ message: error.message });
-        else if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2025"
-        ) {
-            return res.status(404).json({
-                message: "Package with purl " + req.params.purl + " not found",
-            });
-        } else {
-            const err = await getErrorCodeAndMessage(error);
-            res.status(err.statusCode).json({ message: err.message });
-        }
-    }
-});
-
-userRouter.get("/packages/:purl/bulk-conclusions/count", async (req, res) => {
-    try {
-        const { user } = req;
-        if (!user) throw new CustomError("Unauthorized", 401);
-
-        const purl = req.params.purl;
-
-        const packageId = await dbQueries.findPackageIdByPurl(purl);
-
-        if (!packageId)
-            throw new CustomError(
-                "Package with purl " + purl + " not found",
-                404,
-            );
-
-        const bulkConclusionsCount =
-            await dbQueries.countBulkConclusionsForPackage(packageId);
-
-        res.status(200).json({
-            count: bulkConclusionsCount,
-        });
-    } catch (error) {
-        console.log("Error: ", error);
-        if (error instanceof CustomError)
-            return res
-                .status(error.statusCode)
-                .json({ message: error.message });
-        else if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2025"
-        ) {
-            return res.status(404).json({
-                message: "Package with purl " + req.params.purl + " not found",
-            });
-        } else {
-            const err = await getErrorCodeAndMessage(error);
-            res.status(err.statusCode).json({ message: err.message });
-        }
-    }
-});
-
 userRouter.get("/path-exclusions", async (req, res) => {
     try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
@@ -1117,8 +1203,7 @@ userRouter.get("/path-exclusions", async (req, res) => {
                 : req.query.sortOrder,
             req.query.purl,
             req.query.purlStrict || false,
-            req.query.username,
-            req.query.usernameStrict || false,
+            userIds,
             req.query.pattern,
             req.query.reason,
             req.query.comment,
@@ -1128,8 +1213,26 @@ userRouter.get("/path-exclusions", async (req, res) => {
             req.query.updatedAtLte,
         );
 
+        const users = await getUsers();
+
+        const pes = pathExclusions.map((pe) => {
+            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...pe,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
         return res.status(200).json({
-            pathExclusions: pathExclusions,
+            pathExclusions: pes,
         });
     } catch (error) {
         console.log("Error: ", error);
@@ -1147,11 +1250,14 @@ userRouter.get("/path-exclusions", async (req, res) => {
 
 userRouter.get("/path-exclusions/count", async (req, res) => {
     try {
+        const userIds = req.query.username
+            ? await getUserIdArray(req.query.username, req.query.usernameStrict)
+            : undefined;
+
         const pathExclusionsCount = await dbQueries.countPathExclusions(
             req.query.purl,
             req.query.purlStrict || false,
-            req.query.username,
-            req.query.usernameStrict || false,
+            userIds,
             req.query.pattern,
             req.query.reason,
             req.query.comment,
@@ -1229,15 +1335,57 @@ userRouter.get("/path-exclusions/:id/affected-files", async (req, res) => {
     }
 });
 
+userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
+    try {
+        const purl = req.params.purl;
+
+        const pathExclusions =
+            await dbQueries.getPathExclusionsByPackagePurl(purl);
+
+        const users = await getUsers();
+
+        const pes = pathExclusions.map((pe) => {
+            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...pe,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        res.status(200).json({
+            pathExclusions: pes,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            return res.status(404).json({
+                message: "Package with the requested purl does not exist",
+            });
+        } else if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+});
+
 userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
     try {
-        const { user } = req;
-        if (!user) throw new Error("User not found");
-
         const purl = req.params.purl;
         const packageId = await dbQueries.findPackageIdByPurl(purl);
 
-        if (!packageId) throw new Error("Package not found");
+        if (!packageId) throw new CustomError("Package not found", 404);
 
         let match = false;
 
@@ -1263,8 +1411,10 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         }
 
         if (!match)
-            throw new Error(
+            throw new CustomError(
                 "No matching path(s) for the provided pattern were found in the package",
+                400,
+                "pattern",
             );
 
         const pathExclusion = await dbQueries.createPathExclusion({
@@ -1272,8 +1422,10 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
             reason: req.body.reason,
             comment: req.body.comment || null,
             packageId: packageId,
-            userId: user.id,
-            kcUserId: user.kcUserId,
+            userId: await dbQueries.findUserByKcUserId(
+                req.kauth.grant.access_token.content.sub,
+            ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
+            kcUserId: req.kauth.grant.access_token.content.sub,
         });
 
         res.status(200).json({
@@ -1282,31 +1434,20 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
         });
     } catch (error) {
         console.log("Error: ", error);
-        if (error instanceof Error) {
-            if (error.message === "User not found")
-                res.status(401).json({ message: "Unauthorized" });
-            else if (
-                error.message ===
-                "No matching path(s) for the provided pattern were found in the package"
-            ) {
-                res.status(400).json({
-                    message: error.message,
-                    path: "pattern",
-                });
-            } else
-                res.status(400).json({
-                    message: error.message,
-                });
-        } else {
-            res.status(500).json({ message: "Internal server error" });
+        if (error instanceof CustomError)
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        else {
+            // If error is not a CustomError, it is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
         }
     }
 });
 
 userRouter.put("/path-exclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new CustomError("Unauthorized", 401);
-
         const pathExclusion = await dbQueries.findPathExclusionById(
             req.params.id,
         );
@@ -1314,10 +1455,13 @@ userRouter.put("/path-exclusions/:id", async (req, res) => {
         if (!pathExclusion)
             throw new CustomError("Path exclusion to update not found", 404);
 
-        if (req.user.role !== "ADMIN") {
-            if (req.user.id !== pathExclusion.userId) {
-                throw new CustomError("Forbidden", 403);
-            }
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== pathExclusion.kcUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
         }
 
         const reqPattern = req.body.pattern;
@@ -1399,61 +1543,39 @@ userRouter.put("/path-exclusions/:id", async (req, res) => {
 
 userRouter.delete("/path-exclusions/:id", async (req, res) => {
     try {
-        if (!req.user) throw new Error("User not found");
         const pathExclusionId = req.params.id;
 
         const pathExclusionUserId =
             await dbQueries.findPathExclusionUserId(pathExclusionId);
 
         if (!pathExclusionUserId)
-            throw new Error("Path exclusion to delete not found");
+            throw new CustomError("Path exclusion to delete not found", 404);
 
         // Make sure that the path exclusion belongs to the user or the user is admin
-        if (req.user.role === "ADMIN" || req.user.id === pathExclusionUserId) {
-            await dbQueries.deletePathExclusion(pathExclusionId);
-
-            res.status(200).json({ message: "Path exclusion deleted" });
-        } else {
-            res.status(401).json({ message: "Unauthorized" });
+        if (
+            !req.kauth.grant.access_token.content.realm_roles.includes(
+                "app-admin",
+            ) &&
+            req.kauth.grant.access_token.content.sub !== pathExclusionUserId
+        ) {
+            throw new CustomError("Forbidden", 403);
         }
+
+        await dbQueries.deletePathExclusion(pathExclusionId);
+
+        res.status(200).json({ message: "Path exclusion deleted" });
     } catch (error) {
         console.log("Error: ", error);
-        if (
+        if (error instanceof CustomError) {
+            return res
+                .status(error.statusCode)
+                .json({ message: error.message, path: error.path });
+        } else if (
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2025"
         ) {
             return res.status(404).json({
                 message: "Path exclusion with the requested id does not exist",
-            });
-        } else if (error instanceof Error) {
-            return res.status(404).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
-    }
-});
-
-userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
-    try {
-        const { user } = req;
-        if (!user) throw new Error("User not found");
-
-        const purl = req.params.purl;
-
-        const pathExclusions =
-            await dbQueries.getPathExclusionsByPackagePurl(purl);
-
-        res.status(200).json({
-            pathExclusions: pathExclusions,
-        });
-    } catch (error) {
-        console.log("Error: ", error);
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2025"
-        ) {
-            return res.status(404).json({
-                message: "Package with the requested purl does not exist",
             });
         } else if (error instanceof Error) {
             return res.status(404).json({ message: error.message });

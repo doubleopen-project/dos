@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CellContext } from "@tanstack/react-table";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { Check, Loader2, X } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -32,12 +33,15 @@ const ActionCell = ({
 }: CellContext<LicenseConclusion, unknown>) => {
     // Get user role, to decide what rights the user has for this view
     const user = useUser();
+    const session = useSession();
     const lcKey = userHooks.getKeyByAlias("GetLicenseConclusions");
     const queryClient = useQueryClient();
     const { mutate: UpdateLicenseConclusion, isLoading } =
         userHooks.usePutLicenseConclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     id: row.original.id,
                 },

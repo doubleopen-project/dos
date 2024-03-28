@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import {
     parseAsInteger,
     parseAsString,
@@ -16,6 +17,8 @@ import { columns } from "@/components/package_library/columns";
 import { DataTable } from "@/components/package_library/DataTable";
 
 const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
+    const user = useUser();
+    const session = useSession();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -42,9 +45,6 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
         parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
     );
 
-    const user = useUser();
-    if (!user) return null;
-
     const tableColumns = columns(
         sortBy,
         sortOrder,
@@ -55,7 +55,9 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
 
     const { data, isLoading, error } = userHooks.useGetPackages(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             queries: {
                 pageIndex: pageIndex - 1,
                 pageSize,
@@ -69,11 +71,15 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
 
     const pkgCntQuery = userHooks.useGetPackagesCount(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             queries: { name: name !== null ? name : undefined },
         },
         { enabled: !!user },
     );
+
+    if (!user) return null;
 
     return (
         <>

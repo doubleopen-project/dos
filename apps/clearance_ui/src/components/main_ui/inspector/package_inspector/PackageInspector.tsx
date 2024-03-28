@@ -5,6 +5,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
 import { NodeApi, Tree, TreeApi } from "react-arborist";
@@ -41,6 +42,7 @@ type Props = {
 };
 
 const PackageInspector = ({ purl, path }: Props) => {
+    const session = useSession();
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
         "licenseFilter",
@@ -66,7 +68,9 @@ const PackageInspector = ({ purl, path }: Props) => {
     // with the same query, no need anymore to use a separate query for it.
     const { data, isLoading, error } = userHooks.useGetFileTree(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 purl: pathPurl,
             },

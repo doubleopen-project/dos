@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React from "react";
+import { useEffect } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
@@ -12,8 +13,19 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 const Details = () => {
     const router = useRouter();
     const purl = router.query.purl;
+    const session = useSession({
+        required: true,
+    });
 
-    if (!purl) {
+    useEffect(() => {
+        if (session.data?.error === "SessionNotActiveError") {
+            signOut();
+        } else if (session.data?.error !== undefined) {
+            signIn("keycloak");
+        }
+    }, [session.data?.error]);
+
+    if (!purl || session.status === "loading") {
         return <div>Loading...</div>;
     }
     if (typeof purl !== "string") {

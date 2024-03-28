@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { validReasons } from "validation-helpers";
 import { z } from "zod";
@@ -65,6 +66,7 @@ const ExclusionForm = ({
     comment,
     setOpen,
 }: Props) => {
+    const session = useSession();
     const defaultValues: ExclusionFormType = {
         pattern: pattern,
         reason: reason || "",
@@ -87,7 +89,9 @@ const ExclusionForm = ({
     const { mutate: addPathExclusion, isLoading: createIsLoading } =
         userHooks.usePostPathExclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     purl: pathPurl,
                 },
@@ -130,7 +134,9 @@ const ExclusionForm = ({
     const { mutate: editPathExclusion, isLoading: updateIsLoading } =
         userHooks.usePutPathExclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     id: id || -1,
                 },

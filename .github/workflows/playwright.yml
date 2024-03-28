@@ -23,10 +23,27 @@ jobs:
                   cache: "npm"
             - name: Install dependencies
               run: npm ci
-            - name: Create env file
+            - name: Create env files
               run: |
                   touch .env.local
                   echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env.local
+                  echo E2E_USER_USERNAME=${{ secrets.E2E_USER_USERNAME }} >> .env.local
+                  echo E2E_USER_PASSWORD=${{ secrets.E2E_USER_PASSWORD }} >> .env.local
+                  echo KEYCLOAK_URL=${{ vars.KEYCLOAK_URL }} >> .env.local
+                  echo KEYCLOAK_REALM=${{ secrets.KEYCLOAK_REALM }} >> .env.local
+                  echo KEYCLOAK_CLIENT_ID_API=${{ secrets.KEYCLOAK_CLIENT_ID_API }} >> .env.local
+                  echo KEYCLOAK_CLIENT_SECRET_API=${{ secrets.KEYCLOAK_CLIENT_SECRET_API }} >> .env.local
+                  echo KEYCLOAK_ADMIN_USERNAME=${{ secrets.KEYCLOAK_ADMIN_USERNAME }} >> .env.local
+                  echo KEYCLOAK_ADMIN_PASSWORD=${{ secrets.KEYCLOAK_ADMIN_PASSWORD }} >> .env.local
+                  echo KEYCLOAK_ADMIN_USER_ID=${{ secrets.KEYCLOAK_ADMIN_USER_ID }} >> .env.local
+                  echo KEYCLOAK_ADMIN_CLIENT_SECRET=${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }} >> .env.local
+                  touch apps/clearance_ui/.env.local
+                  echo NEXTAUTH_URL=http://localhost:3000 >> apps/clearance_ui/.env.local
+                  echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> apps/clearance_ui/.env.local
+                  echo KEYCLOAK_URL=${{ vars.KEYCLOAK_URL }} >> apps/clearance_ui/.env.local
+                  echo KEYCLOAK_REALM=${{ secrets.KEYCLOAK_REALM }} >> apps/clearance_ui/.env.local
+                  echo KEYCLOAK_CLIENT_ID_UI=${{ secrets.KEYCLOAK_CLIENT_ID_UI }} >> apps/clearance_ui/.env.local
+                  echo KEYCLOAK_CLIENT_SECRET_UI=${{ secrets.KEYCLOAK_CLIENT_SECRET_UI }} >> apps/clearance_ui/.env.local
             - name: Run prisma generate
               run: npm run db:generate
             - name: Build project

@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { passwordStrength } from "check-password-strength";
 import { Check, Loader2, Pencil } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { getUsernameSchema } from "validation-helpers";
 import z from "zod";
@@ -29,6 +30,9 @@ import { cn } from "@/lib/utils";
 const userDataFormSchema = z
     .object({
         username: getUsernameSchema(false),
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string().email().optional(),
         password: z
             .string()
             .trim()
@@ -64,6 +68,9 @@ const userDataFormSchema = z
     });
 type PutUserDataType = {
     username: string | undefined;
+    firstName: string | undefined;
+    lastName: string | undefined;
+    email: string | undefined;
     role: string | undefined;
     password: string | undefined;
     confirmPassword: string | undefined;
@@ -71,6 +78,7 @@ type PutUserDataType = {
 
 const UserDataForm = () => {
     const user = useUser();
+    const session = useSession();
     const [editMode, setEditMode] = useState(false);
     const queryClient = useQueryClient();
 
@@ -80,18 +88,74 @@ const UserDataForm = () => {
         isSuccess,
         reset,
         mutate: updateUser,
-    } = userHooks.usePut(
-        "/user",
+    } = userHooks.usePutUser(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
         },
-        undefined,
+        {
+            onSuccess: () => {
+                // This will update the user data in the session
+                signIn("keycloak");
+            },
+            onError: (error) => {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.data?.path === "username") {
+                        form.setError("username", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    } else if (
+                        error.response?.data?.message ===
+                        "User with this username or email already exists"
+                    ) {
+                        if (
+                            form.getValues("username") ===
+                            session.data?.user?.preferred_username
+                        ) {
+                            form.setError("email", {
+                                type: "manual",
+                                message:
+                                    "Email already in use with another user",
+                            });
+                        } else if (
+                            form.getValues("email") ===
+                            session.data?.user?.email
+                        ) {
+                            form.setError("username", {
+                                type: "manual",
+                                message: "Username already in use",
+                            });
+                        } else {
+                            form.setError("root", {
+                                type: "manual",
+                                message: error.response?.data?.message,
+                            });
+                        }
+                    } else if (error.response?.data?.message) {
+                        form.setError("root", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    }
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.message,
+                    });
+                }
+            },
+        },
     );
 
     const form = useForm<PutUserDataType>({
         resolver: zodResolver(userDataFormSchema),
         values: {
             username: user?.username,
+            firstName: session.data?.user?.given_name || "",
+            lastName: session.data?.user?.family_name || "",
+            email: session.data?.user?.email || "",
             password: "",
             confirmPassword: "",
             role: user?.role,
@@ -121,33 +185,6 @@ const UserDataForm = () => {
             queryClient.invalidateQueries(key);
         };
     }, [queryClient]);
-
-    useEffect(() => {
-        if (error) {
-            if (axios.isAxiosError(error)) {
-                if (error.response?.data?.path === "username") {
-                    form.setError("username", {
-                        type: "manual",
-                        message: error.response?.data?.message,
-                    });
-                } else if (error.response?.data?.message) {
-                    form.setError("root", {
-                        type: "manual",
-                        message: error.response?.data?.message,
-                    });
-                }
-            } else {
-                form.setError("root", {
-                    type: "manual",
-                    message: error.message,
-                });
-            }
-        } else {
-            if (form.formState.errors.root) {
-                form.clearErrors();
-            }
-        }
-    }, [error, form]);
 
     return (
         <div className="flex flex-col">
@@ -189,6 +226,58 @@ const UserDataForm = () => {
                                         placeholder="username"
                                         {...field}
                                         disabled={!editMode}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>First name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="First name"
+                                        {...field}
+                                        disabled={!editMode}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Last name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Last name"
+                                        {...field}
+                                        disabled={!editMode}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Email"
+                                        {...field}
+                                        disabled={!editMode}
+                                        type="email"
                                     />
                                 </FormControl>
                                 <FormMessage />

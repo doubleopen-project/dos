@@ -1,31 +1,22 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
-import passport from "passport";
 import { authAPI } from "validation-helpers";
+import { logoutUser } from "../helpers/keycloak_queries";
 
 const authRouter = zodiosRouter(authAPI);
 
-// ---------------------------------- AUTHENTICATION ROUTES ----------------------------------
-authRouter.post(
-    "/login/password",
-    passport.authenticate("local"),
-    (req, res) => {
-        console.log("logged in ", req.body.username);
-        res.sendStatus(200);
-    },
-);
-
-authRouter.post("/logout", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            console.log("Error: ", err);
-            return next(err);
-        }
+authRouter.post("/logout", async (req, res) => {
+    try {
+        const userId = req.kauth.grant.access_token.content.sub;
+        await logoutUser(userId);
         res.send({ message: "Logged out" });
-    });
+    } catch (error) {
+        console.log("Error (logout): ", error);
+        res.status(500).send({ message: "Internal server error" });
+    }
 });
 
 export default authRouter;

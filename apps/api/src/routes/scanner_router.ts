@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,7 +7,7 @@ import { Package, Prisma, ScannerJob } from "database";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
 import {
-    authenticateORTToken,
+    authenticateDosApiToken,
     authenticateSAToken,
 } from "../helpers/auth_helpers";
 import { CustomError } from "../helpers/custom_error";
@@ -24,238 +24,23 @@ const scannerRouter = zodiosRouter(scannerAPI);
 const jobStateMap: Map<string, string> = new Map();
 
 // Get scan results for package with purl
-scannerRouter.post("/scan-results", authenticateORTToken, async (req, res) => {
-    try {
-        console.log(
-            "Searching for results for package with purl(s): " +
-                req.body.purls.join(", "),
-        );
+scannerRouter.post(
+    "/scan-results",
+    authenticateDosApiToken,
+    async (req, res) => {
+        try {
+            console.log(
+                "Searching for results for package with purl(s): " +
+                    req.body.purls.join(", "),
+            );
 
-        const options = req.body.options || {};
+            const options = req.body.options || {};
 
-        const packages = await dbQueries.findPackagesByPurls(req.body.purls);
+            const packages = await dbQueries.findPackagesByPurls(
+                req.body.purls,
+            );
 
-        if (packages.length === 0) {
-            console.log("No results found");
-            res.status(200).json({
-                purls: [],
-                state: {
-                    status: "no-results",
-                    jobId: null,
-                },
-                results: null,
-            });
-        } else {
-            const scannedPackages = [];
-            const pendingJobs: ScannerJob[] = [];
-            const inDbNoJobsNotScannedPkgIds: number[] = [];
-            const inDbNotScannedPkgIds: number[] = [];
-            const purls = [];
-            // create shallow copy of the purls array
-            const notInDbPurls = [...req.body.purls];
-
-            for (const pkg of packages) {
-                if (pkg.scanStatus === "scanned") scannedPackages.push(pkg);
-                else if (pkg.scanStatus === "pending") {
-                    const scannerJob =
-                        await dbQueries.findScannerJobByPackageId(pkg.id);
-                    if (scannerJob) pendingJobs.push(scannerJob);
-                    else inDbNoJobsNotScannedPkgIds.push(pkg.id);
-
-                    inDbNotScannedPkgIds.push(pkg.id);
-                } else {
-                    inDbNoJobsNotScannedPkgIds.push(pkg.id);
-                    inDbNotScannedPkgIds.push(pkg.id);
-                }
-                // Removing purls that were found in the database from the notInDbPurls array
-                notInDbPurls.splice(notInDbPurls.indexOf(pkg.purl), 1);
-                purls.push(pkg.purl);
-            }
-
-            if (scannedPackages.length > 0) {
-                console.log("Found scan results");
-                // The results will be the same for all packages, so we can just get the results for the first one
-                const results = await dbOperations.getScanResults(
-                    scannedPackages[0].purl,
-                    options,
-                );
-
-                if (scannedPackages.length < req.body.purls.length) {
-                    // If all of the packages are not scanned, we need to copy the results to the other packages
-                    console.log(
-                        "Bookmarking results for purls that are not in the database yet",
-                    );
-                    const copyPackageIds = inDbNotScannedPkgIds;
-
-                    for (const purl of notInDbPurls) {
-                        const parsedPurl = parsePurl(purl);
-                        const newPackage = await dbQueries.createPackage({
-                            type: parsedPurl.type,
-                            namespace: parsedPurl.namespace,
-                            name: parsedPurl.name,
-                            version: parsedPurl.version,
-                            qualifiers: parsedPurl.qualifiers,
-                            subpath: parsedPurl.subpath,
-                            scanStatus: "notScanned",
-                        });
-
-                        if (newPackage.purl !== purl) {
-                            dbQueries.deletePackage(newPackage.id);
-                            await dbQueries.createSystemIssue({
-                                message:
-                                    "Generated purl does not match the requested purl",
-                                severity: "MODERATE",
-                                errorCode: "PURL_MISMATCH",
-                                errorType: "ScannerRouterError",
-                                info: JSON.stringify({
-                                    requestedPurl: purl,
-                                    generatedPurl: newPackage.purl,
-                                }),
-                            });
-                            throw new CustomError(
-                                "Internal server error. Generated purl does not match the requested purl",
-                                500,
-                            );
-                        }
-                        purls.push(newPackage.purl);
-                        copyPackageIds.push(newPackage.id);
-                    }
-
-                    console.time(
-                        "Copying FileTrees to " +
-                            copyPackageIds.length +
-                            " packages took",
-                    );
-                    await dbOperations.copyDataToNewPackages(
-                        scannedPackages[0].id,
-                        copyPackageIds,
-                    );
-                    console.timeEnd(
-                        "Copying FileTrees to " +
-                            copyPackageIds.length +
-                            " packages took",
-                    );
-
-                    // Updating scan status for the packages that were copied
-                    await dbQueries.updateManyPackagesScanStatuses(
-                        copyPackageIds,
-                        "scanned",
-                    );
-
-                    if (pendingJobs.length > 0) {
-                        // If there are pending ScannerJobs for the packages, we need to update their state
-                        await dbQueries.updateManyScannerJobStates(
-                            pendingJobs.map((job) => job.id),
-                            "completed",
-                        );
-                        // There actually shouldn't be any pending jobs in this case, so creating a system issue so this can be reviewed if needed
-                        // Not throwing an error, as this is more of an error in the logic somewhere, and doesn't prevent from performing this operation
-                        await dbQueries.createSystemIssue({
-                            message:
-                                "Found pending ScannerJobs even though source has already been scanned.",
-                            severity: "LOW",
-                            errorCode: "PENDING_JOBS_FOR_SCANNED_SOURCE",
-                            errorType: "ScannerRouterError",
-                            info: JSON.stringify({
-                                pendingJobs: pendingJobs,
-                            }),
-                        });
-                    }
-                }
-                res.status(200).json({
-                    purls: purls,
-                    state: {
-                        status: "ready",
-                        jobId: null,
-                    },
-                    results: results,
-                });
-            } else if (pendingJobs.length > 0) {
-                console.log("Found pending ScannerJob");
-
-                if (pendingJobs.length !== req.body.purls.length) {
-                    console.log(
-                        "Creating new ScannerJobs for packages that do not have one yet and linking them to an existing ScannerJob",
-                    );
-                    // If there are pending ScannerJobs for some of the packages, but not all of them, we need to create
-                    // new ScannerJobs for the packages that do not have a ScannerJob yet and link them to an existing ScannerJob
-
-                    const parentId: string =
-                        pendingJobs[0].parentId || pendingJobs[0].id;
-
-                    for (const pkgId of inDbNoJobsNotScannedPkgIds) {
-                        await dbQueries.createScannerJob({
-                            packageId: pkgId,
-                            state: pendingJobs[0].state,
-                            parentId: parentId,
-                        });
-                    }
-
-                    await dbQueries.updateManyPackagesScanStatuses(
-                        inDbNoJobsNotScannedPkgIds,
-                        "pending",
-                    );
-
-                    for (const purl of notInDbPurls) {
-                        const parsedPurl = parsePurl(purl);
-                        const newPackage = await dbQueries.createPackage({
-                            type: parsedPurl.type,
-                            namespace: parsedPurl.namespace,
-                            name: parsedPurl.name,
-                            version: parsedPurl.version,
-                            qualifiers: parsedPurl.qualifiers,
-                            subpath: parsedPurl.subpath,
-                            scanStatus: "pending",
-                        });
-
-                        if (newPackage.purl !== purl) {
-                            dbQueries.deletePackage(newPackage.id);
-                            await dbQueries.createSystemIssue({
-                                message:
-                                    "Generated purl does not match the requested purl",
-                                severity: "MODERATE",
-                                errorCode: "PURL_MISMATCH",
-                                errorType: "ScannerRouterError",
-                                info: JSON.stringify({
-                                    requestedPurl: purl,
-                                    generatedPurl: newPackage.purl,
-                                }),
-                            });
-                            throw new CustomError(
-                                "Internal server error. Generated purl does not match the requested purl",
-                                500,
-                            );
-                        }
-
-                        purls.push(newPackage.purl);
-
-                        await dbQueries.createScannerJob({
-                            packageId: newPackage.id,
-                            state: pendingJobs[0].state,
-                            parentId: parentId,
-                        });
-                    }
-
-                    res.status(200).json({
-                        purls: purls,
-                        state: {
-                            status: "pending",
-                            jobId: parentId,
-                        },
-                        results: null,
-                    });
-                } else {
-                    // If all of the packages have a pending ScannerJob, we can return the id of the first one, or rather, if it has a parent, the id of the parent
-                    res.status(200).json({
-                        purls: purls,
-                        state: {
-                            status: "pending",
-                            jobId: pendingJobs[0].parentId || pendingJobs[0].id,
-                        },
-                        results: null,
-                    });
-                }
-            } else {
+            if (packages.length === 0) {
                 console.log("No results found");
                 res.status(200).json({
                     purls: [],
@@ -265,40 +50,263 @@ scannerRouter.post("/scan-results", authenticateORTToken, async (req, res) => {
                     },
                     results: null,
                 });
-            }
-        }
-    } catch (error) {
-        console.log("Error: ", error);
-        if (error instanceof CustomError) {
-            res.status(error.statusCode).json({ message: error.message });
-        } else {
-            const err = await getErrorCodeAndMessage(error);
+            } else {
+                const scannedPackages = [];
+                const pendingJobs: ScannerJob[] = [];
+                const inDbNoJobsNotScannedPkgIds: number[] = [];
+                const inDbNotScannedPkgIds: number[] = [];
+                const purls = [];
+                // create shallow copy of the purls array
+                const notInDbPurls = [...req.body.purls];
 
-            if (err.message === "Internal server error") {
-                try {
-                    await dbQueries.createSystemIssue({
-                        message: "Error in post /scan-results",
-                        severity: "MODERATE",
-                        errorCode: "UNKNOWN_ERROR",
-                        errorType: "ScannerRouterError",
-                        info: JSON.stringify({
-                            requestBody: req.body,
-                            error: error,
-                        }),
+                for (const pkg of packages) {
+                    if (pkg.scanStatus === "scanned") scannedPackages.push(pkg);
+                    else if (pkg.scanStatus === "pending") {
+                        const scannerJob =
+                            await dbQueries.findScannerJobByPackageId(pkg.id);
+                        if (scannerJob) pendingJobs.push(scannerJob);
+                        else inDbNoJobsNotScannedPkgIds.push(pkg.id);
+
+                        inDbNotScannedPkgIds.push(pkg.id);
+                    } else {
+                        inDbNoJobsNotScannedPkgIds.push(pkg.id);
+                        inDbNotScannedPkgIds.push(pkg.id);
+                    }
+                    // Removing purls that were found in the database from the notInDbPurls array
+                    notInDbPurls.splice(notInDbPurls.indexOf(pkg.purl), 1);
+                    purls.push(pkg.purl);
+                }
+
+                if (scannedPackages.length > 0) {
+                    console.log("Found scan results");
+                    // The results will be the same for all packages, so we can just get the results for the first one
+                    const results = await dbOperations.getScanResults(
+                        scannedPackages[0].purl,
+                        options,
+                    );
+
+                    if (scannedPackages.length < req.body.purls.length) {
+                        // If all of the packages are not scanned, we need to copy the results to the other packages
+                        console.log(
+                            "Bookmarking results for purls that are not in the database yet",
+                        );
+                        const copyPackageIds = inDbNotScannedPkgIds;
+
+                        for (const purl of notInDbPurls) {
+                            const parsedPurl = parsePurl(purl);
+                            const newPackage = await dbQueries.createPackage({
+                                type: parsedPurl.type,
+                                namespace: parsedPurl.namespace,
+                                name: parsedPurl.name,
+                                version: parsedPurl.version,
+                                qualifiers: parsedPurl.qualifiers,
+                                subpath: parsedPurl.subpath,
+                                scanStatus: "notScanned",
+                            });
+
+                            if (newPackage.purl !== purl) {
+                                dbQueries.deletePackage(newPackage.id);
+                                await dbQueries.createSystemIssue({
+                                    message:
+                                        "Generated purl does not match the requested purl",
+                                    severity: "MODERATE",
+                                    errorCode: "PURL_MISMATCH",
+                                    errorType: "ScannerRouterError",
+                                    info: JSON.stringify({
+                                        requestedPurl: purl,
+                                        generatedPurl: newPackage.purl,
+                                    }),
+                                });
+                                throw new CustomError(
+                                    "Internal server error. Generated purl does not match the requested purl",
+                                    500,
+                                );
+                            }
+                            purls.push(newPackage.purl);
+                            copyPackageIds.push(newPackage.id);
+                        }
+
+                        console.time(
+                            "Copying FileTrees to " +
+                                copyPackageIds.length +
+                                " packages took",
+                        );
+                        await dbOperations.copyDataToNewPackages(
+                            scannedPackages[0].id,
+                            copyPackageIds,
+                        );
+                        console.timeEnd(
+                            "Copying FileTrees to " +
+                                copyPackageIds.length +
+                                " packages took",
+                        );
+
+                        // Updating scan status for the packages that were copied
+                        await dbQueries.updateManyPackagesScanStatuses(
+                            copyPackageIds,
+                            "scanned",
+                        );
+
+                        if (pendingJobs.length > 0) {
+                            // If there are pending ScannerJobs for the packages, we need to update their state
+                            await dbQueries.updateManyScannerJobStates(
+                                pendingJobs.map((job) => job.id),
+                                "completed",
+                            );
+                            // There actually shouldn't be any pending jobs in this case, so creating a system issue so this can be reviewed if needed
+                            // Not throwing an error, as this is more of an error in the logic somewhere, and doesn't prevent from performing this operation
+                            await dbQueries.createSystemIssue({
+                                message:
+                                    "Found pending ScannerJobs even though source has already been scanned.",
+                                severity: "LOW",
+                                errorCode: "PENDING_JOBS_FOR_SCANNED_SOURCE",
+                                errorType: "ScannerRouterError",
+                                info: JSON.stringify({
+                                    pendingJobs: pendingJobs,
+                                }),
+                            });
+                        }
+                    }
+                    res.status(200).json({
+                        purls: purls,
+                        state: {
+                            status: "ready",
+                            jobId: null,
+                        },
+                        results: results,
                     });
-                } catch (error) {
-                    console.log(error);
+                } else if (pendingJobs.length > 0) {
+                    console.log("Found pending ScannerJob");
+
+                    if (pendingJobs.length !== req.body.purls.length) {
+                        console.log(
+                            "Creating new ScannerJobs for packages that do not have one yet and linking them to an existing ScannerJob",
+                        );
+                        // If there are pending ScannerJobs for some of the packages, but not all of them, we need to create
+                        // new ScannerJobs for the packages that do not have a ScannerJob yet and link them to an existing ScannerJob
+
+                        const parentId: string =
+                            pendingJobs[0].parentId || pendingJobs[0].id;
+
+                        for (const pkgId of inDbNoJobsNotScannedPkgIds) {
+                            await dbQueries.createScannerJob({
+                                packageId: pkgId,
+                                state: pendingJobs[0].state,
+                                parentId: parentId,
+                            });
+                        }
+
+                        await dbQueries.updateManyPackagesScanStatuses(
+                            inDbNoJobsNotScannedPkgIds,
+                            "pending",
+                        );
+
+                        for (const purl of notInDbPurls) {
+                            const parsedPurl = parsePurl(purl);
+                            const newPackage = await dbQueries.createPackage({
+                                type: parsedPurl.type,
+                                namespace: parsedPurl.namespace,
+                                name: parsedPurl.name,
+                                version: parsedPurl.version,
+                                qualifiers: parsedPurl.qualifiers,
+                                subpath: parsedPurl.subpath,
+                                scanStatus: "pending",
+                            });
+
+                            if (newPackage.purl !== purl) {
+                                dbQueries.deletePackage(newPackage.id);
+                                await dbQueries.createSystemIssue({
+                                    message:
+                                        "Generated purl does not match the requested purl",
+                                    severity: "MODERATE",
+                                    errorCode: "PURL_MISMATCH",
+                                    errorType: "ScannerRouterError",
+                                    info: JSON.stringify({
+                                        requestedPurl: purl,
+                                        generatedPurl: newPackage.purl,
+                                    }),
+                                });
+                                throw new CustomError(
+                                    "Internal server error. Generated purl does not match the requested purl",
+                                    500,
+                                );
+                            }
+
+                            purls.push(newPackage.purl);
+
+                            await dbQueries.createScannerJob({
+                                packageId: newPackage.id,
+                                state: pendingJobs[0].state,
+                                parentId: parentId,
+                            });
+                        }
+
+                        res.status(200).json({
+                            purls: purls,
+                            state: {
+                                status: "pending",
+                                jobId: parentId,
+                            },
+                            results: null,
+                        });
+                    } else {
+                        // If all of the packages have a pending ScannerJob, we can return the id of the first one, or rather, if it has a parent, the id of the parent
+                        res.status(200).json({
+                            purls: purls,
+                            state: {
+                                status: "pending",
+                                jobId:
+                                    pendingJobs[0].parentId ||
+                                    pendingJobs[0].id,
+                            },
+                            results: null,
+                        });
+                    }
+                } else {
+                    console.log("No results found");
+                    res.status(200).json({
+                        purls: [],
+                        state: {
+                            status: "no-results",
+                            jobId: null,
+                        },
+                        results: null,
+                    });
                 }
             }
-            res.status(err.statusCode).json({ message: err.message });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).json({ message: error.message });
+            } else {
+                const err = await getErrorCodeAndMessage(error);
+
+                if (err.message === "Internal server error") {
+                    try {
+                        await dbQueries.createSystemIssue({
+                            message: "Error in post /scan-results",
+                            severity: "MODERATE",
+                            errorCode: "UNKNOWN_ERROR",
+                            errorType: "ScannerRouterError",
+                            info: JSON.stringify({
+                                requestBody: req.body,
+                                error: error,
+                            }),
+                        });
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
-    }
-});
+    },
+);
 
 // Get package configuration for package with purl
 scannerRouter.post(
     "/package-configuration",
-    authenticateORTToken,
+    authenticateDosApiToken,
     async (req, res) => {
         try {
             // TODO: Return results based on user access rights and choices
@@ -329,7 +337,7 @@ scannerRouter.post(
 );
 
 // Request presigned upload url for a file
-scannerRouter.post("/upload-url", authenticateORTToken, async (req, res) => {
+scannerRouter.post("/upload-url", authenticateDosApiToken, async (req, res) => {
     try {
         const objectExists = await objectExistsCheck(
             s3Client,
@@ -384,7 +392,7 @@ scannerRouter.post("/upload-url", authenticateORTToken, async (req, res) => {
 });
 
 // Add new ScannerJob
-scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
+scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
     try {
         const packagesArray: {
             package: Package;
@@ -642,41 +650,46 @@ scannerRouter.post("/job", authenticateORTToken, async (req, res) => {
 });
 
 // Get ScannerJob state
-scannerRouter.get("/job-state/:id", authenticateORTToken, async (req, res) => {
-    try {
-        const scannerJob = await dbQueries.findScannerJobStateById(
-            req.params.id,
-        );
+scannerRouter.get(
+    "/job-state/:id",
+    authenticateDosApiToken,
+    async (req, res) => {
+        try {
+            const scannerJob = await dbQueries.findScannerJobStateById(
+                req.params.id,
+            );
 
-        if (!scannerJob) {
-            res.status(400).json({
-                message:
-                    "Bad Request: Scanner Job with requested id cannot be found in the database",
-            });
-        } else {
-            let message = stateMap.get(scannerJob.state) || scannerJob.state;
+            if (!scannerJob) {
+                res.status(400).json({
+                    message:
+                        "Bad Request: Scanner Job with requested id cannot be found in the database",
+                });
+            } else {
+                let message =
+                    stateMap.get(scannerJob.state) || scannerJob.state;
 
-            if (
-                scannerJob.state === "processing" ||
-                scannerJob.state === "savingResults"
-            ) {
-                message =
-                    jobStateMap.get(scannerJob.id) ||
-                    stateMap.get(scannerJob.state) ||
-                    message;
+                if (
+                    scannerJob.state === "processing" ||
+                    scannerJob.state === "savingResults"
+                ) {
+                    message =
+                        jobStateMap.get(scannerJob.id) ||
+                        stateMap.get(scannerJob.state) ||
+                        message;
+                }
+                res.status(200).json({
+                    state: {
+                        status: scannerJob.state,
+                        message: message,
+                    },
+                });
             }
-            res.status(200).json({
-                state: {
-                    status: scannerJob.state,
-                    message: message,
-                },
-            });
+        } catch (error) {
+            console.log("Problem with database query: " + error);
+            res.status(500).json({ message: "Internal server error" });
         }
-    } catch (error) {
-        console.log("Problem with database query: " + error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
+    },
+);
 
 // ------------------------------------- SA ROUTES -------------------------------------
 

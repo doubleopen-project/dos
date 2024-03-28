@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import ConclusionForm from "@/components/main_ui/inspector/clearance_inspector/ConclusionForm";
@@ -17,13 +18,16 @@ const ConclusionFormWrapper = ({
     purl,
     fileSha256,
 }: ConclusionFormWrapperProps) => {
+    const session = useSession();
     const {
         data: licenseConclusionData,
         isLoading: lcIsLoading,
         error: lcError,
     } = userHooks.useGetLicenseConclusionsForFileInPackage(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 purl: toPathPurl(purl),
                 sha256: fileSha256,
@@ -38,7 +42,9 @@ const ConclusionFormWrapper = ({
         error: lfError,
     } = userHooks.useGetLicenseFindingsForFile(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 sha256: fileSha256,
             },

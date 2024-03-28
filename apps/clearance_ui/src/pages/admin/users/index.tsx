@@ -3,43 +3,32 @@
 // SPDX-License-Identifier: MIT
 
 import { useEffect } from "react";
-import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
 import RegisterUser from "@/components/user_management/RegisterUser";
 
 export default function UserManagement() {
+    const session = useSession({
+        required: true,
+    });
     const router = useRouter();
-    const {
-        data: user,
-        error,
-        isLoading,
-    } = userHooks.useGetUser(
-        {
-            withCredentials: true,
-        },
-        { retry: false },
-    );
-    let errMsg;
-
-    if (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 403) {
-            router.push({
-                pathname: "/login",
-                query: { redirectToPath: router.asPath },
-            });
-        } else {
-            errMsg = error.message;
-        }
-    }
+    const user = useUser();
 
     useEffect(() => {
         if (user && user.role !== "ADMIN") {
             router.push("/");
         }
     }, [user, router]);
+
+    useEffect(() => {
+        if (session.data?.error === "SessionNotActiveError") {
+            signOut();
+        } else if (session.data?.error !== undefined) {
+            signIn("keycloak");
+        }
+    }, [session.data?.error]);
 
     return (
         <>
@@ -57,14 +46,14 @@ export default function UserManagement() {
                     ]}
                 />
             )}
-            {isLoading && (
+            {user && user.role === "USER" && (
                 <div className="flex h-full items-center justify-center">
-                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                    <p className="text-red-500">Unauthorized</p>
                 </div>
             )}
-            {errMsg && (
+            {user === null && (
                 <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">{errMsg}</p>
+                    <p className="text-red-500">Please login to continue</p>
                 </div>
             )}
         </>
