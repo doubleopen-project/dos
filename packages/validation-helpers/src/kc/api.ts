@@ -209,4 +209,19 @@ export const keycloakAPI = makeApi([
         response: schemas.UndefinedResponse,
         errors,
     },
+    {
+        method: "get",
+        path: "/realms/:realm/protocol/openid-connect/userinfo",
+        description: "Get user info",
+        alias: "GetUserInfo",
+        parameters: [
+            {
+                name: "realm",
+                type: "Path",
+                schema: commonSchemas.PathParamString("realm"),
+            },
+        ],
+        response: schemas.GetUserInfoResponse,
+        errors,
+    },
 ]);

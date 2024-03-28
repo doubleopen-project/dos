@@ -108,3 +108,13 @@ export const ResetUserPasswordReq = z.object({
     value: z.string(),
     temporary: z.boolean(),
 });
+
+export const GetUserInfoResponse = z.object({
+    sub: z.string(),
+    name: z.string(),
+    preferred_username: z.string(),
+    given_name: z.string(),
+    family_name: z.string(),
+    email: z.string(),
+    realm_roles: z.array(z.string()),
+});

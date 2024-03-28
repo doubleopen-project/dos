@@ -20506,6 +20506,69 @@ declare const keycloakAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/realms/:realm/protocol/openid-connect/userinfo";
+        description: "Get user info";
+        alias: "GetUserInfo";
+        parameters: [
+            {
+                name: "realm";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                sub: zod.ZodString;
+                name: zod.ZodString;
+                preferred_username: zod.ZodString;
+                given_name: zod.ZodString;
+                family_name: zod.ZodString;
+                email: zod.ZodString;
+                realm_roles: zod.ZodArray<zod.ZodString, "many">;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                name: string;
+                sub: string;
+                email: string;
+                preferred_username: string;
+                given_name: string;
+                family_name: string;
+                realm_roles: string[];
+            },
+            {
+                name: string;
+                sub: string;
+                email: string;
+                preferred_username: string;
+                given_name: string;
+                family_name: string;
+                realm_roles: string[];
+            }
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 export {

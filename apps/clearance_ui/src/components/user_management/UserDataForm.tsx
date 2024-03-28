@@ -95,7 +95,9 @@ const UserDataForm = () => {
             },
         },
         {
-            onSuccess: () => {},
+            onSuccess: () => {
+                session.update();
+            },
             onError: (error) => {
                 if (axios.isAxiosError(error)) {
                     if (error.response?.data?.path === "username") {

@@ -21,6 +21,62 @@ const kcClient = new Zodios(
     keycloakAPI,
 );
 
+async function refreshUserInformation(token: JWT) {
+    let retries = 3;
+
+    while (retries > 0) {
+        try {
+            const refreshedUser = await kcClient.GetUserInfo({
+                params: {
+                    realm: process.env.KEYCLOAK_REALM || "",
+                },
+                headers: {
+                    Authorization: `Bearer ${token.accessToken}`,
+                },
+            });
+
+            console.log("Refreshed user information: ", refreshedUser);
+
+            return {
+                ...token,
+                user: { ...token.user, refreshedUser },
+            };
+        } catch (error) {
+            retries--;
+            if (isAxiosError(error)) {
+                if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to refresh user information due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to refresh user information due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else {
+                    console.log(error);
+                    return {
+                        ...token,
+                        error: "RefreshUserInformationError",
+                    };
+                }
+            } else {
+                console.log(error);
+                return {
+                    ...token,
+                    error: "RefreshUserInformationError",
+                };
+            }
+        }
+    }
+
+    return {
+        ...token,
+        error: "RefreshUserInformationError",
+    };
+}
+
 /**
  * Takes a token, and returns a new token with updated
  * `accessToken` and `accessTokenExpires`. If an error occurs,
@@ -155,7 +211,7 @@ export default NextAuth({
                 return false;
             }
         },
-        jwt({ token, user, account }) {
+        async jwt({ token, trigger, user, account }) {
             // Initial sign in
             if (account && user) {
                 // Add access_token, refresh_token and expirations to the token right after signin
@@ -167,6 +223,18 @@ export default NextAuth({
                 token.user = user;
 
                 return token;
+            }
+
+            //console.log(token.user);
+
+            if (trigger === "update") {
+                console.log("Does it ever come here");
+                // Update user info
+                token = await refreshUserInformation(token);
+
+                //console.log(token.user);
+                // Refresh token
+                return refreshAccessToken(token);
             }
 
             // Return previous token if the access token has not expired yet / will not expire before the next refetch
