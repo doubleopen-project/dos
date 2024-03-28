@@ -4,6 +4,7 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import {
     Card,
@@ -20,9 +21,15 @@ type Props = {
 };
 
 const BulkConclusionWrapper = ({ purl }: Props) => {
+    const session = useSession();
     const pathPurl = toPathPurl(purl);
     const { data, isLoading, error } = userHooks.useGetBulkConclusionsByPurl(
-        { withCredentials: true, params: { purl: pathPurl } },
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: { purl: pathPurl },
+        },
         { enabled: !!pathPurl },
     );
     const [editing, setEditing] = useState(-1);

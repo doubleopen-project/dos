@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Info } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -56,6 +57,7 @@ const ConclusionForm = ({
     detectedExpression,
     className,
 }: Props) => {
+    const session = useSession();
     const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
@@ -84,7 +86,9 @@ const ConclusionForm = ({
                 purl: pathPurl,
                 sha256: fileSha256,
             },
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
         },
         {
             onSuccess: () => {

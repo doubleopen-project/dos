@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const TokenDialog = () => {
+    const session = useSession();
     const [token, setToken] = useState("");
     const [copied, setCopied] = useState(false);
     const [open, setOpen] = useState(false);
@@ -31,7 +33,9 @@ const TokenDialog = () => {
         mutate: generateToken,
     } = userHooks.usePut("/token", {
         params: { id: true },
-        withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${session.data?.accessToken}`,
+        },
     });
 
     const onGenerateNewToken = () => {

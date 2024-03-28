@@ -5,12 +5,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import generator from "generate-password";
-import { Check, Dices, Loader2 } from "lucide-react";
+import { Check, Dices, Info, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
 import z from "zod";
 import { adminHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -27,14 +29,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import PasswordTooltip from "@/components/user_management/PasswordTooltip";
 
 const addUserFormSchema = z.object({
     username: getUsernameSchema(true),
     password: getPasswordSchema(true),
+    passwordIsTemporary: z.boolean().optional(),
     role: z.enum(["USER", "ADMIN"]),
-    subscription: z.enum(["SILVER", "GOLD"]),
-    keycloakUserId: z.string().uuid(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().email().optional(),
+    dosApiToken: z.string().optional(),
 });
 
 type AddUserDataType = z.infer<typeof addUserFormSchema>;
@@ -42,42 +53,68 @@ type AddUserDataType = z.infer<typeof addUserFormSchema>;
 type AddUserFormProps = {
     onNewUserCreated: (
         user: {
+            id: string;
             username: string;
             password: string;
-            role: string;
-            subscription: string;
-            token: string;
-            keycloakUserId: string;
+            realmRoles: string[];
+            dosApiToken?: string;
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            requiredActions?: string[];
         } | null,
     ) => void;
 };
 
-const parseError = (error: unknown) => {
-    if (axios.isAxiosError(error)) {
-        return error.response?.data.message;
-    } else {
-        return error;
-    }
-};
-
 const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
+    const session = useSession();
     const {
-        error,
         isError,
         isLoading,
         isSuccess,
         reset,
         mutate: addUser,
-    } = adminHooks.useAddUser(
+    } = adminHooks.useCreateUser(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
         },
         {
             onSuccess: (data) => {
-                onNewUserCreated(data);
+                onNewUserCreated({
+                    id: data.id,
+                    username: data.username,
+                    password: form.getValues("password"),
+                    realmRoles: data.realmRoles,
+                    dosApiToken: data.dosApiToken,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                    requiredActions: data.requiredActions,
+                });
             },
-            onError: () => {
+            onError: (error) => {
                 onNewUserCreated(null);
+                console.log(error);
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.data?.path === "username") {
+                        form.setError("username", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    } else if (error.response?.data?.message) {
+                        form.setError("root", {
+                            type: "manual",
+                            message: error.response?.data?.message,
+                        });
+                    }
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: error.message,
+                    });
+                }
             },
         },
     );
@@ -87,8 +124,11 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
         defaultValues: {
             username: "",
             password: "",
+            passwordIsTemporary: true,
             role: "USER",
-            subscription: "SILVER",
+            firstName: "",
+            lastName: "",
+            email: "",
         },
     });
 
@@ -121,7 +161,11 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="username" {...field} />
+                                    <Input
+                                        placeholder="username"
+                                        {...field}
+                                        required
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -167,6 +211,45 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     />
                     <FormField
                         control={form.control}
+                        name="passwordIsTemporary"
+                        render={({ field }) => (
+                            <FormItem className="!mt-4 flex items-center">
+                                <FormLabel className="mt-1">
+                                    Temporary password
+                                </FormLabel>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger
+                                            type="button"
+                                            className="ml-1"
+                                        >
+                                            <Info size={"15px"} />
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                            side="top"
+                                            className="mb-2"
+                                        >
+                                            <p>
+                                                If checked, the user will be
+                                                forced to change their password
+                                                on first login.
+                                            </p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                        className="ml-1"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
                         name="role"
                         render={({ field }) => (
                             <FormItem className="!mt-4">
@@ -195,52 +278,53 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     />
                     <FormField
                         control={form.control}
-                        name="subscription"
+                        name="firstName"
                         render={({ field }) => (
                             <FormItem className="!mt-4">
-                                <FormLabel>Subscription</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select subscription" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="SILVER">
-                                            SILVER
-                                        </SelectItem>
-                                        <SelectItem value="GOLD">
-                                            GOLD
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <FormLabel>First name</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="First name"
+                                        {...field}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <FormField
                         control={form.control}
-                        name="keycloakUserId"
+                        name="lastName"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Keycloak User ID</FormLabel>
+                            <FormItem className="!mt-4">
+                                <FormLabel>Last name</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input placeholder="Last name" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    {error && (
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem className="!mt-4">
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Email" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {form.formState.errors.root && (
                         <div
                             className="relative rounded-md border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"
                             role="alert"
                         >
                             <span className="block sm:inline">
-                                {parseError(error)}
+                                {form.formState.errors.root?.message}
                             </span>
                         </div>
                     )}

@@ -2,44 +2,25 @@
 //
 // SPDX-License-Identifier: MIT
 
-import axios from "axios";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
 import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
 
 export default function Settings() {
-    const router = useRouter();
-    const {
-        data: user,
-        error,
-        isLoading,
-    } = userHooks.useGetUser(
-        {
-            withCredentials: true,
-        },
-        { retry: false },
-    );
-    let errMsg;
-
-    if (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 403) {
-            router.push({
-                pathname: "/login",
-                query: { redirectToPath: router.asPath },
-            });
-        } else {
-            errMsg = error.message;
-        }
-    }
+    const user = useUser();
+    const session = useSession({
+        required: true,
+    });
 
     function Profile() {
         return (
             <>
                 {user && <UserDataForm />}
-                {isLoading && (
+                {session.status === "loading" && (
                     <div className="flex h-full items-center justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
@@ -60,7 +41,7 @@ export default function Settings() {
                     when you create a new one.
                 </p>
                 {user && <TokenDialog />}
-                {isLoading && (
+                {session.status === "loading" && (
                     <div className="flex h-full items-center justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                     </div>
@@ -68,6 +49,14 @@ export default function Settings() {
             </>
         );
     }
+
+    useEffect(() => {
+        if (session.data?.error === "SessionNotActiveError") {
+            signOut();
+        } else if (session.data?.error !== undefined) {
+            signIn("keycloak");
+        }
+    }, [session.data?.error]);
 
     return (
         <>
@@ -90,11 +79,6 @@ export default function Settings() {
                         },
                     ]}
                 />
-            )}
-            {errMsg && (
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">{errMsg}</p>
-                </div>
             )}
         </>
     );

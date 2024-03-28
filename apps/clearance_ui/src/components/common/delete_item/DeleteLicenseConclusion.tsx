@@ -6,6 +6,7 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
@@ -32,6 +33,7 @@ type Props = {
 };
 
 const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
+    const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
@@ -52,7 +54,9 @@ const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
     // Get possible bulk curation related to this license conclusion
     const { data: bulkConclusion } = data.bulkConclusionId
         ? userHooks.useGetBulkConclusionById({
-              withCredentials: true,
+              headers: {
+                  Authorization: `Bearer ${session.data?.accessToken}`,
+              },
               params: {
                   id: data.bulkConclusionId,
               },
@@ -108,7 +112,9 @@ const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
     const { mutate: deleteLicenseConclusion, isLoading } =
         userHooks.useDeleteLicenseConclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     id: data.id,
                 },
@@ -141,7 +147,9 @@ const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
     const { mutate: deleteBulkConclusion, isLoading: isBulkLoading } =
         userHooks.useDeleteBulkConclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     id: data.bulkConclusionId!,
                 },

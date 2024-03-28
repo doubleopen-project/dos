@@ -2,11 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useQueryClient } from "@tanstack/react-query";
 import { KeyRound, LogOut, UserRound, UsersRound } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { GrLogin } from "react-icons/gr";
 import { LiaUser } from "react-icons/lia";
 import { useUser } from "@/hooks/useUser";
+import { authHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -17,6 +20,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
 type UserMenuItemProps = {
@@ -24,14 +28,44 @@ type UserMenuItemProps = {
 };
 const UserMenuItem = ({ className }: UserMenuItemProps) => {
     const user = useUser();
+    const session = useSession();
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
+
+    const { mutate: logoutUser } = authHooks.usePostLogout(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            //withCredentials: true },
+        },
+        {
+            onSuccess: () => {
+                queryClient.removeQueries();
+                signOut({ callbackUrl: "/", redirect: true });
+            },
+            onError: (error) => {
+                console.error("Failed to log out", error);
+                toast({
+                    variant: "destructive",
+                    title: "Failed to log out",
+                    description: "Please try again",
+                });
+            },
+        },
+    );
+
     if (!user) {
         return (
-            <Link href="/login" className={cn(className)}>
-                <Button variant="outline" size="sm">
-                    <GrLogin size={20} className="mr-2" />
-                    <span>Log in</span>
-                </Button>
-            </Link>
+            <Button
+                onClick={() => signIn("keycloak")}
+                variant="outline"
+                size="sm"
+                className={cn(className)}
+            >
+                <GrLogin size={20} className="mr-2" />
+                <span>Log in</span>
+            </Button>
         );
     } else {
         return (
@@ -89,10 +123,18 @@ const UserMenuItem = ({ className }: UserMenuItemProps) => {
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <Link href="/logout" className="w-full">
+                        <Button
+                            onClick={() => {
+                                logoutUser(undefined);
+                            }}
+                            variant="outline"
+                        >
+                            {/*<Link href="/logout" className="w-full">*/}
                             <LogOut className="mr-2 inline-block h-4 w-4" />
                             <span>Log out</span>
-                        </Link>
+
+                            {/*</Link>*/}
+                        </Button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

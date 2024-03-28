@@ -6,6 +6,7 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
@@ -23,6 +24,7 @@ type Props = {
 };
 
 const DeletePackage = ({ data }: Props) => {
+    const session = useSession();
     const { toast } = useToast();
     const keyPackages = userHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
@@ -52,7 +54,9 @@ const DeletePackage = ({ data }: Props) => {
         adminHooks.useDelete(
             "/scan-results",
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 purl: data.purl,
             },
             {

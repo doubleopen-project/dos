@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import CodeEditor from "@/components/main_ui/inspector/file_inspector/CodeEditor";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
@@ -14,12 +15,15 @@ type Props = {
 };
 
 const FileInspector = ({ path, purl }: Props) => {
+    const session = useSession();
     const [fileContents, setFileContents] = useState<string | undefined>(
         undefined,
     );
     const { data, isLoading, error } = userHooks.useGetFile(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 purl: toPathPurl(purl),
                 path: toPathPath(path),
@@ -34,7 +38,9 @@ const FileInspector = ({ path, purl }: Props) => {
         error: lfError,
     } = userHooks.useGetLicenseFindingsForFile(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 sha256: data?.sha256 as string,
             },
