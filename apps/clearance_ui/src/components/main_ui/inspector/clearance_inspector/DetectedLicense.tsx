@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/common/CopyToClipboard";
@@ -13,9 +14,12 @@ type DetectedLicenseProps = {
 };
 
 const DetectedLicense = ({ fileSha256, scanner }: DetectedLicenseProps) => {
+    const session = useSession();
     const { data, isLoading, error } = userHooks.useGetLicenseFindingsForFile(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 sha256: fileSha256,
             },

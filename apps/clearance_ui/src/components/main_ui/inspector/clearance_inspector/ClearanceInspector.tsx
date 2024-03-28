@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import useSettingsStore from "@/store/settings.store";
 import {
@@ -27,13 +28,16 @@ const ClearanceInspector = ({
     path,
     defaultClearanceHeights,
 }: ClearanceInspectorProps) => {
+    const session = useSession();
     const setClearanceHeights = useSettingsStore(
         (state) => state.setClearanceHeights,
     );
 
     const { data, isLoading, error } = userHooks.useGetFile(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
             params: {
                 purl: toPathPurl(purl),
                 path: toPathPath(path),

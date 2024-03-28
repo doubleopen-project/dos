@@ -2,40 +2,17 @@
 //
 // SPDX-License-Identifier: MIT
 
-import axios from "axios";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PackageList from "@/components/package_library/PackageList";
 
 export default function PackageLibrary() {
-    const router = useRouter();
-    const {
-        data: user,
-        error: userError,
-        isLoading: userIsLoading,
-    } = userHooks.useGetUser(
-        {
-            withCredentials: true,
-        },
-        { retry: false },
-    );
-    let errMsg;
-
-    if (userError) {
-        if (
-            axios.isAxiosError(userError) &&
-            userError.response?.status === 403
-        ) {
-            router.push({
-                pathname: "/login",
-                query: { redirectToPath: router.asPath },
-            });
-        } else {
-            errMsg = userError.message;
-        }
-    }
+    const session = useSession({
+        required: true,
+    });
 
     const {
         data: pkgCntData,
@@ -43,14 +20,26 @@ export default function PackageLibrary() {
         error: pkgCntError,
     } = userHooks.useGetPackagesCount(
         {
-            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${session?.data?.accessToken}`,
+            },
         },
-        { enabled: !!user },
+        {
+            enabled: session.status === "authenticated",
+        },
     );
+
+    useEffect(() => {
+        if (session.data?.error === "SessionNotActiveError") {
+            signOut();
+        } else if (session.data?.error !== undefined) {
+            signIn("keycloak");
+        }
+    }, [session.data?.error]);
 
     return (
         <div className="flex h-full flex-col p-2">
-            {user && (
+            {session.status === "authenticated" && (
                 <>
                     <div className="m-1 flex-none rounded-md shadow">
                         <Card>
@@ -95,14 +84,9 @@ export default function PackageLibrary() {
                     </div>
                 </>
             )}
-            {userIsLoading && (
+            {session.status === "loading" && (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
-                </div>
-            )}
-            {errMsg && (
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">{errMsg}</p>
                 </div>
             )}
         </div>

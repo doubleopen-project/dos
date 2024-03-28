@@ -21,7 +21,7 @@ const memoryStore = new PostgresqlStore({
 
 const keycloakConfig: KeycloakConfig = {
     realm: process.env.KEYCLOAK_REALM as string,
-    resource: process.env.KEYCLOAK_CLIENT_ID as string,
+    resource: process.env.KEYCLOAK_CLIENT_ID_API as string,
     "auth-server-url": process.env.KEYCLOAK_URL as string,
     "bearer-only": true,
     "confidential-port": 0,
@@ -79,13 +79,9 @@ Keycloak.prototype.accessDenied = async (
 
 function getKeycloak(): KeycloakType {
     if (!_keycloak) {
-        console.log("\nInitializing Keycloak...\n");
-
         _keycloak = new Keycloak({ store: memoryStore }, keycloakConfig);
-
         return _keycloak;
     }
-
     return _keycloak;
 }
 

@@ -1958,9 +1958,7 @@ export const getPathExclusionsByPackagePurl = async (
         pattern: string;
         reason: string;
         comment: string | null;
-        user: {
-            username: string;
-        };
+        kcUserId: string;
     }[]
 > => {
     let retries = initialRetryCount;
@@ -1981,11 +1979,7 @@ export const getPathExclusionsByPackagePurl = async (
                             pattern: true,
                             reason: true,
                             comment: true,
-                            user: {
-                                select: {
-                                    username: true,
-                                },
-                            },
+                            kcUserId: true,
                         },
                     },
                 },
@@ -2214,6 +2208,18 @@ export const findUser = async (token: string): Promise<User | null> => {
         }
     }
     return user;
+};
+
+export const findUserByKcUserId = async (kcUserId: string): Promise<number> => {
+    const user = await prisma.user.findFirstOrThrow({
+        where: {
+            kcUserId: kcUserId,
+        },
+        select: {
+            id: true,
+        },
+    });
+    return user.id;
 };
 
 export const findUserById = async (id: number): Promise<User | null> => {
@@ -2562,8 +2568,8 @@ export const findLicenseConclusionById = async (
 
 export const findLicenseConclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let licenseConclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let licenseConclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
     let querySuccess = false;
 
@@ -2574,7 +2580,7 @@ export const findLicenseConclusionUserId = async (
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
             querySuccess = true;
@@ -2588,7 +2594,7 @@ export const findLicenseConclusionUserId = async (
             else throw error;
         }
     }
-    return licenseConclusion ? licenseConclusion.userId : null;
+    return licenseConclusion ? licenseConclusion.kcUserId : null;
 };
 
 type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
@@ -2600,11 +2606,7 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
         comment: true;
         local: true;
         contextPurl: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
         bulkConclusionId: true;
         file: {
             select: {
@@ -2641,8 +2643,7 @@ export const findLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -2677,11 +2678,7 @@ export const findLicenseConclusions = async (
                     comment: true,
                     local: true,
                     contextPurl: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     bulkConclusionId: true,
                     file: {
                         select: {
@@ -2763,9 +2760,8 @@ export const findLicenseConclusions = async (
                                   : undefined,
                     },
                     user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
+                        kcUserId: {
+                            in: userIds,
                         },
                     },
                     detectedLicenseExpressionSPDX: {
@@ -2842,6 +2838,7 @@ type BulkConclusionWithPackageRelation = Prisma.BulkConclusionGetPayload<{
             };
         };
         userId: true;
+        kcUserId: true;
     };
 }>;
 
@@ -2871,6 +2868,7 @@ export const findBulkConclusionById = async (
                         },
                     },
                     userId: true,
+                    kcUserId: true,
                 },
             });
             break;
@@ -2921,11 +2919,7 @@ type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
                 };
             };
         };
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
     };
 }>;
 
@@ -2974,11 +2968,7 @@ export const findBulkConclusionWithRelationsById = async (
                             },
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                 },
             });
             break;
@@ -3038,11 +3028,7 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                             purl: true,
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     licenseConclusions: {
                         select: {
                             id: true,
@@ -3090,11 +3076,7 @@ type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
     };
 }>;
 
@@ -3114,8 +3096,7 @@ export const findBulkConclusionsWithRelations = async (
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -3146,11 +3127,7 @@ export const findBulkConclusionsWithRelations = async (
                             purl: true,
                         },
                     },
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                 },
                 skip: skip,
                 take: take,
@@ -3161,11 +3138,8 @@ export const findBulkConclusionsWithRelations = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: usernameStrict ? undefined : username,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -3221,22 +3195,21 @@ export const findBulkConclusionsWithRelations = async (
 
 export const findBulkConclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let bulkConclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let bulkConclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
-    let querySuccess = false;
 
-    while (!querySuccess && retries > 0) {
+    while (retries > 0) {
         try {
             bulkConclusion = await prisma.bulkConclusion.findUnique({
                 where: {
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
-            querySuccess = true;
+            break;
         } catch (error) {
             console.log(
                 "Error with trying to find BulkConclusionUserId: " + error,
@@ -3247,7 +3220,7 @@ export const findBulkConclusionUserId = async (
             else throw error;
         }
     }
-    return bulkConclusion?.userId || null;
+    return bulkConclusion?.kcUserId || null;
 };
 
 export const findBulkConclusionsByPackageId = async (
@@ -3330,22 +3303,21 @@ export const findPathExclusionById = async (
 
 export const findPathExclusionUserId = async (
     id: number,
-): Promise<number | null> => {
-    let pathExclusion: { userId: number } | null = null;
+): Promise<string | null> => {
+    let pathExclusion: { kcUserId: string } | null = null;
     let retries = initialRetryCount;
-    let querySuccess = false;
 
-    while (!querySuccess && retries > 0) {
+    while (retries > 0) {
         try {
             pathExclusion = await prisma.pathExclusion.findUnique({
                 where: {
                     id: id,
                 },
                 select: {
-                    userId: true,
+                    kcUserId: true,
                 },
             });
-            querySuccess = true;
+            break;
         } catch (error) {
             console.log(
                 "Error with trying to find PathExclusion userId: " + error,
@@ -3356,7 +3328,7 @@ export const findPathExclusionUserId = async (
             else throw error;
         }
     }
-    return pathExclusion ? pathExclusion.userId : null;
+    return pathExclusion ? pathExclusion.kcUserId : null;
 };
 
 type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
@@ -3366,11 +3338,7 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
         pattern: true;
         reason: true;
         comment: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
+        kcUserId: true;
         package: {
             select: {
                 purl: true;
@@ -3393,8 +3361,7 @@ export const findPathExclusions = async (
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -3415,11 +3382,7 @@ export const findPathExclusions = async (
                     pattern: true,
                     reason: true,
                     comment: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
+                    kcUserId: true,
                     package: {
                         select: {
                             purl: true,
@@ -3435,11 +3398,8 @@ export const findPathExclusions = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: usernameStrict ? undefined : username,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -3673,28 +3633,10 @@ export const findLicenseConclusionsByBulkConclusionId = async (
     return licenseConclusions;
 };
 
-type LicenseConclusionWithUserRelation = Prisma.LicenseConclusionGetPayload<{
-    select: {
-        id: true;
-        updatedAt: true;
-        detectedLicenseExpressionSPDX: true;
-        concludedLicenseExpressionSPDX: true;
-        comment: true;
-        local: true;
-        contextPurl: true;
-        user: {
-            select: {
-                username: true;
-            };
-        };
-        bulkConclusionId: true;
-    };
-}>;
-
 export const findLicenseConclusionsByFileSha256 = async (
     sha256: string,
-): Promise<LicenseConclusionWithUserRelation[]> => {
-    let licenseConclusions: LicenseConclusionWithUserRelation[] = [];
+): Promise<LicenseConclusion[]> => {
+    let licenseConclusions: LicenseConclusion[] = [];
     let retries = initialRetryCount;
     let querySuccess = false;
 
@@ -3703,21 +3645,6 @@ export const findLicenseConclusionsByFileSha256 = async (
             licenseConclusions = await prisma.licenseConclusion.findMany({
                 where: {
                     fileSha256: sha256,
-                },
-                select: {
-                    id: true,
-                    updatedAt: true,
-                    detectedLicenseExpressionSPDX: true,
-                    concludedLicenseExpressionSPDX: true,
-                    comment: true,
-                    local: true,
-                    contextPurl: true,
-                    user: {
-                        select: {
-                            username: true,
-                        },
-                    },
-                    bulkConclusionId: true,
                 },
             });
             querySuccess = true;
@@ -3900,35 +3827,6 @@ export const deleteLicenseConclusionsByFileHashes = async (
                     fileSha256: {
                         in: fileHashes,
                     },
-                },
-            });
-        } catch (error) {
-            console.log(
-                "Error with trying to delete LicenseConclusions: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-    if (!batchDelete)
-        throw new Error("Error: Unable to delete LicenseConclusions");
-
-    return batchDelete;
-};
-
-export const deleteManyLicenseConclusionsByBulkConclusionId = async (
-    bulkConclusionId: number,
-): Promise<{ count: number }> => {
-    let retries = initialRetryCount;
-    let batchDelete = null;
-
-    while (!batchDelete && retries > 0) {
-        try {
-            batchDelete = await prisma.licenseConclusion.deleteMany({
-                where: {
-                    bulkConclusionId: bulkConclusionId,
                 },
             });
         } catch (error) {
@@ -4316,8 +4214,7 @@ export const countScannedPackages = async (
 export const countPathExclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -4339,11 +4236,8 @@ export const countPathExclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -4379,8 +4273,7 @@ export const countPathExclusions = async (
 export const countBulkConclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -4404,11 +4297,8 @@ export const countBulkConclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     pattern: {
                         contains: pattern,
@@ -4492,8 +4382,7 @@ export const countLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    username: string | undefined,
-    usernameStrict: boolean,
+    userIds: string[] | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -4581,9 +4470,8 @@ export const countLicenseConclusions = async (
                                   : undefined,
                     },
                     user: {
-                        username: {
-                            equals: usernameStrict ? username : undefined,
-                            contains: !usernameStrict ? username : undefined,
+                        kcUserId: {
+                            in: userIds,
                         },
                     },
                     detectedLicenseExpressionSPDX: {
@@ -4630,4 +4518,39 @@ export const countLicenseConclusions = async (
         }
     }
     return count;
+};
+
+// ------------------------------ Transactions --------------------------------
+
+export const deleteBulkAndLicenseConclusions = async (
+    bulkConclusionId: number,
+): Promise<void> => {
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            await prisma.$transaction([
+                prisma.licenseConclusion.deleteMany({
+                    where: {
+                        bulkConclusionId: bulkConclusionId,
+                    },
+                }),
+                prisma.bulkConclusion.delete({
+                    where: {
+                        id: bulkConclusionId,
+                    },
+                }),
+            ]);
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to delete BulkConclusion and LicenseConclusions: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
 };

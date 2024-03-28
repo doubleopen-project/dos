@@ -5,6 +5,7 @@
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const DeleteBulkConclusion = ({ id }: Props) => {
+    const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
@@ -26,20 +28,24 @@ const DeleteBulkConclusion = ({ id }: Props) => {
     const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
         "GetLicenseConclusionsCount",
     );
-    const keyBulkConclusion = userHooks.getKeyByAlias("GetBulkConclusions");
+    const keyBulkConclusions = userHooks.getKeyByAlias("GetBulkConclusions");
+    const keyBulkConclusionsCount = userHooks.getKeyByAlias(
+        "GetBulkConclusionsCount",
+    );
     const keyBulkConclusionsByPurl = userHooks.getKeyByAlias(
         "GetBulkConclusionsByPurl",
     );
-
     const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
-        "GetBulkConclusionsCount",
+        "GetBulkConclusionsCountByPurl",
     );
 
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 
     const { data: bulkConclusion } = userHooks.useGetBulkConclusionById({
-        withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${session.data?.accessToken}`,
+        },
         params: {
             id: id,
         },
@@ -73,7 +79,9 @@ const DeleteBulkConclusion = ({ id }: Props) => {
     const { mutate: deleteBulkConclusion, isLoading: isBulkLoading } =
         userHooks.useDeleteBulkConclusion(
             {
-                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${session.data?.accessToken}`,
+                },
                 params: {
                     id: id,
                 },
@@ -87,7 +95,8 @@ const DeleteBulkConclusion = ({ id }: Props) => {
                     // When a bulk conclusion is deleted, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
-                    queryClient.invalidateQueries(keyBulkConclusion);
+                    queryClient.invalidateQueries(keyBulkConclusions);
+                    queryClient.invalidateQueries(keyBulkConclusionsCount);
                     queryClient.invalidateQueries(keyBulkConclusionsByPurl);
                     queryClient.invalidateQueries(keyLCs);
                     queryClient.invalidateQueries(keyBulkConclusionCountByPurl);

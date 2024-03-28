@@ -2,11 +2,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-import axios from "axios";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { parseAsString, useQueryState } from "nuqs";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { useUser } from "@/hooks/useUser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BulkConclusionList from "@/components/clearance_library/bulk_conclusions/BulkConclusionList";
@@ -19,28 +20,18 @@ export default function ClearanceLibrary() {
         "tab",
         parseAsString.withDefault("license_conclusions"),
     );
-    const {
-        data: user,
-        error,
-        isLoading,
-    } = userHooks.useGetUser(
-        {
-            withCredentials: true,
-        },
-        { retry: false },
-    );
-    let errMsg;
+    const user = useUser();
+    const session = useSession({
+        required: true,
+    });
 
-    if (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 403) {
-            router.push({
-                pathname: "/login",
-                query: { redirectToPath: router.asPath },
-            });
-        } else {
-            errMsg = error.message;
+    useEffect(() => {
+        if (session.data?.error === "SessionNotActiveError") {
+            signOut();
+        } else if (session.data?.error !== undefined) {
+            signIn("keycloak");
         }
-    }
+    }, [session.data?.error]);
 
     return (
         <div className="flex h-full flex-col p-2">
@@ -106,14 +97,9 @@ export default function ClearanceLibrary() {
                     </div>
                 </>
             )}
-            {isLoading && (
+            {session.status === "loading" && (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
-                </div>
-            )}
-            {errMsg && (
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">{errMsg}</p>
                 </div>
             )}
         </div>

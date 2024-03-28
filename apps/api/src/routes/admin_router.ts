@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 HH Partners
+// SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,122 +8,104 @@ import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
-import * as dbQueries from "../helpers/db_queries";
+import {
+    addRealmRolesToUser,
+    createUser,
+    deleteUser,
+} from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 
 const adminRouter = zodiosRouter(adminAPI);
 
 // ----------------------------------- ADMIN ROUTES -----------------------------------
 
-adminRouter.post("/user", async (req, res) => {
+adminRouter.post("/users", async (req, res) => {
     try {
         const { username, password } = req.body;
         const role = req.body.role ? req.body.role : "USER";
-        const subscription = req.body.subscription
-            ? req.body.subscription
-            : role == "ADMIN"
-              ? "GOLD"
-              : "SILVER";
-        const kcUserId = req.body.keycloakUserId;
-        const user = await dbQueries.findUserByUsername(username);
-        if (user) {
-            res.status(400).send({ message: "User already exists" });
-        } else {
-            const salt = crypto.randomBytes(16);
-            crypto.pbkdf2(
-                password,
-                salt,
-                310000,
-                32,
-                "sha256",
-                async (err, derivedKey) => {
-                    if (err) {
-                        console.log("Error: ", err);
-                        res.status(500).send({
-                            message: "Internal server error",
-                        });
-                    }
-                    const hashedPassword = derivedKey;
-                    const token = req.body.token
-                        ? req.body.token
-                        : crypto.randomBytes(16).toString("hex");
-                    const newUser = await dbQueries.createUser({
-                        username,
-                        hashedPassword,
-                        salt,
-                        token,
-                        role,
-                        subscription,
-                        kcUserId,
-                    });
-                    res.send({
-                        username: newUser.username,
-                        password: req.body.password,
-                        role: newUser.role,
-                        subscription: subscription,
-                        token: token,
-                        keycloakUserId: newUser.kcUserId,
-                    });
+        const realmRoles =
+            role === "USER" ? ["app-user"] : ["app-user", "app-admin"];
+        const dosApiToken =
+            req.body.dosApiToken || crypto.randomBytes(16).toString("hex");
+
+        const newUser = await createUser({
+            username,
+            credentials: [
+                {
+                    type: "password",
+                    value: password,
+                    temporary:
+                        req.body.passwordIsTemporary !== undefined
+                            ? req.body.passwordIsTemporary
+                            : true,
                 },
-            );
-        }
+            ],
+            attributes: {
+                dosApiToken: dosApiToken,
+            },
+            enabled: true,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            emailVerified: req.body.emailVerified || false,
+        });
+
+        await addRealmRolesToUser(newUser.id, realmRoles);
+
+        res.status(200).send({
+            id: newUser.id,
+            username: newUser.username,
+            dosApiToken: dosApiToken,
+            realmRoles: realmRoles,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            email: newUser.email,
+            requiredActions: newUser.requiredActions,
+        });
     } catch (error) {
         console.log("Error: ", error);
-        res.status(500).send({ message: "Internal server error" });
+        if (error instanceof CustomError) {
+            res.status(error.statusCode).send({
+                message: error.message,
+                path: error.path,
+            });
+        } else {
+            res.status(500).send({
+                message: "Internal server error: Unknown error",
+            });
+        }
     }
 });
 
 // Delete user by id
-adminRouter.delete("/user/:id", async (req, res) => {
+adminRouter.delete("/users/:id", async (req, res) => {
     try {
-        const deletedUser = await dbQueries.deleteUser(req.params.id);
+        if (req.params.id === process.env.KEYCLOAK_ADMIN_USER_ID)
+            throw new CustomError("Cannot delete the admin user", 400, "id");
+
+        if (req.params.id === req.kauth.grant.access_token.content.sub)
+            throw new CustomError(
+                "Cannot delete the user making this request",
+                400,
+                "id",
+            );
+
+        const deletedUser = await deleteUser(req.params.id);
 
         if (deletedUser) res.status(200).json({ message: "User deleted" });
         else res.status(400).json({ message: "User to delete not found" });
     } catch (error) {
         console.log("Error: ", error);
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2025"
-        ) {
-            return res.status(404).json({
-                message: "User to delete not found",
+        if (error instanceof CustomError) {
+            res.status(error.statusCode).send({
+                message: error.message,
+                path: error.path,
             });
         } else {
-            res.status(500).json({ message: "Internal server error" });
+            res.status(500).json({
+                message: "Internal server error: Unknown error",
+            });
         }
-    }
-});
-
-// Update user by id
-adminRouter.put("/user/:id", async (req, res) => {
-    try {
-        await dbQueries.updateUser(req.params.id, req.body);
-
-        const batches = await dbQueries.updateManyKcUserIds(
-            req.params.id,
-            req.body.kcUserId,
-        );
-
-        const lcs = await dbQueries.findLicenseConclusionsByUserId(
-            req.params.id,
-        );
-        const bcs = await dbQueries.findBulkConclusionsByUserId(req.params.id);
-        const pes = await dbQueries.findPathExclusionsByUserId(req.params.id);
-
-        if (lcs.length !== batches.lcCount)
-            throw new CustomError("License conclusion counts don't match", 500);
-
-        if (bcs.length !== batches.bcCount)
-            throw new CustomError("Bulk conclusions counts don't match", 500);
-
-        if (pes.length !== batches.peCount)
-            throw new CustomError("Path exclusions counts don't match", 500);
-
-        res.status(200).json({ message: "User updated" });
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
     }
 });
 

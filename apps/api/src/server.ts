@@ -5,25 +5,18 @@
 import { zodiosApp } from "@zodios/express";
 import { openApiBuilder } from "@zodios/openapi";
 import compression from "compression";
-import genFunc from "connect-pg-simple";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { User as DBUser } from "database";
 import express from "express";
 import session from "express-session";
 import cron from "node-cron";
-import passport from "passport";
 import { serve, setup } from "swagger-ui-express";
 import { dosAPI } from "validation-helpers";
+import { getKeycloak, memoryStore } from "./config/keycloak";
 import { cronJobs } from "./cron_jobs";
-import { authorizeAdmin, authorizeUser } from "./helpers/auth_helpers";
-import * as dbQueries from "./helpers/db_queries";
-import { localStrategy } from "./passport_strategies/local_strategy";
+import { keycloakProtect } from "./helpers/auth_helpers";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
-
-// These imports will be taken into use when swithcing to keycloak
-// import { keycloakProtect } from "./helpers/auth_helpers";
-// import { getKeycloak, memoryStore } from "./config/keycloak";
 
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set");
 
@@ -75,6 +68,8 @@ const corsOptions = {
 
 app.use(cookieParser(process.env.COOKIE_SECRET || "secret"));
 
+if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
+
 // Use User from database package in serialization and deserialization
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -83,58 +78,6 @@ declare global {
     }
 }
 
-const PostgresqlStore = genFunc(session);
-
-const sessionStore = new PostgresqlStore({
-    conString: process.env.DATABASE_URL,
-    tableName: "Session",
-});
-
-if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
-
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET || "secret",
-        resave: false,
-        saveUninitialized: false,
-        store: sessionStore,
-        proxy: true,
-        cookie: {
-            secure: process.env.NODE_ENV === "production",
-            httpOnly: true,
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-        },
-    }),
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(localStrategy);
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (id: number, done) => {
-    try {
-        const user = await dbQueries.findUserById(id);
-        done(null, user);
-    } catch (error) {
-        done(error);
-    }
-});
-
-app.use("/api/admin", cors(corsOptions), authorizeAdmin, adminRouter);
-app.use("/api/auth", cors(corsOptions), authRouter);
-app.use("/api", scannerRouter);
-app.use("/api/user", cors(corsOptions), authorizeUser, userRouter);
-
-// This is the setup that will be used when switching to keycloak instead of the
-// passport related setup above
-
-/*
 const keycloak = getKeycloak();
 
 app.use(
@@ -154,7 +97,7 @@ app.use(
     keycloak.protect(keycloakProtect(["ADMIN"])),
     adminRouter,
 );
-app.use("/api/auth", authRouter);
+app.use("/api/auth", cors(corsOptions), authRouter);
 app.use("/api", cors(corsOptions), scannerRouter);
 app.use(
     "/api/user",
@@ -162,7 +105,6 @@ app.use(
     keycloak.protect(keycloakProtect(["USER"])),
     userRouter,
 );
-*/
 
 const document = openApiBuilder({
     title: "DOS API",
