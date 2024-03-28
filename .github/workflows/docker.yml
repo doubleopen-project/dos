@@ -10,6 +10,7 @@ on:
             - main
             - worker-deployment
             - do-197-env-files-should-be-loaded-in-scripts-not-in-code
+    workflow_dispatch:
 
 jobs:
     build:
