@@ -29,6 +29,7 @@ model File {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   scanStatus String
+  scanner    String   @default("scancode-toolkit@32.0.4")
 
   filetrees          FileTree[]
   licenseFindings    LicenseFinding[]
