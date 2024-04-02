@@ -547,6 +547,7 @@ export const saveJobResults = async (
                             id: dbFile.id,
                             data: {
                                 scanStatus: "scanned",
+                                scanner: scanner,
                             },
                         });
                     }
