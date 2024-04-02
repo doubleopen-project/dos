@@ -1595,14 +1595,17 @@ userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
         const purl = req.params.purl;
         const path = req.params.path;
 
-        const sha256 = await dbQueries.findFileSha256ByPurlAndPath(purl, path);
+        const file = await dbQueries.findFileSha256AndScannerByPurlAndPath(
+            purl,
+            path,
+        );
 
-        if (!sha256) throw new CustomError("File not found", 400);
+        if (!file) throw new CustomError("File not found", 400);
 
         const presignedGetUrl = await getPresignedGetUrl(
             s3Client,
             process.env.SPACES_BUCKET || "doubleopen",
-            sha256,
+            file.sha256,
         );
 
         if (!presignedGetUrl) {
@@ -1613,8 +1616,9 @@ userRouter.get("/packages/:purl/filetrees/:path/files", async (req, res) => {
         }
 
         res.status(200).json({
-            sha256: sha256,
+            sha256: file.sha256,
             downloadUrl: presignedGetUrl,
+            scanner: file.scanner,
         });
     } catch (error) {
         console.log("Error: ", error);

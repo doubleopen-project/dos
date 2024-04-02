@@ -10301,16 +10301,19 @@ declare const userAPI: [
             {
                 sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
+                scanner: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 sha256: string;
                 downloadUrl: string;
+                scanner: string;
             },
             {
                 sha256: string;
                 downloadUrl: string;
+                scanner: string;
             }
         >;
         errors: [
@@ -17823,16 +17826,19 @@ declare const dosAPI: [
             {
                 sha256: zod.ZodString;
                 downloadUrl: zod.ZodString;
+                scanner: zod.ZodString;
             },
             "strip",
             zod.ZodTypeAny,
             {
                 sha256: string;
                 downloadUrl: string;
+                scanner: string;
             },
             {
                 sha256: string;
                 downloadUrl: string;
+                scanner: string;
             }
         >;
         errors: [
