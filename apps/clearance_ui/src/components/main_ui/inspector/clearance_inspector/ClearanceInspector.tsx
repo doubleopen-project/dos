@@ -60,7 +60,10 @@ const ClearanceInspector = ({
                         defaultSize={defaultClearanceHeights[0]}
                         minSize={6}
                     >
-                        <DetectedLicense fileSha256={data.sha256} />
+                        <DetectedLicense
+                            fileSha256={data.sha256}
+                            scanner={data.scanner}
+                        />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel
