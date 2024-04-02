@@ -562,6 +562,7 @@ export const PutTokenRes = z.object({
 export const GetFileRes = z.object({
     sha256: z.string(),
     downloadUrl: z.string(),
+    scanner: z.string(),
 });
 
 //------------------ GET license-findings -------------------
