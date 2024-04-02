@@ -21,17 +21,20 @@ import {
     SystemIssue,
     User,
 } from "database";
-import { replaceANDExceptionWithANDPrefixException } from "../helpers/license_expression_helpers";
 
 const prisma = new PrismaClient().$extends({
     result: {
         licenseFinding: {
             licenseExpressionSPDX: {
+                /*
+                 * Currently, this is a no-op, but it could be used to compute the license expression if
+                 * some post processing is needed. The column name can be changed back in the database
+                 * (from unprocessedLicenseExpressionSPDX to licenseEcpressionSPDX), if this is not needed,
+                 * but leaving this here for now, in case we need to do some post processing in the near future.
+                 */
                 needs: { unprocessedLicenseExpressionSPDX: true },
                 compute(licenseFinding): string {
-                    return replaceANDExceptionWithANDPrefixException(
-                        licenseFinding.unprocessedLicenseExpressionSPDX,
-                    );
+                    return licenseFinding.unprocessedLicenseExpressionSPDX;
                 },
             },
         },
