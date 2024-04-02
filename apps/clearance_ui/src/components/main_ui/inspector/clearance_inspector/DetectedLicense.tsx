@@ -43,14 +43,6 @@ const DetectedLicense = ({ fileSha256, scanner }: DetectedLicenseProps) => {
                         <div className="h-full w-full overflow-auto p-1 text-xs">
                             {data.licenseFindings.map((license) => (
                                 <span key={license.id}>
-                                    <span className="font-bold">
-                                        {
-                                            new Date(license.updatedAt)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        :{" "}
-                                    </span>
                                     {license.licenseExpressionSPDX}
                                     <CopyToClipboard
                                         copyText={license.licenseExpressionSPDX}
