@@ -9,9 +9,10 @@ import CopyToClipboard from "@/components/common/CopyToClipboard";
 
 type DetectedLicenseProps = {
     fileSha256: string;
+    scanner: string;
 };
 
-const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
+const DetectedLicense = ({ fileSha256, scanner }: DetectedLicenseProps) => {
     const { data, isLoading, error } = userHooks.useGetLicenseFindingsForFile(
         {
             withCredentials: true,
@@ -32,6 +33,12 @@ const DetectedLicense = ({ fileSha256 }: DetectedLicenseProps) => {
             {data && (
                 <div className="flex h-full w-full flex-col items-start p-1">
                     <Label className="clearance-label">Detected license</Label>
+                    <div>
+                        <Label className="px-0.5 text-xs font-bold">
+                            Scanner:{" "}
+                        </Label>
+                        <Label className="text-xs italic">{scanner}</Label>
+                    </div>
                     {data?.licenseFindings[0] ? (
                         <div className="h-full w-full overflow-auto p-1 text-xs">
                             {data.licenseFindings.map((license) => (
