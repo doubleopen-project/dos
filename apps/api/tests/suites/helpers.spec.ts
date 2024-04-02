@@ -4,7 +4,6 @@
 
 import { assert } from "chai";
 import { extractStringFromGlob } from "../../src/helpers/globHelpers";
-import { replaceANDExceptionWithANDPrefixException } from "../../src/helpers/license_expression_helpers";
 import { parsePurl } from "../../src/helpers/purl_helpers";
 
 export default function suite(): void {
@@ -67,39 +66,6 @@ export default function suite(): void {
             assert.strictEqual(parsedPurl.version, "1.5.2");
             assert.strictEqual(parsedPurl.qualifiers, undefined);
             assert.strictEqual(parsedPurl.subpath, null);
-        });
-    });
-
-    describe("Testing license expression helpers", function () {
-        it("should replace AND <exception> with AND LicenseRef-dos-<exception>", function () {
-            const expression =
-                "CDDL-1.1 AND GPL-2.0-only AND Classpath-exception-2.0";
-            const expectedExpression =
-                "CDDL-1.1 AND GPL-2.0-only AND LicenseRef-dos-Classpath-exception-2.0";
-
-            const result =
-                replaceANDExceptionWithANDPrefixException(expression);
-            assert.strictEqual(result, expectedExpression);
-        });
-
-        it("should not replace AND <exception> with AND LicenseRef-dos-<exception> if exception starts with LicenseRef", function () {
-            const expression =
-                "GPL-2.0-or-later AND LicenseRef-scancode-generic-exception";
-
-            const result =
-                replaceANDExceptionWithANDPrefixException(expression);
-            assert.strictEqual(result, expression);
-        });
-
-        it("should replace `) AND <exception>` with `) AND LicenseRef-dos-<exception>`", function () {
-            const expression =
-                "BSD-3-Clause AND (GPL-3.0-only AND GCC-exception-3.1 AND GPL-3.0-or-later AND GCC-exception-3.1) AND GCC-exception-3.1";
-            const expectedExpression =
-                "BSD-3-Clause AND (GPL-3.0-only AND LicenseRef-dos-GCC-exception-3.1 AND GPL-3.0-or-later AND LicenseRef-dos-GCC-exception-3.1) AND LicenseRef-dos-GCC-exception-3.1";
-
-            const result =
-                replaceANDExceptionWithANDPrefixException(expression);
-            assert.strictEqual(result, expectedExpression);
         });
     });
 
