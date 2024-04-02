@@ -31,7 +31,7 @@
         "db:migrate:reset": "npm run build:s3 && dotenv -e .env.local -- turbo run db:migrate:reset",
         "db:push": "turbo run db:push",
         "db:push-accept-data-loss": "prisma db push --schema ./packages/database/prisma/schema.prisma --accept-data-loss",
-        "db:studio": "prisma studio --schema ./packages/database/prisma/schema.prisma",
+        "db:studio": "dotenv -e .env.local -- prisma studio --schema ./packages/database/prisma/schema.prisma",
         "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf package-lock.json && npx rimraf node_modules",
         "clean-build": "npm run clean-dist && turbo run build --no-cache --force",
         "clean-dist": "npm exec --workspaces -- npx rimraf dist",
