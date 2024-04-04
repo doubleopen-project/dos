@@ -7,7 +7,6 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
-    RowData,
     useReactTable,
 } from "@tanstack/react-table";
 import debounce from "lodash.debounce";
@@ -27,23 +26,6 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     pageCount: number;
-}
-
-declare module "@tanstack/table-core" {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface TableMeta<TData extends RowData> {
-        editedRows: { [key: number]: boolean };
-        setEditedRows: React.Dispatch<
-            React.SetStateAction<{ [key: number]: boolean }>
-        >;
-        revertData: (rowId: number, revert: boolean) => void;
-        updateData: (rowId: number, columnId: string, value: string) => void;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface ColumnMeta<TData extends RowData, TValue> {
-        type?: string;
-    }
 }
 
 export function DataTable<TData, TValue>({
