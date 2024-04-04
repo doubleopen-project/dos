@@ -24,6 +24,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/clearance_library/bulk_conclusions/ActionCell";
+import TableCell from "@/components/clearance_library/bulk_conclusions/TableCell";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -32,7 +33,7 @@ import PurlDetails from "@/components/common/PurlDetails";
 export type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
     "GetBulkConclusions"
->["bulkConclusions"][0];
+>["bulkConclusions"][number];
 
 export const columns = (
     sortBy: string | null,
@@ -292,9 +293,10 @@ export const columns = (
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <div className="break-all">{row.original.pattern}</div>
-            ),
+            cell: TableCell,
+            meta: {
+                type: "textarea",
+            },
         },
         {
             accessorKey: "licenseExpressionSPDX",
@@ -405,6 +407,10 @@ export const columns = (
                             </Button>
                         );
                     },
+                    cell: TableCell,
+                    meta: {
+                        type: "text",
+                    },
                 },
             ],
         },
@@ -497,6 +503,10 @@ export const columns = (
                         )}
                     </Button>
                 );
+            },
+            cell: TableCell,
+            meta: {
+                type: "textarea",
             },
         },
         {
