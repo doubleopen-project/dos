@@ -296,6 +296,7 @@ export const columns = (
             cell: TableCell,
             meta: {
                 type: "textarea",
+                breakAll: true,
             },
         },
         {
