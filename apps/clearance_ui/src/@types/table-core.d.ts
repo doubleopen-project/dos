@@ -28,5 +28,7 @@ declare module "@tanstack/table-core" {
     interface ColumnMeta<TData extends RowData, TValue> {
         // The type of the column, used to determine the type of the cell
         type?: string;
+        // Option to break the text from any point in the text in the cell.
+        breakAll?: boolean;
     }
 }

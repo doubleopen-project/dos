@@ -55,7 +55,11 @@ const TableCell = ({
             />
         );
     }
-    return <span>{value}</span>;
+    return (
+        <span className={columnMeta?.breakAll ? "break-all" : undefined}>
+            {value}
+        </span>
+    );
 };
 
 export default TableCell;
