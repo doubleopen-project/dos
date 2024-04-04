@@ -30,9 +30,12 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
     columns,
-    data,
+    data: initialData,
     pageCount,
 }: DataTableProps<TData, TValue>) {
+    const [data, setData] = useState(initialData);
+    const [originalData, setOriginalData] = useState(initialData);
+    const [selectedRowsForEditing, setSelectedRowsForEditing] = useState({});
     const [searchPurl, setSearchPurl] = useQueryState(
         "searchPurl",
         parseAsString,
@@ -56,6 +59,37 @@ export function DataTable<TData, TValue>({
         pageCount: pageCount,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
+        meta: {
+            selectedRowsForEditing,
+            setSelectedRowsForEditing,
+            revertData: (rowId: number) => {
+                setData((old) =>
+                    old.map((row, index) =>
+                        index === rowId ? originalData[rowId] : row,
+                    ),
+                );
+            },
+            updateData: (rowId: number, columnId: string, value: string) => {
+                setData((old) =>
+                    old.map((row, index) => {
+                        if (index === rowId) {
+                            return {
+                                ...old[rowId]!,
+                                [columnId]: value,
+                            };
+                        }
+                        return row;
+                    }),
+                );
+            },
+            updateOriginalData: (rowId: number) => {
+                setOriginalData((old) =>
+                    old.map((row, index) =>
+                        index === rowId ? data[rowId] : row,
+                    ),
+                );
+            },
+        },
     });
 
     return (
