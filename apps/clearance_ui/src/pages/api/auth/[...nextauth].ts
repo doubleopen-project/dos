@@ -16,10 +16,7 @@ import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import { keycloakAPI } from "validation-helpers";
 
-const kcClient = new Zodios(
-    process.env.KEYCLOAK_URL || "https://auth.dev.doubleopen.io",
-    keycloakAPI,
-);
+const kcClient = new Zodios(process.env.KEYCLOAK_URL!, keycloakAPI);
 
 /**
  * Takes a token, and returns a new token with updated
@@ -33,14 +30,14 @@ async function refreshAccessToken(token: JWT) {
         try {
             const refreshedTokens = await kcClient.GetAccessToken(
                 {
-                    client_id: process.env.KEYCLOAK_CLIENT_ID_UI || "",
+                    client_id: process.env.KEYCLOAK_CLIENT_ID_UI!,
                     grant_type: "refresh_token",
                     refresh_token: token.refreshToken,
-                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET_UI || "",
+                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET_UI!,
                 },
                 {
                     params: {
-                        realm: process.env.KEYCLOAK_REALM || "",
+                        realm: process.env.KEYCLOAK_REALM!,
                     },
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -118,8 +115,8 @@ export default NextAuth({
         KeycloakProvider({
             id: "keycloak",
             name: "Keycloak",
-            clientId: process.env.KEYCLOAK_CLIENT_ID_UI || "",
-            clientSecret: process.env.KEYCLOAK_CLIENT_SECRET_UI || "",
+            clientId: process.env.KEYCLOAK_CLIENT_ID_UI!,
+            clientSecret: process.env.KEYCLOAK_CLIENT_SECRET_UI!,
             issuer: `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`,
             requestTokenUrl: `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/auth`,
             authorization: {

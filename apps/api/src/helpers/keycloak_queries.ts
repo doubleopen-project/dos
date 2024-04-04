@@ -38,15 +38,14 @@ export const getAccessToken = async (): Promise<Token> => {
                     client_id: "admin-cli",
                     grant_type: "refresh_token",
                     refresh_token: token.token.refresh_token,
-                    client_secret: process.env
-                        .KEYCLOAK_ADMIN_CLIENT_SECRET as string,
+                    client_secret: process.env.KEYCLOAK_ADMIN_CLIENT_SECRET!,
                 },
                 {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
                     params: {
-                        realm: process.env.KEYCLOAK_REALM as string,
+                        realm: process.env.KEYCLOAK_REALM!,
                     },
                 },
             );
@@ -66,18 +65,17 @@ export const getAccessToken = async (): Promise<Token> => {
             const accessToken = await kcClient.GetAccessToken(
                 {
                     client_id: "admin-cli",
-                    username: process.env.KEYCLOAK_ADMIN_USERNAME as string,
-                    password: process.env.KEYCLOAK_ADMIN_PASSWORD as string,
+                    username: process.env.KEYCLOAK_ADMIN_USERNAME!,
+                    password: process.env.KEYCLOAK_ADMIN_PASSWORD!,
                     grant_type: "password",
-                    client_secret: process.env
-                        .KEYCLOAK_ADMIN_CLIENT_SECRET as string,
+                    client_secret: process.env.KEYCLOAK_ADMIN_CLIENT_SECRET!,
                 },
                 {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
                     params: {
-                        realm: process.env.KEYCLOAK_REALM as string,
+                        realm: process.env.KEYCLOAK_REALM!,
                     },
                 },
             );
@@ -134,7 +132,7 @@ export const logoutUser = async (
             const token = await getAccessToken();
             await kcClient.LogoutUser(undefined, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                     id: userId,
                 },
                 headers: {
@@ -207,7 +205,7 @@ export const createUser = async (data: {
             const token = await getAccessToken();
             await kcClient.CreateUser(data, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                 },
                 headers: {
                     Authorization: "Bearer " + token.access_token,
@@ -273,7 +271,7 @@ export const deleteUser = async (userId: string): Promise<boolean> => {
             const token = await getAccessToken();
             await kcClient.DeleteUser(undefined, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                     id: userId,
                 },
                 headers: {
@@ -328,7 +326,7 @@ export const getRealmRoles = async (): Promise<RealmRole[]> => {
             const token = await getAccessToken();
             roles = await kcClient.GetRealmRoles({
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                 },
                 headers: {
                     Authorization: "Bearer " + token.access_token,
@@ -394,7 +392,7 @@ export const addRealmRolesToUser = async (
 
             await kcClient.AddRealmRoleToUser(roles, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                     id: userId,
                 },
                 headers: {
@@ -454,7 +452,7 @@ export const getUsers = async (
             const token = await getAccessToken();
             users = await kcClient.GetUsers({
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                 },
                 queries: {
                     username: username,
@@ -530,7 +528,7 @@ export const updateUser = async (
             const token = await getAccessToken();
             await kcClient.UpdateUser(data, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM as string,
+                    realm: process.env.KEYCLOAK_REALM!,
                     id: userId,
                 },
                 headers: {
