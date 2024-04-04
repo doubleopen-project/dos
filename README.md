@@ -28,23 +28,46 @@ DOS utilizes [ScanCode Toolkit] for scanning the files and is designed to work w
 
 To run this project you will need Node.js, npm and Docker installed.
 
-1. Clone the repository
+1.  Clone the repository
 
     ```shell
     git clone https://github.com/doubleopen-project/dos.git
     ```
 
-2. Go to project root `cd dos` and install dependencies with `npm i`
+2.  Go to project root `cd dos` and install dependencies with `npm i`
 
-3. Create a .env.local file in the project root, and set the following environment variable in the file:
+3.  Set needed environment variables.
+
+    a.) Create a .env.local file in the project root, and set the following environment variables in the file:
 
     ```shell
     DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+    KEYCLOAK_URL=
+    KEYCLOAK_REALM=
+    KEYCLOAK_CLIENT_ID_API=
+    KEYCLOAK_CLIENT_SECRET_API=
+    KEYCLOAK_ADMIN_CLIENT_SECRET=
+    KEYCLOAK_ADMIN_USERNAME=
+    KEYCLOAK_ADMIN_PASSWORD=
+    KEYCLOAK_ADMIN_USER_ID=
+    E2E_USER_USERNAME=
+    E2E_USER_PASSWORD=
     ```
 
-    This is the only compulsory variable that needs to be set, others have default values. See [.env.example](https://github.com/doubleopen-project/dos/blob/main/.env.example) file for other configurable variables.
+    See [.env.example](https://github.com/doubleopen-project/dos/blob/main/.env.example) file for other non-compulsory configurable variables.
 
-4. Start containers (in detached mode with -d):
+    b.) Create a .env.local file in apps/clearance_ui, and set the following environment variables in the file:
+
+    ```shell
+    KEYCLOAK_URL=
+    KEYCLOAK_REALM=
+    KEYCLOAK_CLIENT_ID_UI=
+    KEYCLOAK_CLIENT_SECRET_UI=
+    ```
+
+    See [apps/clearance_ui/.env.example](https://github.com/doubleopen-project/dos/blob/main/apps/clearance_ui/.env.example) file for other non-compulsory configurable variables.
+
+4.  Start containers (in detached mode with -d):
 
     ```shell
     docker compose up -d
@@ -52,14 +75,14 @@ To run this project you will need Node.js, npm and Docker installed.
 
     This will setup PostgreSQL, Minio S3 storage and Redis work queue, and a Scanner Worker.
 
-5. Run migrations to the database and seed it with test data (this command can also be used to reset the database):
+5.  Run migrations to the database and seed it with test data (this command can also be used to reset the database):
 
     ```shell
     npm run db:migrate:reset
 
     ```
 
-6. Start apps:
+6.  Start apps:
 
     ```shell
     npm run dev
