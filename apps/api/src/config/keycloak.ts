@@ -20,9 +20,9 @@ const memoryStore = new PostgresqlStore({
 });
 
 const keycloakConfig: KeycloakConfig = {
-    realm: process.env.KEYCLOAK_REALM as string,
-    resource: process.env.KEYCLOAK_CLIENT_ID_API as string,
-    "auth-server-url": process.env.KEYCLOAK_URL as string,
+    realm: process.env.KEYCLOAK_REALM!,
+    resource: process.env.KEYCLOAK_CLIENT_ID_API!,
+    "auth-server-url": process.env.KEYCLOAK_URL!,
     "bearer-only": true,
     "confidential-port": 0,
     "ssl-required": "external",

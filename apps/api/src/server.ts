@@ -18,17 +18,38 @@ import { cronJobs } from "./cron_jobs";
 import { keycloakProtect } from "./helpers/auth_helpers";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
-if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set");
+const requiredEnvVars: string[] = [
+    "DATABASE_URL",
+    "KEYCLOAK_URL",
+    "KEYCLOAK_REALM",
+    "KEYCLOAK_CLIENT_ID_API",
+    "KEYCLOAK_CLIENT_SECRET_API",
+    "KEYCLOAK_ADMIN_USERNAME",
+    "KEYCLOAK_ADMIN_PASSWORD",
+    "KEYCLOAK_ADMIN_USER_ID",
+    "KEYCLOAK_ADMIN_CLIENT_SECRET",
+];
 
 if (process.env.NODE_ENV === "production") {
-    if (!process.env.SESSION_SECRET) throw new Error("SESSION_SECRET not set");
-    if (!process.env.COOKIE_SECRET) throw new Error("COOKIE_SECRET not set");
-    if (!process.env.SPACES_ENDPOINT)
-        throw new Error("SPACES_ENDPOINT not set");
-    if (!process.env.SPACES_KEY) throw new Error("SPACES_KEY not set");
-    if (!process.env.SPACES_SECRET) throw new Error("SPACES_SECRET not set");
-    if (!process.env.SPACES_BUCKET) throw new Error("SPACES_BUCKET not set");
-    if (!process.env.SA_API_TOKEN) throw new Error("SA_API_TOKEN not set");
+    requiredEnvVars.push(
+        "SESSION_SECRET",
+        "COOKIE_SECRET",
+        "SPACES_ENDPOINT",
+        "SPACES_KEY",
+        "SPACES_SECRET",
+        "SPACES_BUCKET",
+        "SA_API_TOKEN",
+    );
+}
+
+const missingVars: string[] = requiredEnvVars.filter(
+    (envVar) => !(envVar in process.env),
+);
+
+if (missingVars.length > 0) {
+    throw new Error(
+        `Missing required environment variables: ${missingVars.join(", ")}`,
+    );
 }
 
 const COMPRESSION_LIMIT: number = process.env.SIZE_LIMIT_FOR_COMPRESSION
