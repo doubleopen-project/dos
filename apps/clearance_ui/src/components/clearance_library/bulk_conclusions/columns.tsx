@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/clearance_library/bulk_conclusions/ActionCell";
 import TableCell from "@/components/clearance_library/bulk_conclusions/TableCell";
+import TableCellBoolean from "@/components/clearance_library/bulk_conclusions/TableCellBoolean";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -509,6 +510,13 @@ export const columns = (
             meta: {
                 type: "textarea",
             },
+        },
+        {
+            accessorKey: "local",
+            header: () => (
+                <Label className="cursor-pointer font-bold">Local</Label>
+            ),
+            cell: TableCellBoolean,
         },
         {
             id: "actions",

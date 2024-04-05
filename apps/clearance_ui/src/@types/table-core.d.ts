@@ -19,7 +19,11 @@ declare module "@tanstack/table-core" {
         // Function used to revert the data of a row to the original data.
         revertData: (rowId: number) => void;
         // Function used to update the data of a row.
-        updateData: (rowId: number, columnId: string, value: string) => void;
+        updateData: (
+            rowId: number,
+            columnId: string,
+            value: string | boolean,
+        ) => void;
         // Function used to update persisted changes to the original data
         updateOriginalData: (rowId: number) => void;
     }
