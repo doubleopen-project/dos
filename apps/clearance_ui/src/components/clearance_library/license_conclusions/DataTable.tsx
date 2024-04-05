@@ -75,7 +75,11 @@ export function DataTable<TData, TValue>({
                     ),
                 );
             },
-            updateData: (rowId: number, columnId: string, value: string) => {
+            updateData: (
+                rowId: number,
+                columnId: string,
+                value: string | boolean,
+            ) => {
                 setData((old) =>
                     old.map((row, index) => {
                         if (index === rowId) {
