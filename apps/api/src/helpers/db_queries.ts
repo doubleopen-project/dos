@@ -250,7 +250,6 @@ export const createLicenseConclusion = async (input: {
     local: boolean | undefined;
     contextPurl: string;
     fileSha256: string;
-    userId: number;
     kcUserId: string;
 }): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
@@ -308,7 +307,6 @@ export const createBulkConclusion = async (input: {
     comment: string | null;
     local: boolean | undefined;
     packageId: number;
-    userId: number;
     kcUserId: string;
 }): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
@@ -450,7 +448,6 @@ export const createPathExclusion = async (input: {
     reason: string;
     comment: string | null;
     packageId: number;
-    userId: number;
     kcUserId: string;
 }): Promise<PathExclusion> => {
     let retries = initialRetryCount;
@@ -2759,10 +2756,8 @@ export const findLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    user: {
-                        kcUserId: {
-                            in: userIds,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     detectedLicenseExpressionSPDX: {
                         contains: detectedLicense,
@@ -4469,10 +4464,8 @@ export const countLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    user: {
-                        kcUserId: {
-                            in: userIds,
-                        },
+                    kcUserId: {
+                        in: userIds,
                     },
                     detectedLicenseExpressionSPDX: {
                         contains: detectedLicense,

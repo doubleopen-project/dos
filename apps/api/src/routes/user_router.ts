@@ -363,9 +363,6 @@ userRouter.post(
                 local: req.body.local,
                 contextPurl: contextPurl,
                 fileSha256: req.params.sha256,
-                userId: await dbQueries.findUserByKcUserId(
-                    req.kauth.grant.access_token.content.sub,
-                ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
                 kcUserId: req.kauth.grant.access_token.content.sub,
             });
 
@@ -793,11 +790,6 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
 
         const pattern = req.body.pattern.trim();
 
-        // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
-        const userId = await dbQueries.findUserByKcUserId(
-            req.kauth.grant.access_token.content.sub,
-        );
-
         const bulkConclusion = await dbQueries.createBulkConclusion({
             pattern: pattern,
             concludedLicenseExpressionSPDX:
@@ -807,7 +799,6 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
             comment: req.body.comment || null,
             local: req.body.local,
             packageId: packageId,
-            userId: userId,
             kcUserId: req.kauth.grant.access_token.content.sub,
         });
 
@@ -832,7 +823,6 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
                         contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
                         bulkConclusionId: bulkConclusion.id,
-                        userId: userId,
                         kcUserId: req.kauth.grant.access_token.content.sub,
                     });
             }
@@ -1030,9 +1020,6 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             const fileTrees = await dbQueries.findFileTreesByPackageId(
                 origBulk.package.id,
             );
-            const userId = await dbQueries.findUserByKcUserId(
-                req.kauth.grant.access_token.content.sub,
-            );
 
             let matchFound = false;
             for (const fileTree of fileTrees) {
@@ -1063,7 +1050,6 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                             contextPurl: origBulk.package.purl,
                             fileSha256: fileTree.fileSha256,
                             bulkConclusionId: bulkConclusionWithRelations.id,
-                            userId: userId,
                             kcUserId: req.kauth.grant.access_token.content.sub,
                         });
                     }
@@ -1422,9 +1408,6 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
             reason: req.body.reason,
             comment: req.body.comment || null,
             packageId: packageId,
-            userId: await dbQueries.findUserByKcUserId(
-                req.kauth.grant.access_token.content.sub,
-            ), // This will be removed later, but is still a compulsory foreign key until the user table can be deleted
             kcUserId: req.kauth.grant.access_token.content.sub,
         });
 
