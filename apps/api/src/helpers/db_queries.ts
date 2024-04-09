@@ -2398,13 +2398,13 @@ export const findLicenseConclusions = async (
     take: number | undefined,
     orderProperty:
         | "contextPurl"
-        | "username"
         | "detectedLicenseExpressionSPDX"
         | "concludedLicenseExpressionSPDX"
         | "comment"
         | "local"
         | "createdAt"
-        | "updatedAt",
+        | "updatedAt"
+        | undefined,
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     contextPurl: string | undefined,
@@ -2561,16 +2561,11 @@ export const findLicenseConclusions = async (
                                 : undefined,
                     },
                 },
-                orderBy:
-                    orderProperty === "username"
-                        ? {
-                              user: {
-                                  username: orderPropertyValue,
-                              },
-                          }
-                        : {
-                              [orderProperty]: orderPropertyValue,
-                          },
+                orderBy: orderProperty
+                    ? {
+                          [orderProperty]: orderPropertyValue,
+                      }
+                    : undefined,
             });
             break;
         } catch (error) {
@@ -2847,14 +2842,14 @@ export const findBulkConclusionsWithRelations = async (
     take: number | undefined,
     orderProperty:
         | "pkg"
-        | "username"
         | "pattern"
         | "detectedLicenseExpressionSPDX"
         | "concludedLicenseExpressionSPDX"
         | "comment"
         | "local"
         | "createdAt"
-        | "updatedAt",
+        | "updatedAt"
+        | undefined,
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
@@ -2925,22 +2920,17 @@ export const findBulkConclusionsWithRelations = async (
                         lte: updatedAtLte,
                     },
                 },
-                orderBy:
-                    orderProperty === "pkg"
+                orderBy: orderProperty
+                    ? orderProperty === "pkg"
                         ? {
                               package: {
                                   name: orderPropertyValue,
                               },
                           }
-                        : orderProperty === "username"
-                          ? {
-                                user: {
-                                    username: orderPropertyValue,
-                                },
-                            }
-                          : {
-                                [orderProperty]: orderPropertyValue,
-                            },
+                        : {
+                              [orderProperty]: orderPropertyValue,
+                          }
+                    : undefined,
             });
             break;
         } catch (error) {
@@ -3091,9 +3081,9 @@ export const findPathExclusions = async (
         | "pattern"
         | "reason"
         | "comment"
-        | "username"
         | "createdAt"
-        | "updatedAt",
+        | "updatedAt"
+        | undefined,
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
@@ -3155,22 +3145,17 @@ export const findPathExclusions = async (
                         lte: updatedAtLte,
                     },
                 },
-                orderBy:
-                    orderProperty === "pkg"
+                orderBy: orderProperty
+                    ? orderProperty === "pkg"
                         ? {
                               package: {
                                   name: orderPropertyValue,
                               },
                           }
-                        : orderProperty === "username"
-                          ? {
-                                user: {
-                                    username: orderPropertyValue,
-                                },
-                            }
-                          : {
-                                [orderProperty]: orderPropertyValue,
-                            },
+                        : {
+                              [orderProperty]: orderPropertyValue,
+                          }
+                    : undefined,
             });
             break;
         } catch (error) {
