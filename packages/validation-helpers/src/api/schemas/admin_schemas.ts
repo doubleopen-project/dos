@@ -17,26 +17,6 @@ export const DeleteScanResultsRes = z.object({
     message: z.string(),
 });
 
-//-------------------- POST user --------------------
-
-export const PostUserReq = z.object({
-    username: getUsernameSchema(true),
-    password: getPasswordSchema(true),
-    keycloakUserId: z.string().uuid(),
-    role: z.enum(["ADMIN", "USER"]).optional(),
-    subscription: z.enum(["SILVER", "GOLD"]).optional(),
-    token: z.string().optional(),
-});
-
-export const PostUserRes = z.object({
-    username: z.string(),
-    password: z.string(),
-    keycloakUserId: z.string().uuid(),
-    role: z.enum(["ADMIN", "USER"]),
-    subscription: z.enum(["SILVER", "GOLD"]),
-    token: z.string(),
-});
-
 //------------------- POST users -------------------
 
 export const PostUsersReq = z.object({
@@ -65,21 +45,7 @@ export const PostUsersRes = z.object({
 
 //------------------- DELETE user -------------------
 
-export const DeleteUserReqParamId = z.number({
-    required_error: "Id is required",
-});
-
 export const DeleteUserRes = z.object({
-    message: z.string(),
-});
-
-//------------------- PUT user -------------------
-
-export const UpdateUserReq = z.object({
-    kcUserId: z.string().uuid(),
-});
-
-export const UpdateUserRes = z.object({
     message: z.string(),
 });
 
