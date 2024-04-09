@@ -69,8 +69,8 @@ const ActionCell = ({
     const setEditedRows = (e: React.MouseEvent<HTMLButtonElement>) => {
         const elName = e.currentTarget.name;
         if (e.currentTarget.name !== "save") {
-            meta?.setEditedRows(() => {
-                const old = meta.editedRows;
+            meta?.setSelectedRowsForEditing(() => {
+                const old = meta.selectedRowsForEditing;
                 return {
                     ...old,
                     [parseInt(row.id)]: !old[parseInt(row.id)],
@@ -85,8 +85,8 @@ const ActionCell = ({
                     row.getValue("concludedLicenseExpressionSPDX"),
                 );
                 if (isValidObj.isValid) {
-                    meta?.setEditedRows(() => {
-                        const old = meta.editedRows;
+                    meta?.setSelectedRowsForEditing(() => {
+                        const old = meta.selectedRowsForEditing;
                         return {
                             ...old,
                             [parseInt(row.id)]: !old[parseInt(row.id)],
@@ -114,7 +114,7 @@ const ActionCell = ({
         }
     };
 
-    return meta?.editedRows[parseInt(row.id)] ? (
+    return meta?.selectedRowsForEditing[parseInt(row.id)] ? (
         <div className="flex">
             <TooltipProvider>
                 <Tooltip>

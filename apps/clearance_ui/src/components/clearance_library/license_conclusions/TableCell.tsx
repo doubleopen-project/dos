@@ -35,7 +35,7 @@ const TableCell = ({
         tableMeta?.updateData(row.index, column.id, value);
     };
 
-    if (tableMeta?.editedRows[parseInt(row.id)]) {
+    if (tableMeta?.selectedRowsForEditing[parseInt(row.id)]) {
         return columnMeta?.type === "textarea" ? (
             <Textarea
                 value={value}

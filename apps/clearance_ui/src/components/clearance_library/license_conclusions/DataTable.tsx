@@ -34,7 +34,7 @@ export function DataTable<TData, TValue>({
     pageCount,
 }: DataTableProps<TData, TValue>) {
     const [data, setData] = useState(initialData);
-    const [editedRows, setEditedRows] = useState({});
+    const [selectedRowsForEditing, setSelectedRowsForEditing] = useState({});
 
     const [contextPurl, setContextPurl] = useQueryState(
         "contextPurl",
@@ -64,8 +64,8 @@ export function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
         meta: {
-            editedRows,
-            setEditedRows,
+            selectedRowsForEditing,
+            setSelectedRowsForEditing,
             revertData: (rowId: number, revert: boolean) => {
                 if (revert) {
                     setData((old) =>

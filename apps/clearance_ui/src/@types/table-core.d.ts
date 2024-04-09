@@ -12,8 +12,8 @@ declare module "@tanstack/table-core" {
     interface TableMeta<TData extends RowData> {
         // Keeps track of the rows that are being edited to enable showing
         // the editable cell components.
-        editedRows: { [key: number]: boolean };
-        setEditedRows: React.Dispatch<
+        selectedRowsForEditing: { [key: number]: boolean };
+        setSelectedRowsForEditing: React.Dispatch<
             React.SetStateAction<{ [key: number]: boolean }>
         >;
         // Function used to revert the data of a row to the original data.
