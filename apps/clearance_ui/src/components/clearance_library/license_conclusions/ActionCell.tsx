@@ -48,6 +48,14 @@ const ActionCell = ({
             },
             {
                 onSuccess: () => {
+                    meta?.setSelectedRowsForEditing(() => {
+                        const old = meta.selectedRowsForEditing;
+                        return {
+                            ...old,
+                            [parseInt(row.id)]: !old[parseInt(row.id)],
+                        };
+                    });
+                    meta?.updateOriginalData(row.index);
                     queryClient.invalidateQueries(lcKey);
                     toast({
                         title: "License conclusion updated",
@@ -66,52 +74,49 @@ const ActionCell = ({
 
     const meta = table.options.meta;
 
-    const setEditedRows = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const elName = e.currentTarget.name;
-        if (e.currentTarget.name !== "save") {
-            meta?.setSelectedRowsForEditing(() => {
-                const old = meta.selectedRowsForEditing;
-                return {
-                    ...old,
-                    [parseInt(row.id)]: !old[parseInt(row.id)],
-                };
+    const handleCancel = () => {
+        meta?.revertData(row.index);
+        meta?.setSelectedRowsForEditing(() => {
+            const old = meta.selectedRowsForEditing;
+            return {
+                ...old,
+                [parseInt(row.id)]: false,
+            };
+        });
+    };
+
+    const handleSave = () => {
+        const isValidObj = isValidConcludedExpression(
+            row.getValue("concludedLicenseExpressionSPDX"),
+        );
+        if (isValidObj.isValid) {
+            UpdateLicenseConclusion({
+                concludedLicenseExpressionSPDX: row.getValue(
+                    "concludedLicenseExpressionSPDX",
+                ),
+                comment: row.getValue("comment"),
+            });
+        } else {
+            let description = "Invalid concluded license expression";
+            if (isValidObj.errWord !== null) {
+                description += ": syntax error in '" + isValidObj.errWord + "'";
+            }
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: description,
             });
         }
+    };
 
-        if (elName !== "edit") {
-            meta?.revertData(row.index, e.currentTarget.name === "cancel");
-            if (e.currentTarget.name === "save") {
-                const isValidObj = isValidConcludedExpression(
-                    row.getValue("concludedLicenseExpressionSPDX"),
-                );
-                if (isValidObj.isValid) {
-                    meta?.setSelectedRowsForEditing(() => {
-                        const old = meta.selectedRowsForEditing;
-                        return {
-                            ...old,
-                            [parseInt(row.id)]: !old[parseInt(row.id)],
-                        };
-                    });
-                    UpdateLicenseConclusion({
-                        concludedLicenseExpressionSPDX: row.getValue(
-                            "concludedLicenseExpressionSPDX",
-                        ),
-                        comment: row.getValue("comment"),
-                    });
-                } else {
-                    let description = "Invalid concluded license expression";
-                    if (isValidObj.errWord !== null) {
-                        description +=
-                            ": syntax error in '" + isValidObj.errWord + "'";
-                    }
-                    toast({
-                        variant: "destructive",
-                        title: "Error",
-                        description: description,
-                    });
-                }
-            }
-        }
+    const handleEdit = () => {
+        meta?.setSelectedRowsForEditing(() => {
+            const old = meta.selectedRowsForEditing;
+            return {
+                ...old,
+                [parseInt(row.id)]: true,
+            };
+        });
     };
 
     return meta?.selectedRowsForEditing[parseInt(row.id)] ? (
@@ -120,7 +125,7 @@ const ActionCell = ({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
-                            onClick={setEditedRows}
+                            onClick={handleSave}
                             name="save"
                             variant="outline"
                             className="mr-1 px-2"
@@ -136,7 +141,7 @@ const ActionCell = ({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
-                            onClick={setEditedRows}
+                            onClick={handleCancel}
                             name="cancel"
                             variant="outline"
                             className="mr-1 px-2"
@@ -159,7 +164,7 @@ const ActionCell = ({
                             <Loader2 size={20} className="mx-2 animate-spin" />
                         ) : (
                             <EditButton
-                                onClick={setEditedRows}
+                                onClick={handleEdit}
                                 name="edit"
                                 className="mr-1 px-2"
                             />

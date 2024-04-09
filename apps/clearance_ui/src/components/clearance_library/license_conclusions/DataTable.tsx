@@ -34,6 +34,7 @@ export function DataTable<TData, TValue>({
     pageCount,
 }: DataTableProps<TData, TValue>) {
     const [data, setData] = useState(initialData);
+    const [originalData, setOriginalData] = useState(initialData);
     const [selectedRowsForEditing, setSelectedRowsForEditing] = useState({});
 
     const [contextPurl, setContextPurl] = useQueryState(
@@ -55,6 +56,7 @@ export function DataTable<TData, TValue>({
 
     useEffect(() => {
         setData(initialData);
+        setOriginalData(initialData);
     }, [initialData]);
 
     const table = useReactTable({
@@ -66,20 +68,12 @@ export function DataTable<TData, TValue>({
         meta: {
             selectedRowsForEditing,
             setSelectedRowsForEditing,
-            revertData: (rowId: number, revert: boolean) => {
-                if (revert) {
-                    setData((old) =>
-                        old.map((row, index) =>
-                            index === rowId ? initialData[rowId] : row,
-                        ),
-                    );
-                } else {
-                    setData((old) =>
-                        old.map((row, index) =>
-                            index === rowId ? data[rowId] : row,
-                        ),
-                    );
-                }
+            revertData: (rowId: number) => {
+                setData((old) =>
+                    old.map((row, index) =>
+                        index === rowId ? originalData[rowId] : row,
+                    ),
+                );
             },
             updateData: (rowId: number, columnId: string, value: string) => {
                 setData((old) =>
@@ -92,6 +86,13 @@ export function DataTable<TData, TValue>({
                         }
                         return row;
                     }),
+                );
+            },
+            updateOriginalData: (rowId: number) => {
+                setOriginalData((old) =>
+                    old.map((row, index) =>
+                        index === rowId ? data[rowId] : row,
+                    ),
                 );
             },
         },

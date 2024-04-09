@@ -17,9 +17,11 @@ declare module "@tanstack/table-core" {
             React.SetStateAction<{ [key: number]: boolean }>
         >;
         // Function used to revert the data of a row to the original data.
-        revertData: (rowId: number, revert: boolean) => void;
+        revertData: (rowId: number) => void;
         // Function used to update the data of a row.
         updateData: (rowId: number, columnId: string, value: string) => void;
+        // Function used to update persisted changes to the original data
+        updateOriginalData: (rowId: number) => void;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
