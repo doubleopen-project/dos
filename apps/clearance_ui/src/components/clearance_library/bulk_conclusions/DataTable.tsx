@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ColumnDef,
     flexRender,
@@ -52,6 +52,11 @@ export function DataTable<TData, TValue>({
         () => debounce(setSearchPurl, 300),
         [setSearchPurl],
     );
+
+    useEffect(() => {
+        setData(initialData);
+        setOriginalData(initialData);
+    }, [initialData]);
 
     const table = useReactTable({
         data,
