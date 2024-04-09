@@ -96,6 +96,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
         // TODO: return only license conclusions that belong to the user
         // or to a group that the user belongs to
 
+        // If a username filter is provided, get the user id(s) that match the username(s) from Keycloak
         const userIds = req.query.username
             ? await getUserIdArray(req.query.username, req.query.usernameStrict)
             : undefined;
@@ -115,17 +116,22 @@ userRouter.get("/license-conclusions", async (req, res) => {
         const pageSize = req.query.pageSize;
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
-        const users = await getUsers();
 
         const licenseConclusionsWithRelations =
             await dbQueries.findLicenseConclusions(
-                skip,
-                pageSize,
+                // If sortBy is "username", the pagination will have to be handled in-memory
+                req.query.sortBy !== "username" ? skip : undefined,
+                req.query.sortBy !== "username" ? pageSize : undefined,
                 // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                req.query.sortBy || "updatedAt",
-                !req.query.sortBy && !req.query.sortOrder
-                    ? "desc"
-                    : req.query.sortOrder,
+                // If sortBy is "username", the sorting will have to be handled in-memory
+                req.query.sortBy !== "username"
+                    ? req.query.sortBy || "updatedAt"
+                    : undefined,
+                req.query.sortBy !== "username"
+                    ? !req.query.sortBy && !req.query.sortOrder
+                        ? "desc"
+                        : req.query.sortOrder
+                    : undefined,
                 req.query.purl,
                 req.query.contextPurl,
                 req.query.contextPurlStrict || false,
@@ -142,9 +148,51 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 req.query.updatedAtLte,
             );
 
+        // Get users from Keycloak server to be able to match user ids to usernames
+        const users = await getUsers();
+
+        // Add username to each license conclusion
+        const lcsWithUsernames = licenseConclusionsWithRelations.map((lc) => {
+            const username = users.find((u) => u.id === lc.kcUserId)?.username;
+            if (!username) {
+                throw new CustomError(
+                    "Internal server error: creator username not found",
+                    500,
+                );
+            }
+            return {
+                ...lc,
+                user: {
+                    username: username,
+                },
+            };
+        });
+
+        let lcsToProcess = [...lcsWithUsernames];
+
+        // Handle sorting and pagination in-memory if sortBy is "username"
+        if (req.query.sortBy === "username") {
+            // Sort by username
+            lcsToProcess.sort((a, b) => {
+                if (a.user.username < b.user.username) return -1;
+                if (a.user.username > b.user.username) return 1;
+                return 0;
+            });
+
+            // Reverse the array if sortOrder is "desc"
+            if (req.query.sortOrder === "desc") {
+                lcsToProcess.reverse();
+            }
+
+            // If pageSize is provided, slice the array
+            if (pageSize) {
+                lcsToProcess = lcsToProcess.slice(skip, skip + pageSize);
+            }
+        }
+
         const licenseConclusions = [];
 
-        for (const lc of licenseConclusionsWithRelations) {
+        for (const lc of lcsToProcess) {
             const inContextPurl = [];
             const additionalMatches = [];
             const inQueryPurl = [];
@@ -169,15 +217,6 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 }
             }
 
-            const username = users.find((u) => u.id === lc.kcUserId)?.username;
-
-            if (!username) {
-                throw new CustomError(
-                    "Internal server error: creator username not found",
-                    500,
-                );
-            }
-
             licenseConclusions.push({
                 id: lc.id,
                 updatedAt: lc.updatedAt,
@@ -186,9 +225,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
                 detectedLicenseExpressionSPDX: lc.detectedLicenseExpressionSPDX,
                 comment: lc.comment,
                 local: lc.local,
-                user: {
-                    username: username,
-                },
+                user: lc.user,
                 bulkConclusionId: lc.bulkConclusionId,
                 sha256: lc.file.sha256,
                 contextPurl: lc.contextPurl,
@@ -517,13 +554,19 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
         const bulkConclusions =
             await dbQueries.findBulkConclusionsWithRelations(
-                skip,
-                pageSize,
+                // If sortBy is "username", the pagination will have to be handled in-memory
+                req.query.sortBy !== "username" ? skip : undefined,
+                req.query.sortBy !== "username" ? pageSize : undefined,
                 // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                req.query.sortBy || "updatedAt",
-                !req.query.sortBy && !req.query.sortOrder
-                    ? "desc"
-                    : req.query.sortOrder,
+                // If sortBy is "username", the sorting will have to be handled in-memory
+                req.query.sortBy !== "username"
+                    ? req.query.sortBy || "updatedAt"
+                    : undefined,
+                req.query.sortBy !== "username"
+                    ? !req.query.sortBy && !req.query.sortOrder
+                        ? "desc"
+                        : req.query.sortOrder
+                    : undefined,
                 req.query.purl,
                 req.query.purlStrict || false,
                 userIds,
@@ -538,9 +581,11 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                 req.query.updatedAtLte,
             );
 
+        // Get users from Keycloak server to be able to match user ids to usernames
         const users = await getUsers();
 
-        const bcs = bulkConclusions.map((bc) => {
+        // Add username to each bulk conclusion
+        const bcsWithUsernames = bulkConclusions.map((bc) => {
             const username = users.find((u) => u.id === bc.kcUserId)?.username;
             if (!username) {
                 throw new CustomError(
@@ -555,6 +600,28 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
                 },
             };
         });
+
+        let bcs = [...bcsWithUsernames];
+
+        // Handle sorting and pagination in-memory if sortBy is "username"
+        if (req.query.sortBy === "username") {
+            // Sort by username
+            bcs.sort((a, b) => {
+                if (a.user.username < b.user.username) return -1;
+                if (a.user.username > b.user.username) return 1;
+                return 0;
+            });
+
+            // Reverse the array if sortOrder is "desc"
+            if (req.query.sortOrder === "desc") {
+                bcs.reverse();
+            }
+
+            // If pageSize is provided, slice the array
+            if (pageSize) {
+                bcs = bcs.slice(skip, skip + pageSize);
+            }
+        }
 
         res.status(200).json({
             bulkConclusions: bcs,
@@ -1180,13 +1247,19 @@ userRouter.get("/path-exclusions", async (req, res) => {
         const pageIndex = req.query.pageIndex;
         const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
         const pathExclusions = await dbQueries.findPathExclusions(
-            skip,
-            pageSize,
+            // If sortBy is "username", the pagination will have to be handled in-memory
+            req.query.sortBy !== "username" ? skip : undefined,
+            req.query.sortBy !== "username" ? pageSize : undefined,
             // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-            req.query.sortBy || "updatedAt",
-            !req.query.sortBy && !req.query.sortOrder
-                ? "desc"
-                : req.query.sortOrder,
+            // If sortBy is "username", the sorting will have to be handled in-memory
+            req.query.sortBy !== "username"
+                ? req.query.sortBy || "updatedAt"
+                : undefined,
+            req.query.sortBy !== "username"
+                ? !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder
+                : undefined,
             req.query.purl,
             req.query.purlStrict || false,
             userIds,
@@ -1199,9 +1272,10 @@ userRouter.get("/path-exclusions", async (req, res) => {
             req.query.updatedAtLte,
         );
 
+        // Get users from Keycloak server to be able to match user ids to usernames
         const users = await getUsers();
 
-        const pes = pathExclusions.map((pe) => {
+        const pesWithUsernames = pathExclusions.map((pe) => {
             const username = users.find((u) => u.id === pe.kcUserId)?.username;
             if (!username) {
                 throw new CustomError(
@@ -1216,6 +1290,28 @@ userRouter.get("/path-exclusions", async (req, res) => {
                 },
             };
         });
+
+        let pes = [...pesWithUsernames];
+
+        // Handle sorting and pagination in-memory if sortBy is "username"
+        if (req.query.sortBy === "username") {
+            // Sort by username
+            pes.sort((a, b) => {
+                if (a.user.username < b.user.username) return -1;
+                if (a.user.username > b.user.username) return 1;
+                return 0;
+            });
+
+            // Reverse the array if sortOrder is "desc"
+            if (req.query.sortOrder === "desc") {
+                pes.reverse();
+            }
+
+            // If pageSize is provided, slice the array
+            if (pageSize) {
+                pes = pes.slice(skip, skip + pageSize);
+            }
+        }
 
         return res.status(200).json({
             pathExclusions: pes,
