@@ -7,7 +7,6 @@ import { openApiBuilder } from "@zodios/openapi";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { User as DBUser } from "database";
 import express from "express";
 import session from "express-session";
 import cron from "node-cron";
@@ -90,14 +89,6 @@ const corsOptions = {
 app.use(cookieParser(process.env.COOKIE_SECRET || "secret"));
 
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
-
-// Use User from database package in serialization and deserialization
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        interface User extends DBUser {}
-    }
-}
 
 const keycloak = getKeycloak();
 

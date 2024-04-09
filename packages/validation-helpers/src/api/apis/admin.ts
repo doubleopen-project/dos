@@ -25,21 +25,6 @@ export const adminAPI = makeApi([
     },
     {
         method: "post",
-        path: "/user",
-        description: "Add user",
-        alias: "AddUser",
-        parameters: [
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostUserReq,
-            },
-        ],
-        response: schemas.PostUserRes,
-        errors,
-    },
-    {
-        method: "post",
         path: "/users",
         description: "Create user",
         alias: "CreateUser",
@@ -55,20 +40,6 @@ export const adminAPI = makeApi([
     },
     {
         method: "delete",
-        path: "/user/:id",
-        description: "Delete user",
-        parameters: [
-            {
-                name: "id",
-                type: "Path",
-                schema: schemas.DeleteUserReqParamId,
-            },
-        ],
-        response: schemas.DeleteUserRes,
-        errors,
-    },
-    {
-        method: "delete",
         path: "/users/:id",
         description: "Delete user",
         alias: "DeleteUser",
@@ -80,26 +51,6 @@ export const adminAPI = makeApi([
             },
         ],
         response: schemas.DeleteUserRes,
-        errors,
-    },
-    {
-        method: "put",
-        path: "/user/:id",
-        description: "Update user",
-        alias: "updateUser",
-        parameters: [
-            {
-                name: "id",
-                type: "Path",
-                schema: commonSchemas.PathParamIdInteger,
-            },
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.UpdateUserReq,
-            },
-        ],
-        response: schemas.UpdateUserRes,
         errors,
     },
     {
