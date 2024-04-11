@@ -4,10 +4,12 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { CellContext } from "@tanstack/react-table";
-import { ZodiosResponseByAlias } from "@zodios/core";
+import { ZodiosError, ZodiosResponseByAlias } from "@zodios/core";
+import { isAxiosError } from "axios";
 import { Check, Loader2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
+import { ZodError } from "zod";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -63,10 +65,31 @@ const ActionCell = ({
                     });
                 },
                 onError: (error) => {
+                    let msg = "";
+
+                    if (error instanceof ZodiosError) {
+                        if (error.cause instanceof ZodError) {
+                            for (const err of error.cause.errors) {
+                                msg +=
+                                    "Error in field '" +
+                                    err.path +
+                                    "': " +
+                                    err.message +
+                                    "\n";
+                            }
+                        } else {
+                            msg = error.cause?.message || error.message;
+                        }
+                    } else if (isAxiosError(error)) {
+                        msg = error.response?.data.message;
+                    } else {
+                        msg = error.message;
+                    }
+
                     toast({
                         variant: "destructive",
                         title: "Error",
-                        description: error.message,
+                        description: msg,
                     });
                 },
             },
