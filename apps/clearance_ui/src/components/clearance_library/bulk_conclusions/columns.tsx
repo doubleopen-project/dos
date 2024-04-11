@@ -433,22 +433,7 @@ export const columns = (
                             </Label>
                         );
                     },
-                    cell: ({ row, table }) => {
-                        const selectedRowsForEditing =
-                            table.options.meta?.selectedRowsForEditing;
-
-                        if (
-                            selectedRowsForEditing &&
-                            Object.keys(selectedRowsForEditing).length > 0
-                        ) {
-                            for (const key in selectedRowsForEditing) {
-                                if (selectedRowsForEditing[key] !== false) {
-                                    // If any row is in edit mode, don't show the tooltip
-                                    // as for some reason, it causes a lag in the input fields
-                                    return null;
-                                }
-                            }
-                        }
+                    cell: ({ row }) => {
                         return (
                             <BCAffectedFilesTooltip
                                 bulkConclusionId={row.original.id}
@@ -467,22 +452,7 @@ export const columns = (
                             </Label>
                         );
                     },
-                    cell: ({ row, table }) => {
-                        const selectedRowsForEditing =
-                            table.options.meta?.selectedRowsForEditing;
-
-                        if (
-                            selectedRowsForEditing &&
-                            Object.keys(selectedRowsForEditing).length > 0
-                        ) {
-                            for (const key in selectedRowsForEditing) {
-                                if (selectedRowsForEditing[key] !== false) {
-                                    // If any row is in edit mode, don't show the tooltip
-                                    // as for some reason, it causes a lag in the input fields
-                                    return null;
-                                }
-                            }
-                        }
+                    cell: ({ row }) => {
                         return (
                             <BCAffectedFilesTooltip
                                 bulkConclusionId={row.original.id}
