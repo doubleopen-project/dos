@@ -8647,19 +8647,21 @@ declare const userAPI: [
                         reason: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
-                        comment: zod.ZodOptional<zod.ZodString>;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         pattern?: string | undefined;
                         reason?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         reason?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                     }
                 >;
             },
@@ -16172,19 +16174,21 @@ declare const dosAPI: [
                         reason: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
-                        comment: zod.ZodOptional<zod.ZodString>;
+                        comment: zod.ZodOptional<
+                            zod.ZodNullable<zod.ZodString>
+                        >;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
                         pattern?: string | undefined;
                         reason?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                     },
                     {
                         pattern?: string | undefined;
                         reason?: string | undefined;
-                        comment?: string | undefined;
+                        comment?: string | null | undefined;
                     }
                 >;
             },

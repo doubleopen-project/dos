@@ -420,7 +420,7 @@ export const PutPathExclusionReq = z
                             .join(", "),
                 },
             ),
-        comment: z.string(),
+        comment: z.nullable(z.string()),
     })
     .partial();
 
