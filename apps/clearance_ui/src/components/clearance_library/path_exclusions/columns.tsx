@@ -24,6 +24,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/clearance_library/path_exclusions/ActionCell";
+import TableCell from "@/components/clearance_library/path_exclusions/TableCell";
+import TableCellSelect from "@/components/clearance_library/path_exclusions/TableCellSelect";
 import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -286,6 +288,11 @@ export const columns = (
                     </Button>
                 );
             },
+            cell: TableCell,
+            meta: {
+                type: "textarea",
+                breakAll: true,
+            },
         },
         {
             accessorKey: "reason",
@@ -329,6 +336,7 @@ export const columns = (
                     </Button>
                 );
             },
+            cell: TableCellSelect,
         },
         {
             accessorKey: "affectedPaths",
@@ -384,6 +392,10 @@ export const columns = (
                         )}
                     </Button>
                 );
+            },
+            cell: TableCell,
+            meta: {
+                type: "textarea",
             },
         },
         {
