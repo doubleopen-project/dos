@@ -374,7 +374,8 @@ export const saveJobResults = async (
                                 });
                             for (const license of file.license_detections) {
                                 for (const match of license.matches) {
-                                    // Attempt to replace scancode specific keys with SPDX compliant ID's
+                                    // If there is no SPDX expression for the match's license expression,
+                                    // attempt to replace scancode specific keys with SPDX compliant ID's
                                     // If there is a problem, log a SystemIssue. This is a safety measure,
                                     // in case the string replacement logic below fails for some reason.
                                     let logSystemIssue = false;
@@ -384,82 +385,64 @@ export const saveJobResults = async (
                                         issue: string;
                                     }[] = [];
 
-                                    const scancodeExpression =
-                                        match.license_expression;
-                                    const scancodeExprParts =
-                                        scancodeExpression.split(" ");
+                                    let spdxLicenseExpression =
+                                        match.spdx_license_expression;
 
-                                    const mappedScancodeExprParts =
-                                        scancodeExprParts.map((part) => {
-                                            if (part === "AND") {
-                                                return part;
-                                            } else if (part === "OR") {
-                                                return part;
-                                            } else if (part === "WITH") {
-                                                return part;
-                                            } else if (
-                                                part.startsWith("(") ||
-                                                part.endsWith(")")
-                                            ) {
-                                                const partToReplace = part
-                                                    .replace("(", "")
-                                                    .replace(")", "");
-                                                const foundItem =
-                                                    scKeyToSpdxIdMap.get(
-                                                        partToReplace,
-                                                    );
+                                    // If there is no SPDX expression, attempt to build one
+                                    if (!spdxLicenseExpression) {
+                                        const scancodeExpression =
+                                            match.license_expression;
+                                        const scancodeExprParts =
+                                            scancodeExpression.split(" ");
 
-                                                if (!foundItem) {
-                                                    // Keep track of these issues, to make sure that there isn't a
-                                                    // problem with the string replacement logic
-                                                    logSystemIssue = true;
-                                                    issueDetails.push({
-                                                        scancodeExpression:
-                                                            match.license_expression,
-                                                        part: part,
-                                                        issue:
-                                                            "No match found for: " +
+                                        const mappedScancodeExprParts =
+                                            scancodeExprParts.map((part) => {
+                                                if (
+                                                    part === "AND" ||
+                                                    part === "OR" ||
+                                                    part === "WITH"
+                                                )
+                                                    return part;
+                                                else {
+                                                    // Remove leading and trailing parentheses if there are any
+                                                    const partToReplace = part
+                                                        .replaceAll("(", "")
+                                                        .replaceAll(")", "");
+                                                    const foundItem =
+                                                        scKeyToSpdxIdMap.get(
                                                             partToReplace,
-                                                    });
-                                                    // Fall back to building an ID based on the ScanCode-specific key
+                                                        );
+
+                                                    if (!foundItem) {
+                                                        // Keep track of these issues, to make sure that there isn't a
+                                                        // problem with the string replacement logic
+                                                        logSystemIssue = true;
+                                                        issueDetails.push({
+                                                            scancodeExpression:
+                                                                match.license_expression,
+                                                            part: part,
+                                                            issue:
+                                                                "No match found for: " +
+                                                                partToReplace,
+                                                        });
+                                                        // Fall back to building an ID based on the ScanCode-specific key
+                                                        return part.replace(
+                                                            partToReplace,
+                                                            "LicenseRef-scancode-" +
+                                                                partToReplace,
+                                                        );
+                                                    }
+
                                                     return part.replace(
                                                         partToReplace,
-                                                        "LicenseRef-scancode-" +
-                                                            partToReplace,
+                                                        foundItem,
                                                     );
                                                 }
+                                            });
 
-                                                return part.replace(
-                                                    partToReplace,
-                                                    foundItem,
-                                                );
-                                            } else {
-                                                const foundItem =
-                                                    scKeyToSpdxIdMap.get(part);
-                                                if (!foundItem) {
-                                                    // Keep track of these issues, to make sure that there isn't a
-                                                    // problem with the string replacement logic
-                                                    logSystemIssue = true;
-                                                    issueDetails.push({
-                                                        scancodeExpression:
-                                                            match.license_expression,
-                                                        part: part,
-                                                        issue:
-                                                            "No match found for: " +
-                                                            part,
-                                                    });
-                                                    // Fall back to building an ID based on the ScanCode-specific key
-                                                    return (
-                                                        "LicenseRef-scancode-" +
-                                                        part
-                                                    );
-                                                }
-                                                return foundItem;
-                                            }
-                                        });
-
-                                    const spdxLicenseExpression =
-                                        mappedScancodeExprParts.join(" ");
+                                        spdxLicenseExpression =
+                                            mappedScancodeExprParts.join(" ");
+                                    }
 
                                     const newMatch =
                                         await dbQueries.createLicenseFindingMatch(

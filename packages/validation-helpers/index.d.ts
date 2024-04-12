@@ -229,6 +229,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                                             start_line: z.ZodNumber;
                                             end_line: z.ZodNumber;
                                             license_expression: z.ZodString;
+                                            spdx_license_expression: z.ZodNullable<z.ZodString>;
                                         },
                                         "strip",
                                         z.ZodTypeAny,
@@ -237,12 +238,18 @@ declare const ScannerJobResultSchema: z.ZodObject<
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         },
                                         {
                                             license_expression: string;
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         }
                                     >,
                                     "many"
@@ -257,6 +264,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                                     score: number;
                                     start_line: number;
                                     end_line: number;
+                                    spdx_license_expression: string | null;
                                 }[];
                             },
                             {
@@ -266,6 +274,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                                     score: number;
                                     start_line: number;
                                     end_line: number;
+                                    spdx_license_expression: string | null;
                                 }[];
                             }
                         >,
@@ -310,6 +319,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             score: number;
                             start_line: number;
                             end_line: number;
+                            spdx_license_expression: string | null;
                         }[];
                     }[];
                     copyrights: {
@@ -332,6 +342,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                             score: number;
                             start_line: number;
                             end_line: number;
+                            spdx_license_expression: string | null;
                         }[];
                     }[];
                     copyrights: {
@@ -361,6 +372,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                     score: number;
                     start_line: number;
                     end_line: number;
+                    spdx_license_expression: string | null;
                 }[];
             }[];
             copyrights: {
@@ -424,6 +436,7 @@ declare const ScannerJobResultSchema: z.ZodObject<
                     score: number;
                     start_line: number;
                     end_line: number;
+                    spdx_license_expression: string | null;
                 }[];
             }[];
             copyrights: {
@@ -1158,6 +1171,7 @@ declare const scannerAgentApi: [
                                                                 start_line: zod.ZodNumber;
                                                                 end_line: zod.ZodNumber;
                                                                 license_expression: zod.ZodString;
+                                                                spdx_license_expression: zod.ZodNullable<zod.ZodString>;
                                                             },
                                                             "strip",
                                                             zod.ZodTypeAny,
@@ -1166,12 +1180,18 @@ declare const scannerAgentApi: [
                                                                 score: number;
                                                                 start_line: number;
                                                                 end_line: number;
+                                                                spdx_license_expression:
+                                                                    | string
+                                                                    | null;
                                                             },
                                                             {
                                                                 license_expression: string;
                                                                 score: number;
                                                                 start_line: number;
                                                                 end_line: number;
+                                                                spdx_license_expression:
+                                                                    | string
+                                                                    | null;
                                                             }
                                                         >,
                                                         "many"
@@ -1186,6 +1206,9 @@ declare const scannerAgentApi: [
                                                         score: number;
                                                         start_line: number;
                                                         end_line: number;
+                                                        spdx_license_expression:
+                                                            | string
+                                                            | null;
                                                     }[];
                                                 },
                                                 {
@@ -1195,6 +1218,9 @@ declare const scannerAgentApi: [
                                                         score: number;
                                                         start_line: number;
                                                         end_line: number;
+                                                        spdx_license_expression:
+                                                            | string
+                                                            | null;
                                                     }[];
                                                 }
                                             >,
@@ -1246,6 +1272,9 @@ declare const scannerAgentApi: [
                                                 score: number;
                                                 start_line: number;
                                                 end_line: number;
+                                                spdx_license_expression:
+                                                    | string
+                                                    | null;
                                             }[];
                                         }[];
                                         copyrights: {
@@ -1272,6 +1301,9 @@ declare const scannerAgentApi: [
                                                 score: number;
                                                 start_line: number;
                                                 end_line: number;
+                                                spdx_license_expression:
+                                                    | string
+                                                    | null;
                                             }[];
                                         }[];
                                         copyrights: {
@@ -1301,6 +1333,7 @@ declare const scannerAgentApi: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
@@ -1366,6 +1399,7 @@ declare const scannerAgentApi: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
@@ -1446,6 +1480,7 @@ declare const scannerAgentApi: [
                                       score: number;
                                       start_line: number;
                                       end_line: number;
+                                      spdx_license_expression: string | null;
                                   }[];
                               }[];
                               copyrights: {
@@ -1521,6 +1556,7 @@ declare const scannerAgentApi: [
                                       score: number;
                                       start_line: number;
                                       end_line: number;
+                                      spdx_license_expression: string | null;
                                   }[];
                               }[];
                               copyrights: {
@@ -4132,6 +4168,7 @@ declare const scannerAPI: [
                                                                     start_line: zod.ZodNumber;
                                                                     end_line: zod.ZodNumber;
                                                                     license_expression: zod.ZodString;
+                                                                    spdx_license_expression: zod.ZodNullable<zod.ZodString>;
                                                                 },
                                                                 "strip",
                                                                 zod.ZodTypeAny,
@@ -4140,12 +4177,18 @@ declare const scannerAPI: [
                                                                     score: number;
                                                                     start_line: number;
                                                                     end_line: number;
+                                                                    spdx_license_expression:
+                                                                        | string
+                                                                        | null;
                                                                 },
                                                                 {
                                                                     license_expression: string;
                                                                     score: number;
                                                                     start_line: number;
                                                                     end_line: number;
+                                                                    spdx_license_expression:
+                                                                        | string
+                                                                        | null;
                                                                 }
                                                             >,
                                                             "many"
@@ -4160,6 +4203,9 @@ declare const scannerAPI: [
                                                             score: number;
                                                             start_line: number;
                                                             end_line: number;
+                                                            spdx_license_expression:
+                                                                | string
+                                                                | null;
                                                         }[];
                                                     },
                                                     {
@@ -4169,6 +4215,9 @@ declare const scannerAPI: [
                                                             score: number;
                                                             start_line: number;
                                                             end_line: number;
+                                                            spdx_license_expression:
+                                                                | string
+                                                                | null;
                                                         }[];
                                                     }
                                                 >,
@@ -4220,6 +4269,9 @@ declare const scannerAPI: [
                                                     score: number;
                                                     start_line: number;
                                                     end_line: number;
+                                                    spdx_license_expression:
+                                                        | string
+                                                        | null;
                                                 }[];
                                             }[];
                                             copyrights: {
@@ -4246,6 +4298,9 @@ declare const scannerAPI: [
                                                     score: number;
                                                     start_line: number;
                                                     end_line: number;
+                                                    spdx_license_expression:
+                                                        | string
+                                                        | null;
                                                 }[];
                                             }[];
                                             copyrights: {
@@ -4277,6 +4332,9 @@ declare const scannerAPI: [
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         }[];
                                     }[];
                                     copyrights: {
@@ -4344,6 +4402,9 @@ declare const scannerAPI: [
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         }[];
                                     }[];
                                     copyrights: {
@@ -4415,6 +4476,7 @@ declare const scannerAPI: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
@@ -4483,6 +4545,7 @@ declare const scannerAPI: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
@@ -11662,6 +11725,7 @@ declare const dosAPI: [
                                                                     start_line: zod.ZodNumber;
                                                                     end_line: zod.ZodNumber;
                                                                     license_expression: zod.ZodString;
+                                                                    spdx_license_expression: zod.ZodNullable<zod.ZodString>;
                                                                 },
                                                                 "strip",
                                                                 zod.ZodTypeAny,
@@ -11670,12 +11734,18 @@ declare const dosAPI: [
                                                                     score: number;
                                                                     start_line: number;
                                                                     end_line: number;
+                                                                    spdx_license_expression:
+                                                                        | string
+                                                                        | null;
                                                                 },
                                                                 {
                                                                     license_expression: string;
                                                                     score: number;
                                                                     start_line: number;
                                                                     end_line: number;
+                                                                    spdx_license_expression:
+                                                                        | string
+                                                                        | null;
                                                                 }
                                                             >,
                                                             "many"
@@ -11690,6 +11760,9 @@ declare const dosAPI: [
                                                             score: number;
                                                             start_line: number;
                                                             end_line: number;
+                                                            spdx_license_expression:
+                                                                | string
+                                                                | null;
                                                         }[];
                                                     },
                                                     {
@@ -11699,6 +11772,9 @@ declare const dosAPI: [
                                                             score: number;
                                                             start_line: number;
                                                             end_line: number;
+                                                            spdx_license_expression:
+                                                                | string
+                                                                | null;
                                                         }[];
                                                     }
                                                 >,
@@ -11750,6 +11826,9 @@ declare const dosAPI: [
                                                     score: number;
                                                     start_line: number;
                                                     end_line: number;
+                                                    spdx_license_expression:
+                                                        | string
+                                                        | null;
                                                 }[];
                                             }[];
                                             copyrights: {
@@ -11776,6 +11855,9 @@ declare const dosAPI: [
                                                     score: number;
                                                     start_line: number;
                                                     end_line: number;
+                                                    spdx_license_expression:
+                                                        | string
+                                                        | null;
                                                 }[];
                                             }[];
                                             copyrights: {
@@ -11807,6 +11889,9 @@ declare const dosAPI: [
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         }[];
                                     }[];
                                     copyrights: {
@@ -11874,6 +11959,9 @@ declare const dosAPI: [
                                             score: number;
                                             start_line: number;
                                             end_line: number;
+                                            spdx_license_expression:
+                                                | string
+                                                | null;
                                         }[];
                                     }[];
                                     copyrights: {
@@ -11945,6 +12033,7 @@ declare const dosAPI: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
@@ -12013,6 +12102,7 @@ declare const dosAPI: [
                                         score: number;
                                         start_line: number;
                                         end_line: number;
+                                        spdx_license_expression: string | null;
                                     }[];
                                 }[];
                                 copyrights: {
