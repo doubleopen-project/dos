@@ -117,6 +117,7 @@ export const ScannerJobResultSchema = z.object({
                             start_line: z.number(),
                             end_line: z.number(),
                             license_expression: z.string(),
+                            spdx_license_expression: z.nullable(z.string()),
                         }),
                     ),
                 }),
