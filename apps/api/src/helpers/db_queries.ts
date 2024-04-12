@@ -249,7 +249,7 @@ export const createLicenseConclusion = async (input: {
     local: boolean | undefined;
     contextPurl: string;
     fileSha256: string;
-    kcUserId: string;
+    userId: string;
 }): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
@@ -306,7 +306,7 @@ export const createBulkConclusion = async (input: {
     comment: string | null;
     local: boolean | undefined;
     packageId: number;
-    kcUserId: string;
+    userId: string;
 }): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
     let bulkConclusion: BulkConclusion | null = null;
@@ -422,7 +422,7 @@ export const createPathExclusion = async (input: {
     reason: string;
     comment: string | null;
     packageId: number;
-    kcUserId: string;
+    userId: string;
 }): Promise<PathExclusion> => {
     let retries = initialRetryCount;
     let pathExclusion: PathExclusion | null = null;
@@ -1810,7 +1810,7 @@ export const getPathExclusionsByPackagePurl = async (
         pattern: string;
         reason: string;
         comment: string | null;
-        kcUserId: string;
+        userId: string;
     }[]
 > => {
     let retries = initialRetryCount;
@@ -1831,7 +1831,7 @@ export const getPathExclusionsByPackagePurl = async (
                             pattern: true,
                             reason: true,
                             comment: true,
-                            kcUserId: true,
+                            userId: true,
                         },
                     },
                 },
@@ -2335,7 +2335,7 @@ export const findLicenseConclusionById = async (
 export const findLicenseConclusionUserId = async (
     id: number,
 ): Promise<string | null> => {
-    let licenseConclusion: { kcUserId: string } | null = null;
+    let licenseConclusion: { userId: string } | null = null;
     let retries = initialRetryCount;
     let querySuccess = false;
 
@@ -2346,7 +2346,7 @@ export const findLicenseConclusionUserId = async (
                     id: id,
                 },
                 select: {
-                    kcUserId: true,
+                    userId: true,
                 },
             });
             querySuccess = true;
@@ -2360,7 +2360,7 @@ export const findLicenseConclusionUserId = async (
             else throw error;
         }
     }
-    return licenseConclusion ? licenseConclusion.kcUserId : null;
+    return licenseConclusion ? licenseConclusion.userId : null;
 };
 
 type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
@@ -2372,7 +2372,7 @@ type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
         comment: true;
         local: true;
         contextPurl: true;
-        kcUserId: true;
+        userId: true;
         bulkConclusionId: true;
         file: {
             select: {
@@ -2444,7 +2444,7 @@ export const findLicenseConclusions = async (
                     comment: true,
                     local: true,
                     contextPurl: true,
-                    kcUserId: true,
+                    userId: true,
                     bulkConclusionId: true,
                     file: {
                         select: {
@@ -2525,7 +2525,7 @@ export const findLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     detectedLicenseExpressionSPDX: {
@@ -2596,7 +2596,7 @@ type BulkConclusionWithPackageRelation = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        kcUserId: true;
+        userId: true;
     };
 }>;
 
@@ -2625,7 +2625,7 @@ export const findBulkConclusionById = async (
                             purl: true,
                         },
                     },
-                    kcUserId: true,
+                    userId: true,
                 },
             });
             break;
@@ -2676,7 +2676,7 @@ type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
                 };
             };
         };
-        kcUserId: true;
+        userId: true;
     };
 }>;
 
@@ -2725,7 +2725,7 @@ export const findBulkConclusionWithRelationsById = async (
                             },
                         },
                     },
-                    kcUserId: true,
+                    userId: true,
                 },
             });
             break;
@@ -2785,7 +2785,7 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                             purl: true,
                         },
                     },
-                    kcUserId: true,
+                    userId: true,
                     licenseConclusions: {
                         select: {
                             id: true,
@@ -2833,7 +2833,7 @@ type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        kcUserId: true;
+        userId: true;
     };
 }>;
 
@@ -2884,7 +2884,7 @@ export const findBulkConclusionsWithRelations = async (
                             purl: true,
                         },
                     },
-                    kcUserId: true,
+                    userId: true,
                 },
                 skip: skip,
                 take: take,
@@ -2895,7 +2895,7 @@ export const findBulkConclusionsWithRelations = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     pattern: {
@@ -2948,7 +2948,7 @@ export const findBulkConclusionsWithRelations = async (
 export const findBulkConclusionUserId = async (
     id: number,
 ): Promise<string | null> => {
-    let bulkConclusion: { kcUserId: string } | null = null;
+    let bulkConclusion: { userId: string } | null = null;
     let retries = initialRetryCount;
 
     while (retries > 0) {
@@ -2958,7 +2958,7 @@ export const findBulkConclusionUserId = async (
                     id: id,
                 },
                 select: {
-                    kcUserId: true,
+                    userId: true,
                 },
             });
             break;
@@ -2972,7 +2972,7 @@ export const findBulkConclusionUserId = async (
             else throw error;
         }
     }
-    return bulkConclusion?.kcUserId || null;
+    return bulkConclusion?.userId || null;
 };
 
 export const findBulkConclusionsByPackageId = async (
@@ -3030,7 +3030,7 @@ export const findPathExclusionById = async (
 export const findPathExclusionUserId = async (
     id: number,
 ): Promise<string | null> => {
-    let pathExclusion: { kcUserId: string } | null = null;
+    let pathExclusion: { userId: string } | null = null;
     let retries = initialRetryCount;
 
     while (retries > 0) {
@@ -3040,7 +3040,7 @@ export const findPathExclusionUserId = async (
                     id: id,
                 },
                 select: {
-                    kcUserId: true,
+                    userId: true,
                 },
             });
             break;
@@ -3054,7 +3054,7 @@ export const findPathExclusionUserId = async (
             else throw error;
         }
     }
-    return pathExclusion ? pathExclusion.kcUserId : null;
+    return pathExclusion ? pathExclusion.userId : null;
 };
 
 type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
@@ -3064,7 +3064,7 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
         pattern: true;
         reason: true;
         comment: true;
-        kcUserId: true;
+        userId: true;
         package: {
             select: {
                 purl: true;
@@ -3108,7 +3108,7 @@ export const findPathExclusions = async (
                     pattern: true,
                     reason: true,
                     comment: true,
-                    kcUserId: true,
+                    userId: true,
                     package: {
                         select: {
                             purl: true,
@@ -3124,7 +3124,7 @@ export const findPathExclusions = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     pattern: {
@@ -3880,7 +3880,7 @@ export const countPathExclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     pattern: {
@@ -3941,7 +3941,7 @@ export const countBulkConclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     pattern: {
@@ -4113,7 +4113,7 @@ export const countLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    kcUserId: {
+                    userId: {
                         in: userIds,
                     },
                     detectedLicenseExpressionSPDX: {

@@ -125,13 +125,13 @@ model BulkConclusion {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
-  kcUserId String @db.Uuid
+  userId String @db.Uuid
 
   licenseConclusions LicenseConclusion[]
 
   @@index([packageId])
   @@index([updatedAt])
-  @@index([kcUserId])
+  @@index([userId])
 }
 
 /// A license conclusion.
@@ -148,7 +148,7 @@ model LicenseConclusion {
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
 
-  kcUserId String @db.Uuid
+  userId String @db.Uuid
 
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
@@ -156,7 +156,7 @@ model LicenseConclusion {
   @@index([fileSha256])
   @@index([bulkConclusionId])
   @@index([updatedAt])
-  @@index([kcUserId])
+  @@index([userId])
 }
 
 /// A copyright finding in a file.
@@ -219,11 +219,11 @@ model PathExclusion {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
-  kcUserId String @db.Uuid
+  userId String @db.Uuid
 
   @@index([packageId])
   @@index([updatedAt])
-  @@index([kcUserId])
+  @@index([userId])
 }
 
 /// A scanner job.
