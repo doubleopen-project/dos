@@ -153,7 +153,7 @@ userRouter.get("/license-conclusions", async (req, res) => {
 
         // Add username to each license conclusion
         const lcsWithUsernames = licenseConclusionsWithRelations.map((lc) => {
-            const username = users.find((u) => u.id === lc.kcUserId)?.username;
+            const username = users.find((u) => u.id === lc.userId)?.username;
             if (!username) {
                 throw new CustomError(
                     "Internal server error: creator username not found",
@@ -327,7 +327,7 @@ userRouter.get(
 
             const lcs = licenseConclusions.map((lc) => {
                 const username = users.find(
-                    (u) => u.id === lc.kcUserId,
+                    (u) => u.id === lc.userId,
                 )?.username;
                 if (!username) {
                     throw new CustomError(
@@ -400,7 +400,7 @@ userRouter.post(
                 local: req.body.local,
                 contextPurl: contextPurl,
                 fileSha256: req.params.sha256,
-                kcUserId: req.kauth.grant.access_token.content.sub,
+                userId: req.kauth.grant.access_token.content.sub,
             });
 
             res.status(200).json({
@@ -450,7 +450,7 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !==
-                licenseConclusion.kcUserId
+                licenseConclusion.userId
         )
             throw new CustomError("Forbidden", 403);
 
@@ -586,7 +586,7 @@ userRouter.get("/bulk-conclusions", async (req, res) => {
 
         // Add username to each bulk conclusion
         const bcsWithUsernames = bulkConclusions.map((bc) => {
-            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+            const username = users.find((u) => u.id === bc.userId)?.username;
             if (!username) {
                 throw new CustomError(
                     "Internal server error: creator username not found",
@@ -761,7 +761,7 @@ userRouter.get("/packages/:purl/bulk-conclusions", async (req, res) => {
         const users = await getUsers();
 
         const bcs = bulkConclusions.map((bc) => {
-            const username = users.find((u) => u.id === bc.kcUserId)?.username;
+            const username = users.find((u) => u.id === bc.userId)?.username;
 
             if (!username) {
                 throw new CustomError(
@@ -866,7 +866,7 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
             comment: req.body.comment || null,
             local: req.body.local,
             packageId: packageId,
-            kcUserId: req.kauth.grant.access_token.content.sub,
+            userId: req.kauth.grant.access_token.content.sub,
         });
 
         let mathchedPathsCount = 0;
@@ -890,7 +890,7 @@ userRouter.post("/packages/:purl/bulk-conclusions", async (req, res) => {
                         contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
                         bulkConclusionId: bulkConclusion.id,
-                        kcUserId: req.kauth.grant.access_token.content.sub,
+                        userId: req.kauth.grant.access_token.content.sub,
                     });
             }
         }
@@ -1036,7 +1036,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             !req.kauth.grant.access_token.content.realm_roles.includes(
                 "app-admin",
             ) &&
-            req.kauth.grant.access_token.content.sub !== origBulk.kcUserId
+            req.kauth.grant.access_token.content.sub !== origBulk.userId
         ) {
             throw new CustomError("Forbidden", 403);
         }
@@ -1117,7 +1117,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
                             contextPurl: origBulk.package.purl,
                             fileSha256: fileTree.fileSha256,
                             bulkConclusionId: bulkConclusionWithRelations.id,
-                            kcUserId: req.kauth.grant.access_token.content.sub,
+                            userId: req.kauth.grant.access_token.content.sub,
                         });
                     }
                 }
@@ -1276,7 +1276,7 @@ userRouter.get("/path-exclusions", async (req, res) => {
         const users = await getUsers();
 
         const pesWithUsernames = pathExclusions.map((pe) => {
-            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            const username = users.find((u) => u.id === pe.userId)?.username;
             if (!username) {
                 throw new CustomError(
                     "Internal server error: creator username not found",
@@ -1427,7 +1427,7 @@ userRouter.get("/packages/:purl/path-exclusions", async (req, res) => {
         const users = await getUsers();
 
         const pes = pathExclusions.map((pe) => {
-            const username = users.find((u) => u.id === pe.kcUserId)?.username;
+            const username = users.find((u) => u.id === pe.userId)?.username;
             if (!username) {
                 throw new CustomError(
                     "Internal server error: creator username not found",
@@ -1504,7 +1504,7 @@ userRouter.post("/packages/:purl/path-exclusions", async (req, res) => {
             reason: req.body.reason,
             comment: req.body.comment || null,
             packageId: packageId,
-            kcUserId: req.kauth.grant.access_token.content.sub,
+            userId: req.kauth.grant.access_token.content.sub,
         });
 
         res.status(200).json({
@@ -1538,7 +1538,7 @@ userRouter.put("/path-exclusions/:id", async (req, res) => {
             !req.kauth.grant.access_token.content.realm_roles.includes(
                 "app-admin",
             ) &&
-            req.kauth.grant.access_token.content.sub !== pathExclusion.kcUserId
+            req.kauth.grant.access_token.content.sub !== pathExclusion.userId
         ) {
             throw new CustomError("Forbidden", 403);
         }
