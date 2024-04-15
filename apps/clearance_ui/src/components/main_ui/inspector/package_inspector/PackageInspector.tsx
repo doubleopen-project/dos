@@ -64,8 +64,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
 
-    // Fetch the package file tree data. Also fetch path exclusion status
-    // with the same query, no need anymore to use a separate query for it.
+    // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
         {
             headers: {
@@ -73,9 +72,6 @@ const PackageInspector = ({ purl, path }: Props) => {
             },
             params: {
                 purl: pathPurl,
-            },
-            queries: {
-                includeIsExcluded: true,
             },
         },
         { enabled: !!pathPurl },

@@ -508,7 +508,6 @@ export const FileTree = z.object({
             }),
         ),
     }),
-    isExcluded: z.boolean().optional(),
 });
 
 export type FileTreeType = z.infer<typeof FileTree>;
