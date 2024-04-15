@@ -34,7 +34,6 @@ export const convertJsonToTree = (
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
                     hasLicenseFindings: false,
                     hasLicenseConclusions: false,
-                    isExcluded: fileTree.isExcluded,
                     selectionStatus: 0, // Initial selection status
                     file: {
                         licenseFindings: isLastPart

@@ -9284,11 +9284,6 @@ declare const userAPI: [
                 type: "Path";
                 schema: zod.ZodString;
             },
-            {
-                name: "includeIsExcluded";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodBoolean>;
-            },
         ];
         response: zod.ZodObject<
             {
@@ -9352,7 +9347,6 @@ declare const userAPI: [
                                     }[];
                                 }
                             >;
-                            isExcluded: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -9368,7 +9362,6 @@ declare const userAPI: [
                             };
                             packageId: number;
                             fileSha256: string;
-                            isExcluded?: boolean | undefined;
                         },
                         {
                             path: string;
@@ -9382,7 +9375,6 @@ declare const userAPI: [
                             };
                             packageId: number;
                             fileSha256: string;
-                            isExcluded?: boolean | undefined;
                         }
                     >,
                     "many"
@@ -9403,7 +9395,6 @@ declare const userAPI: [
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 }[];
             },
             {
@@ -9419,7 +9410,6 @@ declare const userAPI: [
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 }[];
             }
         >;
@@ -16838,11 +16828,6 @@ declare const dosAPI: [
                 type: "Path";
                 schema: zod.ZodString;
             },
-            {
-                name: "includeIsExcluded";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodBoolean>;
-            },
         ];
         response: zod.ZodObject<
             {
@@ -16906,7 +16891,6 @@ declare const dosAPI: [
                                     }[];
                                 }
                             >;
-                            isExcluded: zod.ZodOptional<zod.ZodBoolean>;
                         },
                         "strip",
                         zod.ZodTypeAny,
@@ -16922,7 +16906,6 @@ declare const dosAPI: [
                             };
                             packageId: number;
                             fileSha256: string;
-                            isExcluded?: boolean | undefined;
                         },
                         {
                             path: string;
@@ -16936,7 +16919,6 @@ declare const dosAPI: [
                             };
                             packageId: number;
                             fileSha256: string;
-                            isExcluded?: boolean | undefined;
                         }
                     >,
                     "many"
@@ -16957,7 +16939,6 @@ declare const dosAPI: [
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 }[];
             },
             {
@@ -16973,7 +16954,6 @@ declare const dosAPI: [
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 }[];
             }
         >;
@@ -18838,7 +18818,6 @@ declare const FileTree: z.ZodObject<
                 }[];
             }
         >;
-        isExcluded: z.ZodOptional<z.ZodBoolean>;
     },
     "strip",
     z.ZodTypeAny,
@@ -18854,7 +18833,6 @@ declare const FileTree: z.ZodObject<
         };
         packageId: number;
         fileSha256: string;
-        isExcluded?: boolean | undefined;
     },
     {
         path: string;
@@ -18868,7 +18846,6 @@ declare const FileTree: z.ZodObject<
         };
         packageId: number;
         fileSha256: string;
-        isExcluded?: boolean | undefined;
     }
 >;
 type FileTreeType = z.infer<typeof FileTree>;
@@ -18934,7 +18911,6 @@ declare const PostFileTreeRes: z.ZodObject<
                             }[];
                         }
                     >;
-                    isExcluded: z.ZodOptional<z.ZodBoolean>;
                 },
                 "strip",
                 z.ZodTypeAny,
@@ -18950,7 +18926,6 @@ declare const PostFileTreeRes: z.ZodObject<
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 },
                 {
                     path: string;
@@ -18964,7 +18939,6 @@ declare const PostFileTreeRes: z.ZodObject<
                     };
                     packageId: number;
                     fileSha256: string;
-                    isExcluded?: boolean | undefined;
                 }
             >,
             "many"
@@ -18985,7 +18959,6 @@ declare const PostFileTreeRes: z.ZodObject<
             };
             packageId: number;
             fileSha256: string;
-            isExcluded?: boolean | undefined;
         }[];
     },
     {
@@ -19001,7 +18974,6 @@ declare const PostFileTreeRes: z.ZodObject<
             };
             packageId: number;
             fileSha256: string;
-            isExcluded?: boolean | undefined;
         }[];
     }
 >;

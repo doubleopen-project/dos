@@ -980,11 +980,6 @@ export const userAPI = makeApi([
                 type: "Path",
                 schema: commonSchemas.PathParamPurl,
             },
-            {
-                name: "includeIsExcluded",
-                type: "Query",
-                schema: commonSchemas.QueryParamFilterBoolean,
-            },
         ],
         response: schemas.PostFileTreeRes,
         errors,
