@@ -7,10 +7,7 @@ import { sortTree } from "@/helpers/sortTree";
 import { updateExclusionStatus } from "@/helpers/updateExclusionStatus";
 import type { TreeNode } from "@/types";
 
-export const convertJsonToTree = (
-    filetrees: FileTreeType[],
-    licenseFilter?: string,
-): TreeNode[] => {
+export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter
     const root: TreeNode[] = []; // Initialize an empty root
     const map: { [key: string]: TreeNode } = {}; // Maintain a mapping from directory name to TreeNode object
@@ -93,22 +90,6 @@ export const convertJsonToTree = (
                         }
                         if (fileTree.file.licenseConclusions.length > 0) {
                             map[ancestorPath].hasLicenseConclusions = true; // Propagate flag to ancestors
-                        }
-                        if (
-                            licenseFilter &&
-                            fileTree.file.licenseFindings.length > 0 &&
-                            j === i
-                        ) {
-                            for (const finding of fileTree.file
-                                .licenseFindings) {
-                                if (
-                                    finding.licenseExpressionSPDX
-                                        .toLowerCase()
-                                        .includes(licenseFilter.toLowerCase())
-                                ) {
-                                    map[ancestorPath].openByDefault = true;
-                                }
-                            }
                         }
                     }
                 }

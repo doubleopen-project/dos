@@ -146,7 +146,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Construct the tree data
     useEffect(() => {
         if (data) {
-            const convertedData = convertJsonToTree(data.filetrees, "");
+            const convertedData = convertJsonToTree(data.filetrees);
             setTreeData(convertedData);
         }
     }, [data]);
