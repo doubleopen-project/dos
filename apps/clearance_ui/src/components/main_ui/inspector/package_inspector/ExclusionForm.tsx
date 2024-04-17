@@ -107,6 +107,7 @@ const ExclusionForm = ({
                     // When a path exclusion is added, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyFileTree);
                     queryClient.invalidateQueries(keyPathExclusionCountByPurl);
+                    queryClient.invalidateQueries(keyPathExclusionsByPurl);
                 },
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {
