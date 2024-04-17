@@ -7,7 +7,7 @@ import { NodeApi } from "react-arborist";
 export type TreeNode = {
     id: string;
     name: string;
-    path?: string;
+    path: string;
     fileSha256?: string;
     hasLicenseFindings: boolean;
     hasLicenseConclusions: boolean;
