@@ -59,13 +59,28 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
+    const [excludedPaths, setExcludedPaths] = useState<string[]>([]);
     const [glob, setGlob] = useState<string>("");
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
+    const peWorkerRef = useRef<Worker>();
 
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: {
+                purl: pathPurl,
+            },
+        },
+        { enabled: !!pathPurl },
+    );
+
+    // Fetch the package path exclusions data
+    const { data: pathExclusionsData } = userHooks.useGetPathExclusionsByPurl(
         {
             headers: {
                 Authorization: `Bearer ${session.data?.accessToken}`,
@@ -184,6 +199,44 @@ const PackageInspector = ({ purl, path }: Props) => {
             }
         }
     }, [filtering, treeData, licenseFilter]);
+
+    useEffect(() => {
+        /*
+         * Create a new web worker for updating the excluded nodes when path
+         * exclusion data is available the first time, or when it changes
+         */
+        peWorkerRef.current = new Worker(
+            new URL(
+                "@/workers/pathExclusionsWorker.worker.ts",
+                import.meta.url,
+            ),
+        );
+
+        // Set up event listener for messages from the worker
+        peWorkerRef.current.onmessage = (event) => {
+            // Set the excluded nodes based on the data from the worker
+            // The Node component will use this data to style the nodes
+            setExcludedPaths(event.data);
+        };
+
+        // Clean up the worker when the component unmounts
+        return () => {
+            peWorkerRef.current?.terminate();
+        };
+    }, []); // Run this effect only once when the component mounts
+
+    useEffect(() => {
+        if (pathExclusionsData && treeData.length > 0) {
+            // Post the path exclusions data to the worker
+            // The worker will then figure out which nodes to exclude
+            peWorkerRef.current?.postMessage({
+                tree: treeData,
+                pathExclusionPatterns: pathExclusionsData.pathExclusions.map(
+                    (pe) => pe.pattern,
+                ),
+            });
+        }
+    }, [pathExclusionsData, treeData]);
 
     return (
         <div className="flex h-full flex-col">
@@ -315,6 +368,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                                         isSelected,
                                     )
                                 }
+                                excludedPaths={excludedPaths}
                             />
                         )}
                     </Tree>
