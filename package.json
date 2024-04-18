@@ -63,10 +63,10 @@
         "test:spdx-validation": "npm run build:spdx-validation && turbo run test --filter=spdx-validation"
     },
     "devDependencies": {
-        "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+        "@ianvs/prettier-plugin-sort-imports": "4.2.1",
         "dotenv-cli": "7.3.0",
         "prettier": "3.2.5",
-        "prettier-plugin-tailwindcss": "0.5.11",
+        "prettier-plugin-tailwindcss": "0.5.14",
         "rimraf": "5.0.5",
         "tsx": "^4.7.1",
         "turbo": "1.12.4"
