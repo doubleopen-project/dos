@@ -74,8 +74,8 @@
         "@testing-library/react": "14.2.1",
         "@types/js-yaml": "4.0.9",
         "@types/lodash.debounce": "4.0.9",
-        "@types/node": "^20.12.4",
-        "@types/react": "18.2.57",
+        "@types/node": "20.12.7",
+        "@types/react": "18.2.79",
         "@types/react-copy-to-clipboard": "5.0.7",
         "@types/spdx-expression-parse": "3.0.5",
         "dotenv-cli": "^7.4.1",
@@ -86,7 +86,7 @@
         "next-router-mock": "0.9.12",
         "tailwindcss": "3.4.1",
         "ts-jest": "29.1.2",
-        "ts-node": "^10.9.2",
-        "typescript": "5.3.3"
+        "ts-node": "10.9.2",
+        "typescript": "5.4.5"
     }
 }
