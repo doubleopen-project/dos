@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@types/is-glob": "4.0.4",
-        "tsup": "8.0.2"
+        "tsup": "8.0.2",
+        "typescript": "5.4.5"
     }
 }

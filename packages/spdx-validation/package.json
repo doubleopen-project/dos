@@ -12,8 +12,9 @@
         "spdx-license-ids": "^3.0.17"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.12",
+        "@types/jest": "29.5.12",
         "jest": "^29.7.0",
-        "tsup": "8.0.2"
+        "tsup": "8.0.2",
+        "typescript": "5.4.5"
     }
 }
