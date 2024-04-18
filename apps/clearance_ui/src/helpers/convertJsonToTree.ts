@@ -4,7 +4,6 @@
 
 import type { FileTreeType } from "validation-helpers";
 import { sortTree } from "@/helpers/sortTree";
-import { updateExclusionStatus } from "@/helpers/updateExclusionStatus";
 import type { TreeNode } from "@/types";
 
 export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
@@ -98,10 +97,6 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                 currentNode = map[fullPath].children!;
             }
         }
-    }
-    // Update the exclusion status of all nodes
-    for (const node of root) {
-        updateExclusionStatus(node);
     }
 
     return sortTree(root);
