@@ -163,6 +163,8 @@ async function main() {
             },
         });
 
+        const licenseFindingExists = Boolean(licenseFinding);
+
         if (!licenseFinding)
             licenseFinding = await prisma.licenseFinding.create({
                 data: {
@@ -175,15 +177,20 @@ async function main() {
             });
 
         for (const match of obj.licenseFindingMatches) {
-            const licenseFindingMatch =
-                await prisma.licenseFindingMatch.findFirst({
-                    where: {
-                        licenseExpression: match.licenseExpression,
-                        startLine: match.startLine,
-                        endLine: match.endLine,
-                        score: match.score,
-                    },
-                });
+            let licenseFindingMatch;
+
+            if (licenseFindingExists) {
+                licenseFindingMatch =
+                    await prisma.licenseFindingMatch.findFirst({
+                        where: {
+                            licenseExpression: match.licenseExpression,
+                            startLine: match.startLine,
+                            endLine: match.endLine,
+                            score: match.score,
+                            licenseFindingId: licenseFinding.id,
+                        },
+                    });
+            }
 
             if (!licenseFindingMatch)
                 await prisma.licenseFindingMatch.create({
