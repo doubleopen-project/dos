@@ -94,7 +94,7 @@ export const scan = (source: string): Token[] => {
     }
 
     function identifier(): Token | undefined {
-        let begin = index;
+        const begin = index;
         const string = idstring();
 
         if (string) {
