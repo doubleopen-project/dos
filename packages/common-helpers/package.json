@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsup && prettier --write dist/src/index.d.ts && (head -n 4 src/index.ts && cat dist/src/index.d.ts) > temp_file && mv temp_file index.d.ts",
         "clever-cui-prebuild": "tsup",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "test": "mocha dist/tests"
     },
     "dependencies": {

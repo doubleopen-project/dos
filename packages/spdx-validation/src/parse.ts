@@ -84,7 +84,7 @@ export const parse = (tokens: Token[]): LicenseInfo | ConjunctionInfo => {
         // TODO: Actually, everything is concatenated into one string
         // for backward-compatibility but it could be better to return
         // a nice structure.
-        let begin = index;
+        const begin = index;
         let string = "";
         let t = token();
         if (t && t.type === "DOCUMENTREF") {

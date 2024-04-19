@@ -5,6 +5,7 @@
     "types": "./index.d.ts",
     "scripts": {
         "build": "tsup && prettier --write dist/src/index.d.ts && (head -n 4 src/index.ts && cat dist/src/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "test": "mocha dist/tests"
     },
     "dependencies": {
@@ -17,6 +18,7 @@
         "@types/mocha": "10.0.6",
         "@types/node": "20.12.7",
         "chai": "5.1.0",
+        "eslint-config-custom-server": "*",
         "mocha": "10.4.0",
         "tsconfig": "*",
         "tsup": "8.0.2",

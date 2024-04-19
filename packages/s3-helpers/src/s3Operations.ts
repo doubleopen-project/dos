@@ -61,10 +61,10 @@ export const listObjects = async (
 };
 
 // Function to turn a file's body into a string
-const streamToString = (stream: any): Promise<unknown> => {
-    const chunks: any[] = [];
+const streamToString = (stream: Readable): Promise<unknown> => {
+    const chunks: Buffer[] = [];
     return new Promise((resolve, reject) => {
-        stream.on("data", (chunk: any) => chunks.push(Buffer.from(chunk)));
+        stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
         stream.on("error", reject);
         stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
     });
@@ -167,7 +167,7 @@ export const downloadDirectory = async (
                             }),
                         );
                     const bodyContents: unknown = await streamToString(
-                        response.Body,
+                        response.Body as Readable,
                     );
                     fs.writeFileSync(filePath, bodyContents as string);
                 } catch (err) {

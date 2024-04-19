@@ -5,7 +5,8 @@
     "types": "./index.d.ts",
     "scripts": {
         "build": "tsup && prettier --write dist/index.d.ts && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
-        "clever-cui-prebuild": "tsup"
+        "clever-cui-prebuild": "tsup",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
         "@zodios/express": "10.6.0",
@@ -17,6 +18,7 @@
     },
     "devDependencies": {
         "@types/is-glob": "4.0.4",
+        "eslint-config-custom-server": "*",
         "tsup": "8.0.2",
         "typescript": "5.4.5"
     }

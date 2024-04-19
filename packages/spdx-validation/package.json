@@ -5,6 +5,7 @@
     "types": "./index.d.ts",
     "scripts": {
         "build": "tsup && prettier --write dist/src/index.d.ts && (head -n 12 src/index.ts && cat dist/src/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "test": "jest --verbose ./dist/tests/test.js"
     },
     "dependencies": {
@@ -13,6 +14,7 @@
     },
     "devDependencies": {
         "@types/jest": "29.5.12",
+        "eslint-config-custom-server": "*",
         "jest": "^29.7.0",
         "tsup": "8.0.2",
         "typescript": "5.4.5"
