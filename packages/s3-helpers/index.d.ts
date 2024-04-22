@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import * as _aws_sdk_client_s3 from "@aws-sdk/client-s3";
 import { S3 } from "@aws-sdk/client-s3";
+
+export { S3 } from "@aws-sdk/client-s3";
 
 declare const listBuckets: (s3Client: S3) => Promise<string | undefined>;
 declare const listObjects: (
@@ -65,7 +66,7 @@ declare const S3Client: (
     endpoint?: string | undefined,
     key?: string | undefined,
     secret?: string | undefined,
-) => _aws_sdk_client_s3.S3;
+) => S3;
 
 export {
     S3Client,
