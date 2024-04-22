@@ -15,30 +15,11 @@ import {
     Package,
     PathExclusion,
     Prisma,
-    PrismaClient,
+    prisma,
     ScanIssue,
     ScannerJob,
     SystemIssue,
 } from "database";
-
-const prisma = new PrismaClient().$extends({
-    result: {
-        licenseFinding: {
-            licenseExpressionSPDX: {
-                /*
-                 * Currently, this is a no-op, but it could be used to compute the license expression if
-                 * some post processing is needed. The column name can be changed back in the database
-                 * (from unprocessedLicenseExpressionSPDX to licenseEcpressionSPDX), if this is not needed,
-                 * but leaving this here for now, in case we need to do some post processing in the near future.
-                 */
-                needs: { unprocessedLicenseExpressionSPDX: true },
-                compute(licenseFinding): string {
-                    return licenseFinding.unprocessedLicenseExpressionSPDX;
-                },
-            },
-        },
-    },
-});
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
 const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;

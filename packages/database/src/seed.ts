@@ -6,9 +6,9 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import readline from "readline";
-import { PrismaClient } from "@prisma/client";
 import admZip from "adm-zip";
 import { objectExistsCheck, S3Client, uploadFile } from "s3-helpers";
+import { prisma } from "./client";
 
 if (process.env.NODE_ENV === "production")
     throw new Error("Don't run this in production");
@@ -19,8 +19,6 @@ const s3Client = S3Client(
     process.env.SPACES_KEY,
     process.env.SPACES_SECRET,
 );
-
-const prisma = new PrismaClient();
 
 async function main() {
     const fileExists = fs.existsSync(
