@@ -13,6 +13,7 @@
         "build:no-cache": "turbo run build --no-cache --force",
         "build:api": "turbo run build --filter=api --no-daemon",
         "build:cui": "turbo run build --filter=clearance_ui --no-daemon",
+        "build:db": "turbo run build --filter=database --no-daemon",
         "build:scanner_agent": "turbo run build --filter=scanner-agent --no-daemon",
         "build:scanner_worker": "turbo run build --filter=scanner-worker --no-daemon",
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
