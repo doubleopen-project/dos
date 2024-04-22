@@ -15,7 +15,8 @@
         "db:migrate:dev": "prisma migrate dev",
         "db:migrate:reset": "prisma migrate reset --force",
         "db:generate": "prisma generate",
-        "db:push": "prisma db push --skip-generate"
+        "db:push": "prisma db push --skip-generate",
+        "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
         "@prisma/client": "5.10.0",
@@ -24,6 +25,7 @@
     },
     "devDependencies": {
         "@types/node": "20.12.7",
+        "eslint-config-custom-server": "*",
         "prisma": "5.10.0",
         "prisma-zod-generator": "0.8.13",
         "tsconfig": "*",
