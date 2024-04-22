@@ -22,3 +22,5 @@ export const getS3Client = (
         },
     });
 };
+
+export type { S3 };
