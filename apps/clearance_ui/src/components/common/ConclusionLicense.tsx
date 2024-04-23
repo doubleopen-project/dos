@@ -14,6 +14,7 @@ import {
     CommandGroup,
     CommandInput,
     CommandItem,
+    CommandList,
 } from "@/components/ui/command";
 import {
     Popover,
@@ -105,9 +106,8 @@ const ConclusionLicense = ({
                     >
                         <div className="text-muted-foreground text-xs">
                             {router.isReady
-                                ? value
-                                    ? dataAsArray.find((d) => d.value === value)
-                                          ?.label
+                                ? concludedLicenseExpressionSPDX
+                                    ? concludedLicenseExpressionSPDX
                                     : "Select license..."
                                 : null}
                         </div>
@@ -118,49 +118,41 @@ const ConclusionLicense = ({
                     <Command>
                         <CommandInput placeholder="Search license..." />
                         <CommandEmpty>No license found.</CommandEmpty>
-                        <CommandGroup className="max-h-[60vh] min-h-[1px] w-full overflow-y-auto">
-                            {dataAsArray.map((d, index) => (
-                                <CommandItem
-                                    key={`${d.value}-${index}`} // Combining value with index
-                                    className="items-start text-left"
-                                    onSelect={(currentValue) => {
-                                        if (currentValue === value) {
-                                            // Unselect the current value
-                                            setValue("");
-                                            setConcludedLicenseExpressionSPDX(
-                                                "",
-                                            );
-                                        } else {
-                                            const selectedData =
-                                                dataAsArray.find(
-                                                    (d) =>
-                                                        d.value ===
-                                                        currentValue,
+                        <CommandList className="max-h-[50vh]">
+                            <CommandGroup className="max-h-[50vh] min-h-[1px] w-full overflow-y-auto">
+                                {dataAsArray.map((d, index) => (
+                                    <CommandItem
+                                        key={`${d.value}-${index}`} // Combining value with index
+                                        className="items-start text-left"
+                                        onSelect={(currentValue) => {
+                                            if (currentValue === value) {
+                                                // Unselect the current value
+                                                setValue("");
+                                                setConcludedLicenseExpressionSPDX(
+                                                    "",
                                                 );
-                                            const newLabel = selectedData
-                                                ? selectedData.label
-                                                : null;
-
-                                            setValue(currentValue); // Update component state
-                                            setConcludedLicenseExpressionSPDX(
-                                                newLabel,
-                                            ); // Update parent state
-                                        }
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            value === d.value
-                                                ? "opacity-100"
-                                                : "opacity-0",
-                                        )}
-                                    />
-                                    <div className="text-xs">{d.label}</div>
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
+                                            } else {
+                                                setValue(currentValue); // Update component state
+                                                setConcludedLicenseExpressionSPDX(
+                                                    d.label,
+                                                ); // Update parent state
+                                            }
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                value === d.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0",
+                                            )}
+                                        />
+                                        <div className="text-xs">{d.label}</div>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
                     </Command>
                 </PopoverContent>
             </Popover>
