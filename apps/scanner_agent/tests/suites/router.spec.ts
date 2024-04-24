@@ -2,35 +2,29 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { expect, use } from "chai";
-import chaiHttp from "chai-http";
-import nock from "nock";
+import { expect } from "chai";
+import superagent from "superagent";
 import {
     createRequestResults,
     createRequestState,
 } from "../../src/routes/router";
 import app from "../../src/server";
 
-const chai = use(chaiHttp);
-
 const serverToken = process.env.SA_API_TOKEN || "token";
 
 export default function suite(): void {
     it("GET / should return 200 and respond properly", (done) => {
-        // Define the mock response
-        const mockResponse = { message: "Scanner Agent is up and listening!" };
-
-        // Intercept the HTTP request and respond with the mock response
-        nock("http://localhost:5000").get("/").reply(200, mockResponse);
-
-        // Make the HTTP request using chai-http
-        chai.request(app)
-            .get("/")
+        superagent
+            .get(`http://localhost:${process.env.PORT || 5001}`)
             .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body).to.deep.equal(mockResponse);
+                expect(res.status).to.equal(200);
+                expect(res.body).to.deep.equal({
+                    message: "Scanner Agent is up and listening!",
+                });
                 done();
             });
+
+        app.removeAllListeners();
     });
 
     it("createRequestState() should return a valid RequestInit object", () => {
