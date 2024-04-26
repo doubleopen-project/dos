@@ -15,6 +15,7 @@ import { dosAPI } from "validation-helpers";
 import { getKeycloak, memoryStore } from "./config/keycloak";
 import { cronJobs } from "./cron_jobs";
 import { keycloakProtect } from "./helpers/auth_helpers";
+import { onStartUp } from "./helpers/on_start_up";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
 const requiredEnvVars: string[] = [
@@ -144,8 +145,13 @@ cron.schedule("*/5 * * * *", () => {
     cronJobs.jobStateQuery();
 });
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+// Run onStartUp function before starting the server
+(async () => {
+    await onStartUp();
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+    const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+
+    app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+})();
 
 export default app;

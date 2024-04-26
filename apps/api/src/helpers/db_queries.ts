@@ -904,6 +904,36 @@ export const updateBulkConclusionPackageId = async (
     return bulkConclusion;
 };
 
+export const updateSystemIssue = async (
+    id: number,
+    updateData: Prisma.SystemIssueUpdateInput,
+): Promise<SystemIssue> => {
+    let retries = initialRetryCount;
+    let systemIssue: SystemIssue | null = null;
+
+    while (retries > 0) {
+        try {
+            systemIssue = await prisma.systemIssue.update({
+                where: {
+                    id: id,
+                },
+                data: updateData,
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to update SystemIssue: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    if (!systemIssue) throw new Error("Error: Unable to update SystemIssue");
+
+    return systemIssue;
+};
+
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {
@@ -1435,6 +1465,53 @@ export const findScannerJobsByPackageId = async (
             scannerJobs = await prisma.scannerJob.findMany({
                 where: {
                     packageId: packageId,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScannerJobs: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scannerJobs;
+};
+
+export const findScannerJobsByState = async (
+    state: string,
+): Promise<{
+    id: string;
+    package: {
+        id: number;
+        purl: string;
+    };
+}[]> => {
+    let retries = initialRetryCount;
+    let scannerJobs: {
+        id: string;
+        package: {
+            id: number;
+            purl: string;
+        };
+    }[] = [];
+
+    while (retries > 0) {
+        try {
+            scannerJobs = await prisma.scannerJob.findMany({
+                where: {
+                    state: state,
+                },
+                select: {
+                    id: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
                 },
             });
             break;
@@ -3335,6 +3412,34 @@ export const findLicenseConclusionsByFileSha256 = async (
         }
     }
     return licenseConclusions;
+};
+
+export const findSystemIssues = async (
+    errorCode: string,
+    message: string,
+): Promise<SystemIssue[]> => {
+    let retries = initialRetryCount;
+    let systemIssues: SystemIssue[] = [];
+
+    while (retries > 0) {
+        try {
+            systemIssues = await prisma.systemIssue.findMany({
+                where: {
+                    errorCode: errorCode,
+                    message: message,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find SystemIssues: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return systemIssues;
 };
 
 // ------------------------------ Delete ------------------------------
