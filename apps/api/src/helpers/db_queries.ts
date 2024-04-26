@@ -432,12 +432,29 @@ export const createPathExclusion = async (input: {
 export const createFileIfNotExists = async (
     input: Prisma.FileCreateInput,
 ): Promise<File> => {
-    let file: File | null = await findFileByHash(input.sha256);
+    let retries = initialRetryCount;
+    let file: File | null = null;
 
-    if (!file) {
-        file = await createFile(input);
+    while (retries > 0) {
+        try {
+            file = await prisma.file.upsert({
+                where: {
+                    sha256: input.sha256,
+                },
+                update: {},
+                create: input,
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to create File: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
     }
 
+    if (!file) throw new Error("Error: Unable to create File");
     return file;
 };
 
@@ -1482,13 +1499,15 @@ export const findScannerJobsByPackageId = async (
 
 export const findScannerJobsByState = async (
     state: string,
-): Promise<{
-    id: string;
-    package: {
-        id: number;
-        purl: string;
-    };
-}[]> => {
+): Promise<
+    {
+        id: string;
+        package: {
+            id: number;
+            purl: string;
+        };
+    }[]
+> => {
     let retries = initialRetryCount;
     let scannerJobs: {
         id: string;
