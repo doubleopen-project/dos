@@ -336,7 +336,8 @@ export const saveJobResults = async (
                         );
 
                         if (!dbFile) {
-                            dbFile = await dbQueries.createFile({
+                            // Use createFileIfNotExists to prevent issue when a parallel task creates the same file
+                            dbFile = await dbQueries.createFileIfNotExists({
                                 sha256: file.sha256,
                                 scanStatus: "notStarted",
                             });
