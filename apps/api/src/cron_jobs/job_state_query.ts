@@ -22,6 +22,8 @@ import {
     findScannerJobsWithStates,
     updatePackage,
     updateScannerJob,
+    updateScannerJobAndPackagesStateToFailedRecursive,
+    updateScannerJobStateRecursive,
 } from "../helpers/db_queries";
 import { queryJobDetails } from "../helpers/sa_queries";
 
@@ -102,13 +104,10 @@ export const jobStateQuery = async () => {
                                         : maxFlagCountForProcessing * 5 +
                                           " minutes"),
                             );
-                            await updateScannerJob(scannerJobId, {
-                                state: "failed",
-                            });
-                            await updatePackage({
-                                id: packageId,
-                                data: { scanStatus: "failed" },
-                            });
+                            // Update scanner job and its children (if any), and related packages
+                            await updateScannerJobAndPackagesStateToFailedRecursive(
+                                scannerJobId,
+                            );
                             flaggedMap.delete(scannerJobId);
                         }
                     } else {
@@ -147,15 +146,10 @@ export const jobStateQuery = async () => {
                                     scannerJobId +
                                         ": Job has completed, but no result was found. Changing state to failed.",
                                 );
-                                await updateScannerJob(scannerJobId, {
-                                    state: "failed",
-                                });
-                                await updatePackage({
-                                    id: packageId,
-                                    data: {
-                                        scanStatus: "failed",
-                                    },
-                                });
+                                // Update scanner job and its children (if any), and related packages
+                                await updateScannerJobAndPackagesStateToFailedRecursive(
+                                    scannerJobId,
+                                );
                             }
 
                             flaggedMap.delete(scannerJobId);
@@ -259,13 +253,10 @@ export const jobStateQuery = async () => {
                                 scannerJobId +
                                     ": Changing state to failed as its state is failed in the job queue",
                             );
-                            await updateScannerJob(scannerJobId, {
-                                state: "failed",
-                            });
-                            await updatePackage({
-                                id: packageId,
-                                data: { scanStatus: "failed" },
-                            });
+                            // Update scanner job and its children (if any), and related packages
+                            await updateScannerJobAndPackagesStateToFailedRecursive(
+                                scannerJobId,
+                            );
                             break;
                         case "completed":
                             /*
@@ -289,15 +280,10 @@ export const jobStateQuery = async () => {
                                     scannerJobId +
                                         ": Job has completed, but no result was found. Changing state to failed.",
                                 );
-                                await updateScannerJob(scannerJobId, {
-                                    state: "failed",
-                                });
-                                await updatePackage({
-                                    id: packageId,
-                                    data: {
-                                        scanStatus: "failed",
-                                    },
-                                });
+                                // Update scanner job and its children (if any), and related packages
+                                await updateScannerJobAndPackagesStateToFailedRecursive(
+                                    scannerJobId,
+                                );
                                 flaggedMap.delete(scannerJobId);
                             }
                             break;
@@ -318,15 +304,10 @@ export const jobStateQuery = async () => {
                                     scannerJobId +
                                         ": ScannerJob not found in job queue. Changing state to failed.",
                                 );
-                                await updateScannerJob(scannerJobId, {
-                                    state: "failed",
-                                });
-                                await updatePackage({
-                                    id: packageId,
-                                    data: {
-                                        scanStatus: "failed",
-                                    },
-                                });
+                                // Update scanner job and its children (if any), and related packages
+                                await updateScannerJobAndPackagesStateToFailedRecursive(
+                                    scannerJobId,
+                                );
                                 flaggedMap.delete(scannerJobId);
                                 break;
                             } else {
@@ -351,9 +332,10 @@ export const jobStateQuery = async () => {
                                             scannerJobId +
                                                 ": Updating job state to failed, as the connection to Scanner Agent has been down for 3 consecutive checks",
                                         );
-                                        await updateScannerJob(scannerJobId, {
-                                            state: "failed",
-                                        });
+                                        // Update scanner job and its children (if any), and related packages
+                                        await updateScannerJobAndPackagesStateToFailedRecursive(
+                                            scannerJobId,
+                                        );
                                         flaggedMap.delete(scannerJobId);
                                     }
                                 } else {
@@ -386,9 +368,13 @@ export const jobStateQuery = async () => {
                                             ": Updating job state to " +
                                             jobQueueState,
                                     );
-                                    await updateScannerJob(scannerJobId, {
-                                        state: jobQueueState,
-                                    });
+                                    // Update scanner job and its children (if any) states
+                                    await updateScannerJobStateRecursive(
+                                        scannerJobId,
+                                        {
+                                            state: jobQueueState,
+                                        },
+                                    );
                                     flaggedMap.delete(scannerJobId);
                                 } else {
                                     // If the states have changed since the last check, but still differ from each other,

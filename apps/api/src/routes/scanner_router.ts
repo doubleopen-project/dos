@@ -708,49 +708,16 @@ scannerRouter.put("/job-state/:id", authenticateSAToken, async (req, res) => {
                 await new Promise((resolve) => setTimeout(resolve, 5));
             }
 
-            const updatedScannerJob = await dbQueries.updateScannerJob(
-                req.params.id as string,
-                {
-                    state: req.body.state,
-                },
-            );
-
-            if (updatedScannerJob && req.body.state === "failed") {
-                await dbQueries.updatePackage({
-                    id: updatedScannerJob.packageId,
-                    data: { scanStatus: "failed" },
-                });
-            }
-
-            const scannerJobChildren =
-                await dbQueries.findScannerJobsByParentId(req.params.id);
-
-            if (scannerJobChildren.length > 0) {
-                await dbQueries.updateManyScannerJobStates(
-                    scannerJobChildren.map((child) => child.id),
-                    req.body.state,
-                    updatedScannerJob.failureState || undefined,
+            if (req.body.state === "failed") {
+                // Update scanner job and its children (if any), and related packages
+                await dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
+                    req.params.id,
                 );
-
-                if (req.body.state === "failed") {
-                    await dbQueries.updateManyPackagesScanStatuses(
-                        scannerJobChildren.map((child) => child.packageId),
-                        "failed",
-                    );
-                }
-            }
-
-            for (const child of scannerJobChildren) {
-                await dbQueries.updateScannerJob(child.id, {
+            } else {
+                // Update scanner job and its children (if any) states
+                await dbQueries.updateScannerJobStateRecursive(req.params.id, {
                     state: req.body.state,
                 });
-
-                if (req.body.state === "failed" && child.packageId) {
-                    await dbQueries.updatePackage({
-                        id: child.packageId,
-                        data: { scanStatus: "failed" },
-                    });
-                }
             }
 
             console.log(

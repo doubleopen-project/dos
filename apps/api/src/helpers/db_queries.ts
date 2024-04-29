@@ -4301,3 +4301,123 @@ export const deleteBulkAndLicenseConclusions = async (
         }
     }
 };
+
+// Transaction to update ScannerJob and its children states (if any)
+export const updateScannerJobStateRecursive = async (
+    scannerJobId: string,
+    data: {
+        state: string;
+    },
+): Promise<void> => {
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            await prisma.$transaction(async (tx) => {
+                await tx.scannerJob.update({
+                    where: {
+                        id: scannerJobId,
+                    },
+                    data: {
+                        state: data.state,
+                    },
+                });
+
+                await tx.scannerJob.updateMany({
+                    where: {
+                        parentId: scannerJobId,
+                    },
+                    data: {
+                        state: data.state,
+                    },
+                });
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to update ScannerJob: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+};
+
+// Transaction to update ScannerJob and its children states (if any) to failed,
+// and update the related Packages' scanStatus to failed
+export const updateScannerJobAndPackagesStateToFailedRecursive = async (
+    scannerJobId: string,
+): Promise<void> => {
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            await prisma.$transaction(async (tx) => {
+                const job = await tx.scannerJob.findUniqueOrThrow({
+                    where: {
+                        id: scannerJobId,
+                    },
+                });
+
+                await tx.scannerJob.update({
+                    where: {
+                        id: scannerJobId,
+                    },
+                    data: {
+                        state: "failed",
+                        failureState: job.state,
+                    },
+                });
+
+                const children = await tx.scannerJob.findMany({
+                    where: {
+                        parentId: scannerJobId,
+                    },
+                });
+
+                if (children.length > 0) {
+                    // Update ScannerJob's children states to failed
+                    await tx.scannerJob.updateMany({
+                        where: {
+                            parentId: scannerJobId,
+                        },
+                        data: {
+                            state: "failed",
+                            failureState: job.state,
+                        },
+                    });
+
+                    const pkgIds = children.map((child) => child.packageId);
+                    pkgIds.push(job.packageId);
+
+                    await tx.package.updateMany({
+                        where: {
+                            id: {
+                                in: pkgIds,
+                            },
+                        },
+                        data: {
+                            scanStatus: "failed",
+                        },
+                    });
+                } else {
+                    await tx.package.update({
+                        where: {
+                            id: job.packageId,
+                        },
+                        data: {
+                            scanStatus: "failed",
+                        },
+                    });
+                }
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to update ScannerJob: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+};
