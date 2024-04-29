@@ -74,7 +74,11 @@ export const processPackageAndSendToScanner = async (
             log.debug(
                 scannerJobId + ': Changing ScannerJob(s) state(s) to "failed"',
             );
-            dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
+            dbQueries.updateManyScannerJobStates(
+                scannerJobIds,
+                "failed",
+                "processing",
+            );
             throw new Error("Zip file download failed");
         }
 
@@ -100,7 +104,11 @@ export const processPackageAndSendToScanner = async (
             log.debug(
                 scannerJobId + ': Changing ScannerJob(s) state(s) to "failed"',
             );
-            dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
+            dbQueries.updateManyScannerJobStates(
+                scannerJobIds,
+                "failed",
+                "processing",
+            );
             throw new Error("Zip file unzipping failed");
         }
 
@@ -166,7 +174,11 @@ export const processPackageAndSendToScanner = async (
                     scannerJobId +
                         ': Changing ScannerJob(s) state(s) to "failed"',
                 );
-                dbQueries.updateManyScannerJobStates(scannerJobIds, "failed");
+                dbQueries.updateManyScannerJobStates(
+                    scannerJobIds,
+                    "failed",
+                    "processing",
+                );
                 throw new Error(
                     "Error: Uploading files to object storage failed",
                 );
@@ -227,12 +239,13 @@ export const processPackageAndSendToScanner = async (
     } catch (error) {
         log.error(error);
         try {
-            log.info(scannerJobId + ': Changing ScannerJob state to "failed"');
-            dbQueries.updateScannerJob(scannerJobId, { state: "failed" });
             log.info(
-                scannerJobId + ': Changing Package scanStatus to "failed"',
+                scannerJobId +
+                    ': Changing ScannerJob and children (if any) states and related Packages scanStatuses to "failed"',
             );
-            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
+            dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
+                scannerJobId,
+            );
         } catch (error) {
             log.error(
                 scannerJobId +
