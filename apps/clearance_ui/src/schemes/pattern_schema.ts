@@ -54,7 +54,7 @@ export const pePatternGlobSchema = z
         },
         {
             message:
-                "Due to ORT limitations, this pattern is invalid. Possible reasons: 1) You cannot exclude more than one file from root directory at once; 2) You cannot exclude files from several directories at once",
+                "This pattern cannot unfortunately be used at this stage. Possible reasons: 1) You cannot exclude more than one file from root directory at once; 2) You cannot exclude files from several directories at once",
         },
     )
     .refine((pattern) => pattern !== "**", {
