@@ -237,9 +237,22 @@ export const PostBulkConclusionReq = z.object({
         })
         .trim()
         .min(1, "Pattern cannot be empty")
-        .refine((pattern) => isGlob(pattern), {
-            message: "Pattern is not a valid glob pattern",
-        }),
+        .refine(
+            (pattern) => {
+                // Check if the pattern is a valid glob or matches a single file in a filepath:
+                //   ([.\w-]+\/)* matches zero or more occurrences of a ".", "-", "\w" characters (directory) followed by a slash
+                //   [.\w-]+ matches the file name with ".", "-", or "\w" allowed
+                //   (\.\w+)? makes the file extension part optional
+                return (
+                    isGlob(pattern) ||
+                    /^([.\w-]+\/)*[.\w-]+(\.\w+)?$/.test(pattern)
+                );
+            },
+            {
+                message:
+                    "Pattern is not a valid glob pattern or a single file path",
+            },
+        ),
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
