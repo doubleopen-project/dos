@@ -40,7 +40,6 @@ declare namespace Express {
                         };
                         scope: string;
                         sid: string;
-                        realm_roles: string[];
                         email_verified: boolean;
                         preferred_username: string;
                     };

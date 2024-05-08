@@ -31,7 +31,9 @@ declare module "next-auth" {
         family_name: string;
         email: string;
         id: string;
-        realm_roles: string[];
+        realm_access: {
+            roles: string[];
+        };
     }
 
     /**

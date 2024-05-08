@@ -446,7 +446,7 @@ userRouter.put("/license-conclusions/:id", async (req, res) => {
 
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !==
@@ -510,7 +510,7 @@ userRouter.delete("/license-conclusions/:id", async (req, res) => {
 
         // Make sure that the license conclusion belongs to the user or the user is admin
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !== licenseConclusionUserId
@@ -1033,7 +1033,7 @@ userRouter.put("/bulk-conclusions/:id", async (req, res) => {
             throw new CustomError("Bulk conclusion to update not found", 404);
 
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !== origBulk.userId
@@ -1206,7 +1206,7 @@ userRouter.delete("/bulk-conclusions/:id", async (req, res) => {
         }
 
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !== bulkConclusionUserId
@@ -1535,7 +1535,7 @@ userRouter.put("/path-exclusions/:id", async (req, res) => {
             throw new CustomError("Path exclusion to update not found", 404);
 
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !== pathExclusion.userId
@@ -1632,7 +1632,7 @@ userRouter.delete("/path-exclusions/:id", async (req, res) => {
 
         // Make sure that the path exclusion belongs to the user or the user is admin
         if (
-            !req.kauth.grant.access_token.content.realm_roles.includes(
+            !req.kauth.grant.access_token.content.realm_access.roles.includes(
                 "app-admin",
             ) &&
             req.kauth.grant.access_token.content.sub !== pathExclusionUserId
