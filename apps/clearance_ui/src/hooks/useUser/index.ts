@@ -19,7 +19,7 @@ export const useUser: () => User | null = () => {
     return session.status === "authenticated"
         ? {
               username: session.data.user.preferred_username,
-              role: session.data.user.realm_roles?.find(
+              role: session.data.user.realm_access.roles?.find(
                   (role) => role === "app-admin",
               )
                   ? "ADMIN"
