@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { NextFunction, Request, Response } from "express";
-import type { Token } from "keycloak-connect";
 import NodeCache from "node-cache";
 import { getUsers } from "./keycloak_queries";
 
@@ -28,18 +27,6 @@ export const authenticateSAToken = (
         console.log(error);
         return res.status(500).json({ message: "Internal server error" });
     }
-};
-
-export const keycloakProtect = (keycloakRoles: string[]) => {
-    return (accessToken: Token, request: Request) => {
-        const hasAllRoles = keycloakRoles.every((role) =>
-            accessToken.hasRole(role),
-        );
-
-        request.hasRequiredRoles = hasAllRoles;
-
-        return hasAllRoles;
-    };
 };
 
 export const authenticateDosApiToken = async (
