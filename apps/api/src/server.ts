@@ -14,7 +14,6 @@ import { serve, setup } from "swagger-ui-express";
 import { dosAPI } from "validation-helpers";
 import { getKeycloak, memoryStore } from "./config/keycloak";
 import { cronJobs } from "./cron_jobs";
-import { keycloakProtect } from "./helpers/auth_helpers";
 import { onStartUp } from "./helpers/on_start_up";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 
@@ -104,20 +103,10 @@ app.use(
 
 app.use(keycloak.middleware());
 
-app.use(
-    "/api/admin",
-    cors(corsOptions),
-    keycloak.protect(keycloakProtect(["ADMIN"])),
-    adminRouter,
-);
+app.use("/api/admin", cors(corsOptions), keycloak.protect(), adminRouter);
 app.use("/api/auth", cors(corsOptions), authRouter);
 app.use("/api", cors(corsOptions), scannerRouter);
-app.use(
-    "/api/user",
-    cors(corsOptions),
-    keycloak.protect(keycloakProtect(["USER"])),
-    userRouter,
-);
+app.use("/api/user", cors(corsOptions), keycloak.protect(), userRouter);
 
 const document = openApiBuilder({
     title: "DOS API",
