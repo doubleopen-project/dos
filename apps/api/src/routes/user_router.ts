@@ -6,7 +6,6 @@ import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
 import isGlob from "is-glob";
-import { authorizationByPermission } from "keycloak-authorization-services";
 import { minimatch } from "minimatch";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
@@ -16,13 +15,9 @@ import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { extractStringFromGlob } from "../helpers/globHelpers";
 import { getUsers, updateUser } from "../helpers/keycloak_queries";
 import { s3Client } from "../helpers/s3client";
+import { authzPermission } from "../middlewares/authz_permission";
 
 const userRouter = zodiosRouter(userAPI);
-
-const kcConfig = {
-    baseUrl: process.env.KEYCLOAK_URL!,
-    realm: process.env.KEYCLOAK_REALM!,
-};
 
 // ----------------------------------- USER ROUTES -----------------------------------
 
@@ -100,10 +95,7 @@ const getUserIdArray = async (username: string, usernameStrict?: boolean) => {
 userRouter.get(
     "/license-conclusions",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             // TODO: return only license conclusions that belong to the user
@@ -279,10 +271,7 @@ userRouter.get(
 userRouter.get(
     "/license-conclusions/count",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const userIds = req.query.username
@@ -339,10 +328,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/files/:sha256/license-conclusions/",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const fileSha256 = req.params.sha256;
@@ -401,10 +387,7 @@ userRouter.get(
 
 userRouter.post(
     "/packages/:purl/files/:sha256/license-conclusions",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["POST"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
             const contextPurl = req.params.purl;
@@ -477,10 +460,7 @@ userRouter.post(
 userRouter.put(
     "/license-conclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["PUT"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["PUT"] }),
     async (req, res) => {
         try {
             const licenseConclusionId = req.params.id;
@@ -549,10 +529,7 @@ userRouter.put(
 userRouter.delete(
     "/license-conclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["DELETE"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
             const licenseConclusionId = req.params.id;
@@ -607,10 +584,7 @@ userRouter.delete(
 userRouter.get(
     "/bulk-conclusions",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const userIds = req.query.username
@@ -717,10 +691,7 @@ userRouter.get(
 userRouter.get(
     "/bulk-conclusions/count",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const userIds = req.query.username
@@ -756,10 +727,7 @@ userRouter.get(
 userRouter.get(
     "/bulk-conclusions/:id/affected-files",
     // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const bulkConclusionId = req.params.id;
@@ -837,10 +805,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/bulk-conclusions",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -907,10 +872,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/bulk-conclusions/count",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -953,10 +915,7 @@ userRouter.get(
 
 userRouter.post(
     "/packages/:purl/bulk-conclusions",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["POST"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
             const contextPurl = req.params.purl;
@@ -1084,10 +1043,7 @@ userRouter.post(
 userRouter.get(
     "/bulk-conclusions/:id",
     // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const bulkConclusionId = req.params.id;
@@ -1156,10 +1112,7 @@ userRouter.get(
 userRouter.put(
     "/bulk-conclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["PUT"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["PUT"] }),
     async (req, res) => {
         try {
             const bulkConclusionId = req.params.id;
@@ -1347,10 +1300,7 @@ userRouter.put(
 userRouter.delete(
     "/bulk-conclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["DELETE"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
             const bulkConclusionId = req.params.id;
@@ -1402,10 +1352,7 @@ userRouter.delete(
 userRouter.get(
     "/path-exclusions",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const userIds = req.query.username
@@ -1508,10 +1455,7 @@ userRouter.get(
 userRouter.get(
     "/path-exclusions/count",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const userIds = req.query.username
@@ -1547,10 +1491,7 @@ userRouter.get(
 userRouter.get(
     "/path-exclusions/:id/affected-files",
     // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const pe = await dbQueries.findPathExclusionById(req.params.id);
@@ -1613,10 +1554,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/path-exclusions",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -1667,10 +1605,7 @@ userRouter.get(
 
 userRouter.post(
     "/packages/:purl/path-exclusions",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["POST"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -1741,10 +1676,7 @@ userRouter.post(
 userRouter.put(
     "/path-exclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["PUT"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["PUT"] }),
     async (req, res) => {
         try {
             const pathExclusion = await dbQueries.findPathExclusionById(
@@ -1853,10 +1785,7 @@ userRouter.put(
 userRouter.delete(
     "/path-exclusions/:id",
     // @ts-expect-error -  Types of property 'params' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "ClearanceItems", scopes: ["DELETE"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "ClearanceItems", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
             const pathExclusionId = req.params.id;
@@ -1909,10 +1838,7 @@ userRouter.delete(
 userRouter.get(
     "/packages",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const pageSize = req.query.pageSize;
@@ -1949,10 +1875,7 @@ userRouter.get(
 userRouter.get(
     "/packages/count",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const count = await dbQueries.countScannedPackages(
@@ -1978,10 +1901,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/filetrees",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -2007,10 +1927,7 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/filetrees/:path/files",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const purl = req.params.purl;
@@ -2057,10 +1974,7 @@ userRouter.get(
 
 userRouter.get(
     "/files/:sha256/license-findings",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["GET"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const sha256 = req.params.sha256;

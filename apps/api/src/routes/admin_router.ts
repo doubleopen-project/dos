@@ -5,7 +5,6 @@
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Prisma } from "database";
-import { authorizationByPermission } from "keycloak-authorization-services";
 import { adminAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
@@ -15,22 +14,15 @@ import {
     deleteUser,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
+import { authzPermission } from "../middlewares/authz_permission";
 
 const adminRouter = zodiosRouter(adminAPI);
-
-const kcConfig = {
-    baseUrl: process.env.KEYCLOAK_URL!,
-    realm: process.env.KEYCLOAK_REALM!,
-};
 
 // ----------------------------------- ADMIN ROUTES -----------------------------------
 
 adminRouter.post(
     "/users",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "Users", scopes: ["POST"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "Users", scopes: ["POST"] }),
     async (req, res) => {
         try {
             const { username, password } = req.body;
@@ -93,10 +85,7 @@ adminRouter.post(
 // Delete user by id
 adminRouter.delete(
     "/users/:id",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "Users", scopes: ["DELETE"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "Users", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
             if (req.params.id === process.env.KEYCLOAK_ADMIN_USER_ID)
@@ -136,10 +125,7 @@ adminRouter.delete(
 // Delete scan results for a specified package purl
 adminRouter.delete(
     "/scan-results",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "PackageData", scopes: ["DELETE"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "PackageData", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
             const message = await dbOperations.deletePackageDataByPurl(
@@ -159,10 +145,7 @@ adminRouter.delete(
 
 adminRouter.post(
     "/purl-cleanup",
-    authorizationByPermission(kcConfig, {
-        permission: { resource: "Maintenance", scopes: ["POST"] },
-        audience: process.env.KEYCLOAK_CLIENT_ID_API,
-    }),
+    authzPermission({ resource: "Maintenance", scopes: ["POST"] }),
     async (req, res) => {
         try {
             const optionDescriptions = {
