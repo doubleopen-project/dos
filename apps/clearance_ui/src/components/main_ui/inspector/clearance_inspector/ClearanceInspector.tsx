@@ -15,6 +15,7 @@ import ConclusionFormWrapper from "@/components/main_ui/inspector/clearance_insp
 import DetectedLicense from "@/components/main_ui/inspector/clearance_inspector/DetectedLicense";
 import LicenseConclusions from "@/components/main_ui/inspector/clearance_inspector/LicenseConclusions";
 import LicenseMatches from "@/components/main_ui/inspector/clearance_inspector/LicenseMatches";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
 type ClearanceInspectorProps = {
@@ -99,8 +100,8 @@ const ClearanceInspector = ({
                 </ResizablePanelGroup>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <span className="font-semibold">{error.message}</span>
+                <div className="mx-4 flex h-full items-center justify-center font-semibold text-red-500">
+                    Error: {getErrorMessage(error)}
                 </div>
             )}
         </>

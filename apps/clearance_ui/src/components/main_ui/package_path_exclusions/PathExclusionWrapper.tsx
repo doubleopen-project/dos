@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import PathExclusion from "@/components/main_ui/package_path_exclusions/PathExclusion";
 import PathExclusionEditForm from "@/components/main_ui/package_path_exclusions/PathExclusionEditForm";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -40,8 +41,8 @@ const PathExclusionWrapper = ({ purl }: Props) => {
                 </div>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <div>Error: {error.message}</div>
+                <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                    Error: {getErrorMessage(error)}
                 </div>
             )}
             {data && data.pathExclusions.length > 0 ? (

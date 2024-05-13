@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PackageList from "@/components/package_library/PackageList";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 export default function PackageLibrary() {
     const session = useSession({
@@ -55,8 +56,9 @@ export default function PackageLibrary() {
                                         </span>
                                     )}
                                     {pkgCntError && (
-                                        <span className="bg-destructive text-bold rounded-md p-1">
-                                            {pkgCntError.message}
+                                        <span className="rounded-md p-1 font-semibold text-red-500">
+                                            Error:{" "}
+                                            {getErrorMessage(pkgCntError)}
                                         </span>
                                     )}
                                     {pkgCntData && (

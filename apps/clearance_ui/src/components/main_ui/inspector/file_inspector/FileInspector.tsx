@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import CodeEditor from "@/components/main_ui/inspector/file_inspector/CodeEditor";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPath, toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -77,8 +78,8 @@ const FileInspector = ({ path, purl }: Props) => {
                     />
                 )}
                 {(error || lfError) && (
-                    <div className="flex h-full items-center justify-center">
-                        Unable to fetch file data
+                    <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                        Error: {getErrorMessage(error || lfError)}
                     </div>
                 )}
             </div>

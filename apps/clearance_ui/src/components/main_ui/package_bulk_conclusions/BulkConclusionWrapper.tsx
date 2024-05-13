@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import BulkConclusion from "@/components/main_ui/package_bulk_conclusions/BulkConclusion";
 import BulkConclusionEditForm from "@/components/main_ui/package_bulk_conclusions/BulkConclusionEditForm";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type Props = {
@@ -55,8 +56,8 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                 </div>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <div>Error: {error.message}</div>
+                <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                    Error: {getErrorMessage(error)}
                 </div>
             )}
             {data && data.bulkConclusions.length > 0 ? (

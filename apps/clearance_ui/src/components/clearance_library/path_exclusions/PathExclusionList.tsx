@@ -14,6 +14,7 @@ import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/path_exclusions/columns";
 import { DataTable } from "@/components/clearance_library/path_exclusions/DataTable";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const PathExclusionList = () => {
     const user = useUser();
@@ -78,7 +79,12 @@ const PathExclusionList = () => {
             </div>
         );
     }
-    if (error) return <div>{error.message}</div>;
+    if (error)
+        return (
+            <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                Error: {getErrorMessage(error)}
+            </div>
+        );
     if (!data) return <div>No data</div>;
 
     const tableColumns = columns(

@@ -15,6 +15,7 @@ import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/package_library/columns";
 import { DataTable } from "@/components/package_library/DataTable";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
     const user = useUser();
@@ -89,15 +90,15 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
                 </div>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <p>{error.message}</p>
+                <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                    Error: {getErrorMessage(error)}
                 </div>
             )}
             {data && (
                 <div className="container mx-auto h-full">
                     {pkgCntQuery.error && (
-                        <div className="flex items-center justify-center">
-                            <p>{pkgCntQuery.error.message}</p>
+                        <div className="flex items-center justify-center font-semibold text-red-500">
+                            Error: {getErrorMessage(pkgCntQuery.error)}
                         </div>
                     )}
 
