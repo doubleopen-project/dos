@@ -14,7 +14,7 @@ import { isAxiosError } from "axios";
 import NextAuth from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
-import { keycloakAPI } from "validation-helpers";
+import { keycloakAPI, type Token } from "validation-helpers";
 
 const kcClient = new Zodios(process.env.KEYCLOAK_URL!, keycloakAPI);
 
@@ -28,7 +28,7 @@ async function refreshAccessToken(token: JWT) {
 
     while (retries > 0) {
         try {
-            const refreshedTokens = await kcClient.GetAccessToken(
+            const refreshedTokens = (await kcClient.PostToken(
                 {
                     client_id: process.env.KEYCLOAK_CLIENT_ID_UI!,
                     grant_type: "refresh_token",
@@ -43,7 +43,7 @@ async function refreshAccessToken(token: JWT) {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
                 },
-            );
+            )) as Token; // The endpoint provides a union type, but we know it's a Token with this type of request
 
             return {
                 ...token,

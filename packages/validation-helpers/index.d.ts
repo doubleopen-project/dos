@@ -18756,8 +18756,8 @@ declare const keycloakAPI: [
     {
         method: "post";
         path: "/realms/:realm/protocol/openid-connect/token";
-        description: "Get auth token";
-        alias: "GetAccessToken";
+        description: "Get auth token, refresh token, or get permissions with access token";
+        alias: "PostToken";
         parameters: [
             {
                 name: "realm";
@@ -18804,55 +18804,111 @@ declare const keycloakAPI: [
                             "strip",
                             zod.ZodTypeAny,
                             {
-                                refresh_token: string;
                                 client_id: string;
                                 grant_type: "refresh_token";
+                                refresh_token: string;
                                 client_secret?: string | undefined;
                             },
                             {
-                                refresh_token: string;
                                 client_id: string;
                                 grant_type: "refresh_token";
+                                refresh_token: string;
                                 client_secret?: string | undefined;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                grant_type: zod.ZodLiteral<"urn:ietf:params:oauth:grant-type:uma-ticket">;
+                                audience: zod.ZodString;
+                                response_mode: zod.ZodEnum<
+                                    ["permissions", "decision", "token"]
+                                >;
+                                permission: zod.ZodOptional<zod.ZodString>;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket";
+                                audience: string;
+                                response_mode:
+                                    | "token"
+                                    | "permissions"
+                                    | "decision";
+                                permission?: string | undefined;
+                            },
+                            {
+                                grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket";
+                                audience: string;
+                                response_mode:
+                                    | "token"
+                                    | "permissions"
+                                    | "decision";
+                                permission?: string | undefined;
                             }
                         >,
                     ]
                 >;
             },
         ];
-        response: zod.ZodObject<
-            {
-                access_token: zod.ZodString;
-                expires_in: zod.ZodNumber;
-                refresh_expires_in: zod.ZodNumber;
-                refresh_token: zod.ZodString;
-                token_type: zod.ZodLiteral<"Bearer">;
-                "not-before-policy": zod.ZodNumber;
-                session_state: zod.ZodString;
-                scope: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                access_token: string;
-                expires_in: number;
-                refresh_expires_in: number;
-                refresh_token: string;
-                token_type: "Bearer";
-                "not-before-policy": number;
-                session_state: string;
-                scope: string;
-            },
-            {
-                access_token: string;
-                expires_in: number;
-                refresh_expires_in: number;
-                refresh_token: string;
-                token_type: "Bearer";
-                "not-before-policy": number;
-                session_state: string;
-                scope: string;
-            }
+        response: zod.ZodUnion<
+            [
+                zod.ZodObject<
+                    {
+                        access_token: zod.ZodString;
+                        expires_in: zod.ZodNumber;
+                        refresh_expires_in: zod.ZodNumber;
+                        refresh_token: zod.ZodString;
+                        token_type: zod.ZodLiteral<"Bearer">;
+                        "not-before-policy": zod.ZodNumber;
+                        session_state: zod.ZodString;
+                        scope: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        refresh_token: string;
+                        access_token: string;
+                        expires_in: number;
+                        refresh_expires_in: number;
+                        token_type: "Bearer";
+                        "not-before-policy": number;
+                        session_state: string;
+                        scope: string;
+                    },
+                    {
+                        refresh_token: string;
+                        access_token: string;
+                        expires_in: number;
+                        refresh_expires_in: number;
+                        token_type: "Bearer";
+                        "not-before-policy": number;
+                        session_state: string;
+                        scope: string;
+                    }
+                >,
+                zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            scopes: zod.ZodArray<zod.ZodString, "many">;
+                            rsid: zod.ZodString;
+                            rsname: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            scopes: string[];
+                            rsid: string;
+                            rsname: string;
+                        },
+                        {
+                            scopes: string[];
+                            rsid: string;
+                            rsname: string;
+                        }
+                    >,
+                    "many"
+                >,
+            ]
         >;
         errors: [
             {
@@ -19510,12 +19566,49 @@ declare const keycloakAPI: [
     },
 ];
 
+declare const TokenResponse: z.ZodObject<
+    {
+        access_token: z.ZodString;
+        expires_in: z.ZodNumber;
+        refresh_expires_in: z.ZodNumber;
+        refresh_token: z.ZodString;
+        token_type: z.ZodLiteral<"Bearer">;
+        "not-before-policy": z.ZodNumber;
+        session_state: z.ZodString;
+        scope: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        refresh_token: string;
+        access_token: string;
+        expires_in: number;
+        refresh_expires_in: number;
+        token_type: "Bearer";
+        "not-before-policy": number;
+        session_state: string;
+        scope: string;
+    },
+    {
+        refresh_token: string;
+        access_token: string;
+        expires_in: number;
+        refresh_expires_in: number;
+        token_type: "Bearer";
+        "not-before-policy": number;
+        session_state: string;
+        scope: string;
+    }
+>;
+type Token = z.infer<typeof TokenResponse>;
+
 export {
     type FileTreeType,
     type PostFileTreeResType,
     PutUserReq,
     ScannerJobResultSchema,
     type ScannerJobResultType,
+    type Token,
     adminAPI,
     authAPI,
     dosAPI,
