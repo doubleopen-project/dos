@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import ButtonGroup from "@/components/main_ui/inspector/clearance_inspector/ButtonGroup";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 type DetectedLicenseProps = {
     fileSha256: string;
@@ -51,8 +52,8 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
                 </div>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <span className="font-semibold">{error.message}</span>
+                <div className="mx-4 flex h-full items-center justify-center font-semibold text-red-500">
+                    Error: {getErrorMessage(error)}
                 </div>
             )}
         </>

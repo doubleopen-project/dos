@@ -14,6 +14,7 @@ import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/license_conclusions/columns";
 import { DataTable } from "@/components/clearance_library/license_conclusions/DataTable";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const LicenseConclusionList = () => {
     const user = useUser();
@@ -90,7 +91,12 @@ const LicenseConclusionList = () => {
             </div>
         );
     }
-    if (error) return <div>{error.message}</div>;
+    if (error)
+        return (
+            <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                Error: {getErrorMessage(error)}
+            </div>
+        );
     if (!data) return <div>No data</div>;
 
     const tableColumns = columns(

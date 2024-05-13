@@ -11,6 +11,7 @@ import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { DeleteAction } from "@/types";
 
 type ItemType = ZodiosResponseByAlias<
@@ -81,11 +82,12 @@ const DeletePathExclusion = ({ data }: Props) => {
                     queryClient.invalidateQueries(keyPathExclusionsByPurl);
                     queryClient.invalidateQueries(keyPathExclusionCountByPurl);
                 },
-                onError: () => {
+                onError: (error) => {
+                    const msg = getErrorMessage(error);
                     toast({
                         variant: "destructive",
                         title: "Delete failed",
-                        description: "Something went wrong. Please try again.",
+                        description: msg,
                     });
                 },
             },

@@ -12,6 +12,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 type Props = {
     pathExclusionId: number;
@@ -44,7 +45,7 @@ const PEAffectedFilesTooltip = ({ pathExclusionId }: Props) => {
                         </TooltipTrigger>
                         <TooltipContent>
                             <div className="text-sm">
-                                Error: Unable to fetch affected files
+                                Error: {getErrorMessage(error)}
                             </div>
                         </TooltipContent>
                     </Tooltip>

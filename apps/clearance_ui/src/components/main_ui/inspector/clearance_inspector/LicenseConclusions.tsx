@@ -9,6 +9,7 @@ import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import LicenseConclusionItem from "@/components/main_ui/inspector/clearance_inspector/LicenseConclusionItem";
 import BulkConclusionFormDialog from "@/components/main_ui/inspector/package_inspector/BulkConclusionFormDialog";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 type LicenseConclusionsProps = {
@@ -72,8 +73,8 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                 </div>
             )}
             {error && (
-                <div className="flex h-full items-center justify-center">
-                    <span className="font-semibold">{error.message}</span>
+                <div className="mx-4 flex h-full items-center justify-center font-semibold text-red-500">
+                    <span>Error: {getErrorMessage(error)}</span>
                 </div>
             )}
             {/*Adding the pattern and clearPattern props here to get rid of ts error,

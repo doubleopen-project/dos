@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -28,6 +27,7 @@ import { decomposeLicenses } from "@/helpers/decomposeLicenses";
 import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { findNodesWithLicense } from "@/helpers/findNodesWithLicense";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { stringToColour } from "@/helpers/stringToColour";
 import {
@@ -373,18 +373,11 @@ const PackageInspector = ({ purl, path }: Props) => {
                         )}
                     </Tree>
                 )}
-                {error &&
-                    (axios.isAxiosError(error) ? (
-                        <div className="flex h-full items-center justify-center text-red-700">
-                            Error with fetching package data:{" "}
-                            {error.response?.data.message ||
-                                "Unknown error. No message in response."}
-                        </div>
-                    ) : (
-                        <div className="flex h-full items-center justify-center">
-                            Unable to fetch package data
-                        </div>
-                    ))}
+                {error && (
+                    <div className="flex h-full items-center justify-center font-semibold text-red-500">
+                        Error: {getErrorMessage(error)}
+                    </div>
+                )}
             </div>
 
             <Separator className="mb-2" />

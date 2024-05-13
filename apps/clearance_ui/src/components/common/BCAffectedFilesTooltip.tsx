@@ -13,6 +13,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 type Props = {
     bulkConclusionId: number;
@@ -56,7 +57,7 @@ const BCAffectedFilesTooltip = ({
                         </TooltipTrigger>
                         <TooltipContent>
                             <div className="text-sm">
-                                Error: Unable to fetch affected files
+                                Error: {getErrorMessage(error)}
                             </div>
                         </TooltipContent>
                     </Tooltip>
