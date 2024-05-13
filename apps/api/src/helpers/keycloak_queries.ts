@@ -5,7 +5,7 @@
 import { Zodios, ZodiosResponseByAlias } from "@zodios/core";
 import { isAxiosError } from "axios";
 import NodeCache from "node-cache";
-import { keycloakAPI } from "validation-helpers";
+import { keycloakAPI, type Token } from "validation-helpers";
 import { CustomError } from "./custom_error";
 
 const kcClient = new Zodios(
@@ -14,8 +14,6 @@ const kcClient = new Zodios(
 );
 
 const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
-
-type Token = ZodiosResponseByAlias<typeof keycloakAPI, "GetAccessToken">;
 
 type RealmRole = ZodiosResponseByAlias<typeof keycloakAPI, "GetRealmRoles">[0];
 
@@ -33,7 +31,7 @@ export const getAccessToken = async (): Promise<Token> => {
 
     if (token) {
         try {
-            const accessToken = await kcClient.GetAccessToken(
+            const accessToken = (await kcClient.PostToken(
                 {
                     client_id: "admin-cli",
                     grant_type: "refresh_token",
@@ -48,7 +46,8 @@ export const getAccessToken = async (): Promise<Token> => {
                         realm: process.env.KEYCLOAK_REALM!,
                     },
                 },
-            );
+            )) as Token; // The endpoint provides a union type, but we know it's a Token with this type of request
+
             cache.set("adminToken", {
                 token: accessToken,
                 expires_at: Date.now() + accessToken.expires_in * 1000,
@@ -62,7 +61,7 @@ export const getAccessToken = async (): Promise<Token> => {
 
     while (retries > 0) {
         try {
-            const accessToken = await kcClient.GetAccessToken(
+            const accessToken = (await kcClient.PostToken(
                 {
                     client_id: "admin-cli",
                     username: process.env.KEYCLOAK_ADMIN_USERNAME!,
@@ -78,7 +77,7 @@ export const getAccessToken = async (): Promise<Token> => {
                         realm: process.env.KEYCLOAK_REALM!,
                     },
                 },
-            );
+            )) as Token; // The endpoint provides a union type, but we know it's a Token with this type of request
             token = {
                 token: accessToken,
                 expires_at: Date.now() + accessToken.expires_in * 1000,

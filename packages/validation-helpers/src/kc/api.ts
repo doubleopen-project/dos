@@ -11,8 +11,9 @@ export const keycloakAPI = makeApi([
     {
         method: "post",
         path: "/realms/:realm/protocol/openid-connect/token",
-        description: "Get auth token",
-        alias: "GetAccessToken",
+        description:
+            "Get auth token, refresh token, or get permissions with access token",
+        alias: "PostToken",
         parameters: [
             {
                 name: "realm",
@@ -22,10 +23,10 @@ export const keycloakAPI = makeApi([
             {
                 name: "body",
                 type: "Body",
-                schema: schemas.GetAccessTokenReq,
+                schema: schemas.PostTokenReq,
             },
         ],
-        response: schemas.GetAccessTokenResponse,
+        response: schemas.PostTokenRes,
         errors,
     },
     {

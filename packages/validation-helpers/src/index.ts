@@ -21,3 +21,4 @@ export type {
     PutUserReq,
 } from "./api/schemas/user_schemas";
 export { keycloakAPI } from "./kc/api";
+export type { Token } from "./kc/schemas";

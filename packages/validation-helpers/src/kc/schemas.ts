@@ -4,18 +4,7 @@
 
 import { z } from "zod";
 
-export const GetAccessTokenResponse = z.object({
-    access_token: z.string(),
-    expires_in: z.number(),
-    refresh_expires_in: z.number(),
-    refresh_token: z.string(),
-    token_type: z.literal("Bearer"),
-    "not-before-policy": z.number(),
-    session_state: z.string(),
-    scope: z.string(),
-});
-
-export const GetAccessTokenReq = z.union([
+export const PostTokenReq = z.union([
     z.object({
         client_id: z.string(),
         username: z.string(),
@@ -29,7 +18,36 @@ export const GetAccessTokenReq = z.union([
         refresh_token: z.string(),
         client_secret: z.string().optional(),
     }),
+    z.object({
+        grant_type: z.literal("urn:ietf:params:oauth:grant-type:uma-ticket"),
+        audience: z.string(),
+        response_mode: z.enum(["permissions", "decision", "token"]),
+        permission: z.string().optional(),
+    }),
 ]);
+
+const TokenResponse = z.object({
+    access_token: z.string(),
+    expires_in: z.number(),
+    refresh_expires_in: z.number(),
+    refresh_token: z.string(),
+    token_type: z.literal("Bearer"),
+    "not-before-policy": z.number(),
+    session_state: z.string(),
+    scope: z.string(),
+});
+
+const PermissionResponse = z.array(
+    z.object({
+        scopes: z.array(z.string()),
+        rsid: z.string(),
+        rsname: z.string(),
+    }),
+);
+
+export const PostTokenRes = z.union([TokenResponse, PermissionResponse]);
+
+export type Token = z.infer<typeof TokenResponse>;
 
 export const CreateUserReq = z.object({
     username: z.string(),
