@@ -48,6 +48,7 @@ const PermissionResponse = z.array(
 export const PostTokenRes = z.union([TokenResponse, PermissionResponse]);
 
 export type Token = z.infer<typeof TokenResponse>;
+export type Permissions = z.infer<typeof PermissionResponse>;
 
 export const CreateUserReq = z.object({
     username: z.string(),
