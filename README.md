@@ -38,7 +38,7 @@ To run this project you will need Node.js, npm and Docker installed.
 
 3.  Set needed environment variables.
 
-    a.) Create a .env.local file in the project root, and set the following environment variables in the file:
+    Create a .env.local file in the project root, and set the following environment variables in the file:
 
     ```shell
     DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
@@ -46,6 +46,8 @@ To run this project you will need Node.js, npm and Docker installed.
     KEYCLOAK_REALM=
     KEYCLOAK_CLIENT_ID_API=
     KEYCLOAK_CLIENT_SECRET_API=
+    KEYCLOAK_CLIENT_ID_UI=
+    KEYCLOAK_CLIENT_SECRET_UI=
     KEYCLOAK_ADMIN_CLIENT_SECRET=
     KEYCLOAK_ADMIN_USERNAME=
     KEYCLOAK_ADMIN_PASSWORD=
@@ -55,17 +57,6 @@ To run this project you will need Node.js, npm and Docker installed.
     ```
 
     See [.env.example](https://github.com/doubleopen-project/dos/blob/main/.env.example) file for other non-compulsory configurable variables.
-
-    b.) Create a .env.local file in apps/clearance_ui, and set the following environment variables in the file:
-
-    ```shell
-    KEYCLOAK_URL=
-    KEYCLOAK_REALM=
-    KEYCLOAK_CLIENT_ID_UI=
-    KEYCLOAK_CLIENT_SECRET_UI=
-    ```
-
-    See [apps/clearance_ui/.env.example](https://github.com/doubleopen-project/dos/blob/main/apps/clearance_ui/.env.example) file for other non-compulsory configurable variables.
 
 4.  Start containers (in detached mode with -d):
 
