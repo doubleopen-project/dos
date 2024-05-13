@@ -10,6 +10,7 @@ const requiredEnvVars: string[] = [
     "KEYCLOAK_REALM",
     "KEYCLOAK_CLIENT_ID_UI",
     "KEYCLOAK_CLIENT_SECRET_UI",
+    "KEYCLOAK_CLIENT_ID_API",
 ];
 
 const missingVars: string[] = requiredEnvVars.filter(

@@ -19600,10 +19600,34 @@ declare const TokenResponse: z.ZodObject<
         scope: string;
     }
 >;
+declare const PermissionResponse: z.ZodArray<
+    z.ZodObject<
+        {
+            scopes: z.ZodArray<z.ZodString, "many">;
+            rsid: z.ZodString;
+            rsname: z.ZodString;
+        },
+        "strip",
+        z.ZodTypeAny,
+        {
+            scopes: string[];
+            rsid: string;
+            rsname: string;
+        },
+        {
+            scopes: string[];
+            rsid: string;
+            rsname: string;
+        }
+    >,
+    "many"
+>;
 type Token = z.infer<typeof TokenResponse>;
+type Permissions = z.infer<typeof PermissionResponse>;
 
 export {
     type FileTreeType,
+    type Permissions,
     type PostFileTreeResType,
     PutUserReq,
     ScannerJobResultSchema,

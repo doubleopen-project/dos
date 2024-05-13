@@ -2,15 +2,67 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import type { Permissions } from "validation-helpers";
 
 export type User = {
     username: string;
     role: "ADMIN" | "USER";
+    permissions: Permissions | null;
 };
 
 export const useUser: () => User | null = () => {
     const session = useSession();
+    const [permissions, setPermissions] = useState<Permissions | null>(null);
+
+    const fetchPermissions = async () => {
+        const response = await fetch("/api/authz/permissions", {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = (await response.json()) as Permissions;
+            return data;
+        } else {
+            // If error response is 403, it means the user has no permissions
+            if (response.status === 403) {
+                console.error("User has no permissions.");
+                return [];
+            } else {
+                throw new Error(
+                    "Permissions request was unsuccessful. API responded with: " +
+                        response.status +
+                        " " +
+                        response.statusText +
+                        " when fetching permissions.",
+                );
+            }
+        }
+    };
+
+    const { data, error } = useQuery({
+        queryKey: ["permissions"],
+        queryFn: fetchPermissions,
+        enabled: session.status === "authenticated" && !session.data.error,
+        refetchInterval: 5 * 60 * 1000, // Refetch permissions every 5 minutes
+        retry: 1,
+    });
+
+    useEffect(() => {
+        if (data) {
+            setPermissions(data);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            console.error(error);
+        }
+    }, [error]);
 
     if (session.data?.error !== undefined) {
         return null;
@@ -24,6 +76,7 @@ export const useUser: () => User | null = () => {
               )
                   ? "ADMIN"
                   : "USER",
+              permissions: permissions,
           }
         : null;
 };
