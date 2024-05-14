@@ -45,29 +45,30 @@ const PathExclusionWrapper = ({ purl }: Props) => {
                     Error: {getErrorMessage(error)}
                 </div>
             )}
-            {data && data.pathExclusions.length > 0 ? (
-                <div className="w-full flex-1 overflow-y-auto border">
-                    {data.pathExclusions.map((pe) =>
-                        pe.id === editing ? (
-                            <PathExclusionEditForm
-                                key={`edit-pe-${pe.id}`}
-                                pathExclusion={pe}
-                                editHandler={editHandler}
-                            />
-                        ) : (
-                            <PathExclusion
-                                key={`pe-${pe.id}`}
-                                pathExclusion={pe}
-                                editHandler={editHandler}
-                            />
-                        ),
-                    )}
-                </div>
-            ) : (
-                <div className="flex h-full items-center justify-center border">
-                    No path exclusions created for this package
-                </div>
-            )}
+            {data &&
+                (data.pathExclusions.length > 0 ? (
+                    <div className="w-full flex-1 overflow-y-auto border">
+                        {data.pathExclusions.map((pe) =>
+                            pe.id === editing ? (
+                                <PathExclusionEditForm
+                                    key={`edit-pe-${pe.id}`}
+                                    pathExclusion={pe}
+                                    editHandler={editHandler}
+                                />
+                            ) : (
+                                <PathExclusion
+                                    key={`pe-${pe.id}`}
+                                    pathExclusion={pe}
+                                    editHandler={editHandler}
+                                />
+                            ),
+                        )}
+                    </div>
+                ) : (
+                    <div className="flex h-full items-center justify-center border">
+                        No path exclusions created for this package
+                    </div>
+                ))}
         </>
     );
 };

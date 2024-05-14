@@ -60,88 +60,91 @@ const BulkConclusionWrapper = ({ purl }: Props) => {
                     Error: {getErrorMessage(error)}
                 </div>
             )}
-            {data && data.bulkConclusions.length > 0 ? (
-                <div className="w-full flex-1 overflow-y-auto border">
-                    {bcForThisPackage && bcForThisPackage.length > 0 && (
-                        <>
-                            <Card className="bg-muted m-2">
-                                <CardHeader>
-                                    <CardTitle>
-                                        Bulk Conclusions created for this
-                                        package
-                                    </CardTitle>
-                                    <CardDescription>
-                                        This is a list of the{" "}
-                                        {bcForThisPackage?.length} bulk
-                                        conclusions that are created originally
-                                        for this package and version.
-                                    </CardDescription>
-                                </CardHeader>
-                            </Card>
-                            {bcForThisPackage.map((bc) =>
-                                bc.id === editing ? (
-                                    <BulkConclusionEditForm
-                                        key={`edit-bc-${bc.id}`}
-                                        pathPurl={pathPurl}
-                                        bulkConclusion={bc}
-                                        editHandler={editHandler}
-                                    />
-                                ) : (
-                                    <BulkConclusion
-                                        key={`bc-${bc.id}`}
-                                        purl={purl}
-                                        bulkConclusion={bc}
-                                        editHandler={editHandler}
-                                    />
-                                ),
-                            )}
-                        </>
-                    )}
-                    {bcForOtherContext && bcForOtherContext.length > 0 && (
-                        <>
-                            <Card className="bg-muted m-2">
-                                <CardHeader>
-                                    <CardTitle>
-                                        Bulk Conclusions created for other
-                                        packages
-                                    </CardTitle>
-                                    <CardDescription>
-                                        There are additionally a total of{" "}
-                                        {bcForOtherContext?.length} bulk
-                                        conclusions that are created for other
-                                        packages and/or other versions of this
-                                        package. These bulk conclusions are
-                                        relevant for this package and thus shown
-                                        here, because the SHA256 (ie. contents)
-                                        of the files match.
-                                    </CardDescription>
-                                </CardHeader>
-                            </Card>
-                            {bcForOtherContext.map((bc) =>
-                                bc.id === editing ? (
-                                    <BulkConclusionEditForm
-                                        key={`edit-bc-${bc.id}`}
-                                        pathPurl={pathPurl}
-                                        bulkConclusion={bc}
-                                        editHandler={editHandler}
-                                    />
-                                ) : (
-                                    <BulkConclusion
-                                        key={`bc-${bc.id}`}
-                                        purl={purl}
-                                        bulkConclusion={bc}
-                                        editHandler={editHandler}
-                                    />
-                                ),
-                            )}
-                        </>
-                    )}
-                </div>
-            ) : (
-                <div className="flex h-full items-center justify-center border">
-                    No bulk conclusions created for this package
-                </div>
-            )}
+            {data &&
+                (data.bulkConclusions.length > 0 ? (
+                    <div className="w-full flex-1 overflow-y-auto border">
+                        {bcForThisPackage && bcForThisPackage.length > 0 && (
+                            <>
+                                <Card className="bg-muted m-2">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            Bulk Conclusions created for this
+                                            package
+                                        </CardTitle>
+                                        <CardDescription>
+                                            This is a list of the{" "}
+                                            {bcForThisPackage?.length} bulk
+                                            conclusions that are created
+                                            originally for this package and
+                                            version.
+                                        </CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                {bcForThisPackage.map((bc) =>
+                                    bc.id === editing ? (
+                                        <BulkConclusionEditForm
+                                            key={`edit-bc-${bc.id}`}
+                                            pathPurl={pathPurl}
+                                            bulkConclusion={bc}
+                                            editHandler={editHandler}
+                                        />
+                                    ) : (
+                                        <BulkConclusion
+                                            key={`bc-${bc.id}`}
+                                            purl={purl}
+                                            bulkConclusion={bc}
+                                            editHandler={editHandler}
+                                        />
+                                    ),
+                                )}
+                            </>
+                        )}
+                        {bcForOtherContext && bcForOtherContext.length > 0 && (
+                            <>
+                                <Card className="bg-muted m-2">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            Bulk Conclusions created for other
+                                            packages
+                                        </CardTitle>
+                                        <CardDescription>
+                                            There are additionally a total of{" "}
+                                            {bcForOtherContext?.length} bulk
+                                            conclusions that are created for
+                                            other packages and/or other versions
+                                            of this package. These bulk
+                                            conclusions are relevant for this
+                                            package and thus shown here, because
+                                            the SHA256 (ie. contents) of the
+                                            files match.
+                                        </CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                {bcForOtherContext.map((bc) =>
+                                    bc.id === editing ? (
+                                        <BulkConclusionEditForm
+                                            key={`edit-bc-${bc.id}`}
+                                            pathPurl={pathPurl}
+                                            bulkConclusion={bc}
+                                            editHandler={editHandler}
+                                        />
+                                    ) : (
+                                        <BulkConclusion
+                                            key={`bc-${bc.id}`}
+                                            purl={purl}
+                                            bulkConclusion={bc}
+                                            editHandler={editHandler}
+                                        />
+                                    ),
+                                )}
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    <div className="flex h-full items-center justify-center border">
+                        No bulk conclusions created for this package
+                    </div>
+                ))}
         </>
     );
 };
