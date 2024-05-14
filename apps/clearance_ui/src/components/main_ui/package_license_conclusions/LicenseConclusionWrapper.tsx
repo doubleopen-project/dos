@@ -60,86 +60,89 @@ const LicenseConclusionWrapper = ({ purl }: Props) => {
                     Error: {getErrorMessage(error)}
                 </div>
             )}
-            {data && data.licenseConclusions.length > 0 ? (
-                <div className="w-full flex-1 overflow-y-auto border">
-                    {lcForThisPackage && lcForThisPackage.length > 0 && (
-                        <>
-                            <Card className="bg-muted m-2">
-                                <CardHeader>
-                                    <CardTitle>
-                                        License Conclusions created for this
-                                        package
-                                    </CardTitle>
-                                    <CardDescription>
-                                        This is a list of the{" "}
-                                        {lcForThisPackage?.length} license
-                                        conclusions that are created originally
-                                        for this package and version.
-                                    </CardDescription>
-                                </CardHeader>
-                            </Card>
-                            {lcForThisPackage.map((lc) =>
-                                lc.id === editing ? (
-                                    <LicenseConclusionEditForm
-                                        key={`edit-lc-${lc.id}`}
-                                        licenseConclusion={lc}
-                                        editHandler={editHandler}
-                                    />
-                                ) : (
-                                    <LicenseConclusion
-                                        key={`lc-${lc.id}`}
-                                        purl={purl}
-                                        licenseConclusion={lc}
-                                        editHandler={editHandler}
-                                    />
-                                ),
-                            )}
-                        </>
-                    )}
-                    {lcForOtherContext && lcForOtherContext.length > 0 && (
-                        <>
-                            <Card className="bg-muted m-2">
-                                <CardHeader>
-                                    <CardTitle>
-                                        License Conclusions created for other
-                                        packages
-                                    </CardTitle>
-                                    <CardDescription>
-                                        There are additionally a total of{" "}
-                                        {lcForOtherContext?.length} license
-                                        conclusions that are created for other
-                                        packages and/or other versions of this
-                                        package. These license conclusions are
-                                        relevant for this package and thus shown
-                                        here, because the SHA256 (ie. contents)
-                                        of the files match.
-                                    </CardDescription>
-                                </CardHeader>
-                            </Card>
-                            {lcForOtherContext.map((lc) =>
-                                lc.id === editing ? (
-                                    <LicenseConclusionEditForm
-                                        key={`edit-lc-${lc.id}`}
-                                        licenseConclusion={lc}
-                                        editHandler={editHandler}
-                                    />
-                                ) : (
-                                    <LicenseConclusion
-                                        key={`lc-${lc.id}`}
-                                        purl={purl}
-                                        licenseConclusion={lc}
-                                        editHandler={editHandler}
-                                    />
-                                ),
-                            )}
-                        </>
-                    )}
-                </div>
-            ) : (
-                <div className="flex h-full items-center justify-center border">
-                    No license conclusions created for this package
-                </div>
-            )}
+            {data &&
+                (data.licenseConclusions.length > 0 ? (
+                    <div className="w-full flex-1 overflow-y-auto border">
+                        {lcForThisPackage && lcForThisPackage.length > 0 && (
+                            <>
+                                <Card className="bg-muted m-2">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            License Conclusions created for this
+                                            package
+                                        </CardTitle>
+                                        <CardDescription>
+                                            This is a list of the{" "}
+                                            {lcForThisPackage?.length} license
+                                            conclusions that are created
+                                            originally for this package and
+                                            version.
+                                        </CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                {lcForThisPackage.map((lc) =>
+                                    lc.id === editing ? (
+                                        <LicenseConclusionEditForm
+                                            key={`edit-lc-${lc.id}`}
+                                            licenseConclusion={lc}
+                                            editHandler={editHandler}
+                                        />
+                                    ) : (
+                                        <LicenseConclusion
+                                            key={`lc-${lc.id}`}
+                                            purl={purl}
+                                            licenseConclusion={lc}
+                                            editHandler={editHandler}
+                                        />
+                                    ),
+                                )}
+                            </>
+                        )}
+                        {lcForOtherContext && lcForOtherContext.length > 0 && (
+                            <>
+                                <Card className="bg-muted m-2">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            License Conclusions created for
+                                            other packages
+                                        </CardTitle>
+                                        <CardDescription>
+                                            There are additionally a total of{" "}
+                                            {lcForOtherContext?.length} license
+                                            conclusions that are created for
+                                            other packages and/or other versions
+                                            of this package. These license
+                                            conclusions are relevant for this
+                                            package and thus shown here, because
+                                            the SHA256 (ie. contents) of the
+                                            files match.
+                                        </CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                {lcForOtherContext.map((lc) =>
+                                    lc.id === editing ? (
+                                        <LicenseConclusionEditForm
+                                            key={`edit-lc-${lc.id}`}
+                                            licenseConclusion={lc}
+                                            editHandler={editHandler}
+                                        />
+                                    ) : (
+                                        <LicenseConclusion
+                                            key={`lc-${lc.id}`}
+                                            purl={purl}
+                                            licenseConclusion={lc}
+                                            editHandler={editHandler}
+                                        />
+                                    ),
+                                )}
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    <div className="flex h-full items-center justify-center border">
+                        No license conclusions created for this package
+                    </div>
+                ))}
         </>
     );
 };
