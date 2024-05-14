@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { useSession } from "next-auth/react";
 import { Fira_Code } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -22,6 +23,7 @@ const fira_code = Fira_Code({
 });
 
 const Navbar = () => {
+    const session = useSession();
     const router = useRouter();
     const { purl, path } = router.query;
     let mainPurl;
@@ -60,23 +62,31 @@ const Navbar = () => {
                         ()
                     </span>
                 </Link>
-                {mainPurl && (
-                    <div className="flex-row items-center">
-                        <Label className="break-all text-xs">{mainPurl}</Label>
-                        <CopyToClipboard copyText={mainPurl} />
-                    </div>
-                )}
-                {path && (
-                    <>
-                        <Label className="pl-1 pr-2 text-lg font-semibold text-[#FF3366]">
-                            /
-                        </Label>
+                {session.status === "authenticated" &&
+                    !session.data.error &&
+                    mainPurl && (
                         <div className="flex-row items-center">
-                            <Label className="break-all text-xs">{path}</Label>
-                            <CopyToClipboard copyText={path as string} />
+                            <Label className="break-all text-xs">
+                                {mainPurl}
+                            </Label>
+                            <CopyToClipboard copyText={mainPurl} />
                         </div>
-                    </>
-                )}
+                    )}
+                {session.status === "authenticated" &&
+                    !session.data.error &&
+                    path && (
+                        <>
+                            <Label className="pl-1 pr-2 text-lg font-semibold text-[#FF3366]">
+                                /
+                            </Label>
+                            <div className="flex-row items-center">
+                                <Label className="break-all text-xs">
+                                    {path}
+                                </Label>
+                                <CopyToClipboard copyText={path as string} />
+                            </div>
+                        </>
+                    )}
             </div>
             <div>
                 <UserMenuItem className="mr-1" />
