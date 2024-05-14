@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
 import RegisterUser from "@/components/user_management/RegisterUser";
+import { hasPermission } from "@/helpers/hasPermission";
 
 export default function UserManagement() {
     const session = useSession({
@@ -17,8 +18,12 @@ export default function UserManagement() {
     const user = useUser();
 
     useEffect(() => {
-        if (user && user.role !== "ADMIN") {
-            router.push("/");
+        if (
+            user &&
+            user.permissions &&
+            !hasPermission(user.permissions, "Users", "POST")
+        ) {
+            router.push("/403");
         }
     }, [user, router]);
 
@@ -32,30 +37,22 @@ export default function UserManagement() {
 
     return (
         <>
-            {user && user.role === "ADMIN" && (
-                <MultiSection
-                    title="User Management"
-                    defaultSection="adduser"
-                    sections={[
-                        {
-                            title: "Register New User",
-                            tag: "adduser",
-                            href: "/admin/users?section=adduser",
-                            content: RegisterUser,
-                        },
-                    ]}
-                />
-            )}
-            {user && user.role === "USER" && (
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">Unauthorized</p>
-                </div>
-            )}
-            {user === null && (
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-red-500">Please login to continue</p>
-                </div>
-            )}
+            {user &&
+                user.permissions &&
+                hasPermission(user.permissions, "Users", "POST") && (
+                    <MultiSection
+                        title="User Management"
+                        defaultSection="adduser"
+                        sections={[
+                            {
+                                title: "Register New User",
+                                tag: "adduser",
+                                href: "/admin/users?section=adduser",
+                                content: RegisterUser,
+                            },
+                        ]}
+                    />
+                )}
         </>
     );
 }
