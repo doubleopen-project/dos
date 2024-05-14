@@ -10,6 +10,7 @@ import { Info } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
+import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,6 +32,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import ConclusionLicense from "@/components/common/ConclusionLicense";
 import ConclusionSPDX from "@/components/common/ConclusionSPDX";
+import { hasPermission } from "@/helpers/hasPermission";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
@@ -58,6 +60,7 @@ const ConclusionForm = ({
     className,
 }: Props) => {
     const session = useSession();
+    const user = useUser();
     const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
@@ -164,6 +167,15 @@ const ConclusionForm = ({
 
     return (
         <div className={cn("flex w-full flex-col", className)}>
+            {user &&
+                user.permissions &&
+                !hasPermission(user.permissions, "ClearanceItems", "POST") && (
+                    <div className="mb-1 mr-1 rounded-md bg-red-100 p-1 text-xs">
+                        Feel free to interact with the form but please note that
+                        you do not currently have permission to add license
+                        conclusions.
+                    </div>
+                )}
             <Form {...form}>
                 <form
                     id="conclusionForm"
@@ -278,6 +290,15 @@ const ConclusionForm = ({
                             type="submit"
                             form="conclusionForm"
                             className="ml-4 text-left text-xs"
+                            disabled={
+                                user && user.permissions
+                                    ? !hasPermission(
+                                          user.permissions,
+                                          "ClearanceItems",
+                                          "POST",
+                                      )
+                                    : true
+                            }
                         >
                             Submit
                         </Button>

@@ -11,9 +11,17 @@ type Props = {
     className?: string;
     iconSize?: number;
     variant?: ButtonProps["variant"];
+    disabled?: boolean;
 };
 
-const EditButton = ({ onClick, name, className, iconSize, variant }: Props) => {
+const EditButton = ({
+    onClick,
+    name,
+    className,
+    iconSize,
+    variant,
+    disabled,
+}: Props) => {
     return (
         <Button
             variant={variant || "outline"}
@@ -21,6 +29,7 @@ const EditButton = ({ onClick, name, className, iconSize, variant }: Props) => {
             onClick={onClick}
             name={name}
             aria-label={name}
+            disabled={disabled}
         >
             <Pencil size={iconSize || 16} />
         </Button>

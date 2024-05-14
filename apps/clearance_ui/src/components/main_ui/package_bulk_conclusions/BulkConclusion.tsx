@@ -12,6 +12,7 @@ import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
+import { hasPermission } from "@/helpers/hasPermission";
 
 type BulkConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -109,15 +110,33 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
             </div>
             <div className="flex pl-1">
                 {(user?.username === bulkConclusion.user.username ||
-                    user?.role === "ADMIN") && (
+                    user?.role === "app-admin") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
                             className="ml-2 mr-1 px-2"
                             onClick={() => editHandler(bulkConclusion.id)}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "PUT",
+                                )
+                            }
                         />
-                        <DeleteBulkConclusion id={bulkConclusion.id} />
+                        <DeleteBulkConclusion
+                            id={bulkConclusion.id}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "DELETE",
+                                )
+                            }
+                        />
                     </div>
                 )}
             </div>

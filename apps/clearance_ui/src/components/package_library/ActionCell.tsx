@@ -7,6 +7,7 @@ import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import DeletePackage from "@/components/common/delete_item/DeletePackage";
+import { hasPermission } from "@/helpers/hasPermission";
 
 type Package = ZodiosResponseByAlias<
     typeof userAPI,
@@ -19,11 +20,12 @@ const ActionCell = ({ row }: CellContext<Package, unknown>) => {
     const user = useUser();
     return user ? (
         <>
-            {user.role === "ADMIN" && (
-                <>
-                    <DeletePackage data={row.original} />
-                </>
-            )}
+            {user.permissions &&
+                hasPermission(user.permissions, "PackageData", "DELETE") && (
+                    <>
+                        <DeletePackage data={row.original} />
+                    </>
+                )}
         </>
     ) : null;
 };
