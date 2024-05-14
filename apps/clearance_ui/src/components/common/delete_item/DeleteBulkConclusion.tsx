@@ -14,9 +14,10 @@ import { DeleteAction } from "@/types";
 
 type Props = {
     id: number;
+    disabled?: boolean;
 };
 
-const DeleteBulkConclusion = ({ id }: Props) => {
+const DeleteBulkConclusion = ({ id, disabled }: Props) => {
     const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
@@ -124,7 +125,7 @@ const DeleteBulkConclusion = ({ id }: Props) => {
         );
     }
 
-    return <DeleteDialog deleteActions={deleteActions} />;
+    return <DeleteDialog deleteActions={deleteActions} disabled={disabled} />;
 };
 
 export default DeleteBulkConclusion;

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
+import { hasPermission } from "@/helpers/hasPermission";
 
 type PathExclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -76,15 +77,33 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
             </div>
             <div className="flex pl-1">
                 {(user?.username === pathExclusion.user.username ||
-                    user?.role === "ADMIN") && (
+                    user?.role === "app-admin") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
                             className="ml-2 mr-1 px-2"
                             onClick={() => editHandler(pathExclusion.id)}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "PUT",
+                                )
+                            }
                         />
-                        <DeletePathExclusion data={pathExclusion} />
+                        <DeletePathExclusion
+                            data={pathExclusion}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "DELETE",
+                                )
+                            }
+                        />
                     </div>
                 )}
             </div>

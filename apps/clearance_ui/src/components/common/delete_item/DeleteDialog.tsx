@@ -30,9 +30,15 @@ type Props = {
         | "secondary"
         | "ghost"
         | "success";
+    disabled?: boolean;
 };
 
-const DeleteDialog = ({ deleteActions, className, variant }: Props) => {
+const DeleteDialog = ({
+    deleteActions,
+    className,
+    variant,
+    disabled,
+}: Props) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -40,6 +46,7 @@ const DeleteDialog = ({ deleteActions, className, variant }: Props) => {
                     data-testid="delete-clearance-button"
                     variant={variant || "outline"}
                     className={cn(className, "px-2")}
+                    disabled={disabled}
                 >
                     <Delete></Delete>
                 </Button>

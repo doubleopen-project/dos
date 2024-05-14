@@ -21,6 +21,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { hasPermission } from "@/helpers/hasPermission";
 import { cn } from "@/lib/utils";
 
 type UserMenuItemProps = {
@@ -103,24 +104,27 @@ const UserMenuItem = ({ className }: UserMenuItemProps) => {
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
-                    {user.role === "ADMIN" && (
-                        <>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Admin Tools</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/admin/users"
-                                        className="w-full"
-                                    >
-                                        <UsersRound className="mr-2 inline-block h-4 w-4" />
-                                        <span>Manage Users</span>
-                                    </Link>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </>
-                    )}
+                    {user.permissions &&
+                        hasPermission(user.permissions, "Users", "POST") && (
+                            <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>
+                                    Admin Tools
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/admin/users"
+                                            className="w-full"
+                                        >
+                                            <UsersRound className="mr-2 inline-block h-4 w-4" />
+                                            <span>Manage Users</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </>
+                        )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
                         <Button

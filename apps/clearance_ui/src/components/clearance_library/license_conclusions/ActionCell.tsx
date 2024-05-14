@@ -21,6 +21,7 @@ import { toast } from "@/components/ui/use-toast";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
+import { hasPermission } from "@/helpers/hasPermission";
 import { isValidConcludedExpression } from "@/helpers/isValidConcludedExpression";
 
 type LicenseConclusion = ZodiosResponseByAlias<
@@ -158,22 +159,39 @@ const ActionCell = ({
         </div>
     ) : (
         <>
-            {user &&
-                (user.username === row.original.user.username ||
-                    user.role === "ADMIN") && (
-                    <div className="flex items-center">
-                        {isLoading ? (
-                            <Loader2 size={20} className="mx-2 animate-spin" />
-                        ) : (
-                            <EditButton
-                                onClick={handleEdit}
-                                name="edit"
-                                className="mr-1 px-2"
-                            />
-                        )}
-                        <DeleteLicenseConclusion data={row.original} />
-                    </div>
-                )}
+            {(user?.username === row.original.user.username ||
+                user?.role === "app-admin") && (
+                <div className="flex items-center">
+                    {isLoading ? (
+                        <Loader2 size={20} className="mx-2 animate-spin" />
+                    ) : (
+                        <EditButton
+                            onClick={handleEdit}
+                            name="edit"
+                            className="mr-1 px-2"
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "PUT",
+                                )
+                            }
+                        />
+                    )}
+                    <DeleteLicenseConclusion
+                        data={row.original}
+                        disabled={
+                            user.permissions === null ||
+                            !hasPermission(
+                                user.permissions,
+                                "ClearanceItems",
+                                "DELETE",
+                            )
+                        }
+                    />
+                </div>
+            )}
         </>
     );
 };

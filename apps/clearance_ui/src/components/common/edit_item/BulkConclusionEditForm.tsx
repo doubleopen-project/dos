@@ -392,6 +392,14 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
                     )}
                     <div className="flex justify-end">
                         <Button
+                            type="reset"
+                            variant="outline"
+                            className="mr-2 mt-2 rounded-md p-1 text-xs"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
                             type="submit"
                             form="bulkConclusionEditForm"
                             name="submit-bulk-edit"

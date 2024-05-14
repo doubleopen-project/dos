@@ -19,6 +19,7 @@ import {
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
+import { hasPermission } from "@/helpers/hasPermission";
 import { stringToColourRGBA } from "@/helpers/stringToColour";
 import { cn } from "@/lib/utils";
 
@@ -174,7 +175,7 @@ const LicenseConclusionItem = ({
                 </div>
                 <div>
                     {(user?.username === license.user.username ||
-                        user?.role === "ADMIN") && (
+                        user?.role === "app-admin") && (
                         <div
                             className={cn(
                                 divWidth < 200 ? "mt-2" : "ml-4",
@@ -192,6 +193,14 @@ const LicenseConclusionItem = ({
                                                 license.contextPurl,
                                             );
                                     }}
+                                    disabled={
+                                        user.permissions === null ||
+                                        !hasPermission(
+                                            user.permissions,
+                                            "ClearanceItems",
+                                            "PUT",
+                                        )
+                                    }
                                 />
                             )}
                             {!license.bulkConclusionId && (
@@ -201,12 +210,28 @@ const LicenseConclusionItem = ({
                                     onClick={() =>
                                         console.log("Edit license conclusion")
                                     }
+                                    disabled={
+                                        user.permissions === null ||
+                                        !hasPermission(
+                                            user.permissions,
+                                            "ClearanceItems",
+                                            "PUT",
+                                        )
+                                    }
                                 />
                             )}
                             <DeleteLicenseConclusion
                                 data={license}
                                 className="h-9 w-8 px-2"
                                 variant="destructive"
+                                disabled={
+                                    user.permissions === null ||
+                                    !hasPermission(
+                                        user.permissions,
+                                        "ClearanceItems",
+                                        "DELETE",
+                                    )
+                                }
                             />
                         </div>
                     )}

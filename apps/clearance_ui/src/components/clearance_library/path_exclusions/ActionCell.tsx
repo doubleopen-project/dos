@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
+import { hasPermission } from "@/helpers/hasPermission";
 
 type PathExclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -126,18 +127,35 @@ const ActionCell = ({ row, table }: CellContext<PathExclusion, unknown>) => {
         </div>
     ) : (
         <>
-            {user &&
-                (user.role === "ADMIN" ||
-                    user.username === row.original.user.username) && (
-                    <div className="flex items-center">
-                        <EditButton
-                            onClick={handleEdit}
-                            name="edit"
-                            className="mr-1 px-2"
-                        />
-                        <DeletePathExclusion data={row.original} />
-                    </div>
-                )}
+            {(user?.username === row.original.user.username ||
+                user?.role === "app-admin") && (
+                <div className="flex items-center">
+                    <EditButton
+                        onClick={handleEdit}
+                        name="edit"
+                        className="mr-1 px-2"
+                        disabled={
+                            user.permissions === null ||
+                            !hasPermission(
+                                user.permissions,
+                                "ClearanceItems",
+                                "PUT",
+                            )
+                        }
+                    />
+                    <DeletePathExclusion
+                        data={row.original}
+                        disabled={
+                            user.permissions === null ||
+                            !hasPermission(
+                                user.permissions,
+                                "ClearanceItems",
+                                "DELETE",
+                            )
+                        }
+                    />
+                </div>
+            )}
         </>
     );
 };

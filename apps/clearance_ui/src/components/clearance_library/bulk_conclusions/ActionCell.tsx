@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
+import { hasPermission } from "@/helpers/hasPermission";
 import { isValidConcludedExpression } from "@/helpers/isValidConcludedExpression";
 
 type BulkConclusion = ZodiosResponseByAlias<
@@ -147,22 +148,39 @@ const ActionCell = ({ row, table }: CellContext<BulkConclusion, unknown>) => {
         </div>
     ) : (
         <>
-            {user &&
-                (user.role === "ADMIN" ||
-                    user.username === row.original.user.username) && (
-                    <div className="flex items-center">
-                        {isLoading ? (
-                            <Loader2 size={20} className="mx-2 animate-spin" />
-                        ) : (
-                            <EditButton
-                                onClick={handleEdit}
-                                name="edit"
-                                className="mr-1 px-2"
-                            />
-                        )}
-                        <DeleteBulkConclusion id={row.original.id} />
-                    </div>
-                )}
+            {(user?.username === row.original.user.username ||
+                user?.role === "app-admin") && (
+                <div className="flex items-center">
+                    {isLoading ? (
+                        <Loader2 size={20} className="mx-2 animate-spin" />
+                    ) : (
+                        <EditButton
+                            onClick={handleEdit}
+                            name="edit"
+                            className="mr-1 px-2"
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "PUT",
+                                )
+                            }
+                        />
+                    )}
+                    <DeleteBulkConclusion
+                        id={row.original.id}
+                        disabled={
+                            user.permissions === null ||
+                            !hasPermission(
+                                user.permissions,
+                                "ClearanceItems",
+                                "DELETE",
+                            )
+                        }
+                    />
+                </div>
+            )}
         </>
     );
 };

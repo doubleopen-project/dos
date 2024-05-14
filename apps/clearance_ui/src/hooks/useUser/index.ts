@@ -9,7 +9,7 @@ import type { Permissions } from "validation-helpers";
 
 export type User = {
     username: string;
-    role: "ADMIN" | "USER";
+    role: string;
     permissions: Permissions | null;
 };
 
@@ -71,11 +71,10 @@ export const useUser: () => User | null = () => {
     return session.status === "authenticated"
         ? {
               username: session.data.user.preferred_username,
-              role: session.data.user.realm_access.roles?.find(
-                  (role) => role === "app-admin",
-              )
-                  ? "ADMIN"
-                  : "USER",
+              role:
+                  session.data.user.realm_access.roles?.find((role) =>
+                      role.startsWith("app-"),
+                  ) || "app-no-role",
               permissions: permissions,
           }
         : null;

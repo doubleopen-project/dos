@@ -21,9 +21,10 @@ type ItemType = ZodiosResponseByAlias<
 
 type Props = {
     data: ItemType;
+    disabled?: boolean;
 };
 
-const DeletePathExclusion = ({ data }: Props) => {
+const DeletePathExclusion = ({ data, disabled }: Props) => {
     const session = useSession();
     const { toast } = useToast();
     const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
@@ -101,7 +102,7 @@ const DeletePathExclusion = ({ data }: Props) => {
         );
     }
 
-    return <DeleteDialog deleteActions={deleteActions} />;
+    return <DeleteDialog deleteActions={deleteActions} disabled={disabled} />;
 };
 
 export default DeletePathExclusion;

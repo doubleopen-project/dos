@@ -12,6 +12,7 @@ import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicen
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
 import AffectedPath from "@/components/main_ui/package_license_conclusions/AffectedPath";
+import { hasPermission } from "@/helpers/hasPermission";
 
 type LicenseConclusion = ZodiosResponseByAlias<
     typeof userAPI,
@@ -105,15 +106,33 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
             </div>
             <div className="flex pl-1">
                 {(user?.username === licenseConclusion.user.username ||
-                    user?.role === "ADMIN") && (
+                    user?.role === "app-admin") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
                             className="ml-2 mr-1 px-2"
                             onClick={() => editHandler(licenseConclusion.id)}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "PUT",
+                                )
+                            }
                         />
-                        <DeleteLicenseConclusion data={licenseConclusion} />
+                        <DeleteLicenseConclusion
+                            data={licenseConclusion}
+                            disabled={
+                                user.permissions === null ||
+                                !hasPermission(
+                                    user.permissions,
+                                    "ClearanceItems",
+                                    "DELETE",
+                                )
+                            }
+                        />
                     </div>
                 )}
             </div>

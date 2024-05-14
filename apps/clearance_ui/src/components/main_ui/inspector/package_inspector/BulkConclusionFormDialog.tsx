@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import BulkConclusionEditForm from "@/components/common/edit_item/BulkConclusionEditForm";
 import BulkConclusionForm from "@/components/main_ui/inspector/package_inspector/BulkConclusionForm";
 
@@ -42,15 +41,6 @@ const BulkConclusionFormDialog = ({
                         setOpen={setOpen}
                     />
                 )}
-                <DialogFooter className="flex justify-end">
-                    <Button
-                        variant="outline"
-                        className="rounded-md p-1 text-xs"
-                        onClick={() => setOpen(false)}
-                    >
-                        Cancel
-                    </Button>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     );

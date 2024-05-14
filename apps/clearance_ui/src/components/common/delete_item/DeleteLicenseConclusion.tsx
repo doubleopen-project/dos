@@ -31,9 +31,15 @@ type Props = {
         | "secondary"
         | "ghost"
         | "success";
+    disabled?: boolean;
 };
 
-const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
+const DeleteLicenseConclusion = ({
+    data,
+    className,
+    variant,
+    disabled,
+}: Props) => {
     const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
@@ -190,6 +196,7 @@ const DeleteLicenseConclusion = ({ data, className, variant }: Props) => {
             deleteActions={deleteActions}
             className={className}
             variant={variant}
+            disabled={disabled}
         />
     );
 };
