@@ -13,6 +13,7 @@ import {
     CommandGroup,
     CommandInput,
     CommandItem,
+    CommandList,
 } from "@/components/ui/command";
 import {
     Popover,
@@ -89,47 +90,50 @@ const LicenseSelector = ({
                     <Command>
                         <CommandInput placeholder="Search license..." />
                         <CommandEmpty>No license found.</CommandEmpty>
-                        <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
-                            {licenses.map((license) => (
-                                <CommandItem
-                                    key={license.value}
-                                    className="items-start text-left"
-                                    onSelect={(currentValue) => {
-                                        setValue(
-                                            currentValue === value
-                                                ? null
-                                                : currentValue,
-                                        );
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-1/12",
-                                            value === license.value
-                                                ? "opacity-100"
-                                                : "opacity-0",
-                                        )}
-                                    />
-                                    {license.label.includes("AND") ||
-                                    license.label.includes("OR") ? (
-                                        <span className="w-11/12 text-xs text-red-600">
-                                            {license.label}
-                                        </span>
-                                    ) : (
-                                        <span className="w-11/12 text-xs">
-                                            {license.label}
-                                        </span>
-                                    )}
-                                    <span
-                                        className="ml-2 mt-1 flex h-2 w-2 items-center justify-center rounded-full"
-                                        style={{
-                                            backgroundColor: license.bgcolor,
+                        <CommandList className="max-h-[80vh]">
+                            <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
+                                {licenses.map((license) => (
+                                    <CommandItem
+                                        key={license.value}
+                                        className="items-start text-left"
+                                        onSelect={(currentValue) => {
+                                            setValue(
+                                                currentValue === value
+                                                    ? null
+                                                    : currentValue,
+                                            );
+                                            setOpen(false);
                                         }}
-                                    ></span>
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-1/12",
+                                                value === license.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0",
+                                            )}
+                                        />
+                                        {license.label.includes("AND") ||
+                                        license.label.includes("OR") ? (
+                                            <span className="w-11/12 text-xs text-red-600">
+                                                {license.label}
+                                            </span>
+                                        ) : (
+                                            <span className="w-11/12 text-xs">
+                                                {license.label}
+                                            </span>
+                                        )}
+                                        <span
+                                            className="ml-2 mt-1 flex h-2 w-2 items-center justify-center rounded-full"
+                                            style={{
+                                                backgroundColor:
+                                                    license.bgcolor,
+                                            }}
+                                        ></span>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
                     </Command>
                 </PopoverContent>
             </Popover>
