@@ -15,9 +15,16 @@ import { DeleteAction } from "@/types";
 type Props = {
     id: number;
     disabled?: boolean;
+    disabledTooltipMsg?: string;
+    enabledTooltipMsg?: string;
 };
 
-const DeleteBulkConclusion = ({ id, disabled }: Props) => {
+const DeleteBulkConclusion = ({
+    id,
+    disabled,
+    disabledTooltipMsg,
+    enabledTooltipMsg,
+}: Props) => {
     const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
@@ -125,7 +132,14 @@ const DeleteBulkConclusion = ({ id, disabled }: Props) => {
         );
     }
 
-    return <DeleteDialog deleteActions={deleteActions} disabled={disabled} />;
+    return (
+        <DeleteDialog
+            deleteActions={deleteActions}
+            disabled={disabled}
+            disabledTooltipMsg={disabledTooltipMsg}
+            enabledTooltipMsg={enabledTooltipMsg}
+        />
+    );
 };
 
 export default DeleteBulkConclusion;

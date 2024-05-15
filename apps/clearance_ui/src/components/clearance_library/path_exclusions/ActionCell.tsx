@@ -142,6 +142,7 @@ const ActionCell = ({ row, table }: CellContext<PathExclusion, unknown>) => {
                                 "PUT",
                             )
                         }
+                        disabledTooltipMsg="You do not currently have permission to edit clearance items."
                     />
                     <DeletePathExclusion
                         data={row.original}
@@ -153,6 +154,7 @@ const ActionCell = ({ row, table }: CellContext<PathExclusion, unknown>) => {
                                 "DELETE",
                             )
                         }
+                        disabledTooltipMsg="You do not currently have permission to delete clearance items."
                     />
                 </div>
             )}

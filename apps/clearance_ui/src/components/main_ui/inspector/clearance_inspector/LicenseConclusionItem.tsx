@@ -120,10 +120,7 @@ const LicenseConclusionItem = ({
             <div
                 className={cn(
                     showContent
-                        ? "mb-4 ml-4 mt-2 flex h-max scale-y-100 items-start" +
-                              (divWidth < 200
-                                  ? " flex-col"
-                                  : " flex-row justify-between")
+                        ? "mb-4 ml-4 mt-2 flex h-max scale-y-100 flex-col items-start"
                         : "h-0 scale-y-0",
                     "overflow-auto transition-all duration-300 ease-in-out",
                 )}
@@ -176,12 +173,7 @@ const LicenseConclusionItem = ({
                 <div>
                     {(user?.username === license.user.username ||
                         user?.role === "app-admin") && (
-                        <div
-                            className={cn(
-                                divWidth < 200 ? "mt-2" : "ml-4",
-                                "flex",
-                            )}
-                        >
+                        <div className="mt-2 flex">
                             {license.bulkConclusionId && (
                                 <EditButton
                                     name="edit-bulk"
@@ -201,6 +193,8 @@ const LicenseConclusionItem = ({
                                             "PUT",
                                         )
                                     }
+                                    disabledTooltipMsg="Not permitted"
+                                    tooltipAlign="start"
                                 />
                             )}
                             {!license.bulkConclusionId && (
@@ -218,6 +212,8 @@ const LicenseConclusionItem = ({
                                             "PUT",
                                         )
                                     }
+                                    disabledTooltipMsg="Not permitted."
+                                    tooltipAlign="start"
                                 />
                             )}
                             <DeleteLicenseConclusion
@@ -232,6 +228,8 @@ const LicenseConclusionItem = ({
                                         "DELETE",
                                     )
                                 }
+                                disabledTooltipMsg="Not permitted"
+                                tooltipAlign="start"
                             />
                         </div>
                     )}
