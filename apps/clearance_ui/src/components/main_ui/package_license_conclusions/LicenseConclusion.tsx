@@ -121,6 +121,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                                     "PUT",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to edit clearance items."
                         />
                         <DeleteLicenseConclusion
                             data={licenseConclusion}
@@ -132,6 +133,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                                     "DELETE",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to delete clearance items."
                         />
                     </div>
                 )}

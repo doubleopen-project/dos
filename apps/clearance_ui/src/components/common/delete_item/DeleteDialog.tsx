@@ -16,6 +16,12 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { DeleteAction } from "@/types";
 
@@ -31,6 +37,10 @@ type Props = {
         | "ghost"
         | "success";
     disabled?: boolean;
+    disabledTooltipMsg?: string;
+    enabledTooltipMsg?: string;
+    tooltipAlign?: "start" | "center" | "end";
+    tooltipClassName?: string;
 };
 
 const DeleteDialog = ({
@@ -38,20 +48,48 @@ const DeleteDialog = ({
     className,
     variant,
     disabled,
+    disabledTooltipMsg,
+    enabledTooltipMsg,
+    tooltipAlign,
+    tooltipClassName,
 }: Props) => {
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
-                <Button
-                    data-testid="delete-clearance-button"
-                    variant={variant || "outline"}
-                    className={cn(className, "px-2")}
-                    disabled={disabled}
-                >
-                    <Delete></Delete>
-                </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
+            <TooltipProvider>
+                <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild>
+                        <AlertDialogTrigger asChild>
+                            {/* This span wrapper ensures tooltip message is shown even when button is disabled */}
+                            <span tabIndex={0}>
+                                <Button
+                                    data-testid="delete-clearance-button"
+                                    variant={variant || "outline"}
+                                    className={cn(className, "px-2")}
+                                    disabled={disabled}
+                                >
+                                    <Delete></Delete>
+                                </Button>
+                            </span>
+                        </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent
+                        className={cn(
+                            tooltipClassName,
+                            (disabled && !disabledTooltipMsg) ||
+                                (!disabled && !enabledTooltipMsg)
+                                ? "hidden"
+                                : undefined,
+                        )}
+                        align={tooltipAlign || "center"}
+                    >
+                        <div className="text-sm">
+                            {disabled ? disabledTooltipMsg : enabledTooltipMsg}
+                        </div>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            {/* Adding the preventDefault will prevent focusing on the trigger after closing the modal (which would cause the tooltip to show) */}
+            <AlertDialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete</AlertDialogTitle>
                     <AlertDialogDescription>

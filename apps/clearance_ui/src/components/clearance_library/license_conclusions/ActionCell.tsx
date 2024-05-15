@@ -177,6 +177,7 @@ const ActionCell = ({
                                     "PUT",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to edit clearance items."
                         />
                     )}
                     <DeleteLicenseConclusion
@@ -189,6 +190,7 @@ const ActionCell = ({
                                 "DELETE",
                             )
                         }
+                        disabledTooltipMsg="You do not currently have permission to delete clearance items."
                     />
                 </div>
             )}

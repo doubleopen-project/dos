@@ -32,6 +32,10 @@ type Props = {
         | "ghost"
         | "success";
     disabled?: boolean;
+    disabledTooltipMsg?: string;
+    enabledTooltipMsg?: string;
+    tooltipAlign?: "start" | "center" | "end";
+    tooltipClassName?: string;
 };
 
 const DeleteLicenseConclusion = ({
@@ -39,6 +43,10 @@ const DeleteLicenseConclusion = ({
     className,
     variant,
     disabled,
+    disabledTooltipMsg,
+    enabledTooltipMsg,
+    tooltipAlign,
+    tooltipClassName,
 }: Props) => {
     const session = useSession();
     const { toast } = useToast();
@@ -197,6 +205,10 @@ const DeleteLicenseConclusion = ({
             className={className}
             variant={variant}
             disabled={disabled}
+            disabledTooltipMsg={disabledTooltipMsg}
+            enabledTooltipMsg={enabledTooltipMsg}
+            tooltipAlign={tooltipAlign}
+            tooltipClassName={tooltipClassName}
         />
     );
 };

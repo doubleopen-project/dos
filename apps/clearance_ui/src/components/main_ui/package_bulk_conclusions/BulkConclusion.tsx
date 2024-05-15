@@ -125,6 +125,7 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                                     "PUT",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to edit clearance items."
                         />
                         <DeleteBulkConclusion
                             id={bulkConclusion.id}
@@ -136,6 +137,7 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                                     "DELETE",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to delete clearance items."
                         />
                     </div>
                 )}

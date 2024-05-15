@@ -92,6 +92,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                                     "PUT",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to edit clearance items."
                         />
                         <DeletePathExclusion
                             data={pathExclusion}
@@ -103,6 +104,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                                     "DELETE",
                                 )
                             }
+                            disabledTooltipMsg="You do not currently have permission to delete clearance items."
                         />
                     </div>
                 )}
