@@ -3,12 +3,21 @@
 // SPDX-License-Identifier: MIT
 
 //import fs from "fs";
-import { Prisma } from "database";
+import braces from "braces";
+import { FileTree, Prisma } from "database";
+import globToRegExp from "glob-to-regexp";
+import log from "loglevel";
+import { minimatch } from "minimatch";
 import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import { s3Client } from "./s3client";
 import { reportResultState, sendJobToQueue } from "./sa_queries";
+
+const logLevel: log.LogLevelDesc =
+    (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
+
+log.setLevel(logLevel);
 
 // ------------------------- Database operations -------------------------
 
@@ -862,4 +871,95 @@ export const copyDataToNewPackages = async (
             promises.length = 0;
         }
     }
+};
+
+export const findFileTreesMatchingPattern = async (
+    packageId: number,
+    pattern: string,
+): Promise<FileTree[]> => {
+    /*
+     * With the current method of creating a regex from glob patterns, the query won't find any
+     * rows if the pattern contains one of the characters in the unsupportedCharacters array.
+     * It may be possible to transform these globs to a regex that can be used in the query,
+     * but as these kinds of globs haven't been used so far, it's not a priority right now. For
+     * now, the method is set to "loop" if the pattern contains any of the unsupported characters.
+     * This means all the filetrees in the package will be fetched and checked with minimatch.
+     */
+    const unsupportedCharacters = ["[", "]", "?", "!", "|", "(", ")", "+", "@"];
+    let method = "regex";
+    if (unsupportedCharacters.some((c) => pattern.includes(c))) {
+        method = "loop";
+    }
+
+    log.debug("Using method: " + method);
+
+    const filetrees: FileTree[] = [];
+
+    /*
+     * If the method is set to "regex", first, the braces function is used to expand the pattern.
+     * For example a pattern like "{path1/**,path2/{file1,file2}}" will be expanded to its individual
+     * paths/patterns like ["path1/**", "path2/file1", "path2/file2"]. Then, for each part, an exact
+     * match is searched for in the database. If no exact match is found, a regex is created from the
+     * pattern and used to search for filetrees in the database.
+     */
+    if (method === "regex") {
+        const expandedPaths = braces(pattern, {
+            expand: true,
+        });
+        log.debug(expandedPaths);
+        for (const path of expandedPaths) {
+            const exactMatch = await dbQueries.findFileTreeByPkgIdAndPath(
+                packageId,
+                path,
+            );
+
+            if (exactMatch) {
+                filetrees.push(exactMatch);
+            } else {
+                const regex = globToRegExp(path, { globstar: true });
+                log.debug("Glob: " + path);
+                log.debug("Regex: " + regex.source);
+                const regexMatches =
+                    await dbQueries.findFileTreesByPackageIdAndPathRegex(
+                        packageId,
+                        regex.source,
+                    );
+
+                log.debug("Matches: " + regexMatches.length);
+
+                if (regexMatches.length > 0) {
+                    for (const ft of regexMatches) {
+                        filetrees.push(ft);
+                    }
+                } else {
+                    log.error(
+                        "No match for pattern: " +
+                            path +
+                            " with regex: " +
+                            regex.source,
+                    );
+                    /*
+                     * This case shouldn't happen, but as a safety measure, if it does, the "loop"
+                     * method will be used instead.
+                     */
+                    filetrees.length = 0;
+                    log.debug("Switching to method: loop");
+                    method = "loop";
+                    break;
+                }
+            }
+        }
+    }
+
+    if (method === "loop") {
+        const allFileTrees =
+            await dbQueries.findFileTreesByPackageId(packageId);
+        for (const fileTree of allFileTrees) {
+            if (minimatch(fileTree.path, pattern, { dot: true })) {
+                filetrees.push(fileTree);
+            }
+        }
+    }
+
+    return filetrees;
 };
