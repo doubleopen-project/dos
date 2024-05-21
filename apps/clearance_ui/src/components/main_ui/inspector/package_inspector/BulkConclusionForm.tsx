@@ -112,6 +112,9 @@ const BulkConclusionForm = ({
         "GetLicenseConclusionsCount",
     );
     const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetBulkConclusionsCountByPurl",
+    );
+    const keyBulkConclusionCount = userHooks.getKeyByAlias(
         "GetBulkConclusionsCount",
     );
 
@@ -150,6 +153,7 @@ const BulkConclusionForm = ({
                     queryClient.invalidateQueries(
                         keyLicenseConclusionCountByPurl,
                     );
+                    queryClient.invalidateQueries(keyBulkConclusionCount);
                 },
                 onError: (error) => {
                     if (axios.isAxiosError(error)) {
