@@ -10,6 +10,7 @@ import { minimatch } from "minimatch";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
+import { findFileTreesMatchingPattern } from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { extractStringFromGlob } from "../helpers/globHelpers";
@@ -928,11 +929,6 @@ userRouter.post(
                     400,
                 );
 
-            const licenseConclusionInputs = [];
-
-            const fileTrees =
-                await dbQueries.findFileTreesByPackageId(packageId);
-
             const pattern = req.body.pattern.trim();
 
             const bulkConclusion = await dbQueries.createBulkConclusion({
@@ -947,33 +943,14 @@ userRouter.post(
                 userId: req.kauth.grant.access_token.content.sub,
             });
 
-            let mathchedPathsCount = 0;
+            const licenseConclusionInputs = [];
 
-            for (const fileTree of fileTrees) {
-                if (minimatch(fileTree.path, pattern, { dot: true })) {
-                    mathchedPathsCount++;
-                    // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
-                    if (
-                        licenseConclusionInputs.find(
-                            (lc) => lc.fileSha256 === fileTree.fileSha256,
-                        ) === undefined
-                    )
-                        licenseConclusionInputs.push({
-                            concludedLicenseExpressionSPDX:
-                                req.body.concludedLicenseExpressionSPDX,
-                            detectedLicenseExpressionSPDX:
-                                req.body.detectedLicenseExpressionSPDX || null,
-                            comment: req.body.comment || null,
-                            local: req.body.local,
-                            contextPurl: contextPurl,
-                            fileSha256: fileTree.fileSha256,
-                            bulkConclusionId: bulkConclusion.id,
-                            userId: req.kauth.grant.access_token.content.sub,
-                        });
-                }
-            }
+            const fileTrees = await findFileTreesMatchingPattern(
+                packageId,
+                pattern,
+            );
 
-            if (licenseConclusionInputs.length === 0) {
+            if (fileTrees.length === 0) {
                 const deletedBulkConclusion =
                     await dbQueries.deleteBulkConclusion(bulkConclusion.id);
                 if (!deletedBulkConclusion)
@@ -986,6 +963,27 @@ userRouter.post(
                     400,
                     "pattern",
                 );
+            }
+
+            for (const fileTree of fileTrees) {
+                // If licenseConclusionInputs doesn't already contain a license conclusion input for fileSha256 = fileTree.fileSha256
+                if (
+                    licenseConclusionInputs.find(
+                        (lc) => lc.fileSha256 === fileTree.fileSha256,
+                    ) === undefined
+                )
+                    licenseConclusionInputs.push({
+                        concludedLicenseExpressionSPDX:
+                            req.body.concludedLicenseExpressionSPDX,
+                        detectedLicenseExpressionSPDX:
+                            req.body.detectedLicenseExpressionSPDX || null,
+                        comment: req.body.comment || null,
+                        local: req.body.local,
+                        contextPurl: contextPurl,
+                        fileSha256: fileTree.fileSha256,
+                        bulkConclusionId: bulkConclusion.id,
+                        userId: req.kauth.grant.access_token.content.sub,
+                    });
             }
 
             const batchCount = await dbQueries.createManyLicenseConclusions(
@@ -1015,7 +1013,7 @@ userRouter.post(
 
             res.status(200).json({
                 bulkConclusionId: bulkConclusion.id,
-                matchedPathsCount: mathchedPathsCount,
+                matchedPathsCount: fileTrees.length,
                 addedLicenseConclusionsCount: licenseConclusionInputs.length,
                 affectedFilesInPackageCount:
                     affectedRecords.affectedPackageFileTreesCount,
