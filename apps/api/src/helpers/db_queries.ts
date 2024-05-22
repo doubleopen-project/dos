@@ -2924,6 +2924,79 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
     return bulkConclusions;
 };
 
+type BCWithRelatedLCs = Prisma.BulkConclusionGetPayload<{
+    select: {
+        id: true;
+        updatedAt: true;
+        pattern: true;
+        comment: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        local: true;
+        package: {
+            select: {
+                id: true;
+                purl: true;
+            };
+        };
+        licenseConclusions: {
+            select: {
+                id: true;
+                fileSha256: true;
+            };
+        };
+        userId: true;
+    };
+}>;
+
+export const findBCWithRelatedLCsById = async (
+    bulkConclusionId: number,
+): Promise<BCWithRelatedLCs | null> => {
+    let bulkConclusion: BCWithRelatedLCs | null = null;
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            bulkConclusion = await prisma.bulkConclusion.findUnique({
+                where: {
+                    id: bulkConclusionId,
+                },
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    pattern: true,
+                    comment: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    local: true,
+                    package: {
+                        select: {
+                            id: true,
+                            purl: true,
+                        },
+                    },
+                    licenseConclusions: {
+                        select: {
+                            id: true,
+                            fileSha256: true,
+                        },
+                    },
+                    userId: true,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find BulkConclusion: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return bulkConclusion;
+};
+
 type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
     select: {
         id: true;
