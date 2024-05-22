@@ -1165,8 +1165,13 @@ userRouter.put(
                 throw new CustomError("Nothing to update", 400, "root");
             }
 
+            // List of new license conclusions to add
+            const newInputs: Prisma.LicenseConclusionCreateManyInput[] = [];
+
+            // List of ids of license conclusions to delete
+            const delLCs: number[] = [];
+
             if (reqPattern && reqPattern !== origBulk.pattern) {
-                const newInputs = [];
                 const fileTrees = await findFileTreesMatchingPattern(
                     origBulk.package.id,
                     reqPattern,
@@ -1180,6 +1185,7 @@ userRouter.put(
                     );
                 }
 
+                // Find new matching files and add them to newInputs
                 for (const fileTree of fileTrees) {
                     if (
                         origBulk.licenseConclusions.find(
@@ -1209,42 +1215,31 @@ userRouter.put(
                     }
                 }
 
-                await dbQueries.createManyLicenseConclusions(newInputs);
-
+                // Find license conclusions that no longer match the pattern and add them to delLCs
                 for (const lc of origBulk.licenseConclusions) {
                     if (
                         fileTrees.find(
                             (ft) => ft.fileSha256 === lc.fileSha256,
                         ) === undefined
                     ) {
-                        await dbQueries.deleteLicenseConclusion(lc.id);
+                        delLCs.push(lc.id);
                     }
                 }
             }
 
-            if (
-                (reqCLESPDX &&
-                    reqCLESPDX !== origBulk.concludedLicenseExpressionSPDX) ||
-                (reqDLESPDX &&
-                    reqDLESPDX !== origBulk.detectedLicenseExpressionSPDX) ||
-                (reqComment && reqComment !== origBulk.comment) ||
-                (reqLocal !== undefined && reqLocal !== origBulk.local)
-            ) {
-                await dbQueries.updateManyLicenseConclusions(bulkConclusionId, {
+            // Use transaction to update bulk conclusion and related license conclusions
+            await dbQueries.updateBCAndRelatedLCsTA(
+                bulkConclusionId,
+                newInputs,
+                delLCs,
+                {
+                    pattern: reqPattern,
                     concludedLicenseExpressionSPDX: reqCLESPDX,
                     detectedLicenseExpressionSPDX: reqDLESPDX,
                     comment: reqComment,
                     local: reqLocal,
-                });
-            }
-
-            await dbQueries.updateBulkConclusion(bulkConclusionId, {
-                pattern: reqPattern,
-                concludedLicenseExpressionSPDX: reqCLESPDX,
-                detectedLicenseExpressionSPDX: reqDLESPDX,
-                comment: reqComment,
-                local: reqLocal,
-            });
+                },
+            );
 
             res.status(200).json({ message: "Bulk conclusion updated" });
         } catch (error) {

@@ -20,6 +20,7 @@ import {
     ScannerJob,
     SystemIssue,
 } from "database";
+import { omit } from "lodash";
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
 const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -4393,6 +4394,60 @@ export const deleteBulkAndLicenseConclusions = async (
         } catch (error) {
             console.log(
                 "Error with trying to delete BulkConclusion and LicenseConclusions: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+};
+
+export const updateBCAndRelatedLCsTA = async (
+    bulkConclusionId: number,
+    newInputs: Prisma.LicenseConclusionCreateManyInput[],
+    licenseConclusionsToDelete: number[],
+    updateValues: {
+        pattern: string | undefined;
+        concludedLicenseExpressionSPDX: string | undefined;
+        detectedLicenseExpressionSPDX: string | undefined;
+        comment: string | null | undefined;
+        local: boolean | undefined;
+    },
+): Promise<void> => {
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            await prisma.$transaction([
+                prisma.licenseConclusion.deleteMany({
+                    where: {
+                        id: {
+                            in: licenseConclusionsToDelete,
+                        },
+                    },
+                }),
+                prisma.licenseConclusion.updateMany({
+                    where: {
+                        bulkConclusionId: bulkConclusionId,
+                    },
+                    data: omit(updateValues, ["pattern"]),
+                }),
+                prisma.bulkConclusion.update({
+                    where: {
+                        id: bulkConclusionId,
+                    },
+                    data: updateValues,
+                }),
+                prisma.licenseConclusion.createMany({
+                    data: newInputs,
+                }),
+            ]);
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to update BulkConclusion and related LicenseConclusions: " +
                     error,
             );
             handleError(error);
