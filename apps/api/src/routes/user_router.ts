@@ -1116,7 +1116,7 @@ userRouter.put(
             const bulkConclusionId = req.params.id;
 
             const origBulk =
-                await dbQueries.findBulkConclusionById(bulkConclusionId);
+                await dbQueries.findBCWithRelatedLCsById(bulkConclusionId);
 
             if (!origBulk)
                 throw new CustomError(
@@ -1165,65 +1165,14 @@ userRouter.put(
                 throw new CustomError("Nothing to update", 400, "root");
             }
 
-            const bulkConclusionWithRelations =
-                await dbQueries.findBulkConclusionWithRelationsById(
-                    bulkConclusionId,
-                    origBulk.package.id,
-                );
-
-            if (!bulkConclusionWithRelations)
-                throw new CustomError(
-                    "Bulk conclusion to update not found",
-                    404,
-                );
-
-            if (
-                reqPattern &&
-                reqPattern !== bulkConclusionWithRelations.pattern
-            ) {
+            if (reqPattern && reqPattern !== origBulk.pattern) {
                 const newInputs = [];
-                const fileTrees = await dbQueries.findFileTreesByPackageId(
+                const fileTrees = await findFileTreesMatchingPattern(
                     origBulk.package.id,
+                    reqPattern,
                 );
 
-                let matchFound = false;
-                for (const fileTree of fileTrees) {
-                    if (minimatch(fileTree.path, reqPattern, { dot: true })) {
-                        matchFound = true;
-                        if (
-                            bulkConclusionWithRelations.licenseConclusions.find(
-                                (lc) => lc.file.sha256 === fileTree.fileSha256,
-                            ) === undefined &&
-                            newInputs.find(
-                                (lc) => lc.fileSha256 === fileTree.fileSha256,
-                            ) === undefined
-                        ) {
-                            newInputs.push({
-                                concludedLicenseExpressionSPDX:
-                                    reqCLESPDX ||
-                                    bulkConclusionWithRelations.concludedLicenseExpressionSPDX,
-                                detectedLicenseExpressionSPDX:
-                                    reqDLESPDX ||
-                                    bulkConclusionWithRelations.detectedLicenseExpressionSPDX,
-                                comment:
-                                    reqComment ||
-                                    bulkConclusionWithRelations.comment,
-                                local:
-                                    reqLocal !== undefined
-                                        ? reqLocal
-                                        : bulkConclusionWithRelations.local,
-                                contextPurl: origBulk.package.purl,
-                                fileSha256: fileTree.fileSha256,
-                                bulkConclusionId:
-                                    bulkConclusionWithRelations.id,
-                                userId: req.kauth.grant.access_token.content
-                                    .sub,
-                            });
-                        }
-                    }
-                }
-
-                if (!matchFound) {
+                if (fileTrees.length === 0) {
                     throw new CustomError(
                         "No matching files for the provided pattern were found in the package",
                         400,
@@ -1231,19 +1180,43 @@ userRouter.put(
                     );
                 }
 
+                for (const fileTree of fileTrees) {
+                    if (
+                        origBulk.licenseConclusions.find(
+                            (lc) => lc.fileSha256 === fileTree.fileSha256,
+                        ) === undefined &&
+                        newInputs.find(
+                            (lc) => lc.fileSha256 === fileTree.fileSha256,
+                        ) === undefined
+                    ) {
+                        newInputs.push({
+                            concludedLicenseExpressionSPDX:
+                                reqCLESPDX ||
+                                origBulk.concludedLicenseExpressionSPDX,
+                            detectedLicenseExpressionSPDX:
+                                reqDLESPDX ||
+                                origBulk.detectedLicenseExpressionSPDX,
+                            comment: reqComment || origBulk.comment,
+                            local:
+                                reqLocal !== undefined
+                                    ? reqLocal
+                                    : origBulk.local,
+                            contextPurl: origBulk.package.purl,
+                            fileSha256: fileTree.fileSha256,
+                            bulkConclusionId: origBulk.id,
+                            userId: req.kauth.grant.access_token.content.sub,
+                        });
+                    }
+                }
+
                 await dbQueries.createManyLicenseConclusions(newInputs);
 
-                for (const lc of bulkConclusionWithRelations.licenseConclusions) {
-                    let noMatches = true;
-                    for (const ft of lc.file.filetrees) {
-                        // If one of the paths match with the new pattern, don't delete the license conclusion
-                        if (minimatch(ft.path, reqPattern, { dot: true })) {
-                            noMatches = false;
-                            break;
-                        }
-                    }
-
-                    if (noMatches) {
+                for (const lc of origBulk.licenseConclusions) {
+                    if (
+                        fileTrees.find(
+                            (ft) => ft.fileSha256 === lc.fileSha256,
+                        ) === undefined
+                    ) {
                         await dbQueries.deleteLicenseConclusion(lc.id);
                     }
                 }
