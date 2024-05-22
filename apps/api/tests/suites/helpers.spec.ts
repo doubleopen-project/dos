@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { assert } from "chai";
-import { extractStringFromGlob } from "../../src/helpers/globHelpers";
 import { parsePurl } from "../../src/helpers/purl_helpers";
 
 export default function suite(): void {
@@ -66,44 +65,6 @@ export default function suite(): void {
             assert.strictEqual(parsedPurl.version, "1.5.2");
             assert.strictEqual(parsedPurl.qualifiers, undefined);
             assert.strictEqual(parsedPurl.subpath, null);
-        });
-    });
-
-    describe("Testing glob helpers", function () {
-        it("should extract a string from a glob with a non-magic parent path and a magic child path", function () {
-            const glob = "src/**/*.ts";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, "src");
-        });
-
-        it("should extract a string from a glob with a magic parent path and a non-magic child path", function () {
-            const glob = "**/index.ts";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, "index.ts");
-        });
-
-        it("should extract a string when used with a glob with a magic parent path and a magic child path, containing an extension", function () {
-            const glob = "**/*.ts";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, ".ts");
-        });
-
-        it("should extract a string from a glob with a magic parent path and a magic child path, with a non-magic part in the middle", function () {
-            const glob = "**/src/**/*.ts";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, "src");
-        });
-
-        it("should return undefined when used with a glob with a magic parent path and a magic child path, without an extension", function () {
-            const glob = "**/*";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, undefined);
-        });
-
-        it("should return undefined when used with a glob with a list of files/globs inside curly braces", function () {
-            const glob = "{doc/source/dev/**,HACKING.rst.txt}";
-            const result = extractStringFromGlob(glob);
-            assert.strictEqual(result, undefined);
         });
     });
 }

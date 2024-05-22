@@ -5,15 +5,12 @@
 import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
-import isGlob from "is-glob";
-import { minimatch } from "minimatch";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import { findFileTreesMatchingPattern } from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
-import { extractStringFromGlob } from "../helpers/globHelpers";
 import { getUsers, updateUser } from "../helpers/keycloak_queries";
 import { s3Client } from "../helpers/s3client";
 import { authzPermission } from "../middlewares/authz_permission";
@@ -1468,41 +1465,14 @@ userRouter.get(
                     404,
                 );
 
-            // See first, if the pattern is an exact match for a filetree path
-            const exactPathMatch = await dbQueries.findFileTreeByPkgIdAndPath(
+            const filetrees = await findFileTreesMatchingPattern(
                 pe.packageId,
                 pe.pattern,
             );
 
-            if (exactPathMatch) {
-                return res.status(200).json({
-                    affectedFiles: [exactPathMatch.path],
-                });
-            } else {
-                // Extract a string from the glob that can be used to reduce the amount
-                // of filetrees that need to be compared with the glob pattern.
-                const extractedString = extractStringFromGlob(pe.pattern);
-
-                const filetrees = await dbQueries.findFileTreesByPackageId(
-                    pe.packageId,
-                    extractedString,
-                );
-
-                const affectedPaths: string[] = [];
-
-                for (const ft of filetrees) {
-                    if (
-                        minimatch(ft.path, pe.pattern, { dot: true }) ||
-                        ft.path === pe.pattern
-                    ) {
-                        affectedPaths.push(ft.path);
-                    }
-                }
-
-                res.status(200).json({
-                    affectedFiles: affectedPaths,
-                });
-            }
+            res.status(200).json({
+                affectedFiles: filetrees.map((ft) => ft.path),
+            });
         } catch (error) {
             console.log("Error: ", error);
             if (error instanceof CustomError)
@@ -1579,33 +1549,13 @@ userRouter.post(
 
             if (!packageId) throw new CustomError("Package not found", 404);
 
-            let match = false;
+            // Check that at least one file with a matching path to the glob pattern exists for the package
+            const matchingFts = await findFileTreesMatchingPattern(
+                packageId,
+                req.body.pattern.trim(),
+            );
 
-            if (isGlob(req.body.pattern)) {
-                const filePaths =
-                    await dbQueries.findFilePathsByPackagePurl(purl);
-                // Check that a path that matches the glob pattern exists for the package
-                while (!match && filePaths.length > 0) {
-                    const filePath = filePaths.pop();
-
-                    if (!filePath) break;
-                    if (
-                        minimatch(filePath, req.body.pattern.trim(), {
-                            dot: true,
-                        })
-                    ) {
-                        match = true;
-                    }
-                }
-            } else {
-                // Check that a matching path exists for the package
-                match = await dbQueries.findMatchingPath({
-                    purl: purl,
-                    path: req.body.pattern.trim(),
-                });
-            }
-
-            if (!match)
+            if (matchingFts.length === 0)
                 throw new CustomError(
                     "No matching path(s) for the provided pattern were found in the package",
                     400,
@@ -1683,33 +1633,13 @@ userRouter.put(
             if (!pkg) throw new CustomError("Package not found", 404);
 
             if (reqPattern && reqPattern !== pathExclusion.pattern) {
-                let match = false;
+                // Check that at least one file with a matching path to the glob pattern exists for the package
+                const matchingFts = await findFileTreesMatchingPattern(
+                    pathExclusion.packageId,
+                    reqPattern,
+                );
 
-                if (isGlob(reqPattern)) {
-                    const filePaths =
-                        await dbQueries.findFilePathsByPackagePurl(pkg.purl);
-                    // Check that a path that matches the glob pattern exists for the package
-                    while (!match && filePaths.length > 0) {
-                        const filePath = filePaths.pop();
-
-                        if (!filePath) break;
-                        if (
-                            minimatch(filePath, reqPattern.trim(), {
-                                dot: true,
-                            })
-                        ) {
-                            match = true;
-                        }
-                    }
-                } else {
-                    // Check that a matching path exists for the package
-                    match = await dbQueries.findMatchingPath({
-                        purl: pkg.purl,
-                        path: reqPattern.trim(),
-                    });
-                }
-
-                if (!match)
+                if (matchingFts.length === 0)
                     throw new CustomError(
                         "No matching path(s) for the provided pattern were found in the package",
                         400,
