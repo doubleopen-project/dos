@@ -963,3 +963,50 @@ export const findFileTreesMatchingPattern = async (
 
     return filetrees;
 };
+
+export const fileTreeMatchingPatternExists = async (
+    packageId: number,
+    pattern: string,
+): Promise<boolean> => {
+    // Try first if one of the expanded paths is an exact match or a regex match
+    const expandedPaths = braces(pattern, {
+        expand: true,
+    });
+    log.debug(expandedPaths);
+    for (const path of expandedPaths) {
+        const exactMatch = await dbQueries.findFileTreeByPkgIdAndPath(
+            packageId,
+            path,
+        );
+
+        if (exactMatch) return true;
+        else {
+            const regex = globToRegExp(path, { globstar: true });
+            log.debug("Glob: " + path);
+            log.debug("Regex: " + regex.source);
+            const regexMatchFound =
+                await dbQueries.findIfFtByPkgIdAndPathRegexExists(
+                    packageId,
+                    regex.source,
+                );
+
+            log.debug("Matched: " + regexMatchFound);
+
+            if (regexMatchFound) return true;
+        }
+    }
+
+    /*
+     * If no match is found yet, loop through all filetrees in the package
+     * Only do to this as a last resort, because for bigger packages,
+     * fetching all filetrees is a slow operation
+     */
+    const allFileTrees = await dbQueries.findFileTreesByPackageId(packageId);
+    for (const fileTree of allFileTrees) {
+        if (minimatch(fileTree.path, pattern, { dot: true })) {
+            return true;
+        }
+    }
+
+    return false;
+};
