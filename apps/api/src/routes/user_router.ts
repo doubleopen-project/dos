@@ -8,7 +8,10 @@ import { Package, Prisma } from "database";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
-import { findFileTreesMatchingPattern } from "../helpers/db_operations";
+import {
+    fileTreeMatchingPatternExists,
+    findFileTreesMatchingPattern,
+} from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import { getUsers, updateUser } from "../helpers/keycloak_queries";
@@ -1550,12 +1553,12 @@ userRouter.post(
             if (!packageId) throw new CustomError("Package not found", 404);
 
             // Check that at least one file with a matching path to the glob pattern exists for the package
-            const matchingFts = await findFileTreesMatchingPattern(
+            const matchFound = await fileTreeMatchingPatternExists(
                 packageId,
                 req.body.pattern.trim(),
             );
 
-            if (matchingFts.length === 0)
+            if (!matchFound)
                 throw new CustomError(
                     "No matching path(s) for the provided pattern were found in the package",
                     400,
@@ -1634,12 +1637,12 @@ userRouter.put(
 
             if (reqPattern && reqPattern !== pathExclusion.pattern) {
                 // Check that at least one file with a matching path to the glob pattern exists for the package
-                const matchingFts = await findFileTreesMatchingPattern(
+                const matchFound = await fileTreeMatchingPatternExists(
                     pathExclusion.packageId,
                     reqPattern,
                 );
 
-                if (matchingFts.length === 0)
+                if (!matchFound)
                     throw new CustomError(
                         "No matching path(s) for the provided pattern were found in the package",
                         400,
