@@ -3,7 +3,7 @@
         "lib": ["ES2021"],
         "outDir": "./dist",
         "rootDir": "./",
-        "types": ["@types/node"]
+        "types": ["@types/node", "@types/jest"]
     },
     "exclude": ["node_modules"],
     "extends": "tsconfig/base.json",

@@ -9,7 +9,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { validReasons } from "validation-helpers";
+import { pePatternGlobSchema, validReasons } from "validation-helpers";
 import { z } from "zod";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -37,7 +37,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { hasPermission } from "@/helpers/hasPermission";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
-import { pePatternGlobSchema } from "@/schemes/pattern_schema";
 
 const exclusionFormSchema = z.object({
     pattern: pePatternGlobSchema,
