@@ -11,7 +11,7 @@ import axios from "axios";
 import { Check, Loader2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { userAPI, validReasons } from "validation-helpers";
+import { pePatternGlobSchema, userAPI, validReasons } from "validation-helpers";
 import { z } from "zod";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,6 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
-import { pePatternGlobSchema } from "@/schemes/pattern_schema";
 
 const exclusionFormSchema = z.object({
     pattern: pePatternGlobSchema,

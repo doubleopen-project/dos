@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-import isGlob from "is-glob";
 import { parseSPDX } from "spdx-validation";
 import { z } from "zod";
+import {
+    bcPatternGlobSchema,
+    pePatternGlobSchema,
+} from "../../param_schemas/pattern_schemas";
 import { getPasswordSchema, getUsernameSchema } from "./common_schemas";
 
 const concludedLicenseExpressionSPDX = z
@@ -231,28 +234,7 @@ export const GetBulkConclusionRes = z.object({
 //-------------- POST bulk conclusion --------------
 
 export const PostBulkConclusionReq = z.object({
-    pattern: z
-        .string({
-            required_error: "Pattern is required",
-        })
-        .trim()
-        .min(1, "Pattern cannot be empty")
-        .refine(
-            (pattern) => {
-                // Check if the pattern is a valid glob or matches a single file in a filepath:
-                //   ([.\w-]+\/)* matches zero or more occurrences of a ".", "-", "\w" characters (directory) followed by a slash
-                //   [.\w-]+ matches the file name with ".", "-", or "\w" allowed
-                //   (\.\w+)? makes the file extension part optional
-                return (
-                    isGlob(pattern) ||
-                    /^([.\w-]+\/)*[.\w-]+(\.\w+)?$/.test(pattern)
-                );
-            },
-            {
-                message:
-                    "Pattern is not a valid glob pattern or a single file path",
-            },
-        ),
+    pattern: bcPatternGlobSchema,
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
@@ -271,7 +253,7 @@ export const PostBulkConclusionRes = z.object({
 //--------------- PUT bulk conclusion ---------------
 export const PutBulkConclusionReq = z
     .object({
-        pattern: z.string(),
+        pattern: bcPatternGlobSchema,
         concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
         detectedLicenseExpressionSPDX: z.string(),
         comment: z.nullable(z.string()),
@@ -355,11 +337,6 @@ export const GetPathExclusionsRes = z.object({
     ),
 });
 
-//------------------ GET path exclusions count -------------------
-export const QueryParamFilterPEBy = z
-    .enum(["pattern", "reason", "comment", "purl"])
-    .optional();
-
 // -------------------------------------------------
 export const validReasons = [
     {
@@ -417,7 +394,7 @@ export const GetAffectedFilesForPathExclusionRes = z.object({
 //--------------- PUT path exclusion ---------------
 export const PutPathExclusionReq = z
     .object({
-        pattern: z.string().min(1, "Pattern cannot be empty"),
+        pattern: pePatternGlobSchema,
         reason: z
             .string()
             .refine(
@@ -444,12 +421,7 @@ export const PutPathExclusionRes = z.object({
 //------------------ POST path exclusion --------------
 
 export const PostPathExclusionReq = z.object({
-    pattern: z
-        .string({
-            required_error: "Pattern is required",
-        })
-        .trim()
-        .min(1, "Pattern cannot be empty"),
+    pattern: pePatternGlobSchema,
     reason: z
         .string({
             required_error: "Reason is required",
@@ -481,9 +453,9 @@ export const DeletePathExclusionRes = z.object({
     message: z.string(),
 });
 
-//------------------ POST path-exclusions -------------------
+//------------------ GET path-exclusions -------------------
 
-export const PostPathExclusionsRes = z.object({
+export const GetPathExclusionsForPkgRes = z.object({
     pathExclusions: z.array(
         z.object({
             id: z.number(),
@@ -498,38 +470,29 @@ export const PostPathExclusionsRes = z.object({
     ),
 });
 
-//------------------ POST filetree -------------------
-export const PostFileTreeReq = z.object({
-    purl: z.string({
-        required_error: "Purl is required",
-    }),
-});
+//------------------ GET filetrees -------------------
 
-export const FileTree = z.object({
-    path: z.string(),
-    packageId: z.number(),
-    fileSha256: z.string(),
-    file: z.object({
-        licenseFindings: z.array(
-            z.object({
-                licenseExpressionSPDX: z.string(),
+export const GetFileTreeRes = z.object({
+    filetrees: z.array(
+        z.object({
+            path: z.string(),
+            packageId: z.number(),
+            fileSha256: z.string(),
+            file: z.object({
+                licenseFindings: z.array(
+                    z.object({
+                        licenseExpressionSPDX: z.string(),
+                    }),
+                ),
+                licenseConclusions: z.array(
+                    z.object({
+                        concludedLicenseExpressionSPDX: z.string(),
+                    }),
+                ),
             }),
-        ),
-        licenseConclusions: z.array(
-            z.object({
-                concludedLicenseExpressionSPDX: z.string(),
-            }),
-        ),
-    }),
+        }),
+    ),
 });
-
-export type FileTreeType = z.infer<typeof FileTree>;
-
-export const PostFileTreeRes = z.object({
-    filetrees: z.array(FileTree),
-});
-
-export type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
 
 //------------------ GET packages -------------------
 export const QueryParamSortPkgBy = z
@@ -558,11 +521,6 @@ export const GetPackagesRes = z.object({
         }),
     ),
 });
-
-//------------------ GET packages count -------------------
-export const QueryParamFilterPkgBy = z
-    .enum(["name", "namespace", "type", "purl"])
-    .optional();
 
 //------------------ PUT token -------------------
 

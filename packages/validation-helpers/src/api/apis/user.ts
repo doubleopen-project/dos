@@ -966,7 +966,7 @@ export const userAPI = makeApi([
                 schema: commonSchemas.PathParamPurl,
             },
         ],
-        response: schemas.PostPathExclusionsRes,
+        response: schemas.GetPathExclusionsForPkgRes,
         errors,
     },
     {
@@ -981,7 +981,7 @@ export const userAPI = makeApi([
                 schema: commonSchemas.PathParamPurl,
             },
         ],
-        response: schemas.PostFileTreeRes,
+        response: schemas.GetFileTreeRes,
         errors,
     },
     {

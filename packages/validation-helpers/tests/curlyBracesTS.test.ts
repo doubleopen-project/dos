@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 // Test the curly braces in the glob pattern
-import { validateCurlyBracesInGlob } from "@/helpers/validateCurlyBracesInGlob";
+import { validateCurlyBracesInGlob } from "../src/helpers/validateCurlyBracesInGlob";
 
 describe("Curly braces in glob pattern", () => {
     it("Matches properly curly braces with a prepending path", () => {

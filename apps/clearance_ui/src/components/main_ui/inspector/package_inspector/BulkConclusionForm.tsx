@@ -10,6 +10,7 @@ import { Info, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
+import { bcPatternGlobSchema } from "validation-helpers";
 import { z } from "zod";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -45,7 +46,6 @@ import { findMatchingPaths } from "@/helpers/findMatchingPaths";
 import { hasPermission } from "@/helpers/hasPermission";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
-import { bcPatternGlobSchema } from "@/schemes/pattern_schema";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
 
 const bulkConclusionFormSchema = z.object({

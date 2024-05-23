@@ -6707,7 +6707,11 @@ declare const userAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        pattern: zod.ZodEffects<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            string,
+                            string
+                        >;
                         concludedLicenseExpressionSPDX: zod.ZodUnion<
                             [
                                 zod.ZodEffects<zod.ZodString, string, string>,
@@ -7722,7 +7726,13 @@ declare const userAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodOptional<zod.ZodString>;
+                        pattern: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >
+                        >;
                         concludedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodUnion<
                                 [
@@ -8587,7 +8597,21 @@ declare const userAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodOptional<zod.ZodString>;
+                        pattern: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    string,
+                                    string
+                                >,
+                                string,
+                                string
+                            >
+                        >;
                         reason: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
@@ -8730,7 +8754,15 @@ declare const userAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodString;
+                        pattern: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
@@ -14251,7 +14283,11 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodEffects<zod.ZodString, string, string>;
+                        pattern: zod.ZodEffects<
+                            zod.ZodEffects<zod.ZodString, string, string>,
+                            string,
+                            string
+                        >;
                         concludedLicenseExpressionSPDX: zod.ZodUnion<
                             [
                                 zod.ZodEffects<zod.ZodString, string, string>,
@@ -15266,7 +15302,13 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodOptional<zod.ZodString>;
+                        pattern: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >
+                        >;
                         concludedLicenseExpressionSPDX: zod.ZodOptional<
                             zod.ZodUnion<
                                 [
@@ -16131,7 +16173,21 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodOptional<zod.ZodString>;
+                        pattern: zod.ZodOptional<
+                            zod.ZodEffects<
+                                zod.ZodEffects<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    string,
+                                    string
+                                >,
+                                string,
+                                string
+                            >
+                        >;
                         reason: zod.ZodOptional<
                             zod.ZodEffects<zod.ZodString, string, string>
                         >;
@@ -16274,7 +16330,15 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        pattern: zod.ZodString;
+                        pattern: zod.ZodEffects<
+                            zod.ZodEffects<
+                                zod.ZodEffects<zod.ZodString, string, string>,
+                                string,
+                                string
+                            >,
+                            string,
+                            string
+                        >;
                         reason: zod.ZodEffects<zod.ZodString, string, string>;
                         comment: zod.ZodOptional<
                             zod.ZodNullable<zod.ZodString>
@@ -18482,264 +18546,10 @@ declare const dosAPI: [
     },
 ];
 
-declare const PutUserReq: z.ZodObject<
-    {
-        username: z.ZodOptional<
-            z.ZodEffects<
-                z.ZodEffects<
-                    z.ZodEffects<z.ZodString, string, string>,
-                    string,
-                    string
-                >,
-                string,
-                string
-            >
-        >;
-        password: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
-        firstName: z.ZodOptional<z.ZodString>;
-        lastName: z.ZodOptional<z.ZodString>;
-        email: z.ZodOptional<z.ZodString>;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        username?: string | undefined;
-        password?: string | undefined;
-        firstName?: string | undefined;
-        lastName?: string | undefined;
-        email?: string | undefined;
-    },
-    {
-        username?: string | undefined;
-        password?: string | undefined;
-        firstName?: string | undefined;
-        lastName?: string | undefined;
-        email?: string | undefined;
-    }
->;
 declare const validReasons: {
     name: string;
     description: string;
 }[];
-declare const FileTree: z.ZodObject<
-    {
-        path: z.ZodString;
-        packageId: z.ZodNumber;
-        fileSha256: z.ZodString;
-        file: z.ZodObject<
-            {
-                licenseFindings: z.ZodArray<
-                    z.ZodObject<
-                        {
-                            licenseExpressionSPDX: z.ZodString;
-                        },
-                        "strip",
-                        z.ZodTypeAny,
-                        {
-                            licenseExpressionSPDX: string;
-                        },
-                        {
-                            licenseExpressionSPDX: string;
-                        }
-                    >,
-                    "many"
-                >;
-                licenseConclusions: z.ZodArray<
-                    z.ZodObject<
-                        {
-                            concludedLicenseExpressionSPDX: z.ZodString;
-                        },
-                        "strip",
-                        z.ZodTypeAny,
-                        {
-                            concludedLicenseExpressionSPDX: string;
-                        },
-                        {
-                            concludedLicenseExpressionSPDX: string;
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            z.ZodTypeAny,
-            {
-                licenseConclusions: {
-                    concludedLicenseExpressionSPDX: string;
-                }[];
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            },
-            {
-                licenseConclusions: {
-                    concludedLicenseExpressionSPDX: string;
-                }[];
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            }
-        >;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        path: string;
-        file: {
-            licenseConclusions: {
-                concludedLicenseExpressionSPDX: string;
-            }[];
-            licenseFindings: {
-                licenseExpressionSPDX: string;
-            }[];
-        };
-        packageId: number;
-        fileSha256: string;
-    },
-    {
-        path: string;
-        file: {
-            licenseConclusions: {
-                concludedLicenseExpressionSPDX: string;
-            }[];
-            licenseFindings: {
-                licenseExpressionSPDX: string;
-            }[];
-        };
-        packageId: number;
-        fileSha256: string;
-    }
->;
-type FileTreeType = z.infer<typeof FileTree>;
-declare const PostFileTreeRes: z.ZodObject<
-    {
-        filetrees: z.ZodArray<
-            z.ZodObject<
-                {
-                    path: z.ZodString;
-                    packageId: z.ZodNumber;
-                    fileSha256: z.ZodString;
-                    file: z.ZodObject<
-                        {
-                            licenseFindings: z.ZodArray<
-                                z.ZodObject<
-                                    {
-                                        licenseExpressionSPDX: z.ZodString;
-                                    },
-                                    "strip",
-                                    z.ZodTypeAny,
-                                    {
-                                        licenseExpressionSPDX: string;
-                                    },
-                                    {
-                                        licenseExpressionSPDX: string;
-                                    }
-                                >,
-                                "many"
-                            >;
-                            licenseConclusions: z.ZodArray<
-                                z.ZodObject<
-                                    {
-                                        concludedLicenseExpressionSPDX: z.ZodString;
-                                    },
-                                    "strip",
-                                    z.ZodTypeAny,
-                                    {
-                                        concludedLicenseExpressionSPDX: string;
-                                    },
-                                    {
-                                        concludedLicenseExpressionSPDX: string;
-                                    }
-                                >,
-                                "many"
-                            >;
-                        },
-                        "strip",
-                        z.ZodTypeAny,
-                        {
-                            licenseConclusions: {
-                                concludedLicenseExpressionSPDX: string;
-                            }[];
-                            licenseFindings: {
-                                licenseExpressionSPDX: string;
-                            }[];
-                        },
-                        {
-                            licenseConclusions: {
-                                concludedLicenseExpressionSPDX: string;
-                            }[];
-                            licenseFindings: {
-                                licenseExpressionSPDX: string;
-                            }[];
-                        }
-                    >;
-                },
-                "strip",
-                z.ZodTypeAny,
-                {
-                    path: string;
-                    file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
-                    packageId: number;
-                    fileSha256: string;
-                },
-                {
-                    path: string;
-                    file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
-                    packageId: number;
-                    fileSha256: string;
-                }
-            >,
-            "many"
-        >;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-        filetrees: {
-            path: string;
-            file: {
-                licenseConclusions: {
-                    concludedLicenseExpressionSPDX: string;
-                }[];
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-            packageId: number;
-            fileSha256: string;
-        }[];
-    },
-    {
-        filetrees: {
-            path: string;
-            file: {
-                licenseConclusions: {
-                    concludedLicenseExpressionSPDX: string;
-                }[];
-                licenseFindings: {
-                    licenseExpressionSPDX: string;
-                }[];
-            };
-            packageId: number;
-            fileSha256: string;
-        }[];
-    }
->;
-type PostFileTreeResType = z.infer<typeof PostFileTreeRes>;
 
 declare const getUsernameSchema: (
     required: boolean,
@@ -19625,20 +19435,30 @@ declare const PermissionResponse: z.ZodArray<
 type Token = z.infer<typeof TokenResponse>;
 type Permissions = z.infer<typeof PermissionResponse>;
 
+declare const bcPatternGlobSchema: z.ZodEffects<
+    z.ZodEffects<z.ZodString, string, string>,
+    string,
+    string
+>;
+declare const pePatternGlobSchema: z.ZodEffects<
+    z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, string, string>,
+    string,
+    string
+>;
+
 export {
-    type FileTreeType,
     type Permissions,
-    type PostFileTreeResType,
-    PutUserReq,
     ScannerJobResultSchema,
     type ScannerJobResultType,
     type Token,
     adminAPI,
     authAPI,
+    bcPatternGlobSchema,
     dosAPI,
     getPasswordSchema,
     getUsernameSchema,
     keycloakAPI,
+    pePatternGlobSchema,
     scannerAPI,
     scannerAgentApi,
     userAPI,

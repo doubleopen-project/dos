@@ -2,9 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { FileTreeType } from "validation-helpers";
+import { ZodiosResponseByAlias } from "@zodios/core";
+import { userAPI } from "validation-helpers";
 import { sortTree } from "@/helpers/sortTree";
 import type { TreeNode } from "@/types";
+
+type FileTreeType = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetFileTree"
+>["filetrees"][number];
 
 export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
     let id = 1; // Initialize a unique ID counter

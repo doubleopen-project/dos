@@ -4,10 +4,10 @@
 
 import isGlob from "is-glob";
 import { z } from "zod";
-import { validateCurlyBracesInGlob } from "@/helpers/validateCurlyBracesInGlob";
+import { validateCurlyBracesInGlob } from "../helpers/validateCurlyBracesInGlob";
 
 export const bcPatternGlobSchema = z
-    .string()
+    .string({ required_error: "Pattern is required" })
     .min(1, "Pattern cannot be empty")
     .refine(
         (pattern) => {
@@ -29,7 +29,7 @@ export const bcPatternGlobSchema = z
     });
 
 export const pePatternGlobSchema = z
-    .string()
+    .string({ required_error: "Pattern is required" })
     .min(1, "Pattern cannot be empty")
     .refine(
         (pattern) => {
