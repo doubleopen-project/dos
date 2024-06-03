@@ -17,7 +17,7 @@ const saToken = process.env.SA_API_TOKEN || "token";
 export const sendJobToQueue = async (
     jobId: string,
     files: { hash: string; path: string }[],
-    options?: { timeout: string },
+    options: { timeout: number },
 ): Promise<boolean> => {
     let retries = parseInt(process.env.NEW_JOB_RETRIES as string) || 3;
     const retryInterval =
@@ -29,11 +29,7 @@ export const sendJobToQueue = async (
             response = await scannerAgentClient.postJob(
                 {
                     jobId: jobId,
-                    options: options
-                        ? {
-                              timeout: options.timeout,
-                          }
-                        : {},
+                    options: options,
                     files: files,
                 },
                 {

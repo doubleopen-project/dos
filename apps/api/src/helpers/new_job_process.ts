@@ -198,10 +198,12 @@ export const processPackageAndSendToScanner = async (
                     ": Sending a request to Scanner Agent to add new job to the work queue",
             );
 
+            const timeout = 600;
+
             const addedToQueue = await sendJobToQueue(
                 scannerJobId,
                 filesToBeScanned,
-                { timeout: process.env.DEFAULT_TIMEOUT || "120" },
+                { timeout: timeout },
             );
 
             if (addedToQueue) {
@@ -216,8 +218,7 @@ export const processPackageAndSendToScanner = async (
 
                 await dbQueries.updateScannerJob(scannerJobId, {
                     fileCount: filesToBeScanned.length,
-                    timeout:
-                        parseInt(process.env.DEFAULT_TIMEOUT as string) || 120,
+                    timeout: timeout,
                 });
             } else {
                 throw new Error("Error: Adding to queue was unsuccessful.");

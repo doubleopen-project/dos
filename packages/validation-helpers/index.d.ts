@@ -723,15 +723,15 @@ declare const scannerAgentApi: [
                         jobId: zod.ZodString;
                         options: zod.ZodObject<
                             {
-                                timeout: zod.ZodOptional<zod.ZodString>;
+                                timeout: zod.ZodNumber;
                             },
                             "strip",
                             zod.ZodTypeAny,
                             {
-                                timeout?: string | undefined;
+                                timeout: number;
                             },
                             {
-                                timeout?: string | undefined;
+                                timeout: number;
                             }
                         >;
                         files: zod.ZodArray<
@@ -758,7 +758,7 @@ declare const scannerAgentApi: [
                     zod.ZodTypeAny,
                     {
                         options: {
-                            timeout?: string | undefined;
+                            timeout: number;
                         };
                         jobId: string;
                         files: {
@@ -768,7 +768,7 @@ declare const scannerAgentApi: [
                     },
                     {
                         options: {
-                            timeout?: string | undefined;
+                            timeout: number;
                         };
                         jobId: string;
                         files: {

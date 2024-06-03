@@ -12,7 +12,7 @@ import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import { s3Client } from "./s3client";
-import { reportResultState, sendJobToQueue } from "./sa_queries";
+import { reportResultState } from "./sa_queries";
 
 const logLevel: log.LogLevelDesc =
     (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
@@ -329,8 +329,6 @@ export const saveJobResults = async (
         const filesCount = result.headers[0].extra_data.files_count;
         let j = 0;
 
-        const newJobFilesList: { hash: string; path: string }[] = [];
-
         for (let i = 0; i < batchCount; i++) {
             const batch = files.slice(i * batchSize, (i + 1) * batchSize);
 
@@ -520,20 +518,6 @@ export const saveJobResults = async (
                                 scannerConfig: scannerConfig,
                                 fileSha256: file.sha256,
                             });
-
-                            const timeoutErrorRegex =
-                                "(ERROR: for scanner: (?<scanner>\\w+):\n)?" +
-                                "ERROR: Processing interrupted: timeout after (?<timeout>\\d+) seconds.";
-
-                            const timeoutErrorMatch =
-                                scanError.match(timeoutErrorRegex);
-
-                            if (timeoutErrorMatch) {
-                                newJobFilesList.push({
-                                    hash: file.sha256,
-                                    path: file.path,
-                                });
-                            }
                         }
 
                         await dbQueries.updateFile({
@@ -567,56 +551,6 @@ export const saveJobResults = async (
         console.timeEnd(jobId + ": Saving results to database took");
 
         if (jobStateMap) jobStateMap.delete(jobId);
-
-        if (newJobFilesList.length > 0) {
-            try {
-                const newTimeout = scannerJob.timeout
-                    ? scannerJob.timeout * 10
-                    : 2000;
-                if (
-                    newTimeout <=
-                    (parseInt(process.env.TIMEOUT_MAX as string) || 3600)
-                ) {
-                    const newScannerJob = await dbQueries.createScannerJob({
-                        state: "created",
-                        packageId: scannerJob.packageId,
-                    });
-
-                    console.log(
-                        newScannerJob.id +
-                            ": Rescanning " +
-                            newJobFilesList.length +
-                            " files with timeout: " +
-                            newTimeout,
-                    );
-                    console.log(
-                        newScannerJob.id +
-                            ": Sending a request to Scanner Agent to add new job to the work queue",
-                    );
-
-                    const addedToQueue = await sendJobToQueue(
-                        newScannerJob.id,
-                        newJobFilesList,
-                        { timeout: newTimeout.toString() },
-                    );
-
-                    if (addedToQueue) {
-                        console.log(
-                            newScannerJob.id +
-                                ': Updating ScannerJob state to "queued"',
-                        );
-
-                        await dbQueries.updateScannerJob(newScannerJob.id, {
-                            state: "queued",
-                            timeout: newTimeout,
-                            fileCount: newJobFilesList.length,
-                        });
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
 
         const finalFileTreeCount =
             await dbQueries.countFileTreesByPackageId(packageId);
