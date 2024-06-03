@@ -121,12 +121,6 @@ app.use(`/docs/swagger.json`, (_, res) => res.json(document));
 app.use("/docs", serve);
 app.use("/docs", setup(undefined, { swaggerUrl: "/docs/swagger.json" }));
 
-// Run rescanFilesWithTimeoutIssues every day at midnight or at the time specified in RESCAN_SCHEDULE
-const rescanSchedule = process.env.RESCAN_SCHEDULE || "0 0 * * *";
-cron.schedule(rescanSchedule, () => {
-    cronJobs.rescanFilesWithTimeoutIssues();
-});
-
 // Run jobStateQuery every 10 seconds (for testing purposes)
 //cron.schedule("*/10 * * * * *", () => {
 // Run jobStateQuery every 5 minutes

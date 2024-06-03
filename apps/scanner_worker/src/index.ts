@@ -78,7 +78,7 @@ type ScannedFile = {
 
 // Options for ScanCode
 type ScanCodeOptions = {
-    timeout?: string;
+    timeout: number;
 };
 
 // Scan job with its parameters
@@ -101,9 +101,7 @@ const start = (): void => {
     });
 
     workQueue.process(maxJobsPerWorker, async (job: Job<ScannerJob>) => {
-        const timeout = job.data.options.timeout
-            ? parseInt(job.data.options.timeout)
-            : 120;
+        const timeout = job.data.options.timeout;
 
         console.log("***");
         console.log("***", getCurrentDateTime(), "New scanner job:", job.id);

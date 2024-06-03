@@ -44,7 +44,7 @@ type ScannedFile = {
 
 // Options for ScanCode
 type ScanCodeOptions = {
-    timeout?: string;
+    timeout: number;
 };
 
 // Scan job with its parameters
