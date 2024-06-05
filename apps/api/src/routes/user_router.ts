@@ -1804,6 +1804,10 @@ userRouter.get(
     async (req, res) => {
         try {
             const purl = req.params.purl;
+            const pkg = await dbQueries.findPackageByPurl(purl);
+
+            if (!pkg) throw new CustomError("Package not found", 404);
+
             const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
             for (const ft of filetrees) {
