@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import ActionCell from "@/components/clearance_library/license_conclusions/ActionCell";
 import TableCell from "@/components/clearance_library/license_conclusions/TableCell";
+import LCAffectedFilesTooltip from "@/components/common/LCAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
 // Get the table column datatype from the query response
@@ -385,30 +386,13 @@ export const columns = (
                         );
                     },
                     cell: ({ row }) => {
-                        const affectedPathsThis =
-                            row.original.affectedPaths.inContextPurl.length;
-                        return affectedPathsThis > 0 ? (
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger>
-                                        <Badge className="bg-blue-400 text-sm">
-                                            {affectedPathsThis}
-                                        </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <div className="text-sm">
-                                            {row.original.affectedPaths.inContextPurl.map(
-                                                (aff, index) => (
-                                                    <div key={index}>
-                                                        {aff.path}
-                                                    </div>
-                                                ),
-                                            )}
-                                        </div>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        ) : null;
+                        return (
+                            <LCAffectedFilesTooltip
+                                licenseConclusionId={row.original.id}
+                                mode="context"
+                                badgeStyle="bg-blue-400 text-sm"
+                            />
+                        );
                     },
                 },
                 {
@@ -421,42 +405,13 @@ export const columns = (
                         );
                     },
                     cell: ({ row }) => {
-                        const affectedPathsOther =
-                            row.original.affectedPaths.additionalMatches.length;
-
-                        return affectedPathsOther > 0 ? (
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger>
-                                        <Badge className="bg-orange-400 text-sm">
-                                            {affectedPathsOther}
-                                        </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <div className="text-sm">
-                                            {row.original.affectedPaths.additionalMatches.map(
-                                                (aff, index) => (
-                                                    <div key={index}>
-                                                        {
-                                                            PackageURL.fromString(
-                                                                aff.purl,
-                                                            ).name
-                                                        }
-                                                        :
-                                                        {
-                                                            PackageURL.fromString(
-                                                                aff.purl,
-                                                            ).version
-                                                        }{" "}
-                                                        : {aff.path}
-                                                    </div>
-                                                ),
-                                            )}
-                                        </div>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        ) : null;
+                        return (
+                            <LCAffectedFilesTooltip
+                                licenseConclusionId={row.original.id}
+                                mode="additional"
+                                badgeStyle="bg-orange-400 text-sm"
+                            />
+                        );
                     },
                 },
             ],
