@@ -497,11 +497,6 @@ export const GetFileTreeRes = z.object({
                         licenseExpressionSPDX: z.string(),
                     }),
                 ),
-                licenseConclusions: z.array(
-                    z.object({
-                        concludedLicenseExpressionSPDX: z.string(),
-                    }),
-                ),
             }),
         }),
     ),

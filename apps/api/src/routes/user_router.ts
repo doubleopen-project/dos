@@ -1843,12 +1843,6 @@ userRouter.get(
 
             const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
 
-            for (const ft of filetrees) {
-                ft.file.licenseConclusions = ft.file.licenseConclusions.filter(
-                    (lc) => !(lc.local && lc.contextPurl !== purl),
-                );
-            }
-
             res.status(200).json({
                 filetrees: filetrees,
             });
