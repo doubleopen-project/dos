@@ -328,6 +328,90 @@ userRouter.get(
 );
 
 userRouter.get(
+    "/license-conclusions/:id/affected-files",
+    // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
+    authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const licenseConclusionId = req.params.id;
+
+            const licenseConclusion =
+                await dbQueries.findLicenseConclusionById(licenseConclusionId);
+
+            if (!licenseConclusion)
+                throw new CustomError(
+                    "License conclusion with the requested id does not exist",
+                    404,
+                );
+
+            let queryPkg: Package | null = null;
+            if (req.query.purl) {
+                queryPkg = await dbQueries.findPackageByPurl(req.query.purl);
+
+                if (!queryPkg) {
+                    throw new CustomError(
+                        "Package with specified purl not found",
+                        404,
+                        "purl",
+                    );
+                }
+            }
+
+            const contextPkg: Package | null =
+                await dbQueries.findPackageByPurl(
+                    licenseConclusion.contextPurl,
+                );
+
+            if (!contextPkg)
+                throw new CustomError(
+                    "Context package for license conclusion not found",
+                    404,
+                );
+
+            const inContextPurl =
+                await dbQueries.findFileTreesByPkgIdAndFileSha256(
+                    licenseConclusion.fileSha256,
+                    contextPkg.id,
+                );
+
+            const additionalMatches = licenseConclusion.local
+                ? []
+                : await dbQueries.findFileTreesByPkgIdAndFileSha256(
+                      licenseConclusion.fileSha256,
+                      undefined,
+                      contextPkg.id,
+                  );
+
+            const inQueryPurl =
+                req.query.purl && queryPkg
+                    ? await dbQueries.findFileTreesByPkgIdAndFileSha256(
+                          licenseConclusion.fileSha256,
+                          queryPkg.id,
+                      )
+                    : [];
+
+            res.status(200).json({
+                affectedFiles: {
+                    inContextPurl: inContextPurl,
+                    additionalMatches: additionalMatches,
+                    inQueryPurl: inQueryPurl,
+                },
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError)
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message });
+            else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
+
+userRouter.get(
     "/packages/:purl/files/:sha256/license-conclusions/",
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {

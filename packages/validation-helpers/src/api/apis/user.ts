@@ -280,6 +280,29 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/license-conclusions/:id/affected-files",
+        description:
+            "Get affected files for specified license conclusion. Alias: GetAffectedFilesForLicenseConclusion",
+        alias: "GetAffectedFilesForLicenseConclusion",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "purl",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+                description:
+                    "Filter by purl (exact match). Use this to get also a list of files affected in this specific package.",
+            },
+        ],
+        response: schemas.GetAffectedFilesForLicenseConclusionRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/packages/:purl/files/:sha256/license-conclusions/",
         description:
             "Get license conclusions for specified file in specified package. Alias: GetLicenseConclusionsForFileInPackage",

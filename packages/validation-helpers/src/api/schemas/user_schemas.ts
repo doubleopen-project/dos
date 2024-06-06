@@ -102,6 +102,37 @@ export const GetLicenseConclusionsRes = z.object({
     ),
 });
 
+//--------- GET affected files for license conclusion ----------
+
+export const GetAffectedFilesForLicenseConclusionRes = z.object({
+    affectedFiles: z.object({
+        inContextPurl: z.array(
+            z.object({
+                path: z.string(),
+                package: z.object({
+                    purl: z.string(),
+                }),
+            }),
+        ),
+        additionalMatches: z.array(
+            z.object({
+                path: z.string(),
+                package: z.object({
+                    purl: z.string(),
+                }),
+            }),
+        ),
+        inQueryPurl: z.array(
+            z.object({
+                path: z.string(),
+                package: z.object({
+                    purl: z.string(),
+                }),
+            }),
+        ),
+    }),
+});
+
 //-------------- GET license conclusions for file --------------
 
 export const GetLicenseConclusionsForFileRes = z.object({
