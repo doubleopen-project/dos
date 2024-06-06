@@ -1345,6 +1345,46 @@ export const findFileTreeByPkgIdAndPath = async (
     return fileTree;
 };
 
+export const findFileTreesByPkgIdAndFileSha256 = async (
+    fileSha256: string,
+    packageId?: number,
+    notPackageId?: number,
+): Promise<{ path: string; package: { purl: string } }[]> => {
+    let retries = initialRetryCount;
+    let fileTrees: { path: string; package: { purl: string } }[] = [];
+
+    while (retries > 0) {
+        try {
+            fileTrees = await prisma.fileTree.findMany({
+                select: {
+                    path: true,
+                    package: {
+                        select: {
+                            purl: true,
+                        },
+                    },
+                },
+                where: {
+                    packageId: {
+                        equals: packageId,
+                        not: notPackageId,
+                    },
+                    fileSha256: fileSha256,
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find FileTrees: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return fileTrees;
+};
+
 export const findFiletreeByPackageIdAndFileSha256 = async (
     packageId: number,
     fileSha256: string,
