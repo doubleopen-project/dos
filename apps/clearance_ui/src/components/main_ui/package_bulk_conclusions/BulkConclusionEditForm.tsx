@@ -79,7 +79,6 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
@@ -113,7 +112,6 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                     });
                     // When a bulk conclusion is edited, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
-                    queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
                     queryClient.invalidateQueries(keyBulkConclusion);
                     queryClient.invalidateQueries(keyBulkConclusionsByPurl);

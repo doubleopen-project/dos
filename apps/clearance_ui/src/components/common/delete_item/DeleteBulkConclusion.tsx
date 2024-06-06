@@ -30,7 +30,6 @@ const DeleteBulkConclusion = ({
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const keyLicenseConclusion = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
@@ -102,7 +101,6 @@ const DeleteBulkConclusion = ({
                         description: `Bulk license conclusion deleted successfully, ${bulkConclusion?.filePaths.length} files affected.`,
                     });
                     // When a bulk conclusion is deleted, invalidate the corresponding queries to refetch the data
-                    queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                     queryClient.invalidateQueries(keyBulkConclusions);
                     queryClient.invalidateQueries(keyBulkConclusionsCount);

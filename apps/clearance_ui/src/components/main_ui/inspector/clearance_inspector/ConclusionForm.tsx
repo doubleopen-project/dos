@@ -72,13 +72,13 @@ const ConclusionForm = ({
         defaultValues,
     });
     const { errors } = useFormState({ control: form.control });
-    const keyLCs = userHooks.getKeyByAlias(
+    const keyLCsForFile = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const keyLicenseConclusionCountByPurl = userHooks.getKeyByAlias(
         "GetLicenseConclusionsCount",
     );
+    const keyLCs = userHooks.getKeyByAlias("GetLicenseConclusions");
     const queryClient = useQueryClient();
 
     const pathPurl = toPathPurl(purl);
@@ -96,8 +96,8 @@ const ConclusionForm = ({
         {
             onSuccess: () => {
                 // When a license conclusion is added, invalidate the corresponding queries to refetch the data
+                queryClient.invalidateQueries(keyLCsForFile);
                 queryClient.invalidateQueries(keyLCs);
-                queryClient.invalidateQueries(keyFiletree);
                 queryClient.invalidateQueries(keyLicenseConclusionCountByPurl);
                 toast({
                     title: "License conclusion",
