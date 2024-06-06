@@ -130,7 +130,8 @@ cron.schedule("*/5 * * * *", () => {
 
 // Run onStartUp function before starting the server
 (async () => {
-    await onStartUp();
+    // Run onStartUp function only in production
+    if (process.env.NODE_ENV === "production") await onStartUp();
 
     const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
