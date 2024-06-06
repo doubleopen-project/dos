@@ -1168,12 +1168,6 @@ export type FileTreeWithRelations = {
         licenseFindings: {
             licenseExpressionSPDX: string;
         }[];
-        licenseConclusions: {
-            id: number;
-            concludedLicenseExpressionSPDX: string;
-            contextPurl: string;
-            local: boolean;
-        }[];
     };
 };
 
@@ -1201,14 +1195,6 @@ export const findFileTreesByPackagePurl = async (
                             licenseFindings: {
                                 select: {
                                     licenseExpressionSPDX: true,
-                                },
-                            },
-                            licenseConclusions: {
-                                select: {
-                                    id: true,
-                                    concludedLicenseExpressionSPDX: true,
-                                    contextPurl: true,
-                                    local: true,
                                 },
                             },
                         },

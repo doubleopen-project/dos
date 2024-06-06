@@ -9405,37 +9405,15 @@ declare const userAPI: [
                                         >,
                                         "many"
                                     >;
-                                    licenseConclusions: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                concludedLicenseExpressionSPDX: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                concludedLicenseExpressionSPDX: string;
-                                            },
-                                            {
-                                                concludedLicenseExpressionSPDX: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
                                 {
-                                    licenseConclusions: {
-                                        concludedLicenseExpressionSPDX: string;
-                                    }[];
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
                                 },
                                 {
-                                    licenseConclusions: {
-                                        concludedLicenseExpressionSPDX: string;
-                                    }[];
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
@@ -9448,9 +9426,6 @@ declare const userAPI: [
                             path: string;
                             fileSha256: string;
                             file: {
-                                licenseConclusions: {
-                                    concludedLicenseExpressionSPDX: string;
-                                }[];
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
@@ -9461,9 +9436,6 @@ declare const userAPI: [
                             path: string;
                             fileSha256: string;
                             file: {
-                                licenseConclusions: {
-                                    concludedLicenseExpressionSPDX: string;
-                                }[];
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
@@ -9481,9 +9453,6 @@ declare const userAPI: [
                     path: string;
                     fileSha256: string;
                     file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
@@ -9496,9 +9465,6 @@ declare const userAPI: [
                     path: string;
                     fileSha256: string;
                     file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
@@ -17162,37 +17128,15 @@ declare const dosAPI: [
                                         >,
                                         "many"
                                     >;
-                                    licenseConclusions: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                concludedLicenseExpressionSPDX: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                concludedLicenseExpressionSPDX: string;
-                                            },
-                                            {
-                                                concludedLicenseExpressionSPDX: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
                                 },
                                 "strip",
                                 zod.ZodTypeAny,
                                 {
-                                    licenseConclusions: {
-                                        concludedLicenseExpressionSPDX: string;
-                                    }[];
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
                                 },
                                 {
-                                    licenseConclusions: {
-                                        concludedLicenseExpressionSPDX: string;
-                                    }[];
                                     licenseFindings: {
                                         licenseExpressionSPDX: string;
                                     }[];
@@ -17205,9 +17149,6 @@ declare const dosAPI: [
                             path: string;
                             fileSha256: string;
                             file: {
-                                licenseConclusions: {
-                                    concludedLicenseExpressionSPDX: string;
-                                }[];
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
@@ -17218,9 +17159,6 @@ declare const dosAPI: [
                             path: string;
                             fileSha256: string;
                             file: {
-                                licenseConclusions: {
-                                    concludedLicenseExpressionSPDX: string;
-                                }[];
                                 licenseFindings: {
                                     licenseExpressionSPDX: string;
                                 }[];
@@ -17238,9 +17176,6 @@ declare const dosAPI: [
                     path: string;
                     fileSha256: string;
                     file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
@@ -17253,9 +17188,6 @@ declare const dosAPI: [
                     path: string;
                     fileSha256: string;
                     file: {
-                        licenseConclusions: {
-                            concludedLicenseExpressionSPDX: string;
-                        }[];
                         licenseFindings: {
                             licenseExpressionSPDX: string;
                         }[];
