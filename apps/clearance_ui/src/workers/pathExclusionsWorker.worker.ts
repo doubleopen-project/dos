@@ -13,26 +13,27 @@ self.onmessage = async (event) => {
     const findExcludedPaths = (
         tree: TreeNode[],
         pathExclusionPatterns: string[],
-    ): string[] => {
-        const excludedPaths: string[] = [];
+    ): Set<string> => {
+        let excludedPaths: Set<string> = new Set();
 
         for (const node of tree) {
             if (node.children) {
-                excludedPaths.push(
+                excludedPaths = new Set([
+                    ...excludedPaths,
                     ...findExcludedPaths(node.children, pathExclusionPatterns),
-                );
+                ]);
 
                 const allChildrenExcluded = node.children.every((child) =>
-                    excludedPaths.includes(child.path),
+                    excludedPaths.has(child.path),
                 );
 
                 if (allChildrenExcluded) {
-                    excludedPaths.push(node.path);
+                    excludedPaths.add(node.path);
                 }
             } else {
                 for (const pattern of pathExclusionPatterns) {
                     if (minimatch(node.path, pattern, { dot: true })) {
-                        excludedPaths.push(node.path);
+                        excludedPaths.add(node.path);
                         break;
                     }
                 }
