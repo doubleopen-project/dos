@@ -4,8 +4,11 @@
 
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
+import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
+import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
@@ -27,6 +30,19 @@ type Props = {
 
 const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
     const user = useUser();
+    const session = useSession();
+    const { data, isLoading, error } =
+        userHooks.useGetAffectedFilesForLicenseConclusion({
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: {
+                id: licenseConclusion.id,
+            },
+            queries: {
+                purl: purl,
+            },
+        });
     return (
         <div
             className="hover:bg-muted m-2 ml-12 flex items-stretch justify-between rounded-lg border p-2"
@@ -77,14 +93,21 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                         <div className="mr-2 font-semibold">
                             Affected paths in this package:
                         </div>
-                        {licenseConclusion.affectedPaths.inQueryPurl.map(
-                            (p, index) => (
+                        {isLoading && (
+                            <Loader2 className="ml-10 h-4 w-4 animate-spin" />
+                        )}
+                        {data &&
+                            data.affectedFiles.inQueryPurl.map((p, index) => (
                                 <AffectedPath
                                     key={index}
                                     purl={purl}
                                     path={p.path}
                                 />
-                            ),
+                            ))}
+                        {error && (
+                            <div className="ml-10 text-red-500">
+                                Error: {"Unknown error"}
+                            </div>
                         )}
                     </div>
                     <div className="text-muted-foreground flex text-xs">
