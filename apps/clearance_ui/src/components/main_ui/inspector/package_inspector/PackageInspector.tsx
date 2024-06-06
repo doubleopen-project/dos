@@ -59,7 +59,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [openedNodeId, setOpenedNodeId] = useState<string>();
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
-    const [excludedPaths, setExcludedPaths] = useState<string[]>([]);
+    const [excludedPaths, setExcludedPaths] = useState<Set<string>>(new Set());
     const [concludedPaths, setConcludedPaths] = useState<Set<string>>(
         new Set(),
     );

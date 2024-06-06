@@ -32,7 +32,7 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     uniqueLicenses: Map<string, string>;
     isSelectionMode: boolean;
     setIsSelected: (isSelected: boolean) => void;
-    excludedPaths: string[];
+    excludedPaths: Set<string>;
     concludedPaths: Set<string>;
 };
 
@@ -57,7 +57,7 @@ const Node = ({
     let isBold = false;
     const licenseFindingIndicators: JSX.Element[] = [];
 
-    const isExcluded = excludedPaths.includes(path);
+    const isExcluded = excludedPaths.has(path);
 
     const hasLicenseConclusions = concludedPaths.has(path);
 
