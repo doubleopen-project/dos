@@ -79,7 +79,6 @@ const ExclusionForm = ({
         defaultValues,
     });
     const pathPurl = toPathPurl(purl);
-    const keyFileTree = userHooks.getKeyByAlias("GetFileTree");
     const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
         "GetPathExclusionsByPurl",
     );
@@ -107,7 +106,6 @@ const ExclusionForm = ({
                         description: "Path exclusion added successfully.",
                     });
                     // When a path exclusion is added, invalidate the corresponding queries to refetch the data
-                    queryClient.invalidateQueries(keyFileTree);
                     queryClient.invalidateQueries(keyPathExclusionCountByPurl);
                     queryClient.invalidateQueries(keyPathExclusionsByPurl);
                 },

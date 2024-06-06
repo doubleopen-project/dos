@@ -53,7 +53,6 @@ const DeleteLicenseConclusion = ({
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const keyLicenseConclusion = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
@@ -61,6 +60,9 @@ const DeleteLicenseConclusion = ({
         "GetLicenseConclusionsCount",
     );
     const keyBulkConclusionCountByPurl = userHooks.getKeyByAlias(
+        "GetBulkConclusionsCountByPurl",
+    );
+    const keyBulkConclusionCount = userHooks.getKeyByAlias(
         "GetBulkConclusionsCount",
     );
     const queryClient = useQueryClient();
@@ -142,7 +144,6 @@ const DeleteLicenseConclusion = ({
                     });
                     // When a license conclusion is deleted, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
-                    queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusion);
                     queryClient.invalidateQueries(
                         keyLicenseConclusionCountByPurl,
@@ -178,8 +179,9 @@ const DeleteLicenseConclusion = ({
                     });
                     // When a bulk conclusion is deleted, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
-                    queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
+                    queryClient.invalidateQueries(keyLicenseConclusion);
+                    queryClient.invalidateQueries(keyBulkConclusionCount);
                 },
                 onError: () => {
                     toast({

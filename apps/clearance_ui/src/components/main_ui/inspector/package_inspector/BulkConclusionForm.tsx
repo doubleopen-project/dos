@@ -104,7 +104,6 @@ const BulkConclusionForm = ({
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
     );
-    const keyFiletree = userHooks.getKeyByAlias("GetFileTree");
     const keyLicenseConclusions = userHooks.getKeyByAlias(
         "GetLicenseConclusions",
     );
@@ -147,7 +146,6 @@ const BulkConclusionForm = ({
                     });
                     // When a bulk conclusion is added, invalidate the corresponding queries to refetch the data
                     queryClient.invalidateQueries(keyLCs);
-                    queryClient.invalidateQueries(keyFiletree);
                     queryClient.invalidateQueries(keyLicenseConclusions);
                     queryClient.invalidateQueries(keyBulkConclusionCountByPurl);
                     queryClient.invalidateQueries(
