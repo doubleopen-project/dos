@@ -60,11 +60,15 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNodes, setSelectedNodes] = useState<NodeApi<TreeNode>[]>([]);
     const [excludedPaths, setExcludedPaths] = useState<string[]>([]);
+    const [concludedPaths, setConcludedPaths] = useState<Set<string>>(
+        new Set(),
+    );
     const [glob, setGlob] = useState<string>("");
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
     const peWorkerRef = useRef<Worker>();
+    const lcWorkerRef = useRef<Worker>();
 
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
@@ -90,6 +94,19 @@ const PackageInspector = ({ purl, path }: Props) => {
             },
         },
         { enabled: !!pathPurl },
+    );
+
+    // Fetch the package license conclusions data
+    const { data: licenseConclusionsData } = userHooks.useGetLicenseConclusions(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            queries: {
+                purl: purl,
+            },
+        },
+        { enabled: !!purl },
     );
 
     const treeRef = useRef<TreeApi<TreeNode>>();
@@ -211,6 +228,15 @@ const PackageInspector = ({ purl, path }: Props) => {
                 import.meta.url,
             ),
         );
+        /*
+         * Create the same for license conclusions
+         */
+        lcWorkerRef.current = new Worker(
+            new URL(
+                "@/workers/licenseConclusionsWorker.worker.ts",
+                import.meta.url,
+            ),
+        );
 
         // Set up event listener for messages from the worker
         peWorkerRef.current.onmessage = (event) => {
@@ -219,9 +245,16 @@ const PackageInspector = ({ purl, path }: Props) => {
             setExcludedPaths(event.data);
         };
 
-        // Clean up the worker when the component unmounts
+        lcWorkerRef.current.onmessage = (event) => {
+            // Set the concluded nodes based on the data from the worker
+            // The Node component will use this data to style the nodes
+            setConcludedPaths(event.data);
+        };
+
+        // Clean up the workers when the component unmounts
         return () => {
             peWorkerRef.current?.terminate();
+            lcWorkerRef.current?.terminate();
         };
     }, []); // Run this effect only once when the component mounts
 
@@ -237,6 +270,22 @@ const PackageInspector = ({ purl, path }: Props) => {
             });
         }
     }, [pathExclusionsData, treeData]);
+
+    useEffect(() => {
+        if (licenseConclusionsData && treeData.length > 0) {
+            const filesWithLCs = new Set();
+
+            licenseConclusionsData.licenseConclusions.forEach((lc) => {
+                filesWithLCs.add(lc.fileSha256);
+            });
+            // Post the path exclusions data to the worker
+            // The worker will then figure out which nodes to exclude
+            lcWorkerRef.current?.postMessage({
+                tree: treeData,
+                filesWithLCs: filesWithLCs,
+            });
+        }
+    }, [licenseConclusionsData, treeData]);
 
     return (
         <div className="flex h-full flex-col">
@@ -369,6 +418,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                                     )
                                 }
                                 excludedPaths={excludedPaths}
+                                concludedPaths={concludedPaths}
                             />
                         )}
                     </Tree>

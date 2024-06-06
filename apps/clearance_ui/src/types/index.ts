@@ -10,11 +10,10 @@ export type TreeNode = {
     path: string;
     fileSha256?: string;
     hasLicenseFindings: boolean;
-    hasLicenseConclusions: boolean;
     selectionStatus: number; // 1 = selected, 0 = deselected, 0.5 = some children selected
     file?: {
         licenseFindings: LicenseFindings[];
-        licenseConclusions: LicenseConclusions[];
+        //licenseConclusions: LicenseConclusions[];
     };
     children?: TreeNode[];
 };
