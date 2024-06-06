@@ -5120,95 +5120,13 @@ declare const userAPI: [
                                 }
                             >;
                             bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
-                            sha256: zod.ZodString;
+                            fileSha256: zod.ZodString;
                             contextPurl: zod.ZodString;
-                            affectedPaths: zod.ZodObject<
-                                {
-                                    inContextPurl: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                            },
-                                            {
-                                                path: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                    additionalMatches: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                                purl: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                                purl: string;
-                                            },
-                                            {
-                                                path: string;
-                                                purl: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                    inQueryPurl: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                            },
-                                            {
-                                                path: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
-                                    additionalMatches: {
-                                        path: string;
-                                        purl: string;
-                                    }[];
-                                    inQueryPurl: {
-                                        path: string;
-                                    }[];
-                                },
-                                {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
-                                    additionalMatches: {
-                                        path: string;
-                                        purl: string;
-                                    }[];
-                                    inQueryPurl: {
-                                        path: string;
-                                    }[];
-                                }
-                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            sha256: string;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
@@ -5219,22 +5137,10 @@ declare const userAPI: [
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            affectedPaths: {
-                                inContextPurl: {
-                                    path: string;
-                                }[];
-                                additionalMatches: {
-                                    path: string;
-                                    purl: string;
-                                }[];
-                                inQueryPurl: {
-                                    path: string;
-                                }[];
-                            };
+                            fileSha256: string;
                         },
                         {
                             id: number;
-                            sha256: string;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
@@ -5245,18 +5151,7 @@ declare const userAPI: [
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            affectedPaths: {
-                                inContextPurl: {
-                                    path: string;
-                                }[];
-                                additionalMatches: {
-                                    path: string;
-                                    purl: string;
-                                }[];
-                                inQueryPurl: {
-                                    path: string;
-                                }[];
-                            };
+                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -5267,7 +5162,6 @@ declare const userAPI: [
             {
                 licenseConclusions: {
                     id: number;
-                    sha256: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
@@ -5278,24 +5172,12 @@ declare const userAPI: [
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    affectedPaths: {
-                        inContextPurl: {
-                            path: string;
-                        }[];
-                        additionalMatches: {
-                            path: string;
-                            purl: string;
-                        }[];
-                        inQueryPurl: {
-                            path: string;
-                        }[];
-                    };
+                    fileSha256: string;
                 }[];
             },
             {
                 licenseConclusions: {
                     id: number;
-                    sha256: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
@@ -5306,18 +5188,7 @@ declare const userAPI: [
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    affectedPaths: {
-                        inContextPurl: {
-                            path: string;
-                        }[];
-                        additionalMatches: {
-                            path: string;
-                            purl: string;
-                        }[];
-                        inQueryPurl: {
-                            path: string;
-                        }[];
-                    };
+                    fileSha256: string;
                 }[];
             }
         >;
@@ -9575,6 +9446,7 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
+                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -9584,10 +9456,10 @@ declare const userAPI: [
                                 }[];
                             };
                             packageId: number;
-                            fileSha256: string;
                         },
                         {
                             path: string;
+                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -9597,7 +9469,6 @@ declare const userAPI: [
                                 }[];
                             };
                             packageId: number;
-                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -9608,6 +9479,7 @@ declare const userAPI: [
             {
                 filetrees: {
                     path: string;
+                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -9617,12 +9489,12 @@ declare const userAPI: [
                         }[];
                     };
                     packageId: number;
-                    fileSha256: string;
                 }[];
             },
             {
                 filetrees: {
                     path: string;
+                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -9632,7 +9504,6 @@ declare const userAPI: [
                         }[];
                     };
                     packageId: number;
-                    fileSha256: string;
                 }[];
             }
         >;
@@ -13006,95 +12877,13 @@ declare const dosAPI: [
                                 }
                             >;
                             bulkConclusionId: zod.ZodNullable<zod.ZodNumber>;
-                            sha256: zod.ZodString;
+                            fileSha256: zod.ZodString;
                             contextPurl: zod.ZodString;
-                            affectedPaths: zod.ZodObject<
-                                {
-                                    inContextPurl: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                            },
-                                            {
-                                                path: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                    additionalMatches: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                                purl: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                                purl: string;
-                                            },
-                                            {
-                                                path: string;
-                                                purl: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                    inQueryPurl: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                path: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                path: string;
-                                            },
-                                            {
-                                                path: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
-                                    additionalMatches: {
-                                        path: string;
-                                        purl: string;
-                                    }[];
-                                    inQueryPurl: {
-                                        path: string;
-                                    }[];
-                                },
-                                {
-                                    inContextPurl: {
-                                        path: string;
-                                    }[];
-                                    additionalMatches: {
-                                        path: string;
-                                        purl: string;
-                                    }[];
-                                    inQueryPurl: {
-                                        path: string;
-                                    }[];
-                                }
-                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             id: number;
-                            sha256: string;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
@@ -13105,22 +12894,10 @@ declare const dosAPI: [
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            affectedPaths: {
-                                inContextPurl: {
-                                    path: string;
-                                }[];
-                                additionalMatches: {
-                                    path: string;
-                                    purl: string;
-                                }[];
-                                inQueryPurl: {
-                                    path: string;
-                                }[];
-                            };
+                            fileSha256: string;
                         },
                         {
                             id: number;
-                            sha256: string;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
@@ -13131,18 +12908,7 @@ declare const dosAPI: [
                                 username: string;
                             };
                             bulkConclusionId: number | null;
-                            affectedPaths: {
-                                inContextPurl: {
-                                    path: string;
-                                }[];
-                                additionalMatches: {
-                                    path: string;
-                                    purl: string;
-                                }[];
-                                inQueryPurl: {
-                                    path: string;
-                                }[];
-                            };
+                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -13153,7 +12919,6 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     id: number;
-                    sha256: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
@@ -13164,24 +12929,12 @@ declare const dosAPI: [
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    affectedPaths: {
-                        inContextPurl: {
-                            path: string;
-                        }[];
-                        additionalMatches: {
-                            path: string;
-                            purl: string;
-                        }[];
-                        inQueryPurl: {
-                            path: string;
-                        }[];
-                    };
+                    fileSha256: string;
                 }[];
             },
             {
                 licenseConclusions: {
                     id: number;
-                    sha256: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
@@ -13192,18 +12945,7 @@ declare const dosAPI: [
                         username: string;
                     };
                     bulkConclusionId: number | null;
-                    affectedPaths: {
-                        inContextPurl: {
-                            path: string;
-                        }[];
-                        additionalMatches: {
-                            path: string;
-                            purl: string;
-                        }[];
-                        inQueryPurl: {
-                            path: string;
-                        }[];
-                    };
+                    fileSha256: string;
                 }[];
             }
         >;
@@ -17461,6 +17203,7 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             path: string;
+                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -17470,10 +17213,10 @@ declare const dosAPI: [
                                 }[];
                             };
                             packageId: number;
-                            fileSha256: string;
                         },
                         {
                             path: string;
+                            fileSha256: string;
                             file: {
                                 licenseConclusions: {
                                     concludedLicenseExpressionSPDX: string;
@@ -17483,7 +17226,6 @@ declare const dosAPI: [
                                 }[];
                             };
                             packageId: number;
-                            fileSha256: string;
                         }
                     >,
                     "many"
@@ -17494,6 +17236,7 @@ declare const dosAPI: [
             {
                 filetrees: {
                     path: string;
+                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -17503,12 +17246,12 @@ declare const dosAPI: [
                         }[];
                     };
                     packageId: number;
-                    fileSha256: string;
                 }[];
             },
             {
                 filetrees: {
                     path: string;
+                    fileSha256: string;
                     file: {
                         licenseConclusions: {
                             concludedLicenseExpressionSPDX: string;
@@ -17518,7 +17261,6 @@ declare const dosAPI: [
                         }[];
                     };
                     packageId: number;
-                    fileSha256: string;
                 }[];
             }
         >;

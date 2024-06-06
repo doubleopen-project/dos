@@ -2541,36 +2541,6 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
-type LicenseConclusionWithRelations = Prisma.LicenseConclusionGetPayload<{
-    select: {
-        id: true;
-        updatedAt: true;
-        concludedLicenseExpressionSPDX: true;
-        detectedLicenseExpressionSPDX: true;
-        comment: true;
-        local: true;
-        contextPurl: true;
-        userId: true;
-        bulkConclusionId: true;
-        file: {
-            select: {
-                sha256: true;
-                filetrees: {
-                    select: {
-                        path: true;
-                        package: {
-                            select: {
-                                id: true;
-                                purl: true;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-    };
-}>;
-
 export const findLicenseConclusions = async (
     skip: number | undefined,
     take: number | undefined,
@@ -2598,8 +2568,8 @@ export const findLicenseConclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
-): Promise<LicenseConclusionWithRelations[]> => {
-    let licenseConclusions: LicenseConclusionWithRelations[] = [];
+): Promise<LicenseConclusion[]> => {
+    let licenseConclusions: LicenseConclusion[] = [];
     let retries = initialRetryCount;
 
     /*
@@ -2614,33 +2584,6 @@ export const findLicenseConclusions = async (
     while (retries > 0) {
         try {
             licenseConclusions = await prisma.licenseConclusion.findMany({
-                select: {
-                    id: true,
-                    updatedAt: true,
-                    concludedLicenseExpressionSPDX: true,
-                    detectedLicenseExpressionSPDX: true,
-                    comment: true,
-                    local: true,
-                    contextPurl: true,
-                    userId: true,
-                    bulkConclusionId: true,
-                    file: {
-                        select: {
-                            sha256: true,
-                            filetrees: {
-                                select: {
-                                    path: true,
-                                    package: {
-                                        select: {
-                                            id: true,
-                                            purl: true,
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
                 skip: skip,
                 take: take,
                 where: {

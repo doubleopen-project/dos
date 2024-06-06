@@ -126,60 +126,57 @@ userRouter.get(
             const pageIndex = req.query.pageIndex;
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
 
-            const licenseConclusionsWithRelations =
-                await dbQueries.findLicenseConclusions(
-                    // If sortBy is "username", the pagination will have to be handled in-memory
-                    req.query.sortBy !== "username" ? skip : undefined,
-                    req.query.sortBy !== "username" ? pageSize : undefined,
-                    // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                    // If sortBy is "username", the sorting will have to be handled in-memory
-                    req.query.sortBy !== "username"
-                        ? req.query.sortBy || "updatedAt"
-                        : undefined,
-                    req.query.sortBy !== "username"
-                        ? !req.query.sortBy && !req.query.sortOrder
-                            ? "desc"
-                            : req.query.sortOrder
-                        : undefined,
-                    req.query.purl,
-                    req.query.contextPurl,
-                    req.query.contextPurlStrict || false,
-                    userIds,
-                    req.query.detectedLicense,
-                    req.query.concludedLicense,
-                    req.query.comment,
-                    req.query.local,
-                    req.query.bulkConclusionId,
-                    req.query.hasBulkConclusionId,
-                    req.query.createdAtGte,
-                    req.query.createdAtLte,
-                    req.query.updatedAtGte,
-                    req.query.updatedAtLte,
-                );
+            const licenseConclusions = await dbQueries.findLicenseConclusions(
+                // If sortBy is "username", the pagination will have to be handled in-memory
+                req.query.sortBy !== "username" ? skip : undefined,
+                req.query.sortBy !== "username" ? pageSize : undefined,
+                // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+                // If sortBy is "username", the sorting will have to be handled in-memory
+                req.query.sortBy !== "username"
+                    ? req.query.sortBy || "updatedAt"
+                    : undefined,
+                req.query.sortBy !== "username"
+                    ? !req.query.sortBy && !req.query.sortOrder
+                        ? "desc"
+                        : req.query.sortOrder
+                    : undefined,
+                req.query.purl,
+                req.query.contextPurl,
+                req.query.contextPurlStrict || false,
+                userIds,
+                req.query.detectedLicense,
+                req.query.concludedLicense,
+                req.query.comment,
+                req.query.local,
+                req.query.bulkConclusionId,
+                req.query.hasBulkConclusionId,
+                req.query.createdAtGte,
+                req.query.createdAtLte,
+                req.query.updatedAtGte,
+                req.query.updatedAtLte,
+            );
 
             // Get users from Keycloak server to be able to match user ids to usernames
             const users = await getUsers();
 
             // Add username to each license conclusion
-            const lcsWithUsernames = licenseConclusionsWithRelations.map(
-                (lc) => {
-                    const username = users.find(
-                        (u) => u.id === lc.userId,
-                    )?.username;
-                    if (!username) {
-                        throw new CustomError(
-                            "Internal server error: creator username not found",
-                            500,
-                        );
-                    }
-                    return {
-                        ...lc,
-                        user: {
-                            username: username,
-                        },
-                    };
-                },
-            );
+            const lcsWithUsernames = licenseConclusions.map((lc) => {
+                const username = users.find(
+                    (u) => u.id === lc.userId,
+                )?.username;
+                if (!username) {
+                    throw new CustomError(
+                        "Internal server error: creator username not found",
+                        500,
+                    );
+                }
+                return {
+                    ...lc,
+                    user: {
+                        username: username,
+                    },
+                };
+            });
 
             let lcsToProcess = [...lcsWithUsernames];
 
@@ -203,56 +200,8 @@ userRouter.get(
                 }
             }
 
-            const licenseConclusions = [];
-
-            for (const lc of lcsToProcess) {
-                const inContextPurl = [];
-                const additionalMatches = [];
-                const inQueryPurl = [];
-
-                for (const ft of lc.file.filetrees) {
-                    if (ft.package.purl === lc.contextPurl) {
-                        inContextPurl.push({
-                            path: ft.path,
-                        });
-                    } else {
-                        if (!lc.local) {
-                            additionalMatches.push({
-                                path: ft.path,
-                                purl: ft.package.purl,
-                            });
-                        }
-                    }
-                    if (ft.package.purl === req.query.purl) {
-                        inQueryPurl.push({
-                            path: ft.path,
-                        });
-                    }
-                }
-
-                licenseConclusions.push({
-                    id: lc.id,
-                    updatedAt: lc.updatedAt,
-                    concludedLicenseExpressionSPDX:
-                        lc.concludedLicenseExpressionSPDX,
-                    detectedLicenseExpressionSPDX:
-                        lc.detectedLicenseExpressionSPDX,
-                    comment: lc.comment,
-                    local: lc.local,
-                    user: lc.user,
-                    bulkConclusionId: lc.bulkConclusionId,
-                    sha256: lc.file.sha256,
-                    contextPurl: lc.contextPurl,
-                    affectedPaths: {
-                        inContextPurl: inContextPurl,
-                        additionalMatches: additionalMatches,
-                        inQueryPurl: inQueryPurl,
-                    },
-                });
-            }
-
             res.status(200).json({
-                licenseConclusions: licenseConclusions,
+                licenseConclusions: lcsToProcess,
             });
         } catch (error) {
             console.log("Error: ", error);

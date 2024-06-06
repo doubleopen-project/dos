@@ -78,26 +78,8 @@ export const GetLicenseConclusionsRes = z.object({
             local: z.boolean(),
             user: z.object({ username: z.string() }),
             bulkConclusionId: z.nullable(z.number()),
-            sha256: z.string(),
+            fileSha256: z.string(),
             contextPurl: z.string(),
-            affectedPaths: z.object({
-                inContextPurl: z.array(
-                    z.object({
-                        path: z.string(),
-                    }),
-                ),
-                additionalMatches: z.array(
-                    z.object({
-                        path: z.string(),
-                        purl: z.string(),
-                    }),
-                ),
-                inQueryPurl: z.array(
-                    z.object({
-                        path: z.string(),
-                    }),
-                ),
-            }),
         }),
     ),
 });
