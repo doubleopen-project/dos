@@ -10109,6 +10109,146 @@ declare const userAPI: [
     },
     {
         method: "get";
+        path: "/packages/:purl/license-findings";
+        alias: "GetLicenseFindingsForPackage";
+        description: "Get license findings for specified package. Alias: GetLicenseFindingsForPackage";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseFindings: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            licenseExpressionSPDX: zod.ZodString;
+                            fileSha256: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            fileSha256: string;
+                            licenseExpressionSPDX: string;
+                        },
+                        {
+                            fileSha256: string;
+                            licenseExpressionSPDX: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseFindings: {
+                    fileSha256: string;
+                    licenseExpressionSPDX: string;
+                }[];
+            },
+            {
+                licenseFindings: {
+                    fileSha256: string;
+                    licenseExpressionSPDX: string;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
         path: "/files/:sha256/license-findings";
         alias: "GetLicenseFindingsForFile";
         description: "Get license findings for specified file. Alias: GetLicenseFindingsForFile";
@@ -17737,6 +17877,146 @@ declare const dosAPI: [
                 sha256: string;
                 downloadUrl: string;
                 scanner: string;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/user/packages/:purl/license-findings";
+        alias: "GetLicenseFindingsForPackage";
+        description: "Get license findings for specified package. Alias: GetLicenseFindingsForPackage";
+        parameters: [
+            {
+                name: "purl";
+                type: "Path";
+                schema: zod.ZodString;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                licenseFindings: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            licenseExpressionSPDX: zod.ZodString;
+                            fileSha256: zod.ZodString;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            fileSha256: string;
+                            licenseExpressionSPDX: string;
+                        },
+                        {
+                            fileSha256: string;
+                            licenseExpressionSPDX: string;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                licenseFindings: {
+                    fileSha256: string;
+                    licenseExpressionSPDX: string;
+                }[];
+            },
+            {
+                licenseFindings: {
+                    fileSha256: string;
+                    licenseExpressionSPDX: string;
+                }[];
             }
         >;
         errors: [

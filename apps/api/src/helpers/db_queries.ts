@@ -2468,6 +2468,49 @@ export const findLicenseFindingsByFileSha256 = async (
     return licenseFindings;
 };
 
+export const findLicenseFindingsByPackageId = async (
+    packageId: number,
+): Promise<
+    {
+        licenseExpressionSPDX: string;
+        fileSha256: string;
+    }[]
+> => {
+    let licenseFindings: {
+        licenseExpressionSPDX: string;
+        fileSha256: string;
+    }[] = [];
+    let retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            licenseFindings = await prisma.licenseFinding.findMany({
+                select: {
+                    licenseExpressionSPDX: true,
+                    fileSha256: true,
+                },
+                where: {
+                    file: {
+                        filetrees: {
+                            some: {
+                                packageId: packageId,
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find LicenseFindings: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+    return licenseFindings;
+};
+
 export const findLicenseConclusionById = async (
     id: number,
 ): Promise<LicenseConclusion | null> => {
