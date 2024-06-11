@@ -1186,6 +1186,22 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/packages/:purl/license-findings",
+        alias: "GetLicenseFindingsForPackage",
+        description:
+            "Get license findings for specified package. Alias: GetLicenseFindingsForPackage",
+        parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: commonSchemas.PathParamPurl,
+            },
+        ],
+        response: schemas.GetLicenseFindingsForPackageRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/files/:sha256/license-findings",
         alias: "GetLicenseFindingsForFile",
         description:

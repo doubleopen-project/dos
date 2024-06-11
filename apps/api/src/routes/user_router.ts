@@ -1903,6 +1903,36 @@ userRouter.get(
 );
 
 userRouter.get(
+    "/packages/:purl/license-findings",
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const purl = req.params.purl;
+            const pkg = await dbQueries.findPackageByPurl(purl);
+
+            if (!pkg) throw new CustomError("Package not found", 404);
+
+            const licenseFindings =
+                await dbQueries.findLicenseFindingsByPackageId(pkg.id);
+
+            res.status(200).json({
+                licenseFindings: licenseFindings,
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError)
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message });
+            else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
+
+userRouter.get(
     "/files/:sha256/license-findings",
     authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {

@@ -543,7 +543,17 @@ export const GetFileRes = z.object({
     scanner: z.string(),
 });
 
-//------------------ GET license-findings -------------------
+//------------------ GET license-findings for package -------------------
+export const GetLicenseFindingsForPackageRes = z.object({
+    licenseFindings: z.array(
+        z.object({
+            licenseExpressionSPDX: z.string(),
+            fileSha256: z.string(),
+        }),
+    ),
+});
+
+//------------------ GET license-findings for file -------------------
 
 export const GetLicenseFindingsForFileRes = z.object({
     licenseFindings: z.array(
