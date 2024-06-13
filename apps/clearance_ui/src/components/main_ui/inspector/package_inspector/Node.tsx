@@ -34,6 +34,7 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     setIsSelected: (isSelected: boolean) => void;
     excludedPaths: Set<string>;
     concludedPaths: Set<string>;
+    pathsWithLFs: Set<string>;
 };
 
 const Node = ({
@@ -49,10 +50,10 @@ const Node = ({
     setIsSelected,
     excludedPaths,
     concludedPaths,
+    pathsWithLFs,
 }: NodeProps) => {
     const { id, data, isLeaf, isClosed } = node;
-    const { hasLicenseFindings, name, path, selectionStatus, fileSha256 } =
-        data;
+    const { name, path, selectionStatus, fileSha256 } = data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
     let icon;
@@ -60,8 +61,8 @@ const Node = ({
     const licenseFindingIndicators: JSX.Element[] = [];
 
     const isExcluded = excludedPaths.has(path);
-
     const hasLicenseConclusions = concludedPaths.has(path);
+    const hasLicenseFindings = pathsWithLFs.has(path);
 
     if (isExcluded) {
         color = "gray";

@@ -63,6 +63,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [concludedPaths, setConcludedPaths] = useState<Set<string>>(
         new Set(),
     );
+    const [pathsWithLFs, setPathsWithLFs] = useState<Set<string>>(new Set());
     const [uniqueLicensesToColorMap, setUniqueLicensesToColorMap] =
         useState<Map<string, string> | null>(null);
     const [
@@ -79,6 +80,7 @@ const PackageInspector = ({ purl, path }: Props) => {
     const pathPurl = toPathPurl(purl);
     const peWorkerRef = useRef<Worker>();
     const lcWorkerRef = useRef<Worker>();
+    const lfWorkerRef = useRef<Worker>();
 
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
@@ -326,8 +328,18 @@ const PackageInspector = ({ purl, path }: Props) => {
                 import.meta.url,
             ),
         );
+        /*
+         * Create the same for license findings
+         */
+        lfWorkerRef.current = new Worker(
+            new URL(
+                "@/workers/licenseFindingsWorker.worker.ts",
+                import.meta.url,
+            ),
+        );
 
-        // Set up event listener for messages from the worker
+        // Set up event listeners for messages from the workers
+
         peWorkerRef.current.onmessage = (event) => {
             // Set the excluded nodes based on the data from the worker
             // The Node component will use this data to style the nodes
@@ -340,10 +352,17 @@ const PackageInspector = ({ purl, path }: Props) => {
             setConcludedPaths(event.data);
         };
 
+        lfWorkerRef.current.onmessage = (event) => {
+            // Set the paths with license findings based on the data from the worker
+            // The Node component will use this data to style the nodes
+            setPathsWithLFs(event.data);
+        };
+
         // Clean up the workers when the component unmounts
         return () => {
             peWorkerRef.current?.terminate();
             lcWorkerRef.current?.terminate();
+            lfWorkerRef.current?.terminate();
         };
     }, []); // Run this effect only once when the component mounts
 
@@ -362,19 +381,35 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     useEffect(() => {
         if (licenseConclusionsData && treeData.length > 0) {
-            const filesWithLCs = new Set();
+            const filesWithLCs = new Set(
+                licenseConclusionsData.licenseConclusions.map(
+                    (lc) => lc.fileSha256,
+                ),
+            );
 
-            licenseConclusionsData.licenseConclusions.forEach((lc) => {
-                filesWithLCs.add(lc.fileSha256);
-            });
-            // Post the path exclusions data to the worker
-            // The worker will then figure out which nodes to exclude
+            // Post the license conclusion data to the worker
+            // The worker will then figure out which nodes are concluded
             lcWorkerRef.current?.postMessage({
                 tree: treeData,
                 filesWithLCs: filesWithLCs,
             });
         }
     }, [licenseConclusionsData, treeData]);
+
+    useEffect(() => {
+        if (lfData && treeData.length > 0) {
+            const filesWithLFs = new Set(
+                lfData.licenseFindings.map((lf) => lf.fileSha256),
+            );
+
+            // Post the license finding data to the worker
+            // The worker will then figure out which nodes have license findings
+            lfWorkerRef.current?.postMessage({
+                tree: treeData,
+                filesWithLFs: filesWithLFs,
+            });
+        }
+    }, [lfData, treeData]);
 
     return (
         <div className="flex h-full flex-col">
@@ -511,6 +546,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 }
                                 excludedPaths={excludedPaths}
                                 concludedPaths={concludedPaths}
+                                pathsWithLFs={pathsWithLFs}
                             />
                         )}
                     </Tree>

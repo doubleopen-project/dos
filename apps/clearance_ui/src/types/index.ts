@@ -9,21 +9,8 @@ export type TreeNode = {
     name: string;
     path: string;
     fileSha256?: string;
-    hasLicenseFindings: boolean;
     selectionStatus: number; // 1 = selected, 0 = deselected, 0.5 = some children selected
-    file?: {
-        licenseFindings: LicenseFindings[];
-        //licenseConclusions: LicenseConclusions[];
-    };
     children?: TreeNode[];
-};
-
-export type LicenseFindings = {
-    licenseExpressionSPDX: string;
-};
-
-export type LicenseConclusions = {
-    concludedLicenseExpressionSPDX?: string;
 };
 
 // A type for the selected node that is passed to the exclusion form
