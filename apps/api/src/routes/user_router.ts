@@ -1841,7 +1841,9 @@ userRouter.get(
 
             if (!pkg) throw new CustomError("Package not found", 404);
 
-            const filetrees = await dbQueries.findFileTreesByPackagePurl(purl);
+            const filetrees = await dbQueries.findFileTreeDataByPackageId(
+                pkg.id,
+            );
 
             res.status(200).json({
                 filetrees: filetrees,

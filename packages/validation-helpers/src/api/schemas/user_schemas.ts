@@ -491,13 +491,6 @@ export const GetFileTreeRes = z.object({
             path: z.string(),
             packageId: z.number(),
             fileSha256: z.string(),
-            file: z.object({
-                licenseFindings: z.array(
-                    z.object({
-                        licenseExpressionSPDX: z.string(),
-                    }),
-                ),
-            }),
         }),
     ),
 });
