@@ -29,7 +29,7 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     licenseFilter: string | null;
     filtering: boolean;
     openedNodeId: string | undefined;
-    uniqueLicenses: Map<string, string>;
+    uniqueLicenses: Map<string, string> | null;
     isSelectionMode: boolean;
     setIsSelected: (isSelected: boolean) => void;
     excludedPaths: Set<string>;
@@ -77,7 +77,8 @@ const Node = ({
         isLeaf &&
         hasLicenseFindings &&
         file?.licenseFindings &&
-        file.licenseFindings.length > 0
+        file.licenseFindings.length > 0 &&
+        uniqueLicenses
     ) {
         uniqueLicenses.forEach((value, key) => {
             for (const lf of file?.licenseFindings) {
