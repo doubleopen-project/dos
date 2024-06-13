@@ -29,7 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type LicenseSelectorProps = {
-    data: Map<string, string>;
+    data: Map<string, string> | null;
     filterString: string;
     className?: string;
 };
@@ -52,9 +52,14 @@ const LicenseSelector = ({
     // Map data to the format required by the Command component
     const licenses: { value: string; label: string; bgcolor: string }[] = [];
 
-    data.forEach((value, key) => {
-        licenses.push({ value: key.toLowerCase(), label: key, bgcolor: value });
-    });
+    if (data)
+        data.forEach((value, key) => {
+            licenses.push({
+                value: key.toLowerCase(),
+                label: key,
+                bgcolor: value,
+            });
+        });
 
     // If the license filter is set, set "filtering" to true.
     // Do it as a side effect to avoid infinite loop
@@ -89,7 +94,13 @@ const LicenseSelector = ({
                 <PopoverContent className="p-0">
                     <Command>
                         <CommandInput placeholder="Search license..." />
-                        <CommandEmpty>No license found.</CommandEmpty>
+                        <CommandEmpty>
+                            {data === null ? (
+                                <span>Loading licenses...</span>
+                            ) : (
+                                <span>No license found.</span>
+                            )}
+                        </CommandEmpty>
                         <CommandList className="max-h-[80vh]">
                             <CommandGroup className="max-h-[80vh] min-h-[1px] w-full overflow-y-auto">
                                 {licenses.map((license) => (

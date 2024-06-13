@@ -51,8 +51,9 @@ export function decomposeLicenses(spdxExpressions: Set<string>): Set<string> {
         }
     });
 
-    // Deduplicate and sort the licenses alphabetically
-    const uniqueLicenses = Array.from(new Set(allLicenses)).sort();
+    // Sort the licenses alphabetically
+    const sortedLicenses = allLicenses.sort();
 
-    return new Set(uniqueLicenses);
+    // Remove duplicates and return the result
+    return new Set(sortedLicenses);
 }

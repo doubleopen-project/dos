@@ -24,7 +24,6 @@ import LicenseSelector from "@/components/main_ui/inspector/package_inspector/Li
 import Node from "@/components/main_ui/inspector/package_inspector/Node";
 import { convertJsonToTree } from "@/helpers/convertJsonToTree";
 import { decomposeLicenses } from "@/helpers/decomposeLicenses";
-import { extractUniqueLicenses } from "@/helpers/extractUniqueLicenses";
 import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { findNodesWithLicense } from "@/helpers/findNodesWithLicense";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
@@ -63,6 +62,8 @@ const PackageInspector = ({ purl, path }: Props) => {
     const [concludedPaths, setConcludedPaths] = useState<Set<string>>(
         new Set(),
     );
+    const [uniqueLicensesToColorMap, setUniqueLicensesToColorMap] =
+        useState<Map<string, string> | null>(null);
     const [glob, setGlob] = useState<string>("");
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -72,6 +73,19 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: {
+                purl: pathPurl,
+            },
+        },
+        { enabled: !!pathPurl },
+    );
+
+    // Fetch the package license findings data
+    const { data: lfData } = userHooks.useGetLicenseFindingsForPackage(
         {
             headers: {
                 Authorization: `Bearer ${session.data?.accessToken}`,
@@ -110,12 +124,6 @@ const PackageInspector = ({ purl, path }: Props) => {
     );
 
     const treeRef = useRef<TreeApi<TreeNode>>();
-    const uniqueLicenses = decomposeLicenses(extractUniqueLicenses(treeData));
-    const uniqueLicensesToColorMap = new Map<string, string>();
-
-    uniqueLicenses.forEach((license) => {
-        uniqueLicensesToColorMap.set(license, stringToColour(license));
-    });
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
@@ -174,6 +182,25 @@ const PackageInspector = ({ purl, path }: Props) => {
         handleResize();
         window.addEventListener("resize", handleResize);
     }, []);
+
+    // Process license finding data
+    useEffect(() => {
+        if (lfData) {
+            const uniqueLicensesToColor = new Map<string, string>();
+
+            const allLicenses = new Set<string>(
+                lfData.licenseFindings.map((lf) => lf.licenseExpressionSPDX),
+            );
+
+            const decomposedLicenses = decomposeLicenses(allLicenses);
+
+            decomposedLicenses.forEach((license) => {
+                uniqueLicensesToColor.set(license, stringToColour(license));
+            });
+
+            setUniqueLicensesToColorMap(uniqueLicensesToColor);
+        }
+    }, [lfData]);
 
     // Construct the tree data
     useEffect(() => {
