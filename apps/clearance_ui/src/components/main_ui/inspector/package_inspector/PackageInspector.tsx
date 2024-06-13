@@ -92,7 +92,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 purl: pathPurl,
             },
         },
-        { enabled: !!pathPurl },
+        { enabled: !!pathPurl, staleTime: Infinity },
     );
 
     // Fetch the package license findings data
@@ -105,7 +105,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 purl: pathPurl,
             },
         },
-        { enabled: !!pathPurl },
+        { enabled: !!pathPurl, staleTime: 30 * 60 * 1000 },
     );
 
     // Fetch the package path exclusions data
