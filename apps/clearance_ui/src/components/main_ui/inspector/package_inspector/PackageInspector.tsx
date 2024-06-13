@@ -28,6 +28,7 @@ import { findNodeByPath } from "@/helpers/findNodeByPath";
 import { findNodesWithLicense } from "@/helpers/findNodesWithLicense";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
+import { searchForLicense } from "@/helpers/searchForLicense";
 import { stringToColour } from "@/helpers/stringToColour";
 import {
     clearSelectedNodes,
@@ -64,6 +65,10 @@ const PackageInspector = ({ purl, path }: Props) => {
     );
     const [uniqueLicensesToColorMap, setUniqueLicensesToColorMap] =
         useState<Map<string, string> | null>(null);
+    const [
+        fileSha256ToDecomposedLicensesMap,
+        setFileSha256ToDecomposedLicensesMap,
+    ] = useState<Map<string, Set<string>> | null>(null);
     const [glob, setGlob] = useState<string>("");
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -187,6 +192,10 @@ const PackageInspector = ({ purl, path }: Props) => {
     useEffect(() => {
         if (lfData) {
             const uniqueLicensesToColor = new Map<string, string>();
+            const fileSha256ToDecomposedLicenses = new Map<
+                string,
+                Set<string>
+            >();
 
             const allLicenses = new Set<string>(
                 lfData.licenseFindings.map((lf) => lf.licenseExpressionSPDX),
@@ -196,9 +205,38 @@ const PackageInspector = ({ purl, path }: Props) => {
 
             decomposedLicenses.forEach((license) => {
                 uniqueLicensesToColor.set(license, stringToColour(license));
+
+                for (const lf of lfData.licenseFindings) {
+                    if (
+                        license === lf.licenseExpressionSPDX ||
+                        searchForLicense(license, lf.licenseExpressionSPDX)
+                    ) {
+                        if (
+                            !fileSha256ToDecomposedLicenses.has(lf.fileSha256)
+                        ) {
+                            fileSha256ToDecomposedLicenses.set(
+                                lf.fileSha256,
+                                new Set([license]),
+                            );
+                        } else {
+                            fileSha256ToDecomposedLicenses.set(
+                                lf.fileSha256,
+                                new Set([
+                                    ...fileSha256ToDecomposedLicenses.get(
+                                        lf.fileSha256,
+                                    )!,
+                                    license,
+                                ]),
+                            );
+                        }
+                    }
+                }
             });
 
             setUniqueLicensesToColorMap(uniqueLicensesToColor);
+            setFileSha256ToDecomposedLicensesMap(
+                fileSha256ToDecomposedLicenses,
+            );
         }
     }, [lfData]);
 
@@ -436,6 +474,9 @@ const PackageInspector = ({ purl, path }: Props) => {
                                 filtering={filtering}
                                 purl={purl}
                                 openedNodeId={openedNodeId}
+                                fileSha256ToDecomposedLicensesMap={
+                                    fileSha256ToDecomposedLicensesMap
+                                }
                                 uniqueLicenses={uniqueLicensesToColorMap}
                                 isSelectionMode={isSelectionMode}
                                 setIsSelected={(isSelected) =>
