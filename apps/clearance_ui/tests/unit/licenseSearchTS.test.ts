@@ -56,4 +56,9 @@ describe("searchForLicense tests", () => {
         );
         expect(result).toBe(false);
     });
+
+    it("Substring test 3", () => {
+        const result = searchForLicense("W3C", "Apache-2.0 AND W3C-19980720");
+        expect(result).toBe(false);
+    });
 });
