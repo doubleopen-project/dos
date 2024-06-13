@@ -69,6 +69,10 @@ const PackageInspector = ({ purl, path }: Props) => {
         fileSha256ToDecomposedLicensesMap,
         setFileSha256ToDecomposedLicensesMap,
     ] = useState<Map<string, Set<string>> | null>(null);
+    const [fileSha256ToLFsMap, setFileSha256ToLFsMap] = useState<Map<
+        string,
+        string[]
+    > | null>(null);
     const [glob, setGlob] = useState<string>("");
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -137,12 +141,17 @@ const PackageInspector = ({ purl, path }: Props) => {
     // When not in license filtering mode, search the tree by name of node.
     // When in license filtering mode, search the tree by filtered license.
     const handleSearch = (node: NodeApi<TreeNode>, term: string): boolean => {
-        if (licenseFilter && filtering) {
+        if (licenseFilter && filtering && fileSha256ToLFsMap) {
+            const fileSha256 = node.data.fileSha256;
+
+            if (!fileSha256) return false;
+
+            const lfs = fileSha256ToLFsMap.get(fileSha256);
+            if (!lfs) return false;
+
             return (
-                node.data.file?.licenseFindings.some((license) =>
-                    license.licenseExpressionSPDX
-                        .toLowerCase()
-                        .includes(licenseFilter.toLowerCase()),
+                lfs.some((license) =>
+                    license.toLowerCase().includes(licenseFilter.toLowerCase()),
                 ) || false
             );
         } else {
@@ -176,7 +185,8 @@ const PackageInspector = ({ purl, path }: Props) => {
 
     // Open the nodes that have the filtered license
     const handleOpenFilteredNodes = () => {
-        const nodes = findNodesWithLicense(treeData, licenseFilter);
+        if (!lfData) return;
+        const nodes = findNodesWithLicense(treeData, licenseFilter, lfData);
         treeRef.current?.closeAll();
         for (const node of nodes) {
             treeRef.current?.openParents(node.id);
@@ -196,6 +206,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                 string,
                 Set<string>
             >();
+            const fileSha256ToLFs = new Map<string, string[]>();
 
             const allLicenses = new Set<string>(
                 lfData.licenseFindings.map((lf) => lf.licenseExpressionSPDX),
@@ -233,10 +244,23 @@ const PackageInspector = ({ purl, path }: Props) => {
                 }
             });
 
+            lfData.licenseFindings.forEach((lf) => {
+                if (!fileSha256ToLFs.has(lf.fileSha256)) {
+                    fileSha256ToLFs.set(lf.fileSha256, [
+                        lf.licenseExpressionSPDX,
+                    ]);
+                } else {
+                    fileSha256ToLFs
+                        .get(lf.fileSha256)
+                        ?.push(lf.licenseExpressionSPDX);
+                }
+            });
+
             setUniqueLicensesToColorMap(uniqueLicensesToColor);
             setFileSha256ToDecomposedLicensesMap(
                 fileSha256ToDecomposedLicenses,
             );
+            setFileSha256ToLFsMap(fileSha256ToLFs);
         }
     }, [lfData]);
 
@@ -276,7 +300,7 @@ const PackageInspector = ({ purl, path }: Props) => {
             setTreeFilter("- Not in use in filtering mode -");
         } else {
             setTreeFilter("");
-            if (licenseFilter) {
+            if (licenseFilter && lfData) {
                 handleOpenFilteredNodes();
             }
         }
