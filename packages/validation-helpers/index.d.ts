@@ -9387,59 +9387,17 @@ declare const userAPI: [
                             path: zod.ZodString;
                             packageId: zod.ZodNumber;
                             fileSha256: zod.ZodString;
-                            file: zod.ZodObject<
-                                {
-                                    licenseFindings: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                licenseExpressionSPDX: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                licenseExpressionSPDX: string;
-                                            },
-                                            {
-                                                licenseExpressionSPDX: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
-                                },
-                                {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
-                                }
-                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             path: string;
                             fileSha256: string;
-                            file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
-                            };
                             packageId: number;
                         },
                         {
                             path: string;
                             fileSha256: string;
-                            file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
-                            };
                             packageId: number;
                         }
                     >,
@@ -9452,11 +9410,6 @@ declare const userAPI: [
                 filetrees: {
                     path: string;
                     fileSha256: string;
-                    file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
                     packageId: number;
                 }[];
             },
@@ -9464,11 +9417,6 @@ declare const userAPI: [
                 filetrees: {
                     path: string;
                     fileSha256: string;
-                    file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
                     packageId: number;
                 }[];
             }
@@ -10311,8 +10259,8 @@ declare const userAPI: [
                             id: number;
                             createdAt: Date;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             scanner: string;
+                            licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
@@ -10328,8 +10276,8 @@ declare const userAPI: [
                             id: number;
                             createdAt: Date;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             scanner: string;
+                            licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
@@ -10352,8 +10300,8 @@ declare const userAPI: [
                     id: number;
                     createdAt: Date;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     scanner: string;
+                    licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
@@ -10371,8 +10319,8 @@ declare const userAPI: [
                     id: number;
                     createdAt: Date;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     scanner: string;
+                    licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
@@ -17250,59 +17198,17 @@ declare const dosAPI: [
                             path: zod.ZodString;
                             packageId: zod.ZodNumber;
                             fileSha256: zod.ZodString;
-                            file: zod.ZodObject<
-                                {
-                                    licenseFindings: zod.ZodArray<
-                                        zod.ZodObject<
-                                            {
-                                                licenseExpressionSPDX: zod.ZodString;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                licenseExpressionSPDX: string;
-                                            },
-                                            {
-                                                licenseExpressionSPDX: string;
-                                            }
-                                        >,
-                                        "many"
-                                    >;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
-                                },
-                                {
-                                    licenseFindings: {
-                                        licenseExpressionSPDX: string;
-                                    }[];
-                                }
-                            >;
                         },
                         "strip",
                         zod.ZodTypeAny,
                         {
                             path: string;
                             fileSha256: string;
-                            file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
-                            };
                             packageId: number;
                         },
                         {
                             path: string;
                             fileSha256: string;
-                            file: {
-                                licenseFindings: {
-                                    licenseExpressionSPDX: string;
-                                }[];
-                            };
                             packageId: number;
                         }
                     >,
@@ -17315,11 +17221,6 @@ declare const dosAPI: [
                 filetrees: {
                     path: string;
                     fileSha256: string;
-                    file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
                     packageId: number;
                 }[];
             },
@@ -17327,11 +17228,6 @@ declare const dosAPI: [
                 filetrees: {
                     path: string;
                     fileSha256: string;
-                    file: {
-                        licenseFindings: {
-                            licenseExpressionSPDX: string;
-                        }[];
-                    };
                     packageId: number;
                 }[];
             }
@@ -18174,8 +18070,8 @@ declare const dosAPI: [
                             id: number;
                             createdAt: Date;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             scanner: string;
+                            licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
@@ -18191,8 +18087,8 @@ declare const dosAPI: [
                             id: number;
                             createdAt: Date;
                             updatedAt: Date;
-                            licenseExpressionSPDX: string;
                             scanner: string;
+                            licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
                                 id: number;
@@ -18215,8 +18111,8 @@ declare const dosAPI: [
                     id: number;
                     createdAt: Date;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     scanner: string;
+                    licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;
@@ -18234,8 +18130,8 @@ declare const dosAPI: [
                     id: number;
                     createdAt: Date;
                     updatedAt: Date;
-                    licenseExpressionSPDX: string;
                     scanner: string;
+                    licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
                         id: number;

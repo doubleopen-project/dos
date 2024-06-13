@@ -1160,53 +1160,40 @@ export const findFileTreeByHashAndPackageId = async (
     return fileTree;
 };
 
-export type FileTreeWithRelations = {
-    path: string;
-    packageId: number;
-    fileSha256: string;
-    file: {
-        licenseFindings: {
-            licenseExpressionSPDX: string;
-        }[];
-    };
-};
-
-export const findFileTreesByPackagePurl = async (
-    purl: string,
-): Promise<FileTreeWithRelations[]> => {
+export const findFileTreeDataByPackageId = async (
+    packageId: number,
+): Promise<
+    {
+        path: string;
+        fileSha256: string;
+        packageId: number;
+    }[]
+> => {
     let retries = initialRetryCount;
-    let querySuccess = false;
-    let filetrees: FileTreeWithRelations[] = [];
+    let fileTreeData: {
+        path: string;
+        fileSha256: string;
+        packageId: number;
+    }[] = [];
 
-    while (!querySuccess && retries > 0) {
+    while (retries > 0) {
         try {
-            filetrees = await prisma.fileTree.findMany({
+            fileTreeData = await prisma.fileTree.findMany({
                 where: {
-                    package: {
-                        purl: purl,
-                    },
+                    packageId: packageId,
                 },
                 select: {
                     path: true,
-                    packageId: true,
                     fileSha256: true,
-                    file: {
-                        select: {
-                            licenseFindings: {
-                                select: {
-                                    licenseExpressionSPDX: true,
-                                },
-                            },
-                        },
-                    },
+                    packageId: true,
                 },
                 orderBy: {
                     path: "asc",
                 },
             });
-            querySuccess = true;
+            break;
         } catch (error) {
-            console.log("Error with trying to find FileTrees: " + error);
+            console.log("Error with trying to find FileTree data: " + error);
             handleError(error);
             retries--;
             if (retries > 0) await waitToRetry();
@@ -1214,7 +1201,7 @@ export const findFileTreesByPackagePurl = async (
         }
     }
 
-    return filetrees;
+    return fileTreeData;
 };
 
 export const findFileTreesByPackageId = async (
