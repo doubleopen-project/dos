@@ -10,7 +10,7 @@ export function searchForLicense(searchString: string, compoundString: string) {
     const sanitizedCompoundString = compoundString.replace(/[()]/g, "");
 
     // Perform the search
-    const regex = new RegExp(`\\b${searchString}\\b`);
+    const regex = new RegExp(`(?<![\\w-])${searchString}(?![\\w-])`);
     const matchFound = regex.test(sanitizedCompoundString);
 
     return matchFound;
