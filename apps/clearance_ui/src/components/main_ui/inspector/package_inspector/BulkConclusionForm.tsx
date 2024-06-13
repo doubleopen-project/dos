@@ -78,14 +78,17 @@ const BulkConclusionForm = ({
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
-    const { data: fileTreeData } = userHooks.useGetFileTree({
-        headers: {
-            Authorization: `Bearer ${session.data?.accessToken}`,
+    const { data: fileTreeData } = userHooks.useGetFileTree(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: {
+                purl: pathPurl,
+            },
         },
-        params: {
-            purl: pathPurl,
-        },
-    });
+        { staleTime: Infinity },
+    );
     const paths =
         fileTreeData?.filetrees.map((filetree) => filetree.path) || [];
     const defaultValues: BulkConclusionFormType = {

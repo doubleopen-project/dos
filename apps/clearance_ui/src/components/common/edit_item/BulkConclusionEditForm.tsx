@@ -68,14 +68,17 @@ const BulkConclusionEditForm = ({ purl, id, className, setOpen }: Props) => {
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
-    const { data: fileTreeData } = userHooks.useGetFileTree({
-        headers: {
-            Authorization: `Bearer ${session.data?.accessToken}`,
+    const { data: fileTreeData } = userHooks.useGetFileTree(
+        {
+            headers: {
+                Authorization: `Bearer ${session.data?.accessToken}`,
+            },
+            params: {
+                purl: pathPurl,
+            },
         },
-        params: {
-            purl: pathPurl,
-        },
-    });
+        { staleTime: Infinity },
+    );
     const { data: bulkConclusion } = userHooks.useGetBulkConclusionById({
         headers: {
             Authorization: `Bearer ${session.data?.accessToken}`,
