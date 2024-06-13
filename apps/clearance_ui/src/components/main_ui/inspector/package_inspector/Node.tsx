@@ -20,7 +20,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import LicenseHitCircle from "@/components/main_ui/inspector/package_inspector/LicenseHitCircle";
-import { searchForLicense } from "@/helpers/searchForLicense";
 import { cn } from "@/lib/utils";
 import type { TreeNode } from "@/types/index";
 
@@ -29,6 +28,7 @@ type NodeProps = NodeRendererProps<TreeNode> & {
     licenseFilter: string | null;
     filtering: boolean;
     openedNodeId: string | undefined;
+    fileSha256ToDecomposedLicensesMap: Map<string, Set<string>> | null;
     uniqueLicenses: Map<string, string> | null;
     isSelectionMode: boolean;
     setIsSelected: (isSelected: boolean) => void;
@@ -43,6 +43,7 @@ const Node = ({
     licenseFilter,
     filtering,
     openedNodeId,
+    fileSha256ToDecomposedLicensesMap,
     uniqueLicenses,
     isSelectionMode,
     setIsSelected,
@@ -50,7 +51,8 @@ const Node = ({
     concludedPaths,
 }: NodeProps) => {
     const { id, data, isLeaf, isClosed } = node;
-    const { hasLicenseFindings, name, path, file, selectionStatus } = data;
+    const { hasLicenseFindings, name, path, selectionStatus, fileSha256 } =
+        data;
     const boldStyle = { strokeWidth: 0.5 };
     let color;
     let icon;
@@ -75,29 +77,29 @@ const Node = ({
 
     if (
         isLeaf &&
-        hasLicenseFindings &&
-        file?.licenseFindings &&
-        file.licenseFindings.length > 0 &&
+        fileSha256 &&
+        fileSha256ToDecomposedLicensesMap &&
         uniqueLicenses
     ) {
-        uniqueLicenses.forEach((value, key) => {
-            for (const lf of file?.licenseFindings) {
-                if (searchForLicense(key, lf.licenseExpressionSPDX)) {
-                    licenseFindingIndicators.push(
-                        <LicenseHitCircle
-                            key={key}
-                            license={key}
-                            bgcolor={value}
-                            filtered={Boolean(
-                                licenseFilter &&
-                                    licenseFilter.toLowerCase() ===
-                                        key.toLowerCase(),
-                            )}
-                        />,
-                    );
-                }
-            }
-        });
+        const decomposedLicenses =
+            fileSha256ToDecomposedLicensesMap.get(fileSha256);
+
+        if (decomposedLicenses) {
+            decomposedLicenses.forEach((license) => {
+                licenseFindingIndicators.push(
+                    <LicenseHitCircle
+                        key={license}
+                        license={license}
+                        bgcolor={uniqueLicenses.get(license) || "gray"}
+                        filtered={Boolean(
+                            licenseFilter &&
+                                licenseFilter.toLowerCase() ===
+                                    license.toLowerCase(),
+                        )}
+                    />,
+                );
+            });
+        }
     }
 
     if (isLeaf) {
