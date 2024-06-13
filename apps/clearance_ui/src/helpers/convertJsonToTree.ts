@@ -34,19 +34,8 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
                     name: part,
                     path: fullPath,
                     fileSha256: isLastPart ? fileTree.fileSha256 : undefined,
-                    hasLicenseFindings: false,
                     selectionStatus: 0, // Initial selection status
-                    file: {
-                        licenseFindings: isLastPart
-                            ? fileTree.file.licenseFindings
-                            : [],
-                    },
                 };
-
-                // If this is a leaf node and there are any license findings, mark the node
-                if (isLastPart && fileTree.file.licenseFindings.length > 0) {
-                    newNode.hasLicenseFindings = true;
-                }
 
                 id++;
                 if (!isLastPart) {
@@ -55,29 +44,8 @@ export const convertJsonToTree = (filetrees: FileTreeType[]): TreeNode[] => {
 
                 map[fullPath] = newNode;
                 currentNode.push(newNode);
-            } else if (isLastPart) {
-                // Merge licenseFindings for existing nodes
-                map[fullPath].file?.licenseFindings?.push(
-                    ...fileTree.file.licenseFindings,
-                );
-
-                if (fileTree.file.licenseFindings.length > 0) {
-                    map[fullPath].hasLicenseFindings = true;
-                }
             }
 
-            // Propagate the hasLicenseFindings flag to ancestor directories
-            if (fileTree.file.licenseFindings.length > 0) {
-                let ancestorPath = "";
-                for (let j = 0; j <= i; j++) {
-                    ancestorPath += (j > 0 ? "/" : "") + pathParts[j];
-                    if (map[ancestorPath]) {
-                        if (fileTree.file.licenseFindings.length > 0) {
-                            map[ancestorPath].hasLicenseFindings = true;
-                        }
-                    }
-                }
-            }
             if (!isLastPart) {
                 currentNode = map[fullPath].children!;
             }
