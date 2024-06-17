@@ -3367,24 +3367,84 @@ declare const scannerAPI: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        zipFileKey: zod.ZodString;
-                        purls: zod.ZodArray<
-                            zod.ZodEffects<zod.ZodString, string, string>,
-                            "many"
-                        >;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purls: string[];
-                        zipFileKey: string;
-                    },
-                    {
-                        purls: string[];
-                        zipFileKey: string;
-                    }
+                schema: zod.ZodUnion<
+                    [
+                        zod.ZodObject<
+                            {
+                                zipFileKey: zod.ZodString;
+                                purls: zod.ZodArray<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    "many"
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                purls: string[];
+                                zipFileKey: string;
+                            },
+                            {
+                                purls: string[];
+                                zipFileKey: string;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                zipFileKey: zod.ZodString;
+                                packages: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            purl: zod.ZodEffects<
+                                                zod.ZodString,
+                                                string,
+                                                string
+                                            >;
+                                            declaredLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        },
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                zipFileKey: string;
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                            },
+                            {
+                                zipFileKey: string;
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                            }
+                        >,
+                    ]
                 >;
             },
         ];
@@ -11181,24 +11241,84 @@ declare const dosAPI: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        zipFileKey: zod.ZodString;
-                        purls: zod.ZodArray<
-                            zod.ZodEffects<zod.ZodString, string, string>,
-                            "many"
-                        >;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purls: string[];
-                        zipFileKey: string;
-                    },
-                    {
-                        purls: string[];
-                        zipFileKey: string;
-                    }
+                schema: zod.ZodUnion<
+                    [
+                        zod.ZodObject<
+                            {
+                                zipFileKey: zod.ZodString;
+                                purls: zod.ZodArray<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    "many"
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                purls: string[];
+                                zipFileKey: string;
+                            },
+                            {
+                                purls: string[];
+                                zipFileKey: string;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                zipFileKey: zod.ZodString;
+                                packages: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            purl: zod.ZodEffects<
+                                                zod.ZodString,
+                                                string,
+                                                string
+                                            >;
+                                            declaredLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        },
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                zipFileKey: string;
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                            },
+                            {
+                                zipFileKey: string;
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                            }
+                        >,
+                    ]
                 >;
             },
         ];
