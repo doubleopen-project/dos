@@ -104,15 +104,35 @@ export const PostUploadUrlRes = z.object({
 
 //---------------- POST job ----------------
 
-export const PostJobReq = z.object({
-    zipFileKey: z
-        .string({
-            required_error: "Zip file key is required",
-        })
-        .trim()
-        .min(1, "Zip file key cannot be empty"),
-    purls: z.array(purlSchema(true)).min(1, "At least one purl is required"),
-});
+export const PostJobReq = z.union([
+    z.object({
+        zipFileKey: z
+            .string({
+                required_error: "Zip file key is required",
+            })
+            .trim()
+            .min(1, "Zip file key cannot be empty"),
+        purls: z
+            .array(purlSchema(true))
+            .min(1, "At least one purl is required"),
+    }),
+    z.object({
+        zipFileKey: z
+            .string({
+                required_error: "Zip file key is required",
+            })
+            .trim()
+            .min(1, "Zip file key cannot be empty"),
+        packages: z
+            .array(
+                z.object({
+                    purl: purlSchema(true),
+                    declaredLicenseExpressionSPDX: z.nullable(z.string()),
+                }),
+            )
+            .min(1, "At least one package is required"),
+    }),
+]);
 
 export const PostJobRes = z.object({
     scannerJobId: z.string(),

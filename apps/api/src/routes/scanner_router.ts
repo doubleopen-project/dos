@@ -399,12 +399,24 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
             existingJob: ScannerJob | null;
         }[] = [];
 
+        const queryPackages =
+            "packages" in req.body
+                ? req.body.packages
+                : "purls" in req.body
+                  ? req.body.purls.map((purl) => {
+                        return {
+                            purl: purl,
+                            declaredLicenseExpressionSPDX: null,
+                        };
+                    })
+                  : [];
+
         // Finding existing Packages and ScannerJobs for the purls, creating new Packages if needed
-        for (const purl of req.body.purls) {
-            let packageObj = await dbQueries.findPackageByPurl(purl);
+        for (const pkg of queryPackages) {
+            let packageObj = await dbQueries.findPackageByPurl(pkg.purl);
             let existingJob = null;
             if (!packageObj) {
-                const parsedPurl = parsePurl(purl);
+                const parsedPurl = parsePurl(pkg.purl);
 
                 const jobPackage = await dbQueries.createPackage({
                     type: parsedPurl.type,
@@ -414,9 +426,10 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                     qualifiers: parsedPurl.qualifiers,
                     subpath: parsedPurl.subpath,
                     scanStatus: "notScanned",
+                    declaredLicenseSPDX: pkg.declaredLicenseExpressionSPDX,
                 });
 
-                if (jobPackage.purl !== purl) {
+                if (jobPackage.purl !== pkg.purl) {
                     dbQueries.deletePackage(jobPackage.id);
                     await dbQueries.createSystemIssue({
                         message:
@@ -425,7 +438,7 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                         errorCode: "PURL_MISMATCH",
                         errorType: "ScannerRouterError",
                         info: JSON.stringify({
-                            requestedPurl: purl,
+                            requestedPurl: pkg.purl,
                             generatedPurl: jobPackage.purl,
                             zipFileKey: req.body.zipFileKey,
                         }),
@@ -486,7 +499,7 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                     req.body.zipFileKey,
                     scannerJobIdToReturn,
                     [packagesArray[0].package.id],
-                    req.body.purls,
+                    [packagesArray[0].package.purl],
                     jobStateMap,
                 );
             }
@@ -607,7 +620,7 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                 req.body.zipFileKey,
                 scannerJobIdToReturn,
                 packageIdsForNewJobProcess,
-                req.body.purls,
+                queryPackages.map((pkg) => pkg.purl),
                 jobStateMap,
             );
         }
