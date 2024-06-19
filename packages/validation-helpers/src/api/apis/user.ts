@@ -1165,6 +1165,21 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/packages/:purl",
+        description: "Get package information by purl. Alias: GetPackage",
+        alias: "GetPackage",
+        parameters: [
+            {
+                name: "purl",
+                type: "Path",
+                schema: commonSchemas.PathParamPurl,
+            },
+        ],
+        response: schemas.GetPackageRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/packages/:purl/filetrees/:path/files",
         alias: "GetFile",
         description:

@@ -523,6 +523,11 @@ export const GetPackagesRes = z.object({
     ),
 });
 
+//------------------ GET package -------------------
+export const GetPackageRes = z.object({
+    declaredLicenseSPDX: z.nullable(z.string()),
+});
+
 //------------------ PUT token -------------------
 
 export const PutTokenRes = z.object({

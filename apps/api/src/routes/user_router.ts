@@ -1832,6 +1832,33 @@ userRouter.get(
 );
 
 userRouter.get(
+    "/packages/:purl",
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const purl = req.params.purl;
+            const pkg = await dbQueries.findPackageByPurl(purl);
+
+            if (!pkg) throw new CustomError("Package not found", 404);
+
+            res.status(200).json({
+                declaredLicenseSPDX: pkg.declaredLicenseSPDX,
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError)
+                return res
+                    .status(error.statusCode)
+                    .json({ message: error.message });
+            else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
+        }
+    },
+);
+
+userRouter.get(
     "/packages/:purl/filetrees",
     authzPermission({ resource: "PackageData", scopes: ["GET"] }),
     async (req, res) => {
