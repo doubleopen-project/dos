@@ -53,7 +53,7 @@ const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
                 </div>
             )}
             {data && (
-                <div className="flex h-full w-full flex-col items-start p-1">
+                <div className="flex h-full w-full flex-col items-start p-2">
                     <Label className="clearance-label">Concluded license</Label>
                     {data.licenseConclusions?.length > 0 ? (
                         <div className="h-full w-full overflow-y-auto p-1 text-xs">

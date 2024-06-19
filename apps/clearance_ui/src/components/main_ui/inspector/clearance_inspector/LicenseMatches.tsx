@@ -35,7 +35,7 @@ const LicenseMatches = ({ fileSha256 }: DetectedLicenseProps) => {
                 </div>
             )}
             {data && (
-                <div className="flex h-full w-full flex-col items-start p-1">
+                <div className="flex h-full w-full flex-col items-start p-2">
                     <Label className="clearance-label">
                         Individual license matches
                     </Label>
