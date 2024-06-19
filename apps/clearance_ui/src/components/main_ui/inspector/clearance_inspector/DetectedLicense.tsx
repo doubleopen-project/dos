@@ -36,7 +36,7 @@ const DetectedLicense = ({ fileSha256, scanner }: DetectedLicenseProps) => {
                 </div>
             )}
             {data && (
-                <div className="flex h-full w-full flex-col items-start p-1">
+                <div className="flex h-full w-full flex-col items-start p-2">
                     <Label className="clearance-label">Detected license</Label>
                     <div>
                         <Label className="px-0.5 text-xs font-bold">

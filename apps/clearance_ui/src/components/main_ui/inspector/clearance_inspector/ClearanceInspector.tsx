@@ -22,12 +22,14 @@ type ClearanceInspectorProps = {
     purl: string;
     path: string;
     defaultClearanceHeights: number[];
+    height: number;
 };
 
 const ClearanceInspector = ({
     purl,
     path,
     defaultClearanceHeights,
+    height,
 }: ClearanceInspectorProps) => {
     const session = useSession();
     const setClearanceHeights = useSettingsStore(
@@ -55,49 +57,51 @@ const ClearanceInspector = ({
                 </div>
             )}
             {data && (
-                <ResizablePanelGroup
-                    direction="vertical"
-                    onLayout={(sizes: number[]) => {
-                        setClearanceHeights(sizes);
-                    }}
-                >
-                    <ResizablePanel
-                        defaultSize={defaultClearanceHeights[0]}
-                        minSize={6}
+                <div style={{ height: height }}>
+                    <ResizablePanelGroup
+                        direction="vertical"
+                        onLayout={(sizes: number[]) => {
+                            setClearanceHeights(sizes);
+                        }}
                     >
-                        <DetectedLicense
-                            fileSha256={data.sha256}
-                            scanner={data.scanner}
-                        />
-                    </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel
-                        defaultSize={defaultClearanceHeights[1]}
-                        minSize={7}
-                    >
-                        <LicenseMatches fileSha256={data.sha256} />
-                    </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel
-                        defaultSize={defaultClearanceHeights[2]}
-                        minSize={6}
-                    >
-                        <LicenseConclusions
-                            purl={purl}
-                            fileSha256={data.sha256}
-                        />
-                    </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel
-                        defaultSize={defaultClearanceHeights[3]}
-                        minSize={30}
-                    >
-                        <ConclusionFormWrapper
-                            purl={purl}
-                            fileSha256={data.sha256}
-                        />
-                    </ResizablePanel>
-                </ResizablePanelGroup>
+                        <ResizablePanel
+                            defaultSize={defaultClearanceHeights[0]}
+                            minSize={6}
+                        >
+                            <DetectedLicense
+                                fileSha256={data.sha256}
+                                scanner={data.scanner}
+                            />
+                        </ResizablePanel>
+                        <ResizableHandle withHandle />
+                        <ResizablePanel
+                            defaultSize={defaultClearanceHeights[1]}
+                            minSize={7}
+                        >
+                            <LicenseMatches fileSha256={data.sha256} />
+                        </ResizablePanel>
+                        <ResizableHandle withHandle />
+                        <ResizablePanel
+                            defaultSize={defaultClearanceHeights[2]}
+                            minSize={6}
+                        >
+                            <LicenseConclusions
+                                purl={purl}
+                                fileSha256={data.sha256}
+                            />
+                        </ResizablePanel>
+                        <ResizableHandle withHandle />
+                        <ResizablePanel
+                            defaultSize={defaultClearanceHeights[3]}
+                            minSize={30}
+                        >
+                            <ConclusionFormWrapper
+                                purl={purl}
+                                fileSha256={data.sha256}
+                            />
+                        </ResizablePanel>
+                    </ResizablePanelGroup>
+                </div>
             )}
             {error && (
                 <div className="mx-4 flex h-full items-center justify-center font-semibold text-red-500">

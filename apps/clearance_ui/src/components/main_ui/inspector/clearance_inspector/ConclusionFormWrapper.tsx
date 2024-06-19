@@ -45,11 +45,11 @@ const ConclusionFormWrapper = ({
             )}
             {licenseFindingData && (
                 <div className="flex h-full">
-                    <div className="flex w-full flex-col items-start p-1">
+                    <div className="flex w-full flex-col items-start p-2">
                         <Label className="clearance-label">
                             Create a license conclusion
                         </Label>
-                        <div className="w-full p-1">
+                        <div className="w-full overflow-auto p-1">
                             <ConclusionForm
                                 purl={purl}
                                 fileSha256={fileSha256}
