@@ -8,14 +8,33 @@ import { purlSchema } from "./common_schemas";
 
 //---------------- POST scan-results ----------------
 
-export const PostScanResultsReq = z.object({
-    purls: z.array(purlSchema(true)).min(1, "At least one purl is required"),
-    options: z
-        .object({
-            fetchConcluded: z.boolean().optional(),
-        })
-        .optional(),
-});
+export const PostScanResultsReq = z.union([
+    z.object({
+        purls: z
+            .array(purlSchema(true))
+            .min(1, "At least one purl is required"),
+        options: z
+            .object({
+                fetchConcluded: z.boolean().optional(),
+            })
+            .optional(),
+    }),
+    z.object({
+        packages: z
+            .array(
+                z.object({
+                    purl: purlSchema(true),
+                    declaredLicenseExpressionSPDX: z.nullable(z.string()),
+                }),
+            )
+            .min(1, "At least one package is required"),
+        options: z
+            .object({
+                fetchConcluded: z.boolean().optional(),
+            })
+            .optional(),
+    }),
+]);
 
 export const PostScanResultsRes = z.object({
     purls: z.array(purlSchema(false)).min(1, "At least one purl is required"),

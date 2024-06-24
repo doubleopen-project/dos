@@ -2622,46 +2622,136 @@ declare const scannerAPI: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purls: zod.ZodArray<
-                            zod.ZodEffects<zod.ZodString, string, string>,
-                            "many"
-                        >;
-                        options: zod.ZodOptional<
-                            zod.ZodObject<
-                                {
-                                    fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    fetchConcluded?: boolean | undefined;
-                                },
-                                {
-                                    fetchConcluded?: boolean | undefined;
-                                }
-                            >
-                        >;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purls: string[];
-                        options?:
-                            | {
-                                  fetchConcluded?: boolean | undefined;
-                              }
-                            | undefined;
-                    },
-                    {
-                        purls: string[];
-                        options?:
-                            | {
-                                  fetchConcluded?: boolean | undefined;
-                              }
-                            | undefined;
-                    }
+                schema: zod.ZodUnion<
+                    [
+                        zod.ZodObject<
+                            {
+                                purls: zod.ZodArray<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    "many"
+                                >;
+                                options: zod.ZodOptional<
+                                    zod.ZodObject<
+                                        {
+                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        },
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        }
+                                    >
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                purls: string[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            },
+                            {
+                                purls: string[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                packages: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            purl: zod.ZodEffects<
+                                                zod.ZodString,
+                                                string,
+                                                string
+                                            >;
+                                            declaredLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        },
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                                options: zod.ZodOptional<
+                                    zod.ZodObject<
+                                        {
+                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        },
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        }
+                                    >
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            },
+                            {
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            }
+                        >,
+                    ]
                 >;
             },
         ];
@@ -3426,22 +3516,22 @@ declare const scannerAPI: [
                             "strip",
                             zod.ZodTypeAny,
                             {
-                                zipFileKey: string;
                                 packages: {
                                     purl: string;
                                     declaredLicenseExpressionSPDX:
                                         | string
                                         | null;
                                 }[];
+                                zipFileKey: string;
                             },
                             {
-                                zipFileKey: string;
                                 packages: {
                                     purl: string;
                                     declaredLicenseExpressionSPDX:
                                         | string
                                         | null;
                                 }[];
+                                zipFileKey: string;
                             }
                         >,
                     ]
@@ -10612,46 +10702,136 @@ declare const dosAPI: [
             {
                 name: "body";
                 type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        purls: zod.ZodArray<
-                            zod.ZodEffects<zod.ZodString, string, string>,
-                            "many"
-                        >;
-                        options: zod.ZodOptional<
-                            zod.ZodObject<
-                                {
-                                    fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    fetchConcluded?: boolean | undefined;
-                                },
-                                {
-                                    fetchConcluded?: boolean | undefined;
-                                }
-                            >
-                        >;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        purls: string[];
-                        options?:
-                            | {
-                                  fetchConcluded?: boolean | undefined;
-                              }
-                            | undefined;
-                    },
-                    {
-                        purls: string[];
-                        options?:
-                            | {
-                                  fetchConcluded?: boolean | undefined;
-                              }
-                            | undefined;
-                    }
+                schema: zod.ZodUnion<
+                    [
+                        zod.ZodObject<
+                            {
+                                purls: zod.ZodArray<
+                                    zod.ZodEffects<
+                                        zod.ZodString,
+                                        string,
+                                        string
+                                    >,
+                                    "many"
+                                >;
+                                options: zod.ZodOptional<
+                                    zod.ZodObject<
+                                        {
+                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        },
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        }
+                                    >
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                purls: string[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            },
+                            {
+                                purls: string[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            }
+                        >,
+                        zod.ZodObject<
+                            {
+                                packages: zod.ZodArray<
+                                    zod.ZodObject<
+                                        {
+                                            purl: zod.ZodEffects<
+                                                zod.ZodString,
+                                                string,
+                                                string
+                                            >;
+                                            declaredLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        },
+                                        {
+                                            purl: string;
+                                            declaredLicenseExpressionSPDX:
+                                                | string
+                                                | null;
+                                        }
+                                    >,
+                                    "many"
+                                >;
+                                options: zod.ZodOptional<
+                                    zod.ZodObject<
+                                        {
+                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
+                                        },
+                                        "strip",
+                                        zod.ZodTypeAny,
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        },
+                                        {
+                                            fetchConcluded?:
+                                                | boolean
+                                                | undefined;
+                                        }
+                                    >
+                                >;
+                            },
+                            "strip",
+                            zod.ZodTypeAny,
+                            {
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            },
+                            {
+                                packages: {
+                                    purl: string;
+                                    declaredLicenseExpressionSPDX:
+                                        | string
+                                        | null;
+                                }[];
+                                options?:
+                                    | {
+                                          fetchConcluded?: boolean | undefined;
+                                      }
+                                    | undefined;
+                            }
+                        >,
+                    ]
                 >;
             },
         ];
@@ -11416,22 +11596,22 @@ declare const dosAPI: [
                             "strip",
                             zod.ZodTypeAny,
                             {
-                                zipFileKey: string;
                                 packages: {
                                     purl: string;
                                     declaredLicenseExpressionSPDX:
                                         | string
                                         | null;
                                 }[];
+                                zipFileKey: string;
                             },
                             {
-                                zipFileKey: string;
                                 packages: {
                                     purl: string;
                                     declaredLicenseExpressionSPDX:
                                         | string
                                         | null;
                                 }[];
+                                zipFileKey: string;
                             }
                         >,
                     ]
