@@ -28,17 +28,29 @@ scannerRouter.post(
     "/scan-results",
     authenticateDosApiToken,
     async (req, res) => {
+        const reqPackages =
+            "packages" in req.body
+                ? req.body.packages
+                : "purls" in req.body
+                  ? req.body.purls.map((purl) => ({
+                        purl: purl,
+                        declaredLicenseExpressionSPDX: null,
+                    }))
+                  : [];
+        const reqPurls =
+            "purls" in req.body
+                ? req.body.purls
+                : reqPackages.map((pkg) => pkg.purl);
+
         try {
             console.log(
                 "Searching for results for package with purl(s): " +
-                    req.body.purls.join(", "),
+                    reqPurls.join(", "),
             );
 
             const options = req.body.options || {};
 
-            const packages = await dbQueries.findPackagesByPurls(
-                req.body.purls,
-            );
+            const packages = await dbQueries.findPackagesByPurls(reqPurls);
 
             if (packages.length === 0) {
                 console.log("No results found");
@@ -57,7 +69,7 @@ scannerRouter.post(
                 const inDbNotScannedPkgIds: number[] = [];
                 const purls = [];
                 // create shallow copy of the purls array
-                const notInDbPurls = [...req.body.purls];
+                const notInDbPurls = [...reqPurls];
 
                 for (const pkg of packages) {
                     if (pkg.scanStatus === "scanned") scannedPackages.push(pkg);
@@ -75,6 +87,21 @@ scannerRouter.post(
                     // Removing purls that were found in the database from the notInDbPurls array
                     notInDbPurls.splice(notInDbPurls.indexOf(pkg.purl), 1);
                     purls.push(pkg.purl);
+                    // Save declared license for the package if it hasn't been saved yet
+                    if (!pkg.declaredLicenseSPDX && "packages" in req.body) {
+                        const declaredLicense = req.body.packages.find(
+                            (elem) => elem.purl === pkg.purl,
+                        )?.declaredLicenseExpressionSPDX;
+
+                        if (declaredLicense) {
+                            await dbQueries.updatePackage({
+                                id: pkg.id,
+                                data: {
+                                    declaredLicenseSPDX: declaredLicense,
+                                },
+                            });
+                        }
+                    }
                 }
 
                 if (scannedPackages.length > 0) {
@@ -85,7 +112,7 @@ scannerRouter.post(
                         options,
                     );
 
-                    if (scannedPackages.length < req.body.purls.length) {
+                    if (scannedPackages.length < reqPackages.length) {
                         // If all of the packages are not scanned, we need to copy the results to the other packages
                         console.log(
                             "Bookmarking results for purls that are not in the database yet",
@@ -102,6 +129,9 @@ scannerRouter.post(
                                 qualifiers: parsedPurl.qualifiers,
                                 subpath: parsedPurl.subpath,
                                 scanStatus: "notScanned",
+                                declaredLicenseSPDX: reqPackages.find(
+                                    (elem) => elem.purl === purl,
+                                )?.declaredLicenseExpressionSPDX,
                             });
 
                             if (newPackage.purl !== purl) {
@@ -178,7 +208,7 @@ scannerRouter.post(
                 } else if (pendingJobs.length > 0) {
                     console.log("Found pending ScannerJob");
 
-                    if (pendingJobs.length !== req.body.purls.length) {
+                    if (pendingJobs.length !== reqPackages.length) {
                         console.log(
                             "Creating new ScannerJobs for packages that do not have one yet and linking them to an existing ScannerJob",
                         );
@@ -211,6 +241,9 @@ scannerRouter.post(
                                 qualifiers: parsedPurl.qualifiers,
                                 subpath: parsedPurl.subpath,
                                 scanStatus: "pending",
+                                declaredLicenseSPDX: reqPackages.find(
+                                    (elem) => elem.purl === purl,
+                                )?.declaredLicenseExpressionSPDX,
                             });
 
                             if (newPackage.purl !== purl) {
