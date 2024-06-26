@@ -29,4 +29,4 @@ jobs:
                   npm ci
             - name: Run Prettier
               run: |-
-                  npx prettier@3.2.5 --check .
+                  npx prettier@3.3.2 --check .
