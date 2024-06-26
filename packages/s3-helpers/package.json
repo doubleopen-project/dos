@@ -14,14 +14,14 @@
         "stream": "0.0.2"
     },
     "devDependencies": {
-        "@types/chai": "4.3.14",
-        "@types/mocha": "10.0.6",
-        "@types/node": "20.12.7",
+        "@types/chai": "4.3.16",
+        "@types/mocha": "10.0.7",
+        "@types/node": "20.14.9",
         "chai": "5.1.0",
         "eslint-config-custom-server": "*",
         "mocha": "10.4.0",
         "tsconfig": "*",
-        "tsup": "8.0.2",
-        "typescript": "5.4.5"
+        "tsup": "8.1.0",
+        "typescript": "5.5.2"
     }
 }

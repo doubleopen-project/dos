@@ -70,7 +70,7 @@
         "prettier": "3.3.2",
         "prettier-plugin-tailwindcss": "0.6.5",
         "rimraf": "5.0.5",
-        "tsx": "4.7.2",
+        "tsx": "4.15.7",
         "turbo": "1.13.2"
     },
     "engines": {

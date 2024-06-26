@@ -63,9 +63,9 @@ declare const deleteFile: (
 
 declare const S3Client: (
     forcePathStyle: boolean,
-    endpoint?: string | undefined,
-    key?: string | undefined,
-    secret?: string | undefined,
+    endpoint?: string,
+    key?: string,
+    secret?: string,
 ) => S3;
 
 export {
