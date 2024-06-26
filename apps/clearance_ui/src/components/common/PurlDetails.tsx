@@ -36,7 +36,7 @@ const PurlDetails = ({ purl, hideBorder, hideCopyToClipboard }: Props) => {
             <Accordion type="single" collapsible>
                 <AccordionItem
                     value="item-1"
-                    className={hideBorder ? " border-none" : undefined}
+                    className={hideBorder ? "border-none" : undefined}
                 >
                     <AccordionTrigger>
                         <Label className="break-all px-1 text-xs">

@@ -24,7 +24,7 @@ const CopyUserData = ({ copyContent }: CopyUserDataProps) => {
     return (
         <div>
             <Separator />
-            <p className="py-4 font-semibold ">New user created:</p>
+            <p className="py-4 font-semibold">New user created:</p>
             <div className="flex flex-row">
                 <Textarea value={copyContent} rows={5} readOnly />
 
