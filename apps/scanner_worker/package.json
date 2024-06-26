@@ -14,11 +14,11 @@
         "throng": "5.0.0"
     },
     "devDependencies": {
-        "@types/node": "20.12.7",
+        "@types/node": "20.14.9",
         "@types/throng": "5.0.7",
         "dotenv-cli": "7.4.1",
         "tsconfig": "*",
-        "tsup": "8.0.2",
-        "typescript": "5.4.5"
+        "tsup": "8.1.0",
+        "typescript": "5.5.2"
     }
 }
