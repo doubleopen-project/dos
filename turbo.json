@@ -49,7 +49,7 @@
         "UL_RETRY_INTERVAL",
         "WEB_CONCURRENCY"
     ],
-    "pipeline": {
+    "tasks": {
         "api:build": {
             "dependsOn": [
                 "db:generate",
