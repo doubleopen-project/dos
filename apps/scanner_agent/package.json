@@ -20,7 +20,7 @@
         "express": "4.19.2",
         "milliseconds": "1.0.3",
         "s3-helpers": "*",
-        "superagent": "^9.0.1",
+        "superagent": "^9.0.2",
         "swagger-ui-express": "5.0.0",
         "validation-helpers": "*"
     },
@@ -33,9 +33,9 @@
         "@types/node": "20.14.9",
         "@types/superagent": "^8.1.7",
         "@types/swagger-ui-express": "4.1.6",
-        "chai": "5.1.0",
+        "chai": "5.1.1",
         "eslint-config-custom-server": "*",
-        "mocha": "10.4.0",
+        "mocha": "10.5.2",
         "tsconfig": "*",
         "tsup": "8.1.0",
         "typescript": "5.5.2"
