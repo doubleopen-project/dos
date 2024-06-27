@@ -60,7 +60,7 @@
         "test:cui:e2e": "dotenv -e .env.local -- turbo run test:e2e --filter=clearance_ui",
         "test:cui:e2e:reset": "npm run db:migrate:reset && dotenv -e .env.local -- turbo run test:e2e --filter=clearance_ui --no-cache --force",
         "test:cui:e2e:report": "dotenv -e .env.local -- turbo run test:e2e:report --filter=clearance_ui",
-        "test:cui:e2e:ui": "dotenv -e .env.local -- turbo run test:e2e:ui --filter=clearance_ui",
+        "test:cui:e2e:ui": "dotenv -e .env.local -- npm run test:e2e:ui --workspace=apps/clearance_ui",
         "test:spdx-validation": "npm run build:spdx-validation && turbo run test --filter=spdx-validation",
         "test:validation": "npm run build:validation && turbo run test --filter=validation-helpers"
     },
@@ -71,7 +71,7 @@
         "prettier-plugin-tailwindcss": "0.6.5",
         "rimraf": "5.0.5",
         "tsx": "4.15.7",
-        "turbo": "1.13.2"
+        "turbo": "2.0.5"
     },
     "engines": {
         "node": "20.10.0",
