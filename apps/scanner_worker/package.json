@@ -8,7 +8,7 @@
         "start": "dotenv -e ../../.env.local node dist/index.js"
     },
     "dependencies": {
-        "bull": "4.12.2",
+        "bull": "4.14.0",
         "common-helpers": "*",
         "s3-helpers": "*",
         "throng": "5.0.0"
@@ -16,7 +16,7 @@
     "devDependencies": {
         "@types/node": "20.14.9",
         "@types/throng": "5.0.7",
-        "dotenv-cli": "7.4.1",
+        "dotenv-cli": "7.4.2",
         "tsconfig": "*",
         "tsup": "8.1.0",
         "typescript": "5.5.2"
