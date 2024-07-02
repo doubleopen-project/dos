@@ -49,6 +49,7 @@
         "UL_RETRY_INTERVAL",
         "WEB_CONCURRENCY"
     ],
+    "ui": "stream",
     "tasks": {
         "api:build": {
             "dependsOn": [
