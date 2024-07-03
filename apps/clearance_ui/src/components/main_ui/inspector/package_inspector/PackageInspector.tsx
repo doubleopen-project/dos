@@ -482,7 +482,7 @@ const PackageInspector = ({ purl, path }: Props) => {
 
             <Separator className="mb-2" />
 
-            <div className="flex-1 overflow-auto pl-1" ref={treeDivRef}>
+            <div className="flex-1 pl-1" ref={treeDivRef}>
                 {isLoading && (
                     <div className="flex h-full items-center justify-center">
                         <Loader2 className="mr-2 h-16 w-16 animate-spin" />
