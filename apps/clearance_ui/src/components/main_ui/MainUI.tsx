@@ -43,8 +43,6 @@ const MainUI = ({
         }
     }, [firstRef]);
 
-    console.log(secondHeight);
-
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
