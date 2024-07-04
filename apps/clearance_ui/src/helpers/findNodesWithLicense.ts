@@ -32,14 +32,6 @@ export const findNodesWithLicense = (
             for (const child of node.children) {
                 recursiveSearch(child);
             }
-
-            const atLeastOneChildHasFinding = node.children.some((child) =>
-                nodesWithLicense.some((n) => n.id === child.id),
-            );
-
-            if (atLeastOneChildHasFinding) {
-                nodesWithLicense.push(node);
-            }
         } else {
             // If node is a leaf, check if it has the license
             const hasLicense = node.fileSha256
