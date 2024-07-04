@@ -190,9 +190,12 @@ const PackageInspector = ({ purl, path }: Props) => {
         if (!lfData) return;
         const nodes = findNodesWithLicense(treeData, licenseFilter, lfData);
         treeRef.current?.closeAll();
-        for (const node of nodes) {
-            treeRef.current?.openParents(node.id);
-        }
+        // Add a delay to make sure the tree is fully closed before opening the nodes
+        setTimeout(() => {
+            for (const node of nodes) {
+                treeRef.current?.openParents(node.id);
+            }
+        }, 100);
     };
 
     useEffect(() => {
