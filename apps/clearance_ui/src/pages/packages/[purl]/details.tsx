@@ -4,6 +4,7 @@
 
 import { useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
@@ -128,7 +129,18 @@ const Details = () => {
                                             {key}:
                                         </dt>
                                         <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
-                                            {value}
+                                            {key.includes("_url") ? (
+                                                <Link
+                                                    className="font-semibold text-blue-400"
+                                                    rel="noopener noreferrer"
+                                                    target="_blank"
+                                                    href={value}
+                                                >
+                                                    {value}
+                                                </Link>
+                                            ) : (
+                                                value
+                                            )}
                                         </dd>
                                     </div>
                                 ),
