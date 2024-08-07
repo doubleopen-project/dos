@@ -7,9 +7,9 @@
  * so that the state of the job in the database can be updated if the state of the job in the job queue has changed
  * or if the state is stuck on pre-scan or post-scan phases.
  * These error stages could be caused by:
- * - a connection issue between the API and Scanner Agent
+ * - a job queue state event change uncaught by the API
  * - API not being able to reach database
- * - API or Scanner Agent crashing / stopping / not responding unexpectedly
+ * - API crashing / stopping / not responding unexpectedly
  * - job queue being wiped before the job has finished
  */
 
@@ -25,7 +25,9 @@ import {
     updateScannerJobAndPackagesStateToFailedRecursive,
     updateScannerJobStateRecursive,
 } from "../helpers/db_queries";
-import { queryJobDetails } from "../helpers/sa_queries";
+import QueueService from "../services/queue";
+
+const workQueue = QueueService.getInstance();
 
 const flaggedMap = new Map<
     string,
@@ -133,12 +135,17 @@ export const jobStateQuery = async () => {
                                 scannerJobId +
                                     ": Restarting saving results phase as the job has been in the savingResults state for 30 minutes",
                             );
-                            const jobDetails =
-                                await queryJobDetails(scannerJobId);
-                            if (jobDetails.result) {
+
+                            const workQueueJob =
+                                await workQueue.getJob(scannerJobId);
+
+                            if (
+                                workQueueJob &&
+                                workQueueJob.returnvalue?.result
+                            ) {
                                 saveJobResults(
                                     scannerJobId,
-                                    jobDetails.result,
+                                    JSON.parse(workQueueJob.returnvalue.result),
                                     undefined,
                                 );
                             } else {
@@ -241,159 +248,130 @@ export const jobStateQuery = async () => {
                     }
                 }
             } else {
-                // State of the job in the job queue
-                const jobDetails = await queryJobDetails(scannerJobId);
-                const jobQueueState = jobDetails.state;
+                const workQueueJob = await workQueue.getJob(scannerJobId);
 
-                if (dbState !== jobQueueState) {
-                    switch (jobQueueState) {
-                        case "failed":
-                            // Just update the state in the database, if case is "failed"
-                            console.log(
-                                scannerJobId +
-                                    ": Changing state to failed as its state is failed in the job queue",
-                            );
-                            // Update scanner job and its children (if any), and related packages
-                            await updateScannerJobAndPackagesStateToFailedRecursive(
-                                scannerJobId,
-                            );
-                            break;
-                        case "completed":
-                            /*
-                             * Case where job is completed in queue but Scanner Agent's
-                             * attempt to inform API about the state of the job has failed.
-                             */
-                            if (jobDetails.result) {
-                                console.log(
-                                    "The job has completed state in the queue, but " +
-                                        dbState +
-                                        " in the database. Initiating saving results.",
-                                );
-                                // Save the job results to the database
-                                saveJobResults(
-                                    scannerJobId,
-                                    jobDetails.result,
-                                    undefined,
-                                );
-                            } else {
+                if (!workQueueJob) {
+                    /*
+                     * Case where the job has a state "queued", "waiting", "active", "resumed" or "stalled"
+                     * in the database, but the job is not found in the queue.
+                     * This could mean that the queue has been wiped before the job has finished,
+                     * or something else could have gone wrong, so we'll just mark the job as failed.
+                     */
+                    if (
+                        flaggedJob &&
+                        flaggedJob.dbState === dbState &&
+                        flaggedJob.queueState === "notFound"
+                    ) {
+                        // For now, logging to the console
+                        console.log(
+                            scannerJobId +
+                                ": ScannerJob not found in job queue. Changing state to failed.",
+                        );
+                        // Update scanner job and its children (if any), and related packages
+                        await updateScannerJobAndPackagesStateToFailedRecursive(
+                            scannerJobId,
+                        );
+                        flaggedMap.delete(scannerJobId);
+                        break;
+                    } else {
+                        // If the states have changed since the last check, but still differ from each other,
+                        // update the flagged job's states in the map with flagCount 1
+                        flaggedMap.set(scannerJobId, {
+                            dbState: dbState,
+                            queueState: "notFound",
+                            flagCount: 1,
+                        });
+                    }
+                } else {
+                    // State of the job in the job queue
+                    const jobQueueState = await workQueueJob.getState();
+
+                    if (dbState !== jobQueueState) {
+                        switch (jobQueueState) {
+                            case "failed":
+                                // Just update the state in the database, if case is "failed"
                                 console.log(
                                     scannerJobId +
-                                        ": Job has completed, but no result was found. Changing state to failed.",
+                                        ": Changing state to failed as its state is failed in the job queue",
                                 );
                                 // Update scanner job and its children (if any), and related packages
                                 await updateScannerJobAndPackagesStateToFailedRecursive(
                                     scannerJobId,
                                 );
-                                flaggedMap.delete(scannerJobId);
-                            }
-                            break;
-                        case "notFound":
-                            /*
-                             * Case where the job has a state "queued", "waiting", "active", "resumed" or "stalled"
-                             * in the database, but the job is not found in the queue.
-                             * This could mean that the queue has been wiped before the job has finished,
-                             * or something else could have gone wrong, so we'll just mark the job as failed.
-                             */
-                            if (
-                                flaggedJob &&
-                                flaggedJob.dbState === dbState &&
-                                flaggedJob.queueState === jobQueueState
-                            ) {
-                                // For now, logging to the console
-                                console.log(
-                                    scannerJobId +
-                                        ": ScannerJob not found in job queue. Changing state to failed.",
-                                );
-                                // Update scanner job and its children (if any), and related packages
-                                await updateScannerJobAndPackagesStateToFailedRecursive(
-                                    scannerJobId,
-                                );
-                                flaggedMap.delete(scannerJobId);
                                 break;
-                            } else {
-                                // If the states have changed since the last check, but still differ from each other,
-                                // update the flagged job's states in the map with flagCount 1
-                                flaggedMap.set(scannerJobId, {
-                                    dbState: dbState,
-                                    queueState: jobQueueState,
-                                    flagCount: 1,
-                                });
-                            }
-                            break;
-                        case "noConnectionToSA":
-                            if (flaggedJob) {
-                                if (
-                                    flaggedJob.dbState === dbState &&
-                                    flaggedJob.queueState === jobQueueState
-                                ) {
-                                    flaggedJob.flagCount++;
-                                    if (flaggedJob.flagCount > 2) {
-                                        console.log(
-                                            scannerJobId +
-                                                ": Updating job state to failed, as the connection to Scanner Agent has been down for 3 consecutive checks",
-                                        );
-                                        // Update scanner job and its children (if any), and related packages
-                                        await updateScannerJobAndPackagesStateToFailedRecursive(
-                                            scannerJobId,
-                                        );
-                                        flaggedMap.delete(scannerJobId);
-                                    }
+                            case "completed":
+                                /*
+                                 * Case where job is completed in queue but the job state event listener
+                                 * has not caught the state change for some reason.
+                                 */
+
+                                // Result of the job
+                                const workQueueJobResult =
+                                    workQueueJob.returnvalue?.result;
+
+                                if (workQueueJobResult) {
+                                    console.log(
+                                        "The job has completed state in the queue, but " +
+                                            dbState +
+                                            " in the database. Initiating saving results.",
+                                    );
+                                    // Save the job results to the database
+                                    saveJobResults(
+                                        scannerJobId,
+                                        JSON.parse(workQueueJobResult),
+                                        undefined,
+                                    );
                                 } else {
-                                    // If the states have changed since the last check, but still differ from each other,
-                                    // update the flagged job's states in the map with flagCount 1
-                                    flaggedMap.set(scannerJobId, {
-                                        dbState: dbState,
-                                        queueState: jobQueueState,
-                                        flagCount: 1,
-                                    });
-                                }
-                            } else {
-                                // If the job is not in the flagged map, add it with flagCount 1
-                                flaggedMap.set(scannerJobId, {
-                                    dbState: dbState,
-                                    queueState: jobQueueState,
-                                    flagCount: 1,
-                                });
-                            }
-                            break;
-                        default:
-                            if (flaggedJob) {
-                                if (
-                                    flaggedJob.dbState === dbState &&
-                                    flaggedJob.queueState === jobQueueState
-                                ) {
-                                    // If the states haven't changed since the last check, just update the state in the database
                                     console.log(
                                         scannerJobId +
-                                            ": Updating job state to " +
-                                            jobQueueState,
+                                            ": Job has completed, but no result was found. Changing state to failed.",
                                     );
-                                    // Update scanner job and its children (if any) states
-                                    await updateScannerJobStateRecursive(
+                                    // Update scanner job and its children (if any), and related packages
+                                    await updateScannerJobAndPackagesStateToFailedRecursive(
                                         scannerJobId,
-                                        {
-                                            state: jobQueueState,
-                                        },
                                     );
                                     flaggedMap.delete(scannerJobId);
+                                }
+                                break;
+                            default:
+                                if (flaggedJob) {
+                                    if (
+                                        flaggedJob.dbState === dbState &&
+                                        flaggedJob.queueState === jobQueueState
+                                    ) {
+                                        // If the states haven't changed since the last check, just update the state in the database
+                                        console.log(
+                                            scannerJobId +
+                                                ": Updating job state to " +
+                                                jobQueueState,
+                                        );
+                                        // Update scanner job and its children (if any) states
+                                        await updateScannerJobStateRecursive(
+                                            scannerJobId,
+                                            {
+                                                state: jobQueueState,
+                                            },
+                                        );
+                                        flaggedMap.delete(scannerJobId);
+                                    } else {
+                                        // If the states have changed since the last check, but still differ from each other,
+                                        // update the flagged job's states in the map with flagCount 1
+                                        flaggedMap.set(scannerJobId, {
+                                            dbState: dbState,
+                                            queueState: jobQueueState,
+                                            flagCount: 1,
+                                        });
+                                    }
                                 } else {
-                                    // If the states have changed since the last check, but still differ from each other,
-                                    // update the flagged job's states in the map with flagCount 1
+                                    // If the job is not in the flagged map, add it with flagCount 1
                                     flaggedMap.set(scannerJobId, {
                                         dbState: dbState,
                                         queueState: jobQueueState,
                                         flagCount: 1,
                                     });
                                 }
-                            } else {
-                                // If the job is not in the flagged map, add it with flagCount 1
-                                flaggedMap.set(scannerJobId, {
-                                    dbState: dbState,
-                                    queueState: jobQueueState,
-                                    flagCount: 1,
-                                });
-                            }
-                            break;
+                                break;
+                        }
                     }
                 }
             }
