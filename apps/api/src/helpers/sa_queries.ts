@@ -68,58 +68,6 @@ export const sendJobToQueue = async (
     return true;
 };
 
-export const reportResultState = async (
-    jobId: string,
-    resultState: string,
-): Promise<boolean> => {
-    let retries = parseInt(process.env.NEW_JOB_RETRIES as string) || 3;
-    const retryInterval =
-        parseInt(process.env.NEW_JOB_RETRY_INTERVAL as string) || 1000;
-    let response = null;
-
-    while (!response && retries >= 0) {
-        try {
-            response = await scannerAgentClient.postResultState(
-                { state: resultState },
-                {
-                    params: { id: jobId },
-
-                    headers: {
-                        Authorization: "Bearer " + saToken,
-                    },
-                },
-            );
-        } catch (error) {
-            if (isErrorFromAlias(scannerAgentApi, "postResultState", error)) {
-                console.log(
-                    jobId +
-                        ": Failed to report result state. Scanner Agent responded with status code " +
-                        error.response.status,
-                );
-            } else if (isAxiosError(error) && error.code === "ECONNREFUSED") {
-                console.log("Unable to connect Scanner Agent");
-            } else {
-                console.log(
-                    jobId + ": Failed to report result state. Error: ",
-                    error,
-                );
-            }
-            console.log(retries);
-            retries--;
-            if (retries >= 0) {
-                console.log(jobId + ": Retrying to report result state");
-                await new Promise((resolve) =>
-                    setTimeout(resolve, retryInterval),
-                );
-            } else {
-                return false;
-            }
-        }
-    }
-
-    return true;
-};
-
 export const queryJobDetails = async (
     jobId: string,
 ): Promise<{ state: string; result: ScannerJobResultType | undefined }> => {
