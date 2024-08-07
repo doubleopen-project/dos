@@ -38,6 +38,8 @@ if (process.env.NODE_ENV === "production") {
         "SPACES_SECRET",
         "SPACES_BUCKET",
         "SA_API_TOKEN",
+        "REDIS_URL",
+        "REDIS_PW",
     );
 }
 
