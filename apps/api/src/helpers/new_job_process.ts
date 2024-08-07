@@ -4,11 +4,13 @@
 
 import log from "loglevel";
 import { saveFilesWithHashKey } from "s3-helpers";
+import QueueService from "../services/queue";
 import { findFilesToBeScanned } from "./db_operations";
 import * as dbQueries from "./db_queries";
 import * as fileHelpers from "./file_helpers";
 import { s3Client } from "./s3client";
-import { sendJobToQueue } from "./sa_queries";
+
+const workQueue = QueueService.getInstance();
 
 const logLevel: log.LogLevelDesc =
     (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
@@ -193,36 +195,29 @@ export const processPackageAndSendToScanner = async (
         log.debug(scannerJobId + ": Local files deleted");
 
         if (filesToBeScanned.length > 0) {
-            log.info(
-                scannerJobId +
-                    ": Sending a request to Scanner Agent to add new job to the work queue",
-            );
+            log.info(scannerJobId + ": Adding job to the work queue");
 
             const timeout = 600;
 
-            const addedToQueue = await sendJobToQueue(
-                scannerJobId,
-                filesToBeScanned,
-                { timeout: timeout },
-            );
-
-            if (addedToQueue) {
-                log.info(
-                    scannerJobId + ': Updating ScannerJob state to "queued"',
+            try {
+                await workQueue.add(
+                    {
+                        jobId: scannerJobId,
+                        options: { timeout: timeout },
+                        files: filesToBeScanned,
+                    },
+                    {
+                        jobId: scannerJobId,
+                    },
                 );
-
-                await dbQueries.updateManyScannerJobStates(
-                    scannerJobIds,
-                    "queued",
-                );
-
-                await dbQueries.updateScannerJob(scannerJobId, {
-                    fileCount: filesToBeScanned.length,
-                    timeout: timeout,
-                });
-            } else {
+            } catch (error) {
                 throw new Error("Error: Adding to queue was unsuccessful.");
             }
+
+            await dbQueries.updateScannerJob(scannerJobId, {
+                fileCount: filesToBeScanned.length,
+                timeout: timeout,
+            });
         } else {
             log.debug(scannerJobId + ": No files to be scanned");
             log.debug(
