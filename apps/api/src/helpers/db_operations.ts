@@ -11,8 +11,8 @@ import { minimatch } from "minimatch";
 import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
+import QueueService from "../services/queue";
 import { s3Client } from "./s3client";
-import { reportResultState } from "./sa_queries";
 
 const logLevel: log.LogLevelDesc =
     (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
@@ -311,6 +311,19 @@ export const saveJobResults = async (
             jobId + ": Adding LicenseFindings and CopyrightFindings for files",
         );
 
+        const workQueue = QueueService.getInstance();
+        const workQueueJob = await workQueue.getJob(jobId);
+
+        if (!workQueueJob) {
+            await dbQueries.createSystemIssue({
+                message: "WorkQueue job not found",
+                severity: "MODERATE",
+                errorCode: "WORKQUEUE_JOB_NOT_FOUND",
+                errorType: "ScannerRouterError",
+                info: JSON.stringify({ jobId: jobId }),
+            });
+        }
+
         // Make a map of scancode keys to SPDX license IDs to enhance
         // performance when searching for SPDX license ID for a key.
         const scKeyToSpdxIdMap = new Map<string, string>();
@@ -581,11 +594,9 @@ export const saveJobResults = async (
             );
         }
 
-        const reportSuccess = await reportResultState(jobId, "saved");
-        if (!reportSuccess) {
-            console.log(
-                jobId + ": Unable to report result state to Scanner Agent",
-            );
+        if (workQueueJob) {
+            console.log(`${jobId}: Removing job from work queue`);
+            await workQueueJob.remove();
         }
 
         // Delete zip file from object storage
@@ -656,19 +667,6 @@ export const saveJobResults = async (
             console.log(
                 jobId +
                     ': Unable to update ScannerJob and Package statuses to "failed"',
-            );
-        }
-
-        try {
-            const reportSuccess = await reportResultState(jobId, "failed");
-            if (!reportSuccess) {
-                console.log(
-                    jobId + ": Unable to report result state to Scanner Agent",
-                );
-            }
-        } catch (error) {
-            console.log(
-                jobId + ": Unable to report result state to Scanner Agent",
             );
         }
     }
