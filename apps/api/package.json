@@ -16,6 +16,7 @@
         "@zodios/openapi": "10.5.0",
         "adm-zip": "0.5.14",
         "braces": "^3.0.3",
+        "bull": "4.16.0",
         "compression": "1.7.4",
         "connect-pg-simple": "9.0.1",
         "cookie-parser": "1.4.6",
