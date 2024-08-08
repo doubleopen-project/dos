@@ -10,7 +10,6 @@
         "DB_RETRIES",
         "DB_RETRY_INTERVAL",
         "DL_CONCURRENCY",
-        "DOS_URL",
         "E2E_USER_USERNAME",
         "E2E_USER_PASSWORD",
         "KEYCLOAK_ADMIN_PASSWORD",
@@ -34,10 +33,8 @@
         "REDIS_URL",
         "REFETCH_INTERVAL",
         "RESCAN_SCHEDULE",
-        "SA_API_TOKEN",
         "SCANCODE_FILES_IN_MEMORY",
         "SCANCODE_PROCESSES",
-        "SCANNER_URL",
         "SESSION_SECRET",
         "SIZE_LIMIT_FOR_COMPRESSION",
         "SPACES_BUCKET",
@@ -61,13 +58,6 @@
         },
         "curation:build": {
             "dependsOn": ["validation-helpers:build"]
-        },
-        "scanner-agent:build": {
-            "dependsOn": [
-                "s3-helpers:build",
-                "common-helpers:build",
-                "validation-helpers:build"
-            ]
         },
         "scanner-worker:build": {
             "dependsOn": ["s3-helpers:build", "common-helpers:build"]

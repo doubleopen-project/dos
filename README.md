@@ -79,7 +79,7 @@ To run this project you will need Node.js, npm and Docker installed.
     npm run dev
     ```
 
-    This will start the Clearance UI, the API, and the Scanner Agent.
+    This will start the Clearance UI and the API.
 
 # License
 
