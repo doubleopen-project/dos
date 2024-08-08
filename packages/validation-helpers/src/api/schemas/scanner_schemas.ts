@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
+import { ScannerJobResultSchema } from "../../scanner_agent/schemas";
 import { purlSchema } from "./common_schemas";
 
 //---------------- POST scan-results ----------------
@@ -195,3 +196,28 @@ export const QueryParamWorkQueueJobsStatus = z
         ),
     )
     .optional();
+
+//---------------- GET work-queue/jobs/:id ----------------
+
+export const GetWorkQueueJobDetailsRes = z.object({
+    id: z.string().uuid(),
+    state: z.string(),
+    data: z
+        .object({
+            jobId: z.string().uuid(),
+            options: z
+                .object({
+                    timeout: z.number().optional(),
+                })
+                .optional(),
+            files: z.array(
+                z.object({
+                    hash: z.string(),
+                    path: z.string(),
+                }),
+            ),
+        })
+        .optional(),
+    finishedOn: z.coerce.date().optional(),
+    result: ScannerJobResultSchema.optional(),
+});
