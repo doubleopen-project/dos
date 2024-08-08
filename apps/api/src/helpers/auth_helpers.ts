@@ -8,27 +8,6 @@ import { getUsers } from "./keycloak_queries";
 
 const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
 
-export const authenticateSAToken = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
-        const saToken = process.env.SA_API_TOKEN || "token";
-        const authHeader = req.headers["authorization"];
-        const token = authHeader && authHeader.split(" ")[1];
-
-        if (token == null)
-            return res.status(401).json({ message: "Unauthorized" });
-
-        if (token === saToken) next();
-        else return res.status(403).json({ message: "Forbidden" });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Internal server error" });
-    }
-};
-
 export const authenticateDosApiToken = async (
     req: Request,
     res: Response,

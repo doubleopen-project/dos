@@ -6,10 +6,7 @@ import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma, ScannerJob } from "database";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
-import {
-    authenticateDosApiToken,
-    authenticateSAToken,
-} from "../helpers/auth_helpers";
+import { authenticateDosApiToken } from "../helpers/auth_helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
@@ -736,67 +733,5 @@ scannerRouter.get(
         }
     },
 );
-
-// ------------------------------------- SA ROUTES -------------------------------------
-
-// Update ScannerJob state
-scannerRouter.put("/job-state/:id", authenticateSAToken, async (req, res) => {
-    try {
-        if (req.body.state === "completed") {
-            return res.status(400).json({
-                message:
-                    "Bad Request: Cannot change state to completed. Use /job-results endpoint instead",
-            });
-        } else {
-            if (req.body.state === "active") {
-                // Wait 5 ms
-                // Reason: Scanner Agent might send requests for states 'waiting' and 'active' at the same time, and may be saved in the wrong order
-                await new Promise((resolve) => setTimeout(resolve, 5));
-            }
-
-            if (req.body.state === "failed") {
-                // Update scanner job and its children (if any), and related packages
-                await dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
-                    req.params.id,
-                );
-            } else {
-                // Update scanner job and its children (if any) states
-                await dbQueries.updateScannerJobStateRecursive(req.params.id, {
-                    state: req.body.state,
-                });
-            }
-
-            console.log(
-                req.params.id + ': Changed state to "' + req.body.state + '"',
-            );
-
-            res.status(200).json({
-                message:
-                    "Received job with id " +
-                    req.params.id +
-                    ". Changed state to " +
-                    req.body.state,
-            });
-        }
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
-// Save job results to database
-scannerRouter.post("/job-results", authenticateSAToken, async (req, res) => {
-    try {
-        dbOperations.saveJobResults(req.body.id, req.body.result, jobStateMap);
-        res.status(200).json({
-            message:
-                "Received and saving results for job with with id " +
-                req.body.id,
-        });
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
 
 export default scannerRouter;

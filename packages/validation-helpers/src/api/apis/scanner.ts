@@ -82,37 +82,4 @@ export const scannerAPI = makeApi([
         response: schemas.GetJobStateRes,
         errors,
     },
-    {
-        method: "put",
-        path: "/job-state/:id",
-        description: "Edit scanner job state",
-        parameters: [
-            {
-                name: "id",
-                type: "Path",
-                schema: schemas.PutJobStateReqPathParams,
-            },
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.PutJobStateReq,
-            },
-        ],
-        response: schemas.PutJobStateRes,
-        errors,
-    },
-    {
-        method: "post",
-        path: "/job-results",
-        description: "Save scanner job results",
-        parameters: [
-            {
-                name: "body",
-                type: "Body",
-                schema: schemas.PostJobResultsReq,
-            },
-        ],
-        response: schemas.PostJobResultsRes,
-        errors,
-    },
 ]);

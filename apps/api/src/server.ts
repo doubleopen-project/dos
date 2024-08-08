@@ -16,6 +16,7 @@ import { getKeycloak, memoryStore } from "./config/keycloak";
 import { cronJobs } from "./cron_jobs";
 import { onStartUp } from "./helpers/on_start_up";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
+import QueueService from "./services/queue";
 
 const requiredEnvVars: string[] = [
     "DATABASE_URL",
@@ -37,7 +38,6 @@ if (process.env.NODE_ENV === "production") {
         "SPACES_KEY",
         "SPACES_SECRET",
         "SPACES_BUCKET",
-        "SA_API_TOKEN",
         "REDIS_URL",
         "REDIS_PW",
     );
@@ -122,6 +122,9 @@ const document = openApiBuilder({
 app.use(`/docs/swagger.json`, (_, res) => res.json(document));
 app.use("/docs", serve);
 app.use("/docs", setup(undefined, { swaggerUrl: "/docs/swagger.json" }));
+
+// Initialize the job queue state event listeners
+QueueService.initiateJobEventListeners();
 
 // Run jobStateQuery every 10 seconds (for testing purposes)
 //cron.schedule("*/10 * * * * *", () => {
