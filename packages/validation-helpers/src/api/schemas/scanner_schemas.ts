@@ -168,3 +168,30 @@ export const GetJobStateRes = z.object({
         message: z.string(),
     }),
 });
+
+//--------------- GET work-queue/jobs ----------------
+
+export const GetWorkQueueJobsRes = z.array(
+    z.object({
+        id: z.string(),
+        state: z.string(),
+        finishedOn: z.coerce.date().optional(),
+    }),
+);
+
+export const QueryParamWorkQueueJobsStatus = z
+    .string()
+    .transform((value) => value.split(","))
+    .pipe(
+        z.array(
+            z.enum([
+                "completed",
+                "waiting",
+                "active",
+                "delayed",
+                "failed",
+                "paused",
+            ]),
+        ),
+    )
+    .optional();

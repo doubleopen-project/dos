@@ -3778,6 +3778,149 @@ declare const scannerAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/work-queue/jobs";
+        description: "List all jobs in the work queue. Alias: GetWorkQueueJobs";
+        alias: "GetWorkQueueJobs";
+        parameters: [
+            {
+                name: "status";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodPipeline<
+                        zod.ZodEffects<zod.ZodString, string[], string>,
+                        zod.ZodArray<
+                            zod.ZodEnum<
+                                [
+                                    "completed",
+                                    "waiting",
+                                    "active",
+                                    "delayed",
+                                    "failed",
+                                    "paused",
+                                ]
+                            >,
+                            "many"
+                        >
+                    >
+                >;
+                description: string;
+            },
+        ];
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    state: zod.ZodString;
+                    finishedOn: zod.ZodOptional<zod.ZodDate>;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    id: string;
+                    state: string;
+                    finishedOn?: Date | undefined;
+                },
+                {
+                    id: string;
+                    state: string;
+                    finishedOn?: Date | undefined;
+                }
+            >,
+            "many"
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const userAPI: [
@@ -10808,6 +10951,149 @@ declare const dosAPI: [
                     status: string;
                 };
             }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/work-queue/jobs";
+        description: "List all jobs in the work queue. Alias: GetWorkQueueJobs";
+        alias: "GetWorkQueueJobs";
+        parameters: [
+            {
+                name: "status";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodPipeline<
+                        zod.ZodEffects<zod.ZodString, string[], string>,
+                        zod.ZodArray<
+                            zod.ZodEnum<
+                                [
+                                    "completed",
+                                    "waiting",
+                                    "active",
+                                    "delayed",
+                                    "failed",
+                                    "paused",
+                                ]
+                            >,
+                            "many"
+                        >
+                    >
+                >;
+                description: string;
+            },
+        ];
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    state: zod.ZodString;
+                    finishedOn: zod.ZodOptional<zod.ZodDate>;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    id: string;
+                    state: string;
+                    finishedOn?: Date | undefined;
+                },
+                {
+                    id: string;
+                    state: string;
+                    finishedOn?: Date | undefined;
+                }
+            >,
+            "many"
         >;
         errors: [
             {
