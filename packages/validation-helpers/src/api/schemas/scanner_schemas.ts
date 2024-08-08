@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from "zod";
-import { ScannerJobResultSchema } from "../../scanner_agent/schemas";
 import { purlSchema } from "./common_schemas";
 
 //---------------- POST scan-results ----------------
@@ -168,39 +167,4 @@ export const GetJobStateRes = z.object({
         status: z.string(),
         message: z.string(),
     }),
-});
-
-//---------------- PUT job-state ----------------
-
-export const PutJobStateReq = z.object({
-    state: z
-        .string({
-            required_error: "State is required",
-        })
-        .trim()
-        .min(1, "State cannot be empty"),
-});
-
-export const PutJobStateReqPathParams = z.string({
-    required_error: "Scan job ID is required",
-});
-
-export const PutJobStateRes = z.object({
-    message: z.string(),
-});
-
-//---------------- POST job-results ----------------
-
-export const PostJobResultsReq = z.object({
-    id: z
-        .string({
-            required_error: "Id is required",
-        })
-        .trim()
-        .min(1, "Id cannot be empty"),
-    result: ScannerJobResultSchema,
-});
-
-export const PostJobResultsRes = z.object({
-    message: z.string(),
 });
