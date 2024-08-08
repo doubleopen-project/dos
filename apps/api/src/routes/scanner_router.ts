@@ -781,4 +781,43 @@ scannerRouter.get(
     },
 );
 
+// Get details for job in work queue
+scannerRouter.get(
+    "/work-queue/jobs/:id",
+    authzPermission({ resource: "WorkQueue", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const job = await workQueue.getJob(req.params.id);
+
+            if (!job) throw new CustomError("Job not found", 404);
+
+            const state = await job.getState();
+            const finishedOn = job.finishedOn;
+
+            let result = undefined;
+
+            if (state === "completed") {
+                result = job.returnvalue?.result;
+            }
+
+            res.status(200).json({
+                id: req.params.id,
+                state,
+                data: job.data,
+                finishedOn: finishedOn ? new Date(finishedOn) : undefined,
+                result: result ? JSON.parse(result) : undefined,
+            });
+        } catch (error) {
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).json({ message: error.message });
+            } else {
+                console.log("Error: ", error);
+                res.status(500).json({
+                    message: "Internal server error: Unknown error",
+                });
+            }
+        }
+    },
+);
+
 export default scannerRouter;

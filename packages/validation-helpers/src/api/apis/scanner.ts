@@ -4,6 +4,7 @@
 
 import { makeApi } from "@zodios/core";
 import { errors } from "../errors";
+import * as commonSchemas from "../schemas/common_schemas";
 import * as schemas from "../schemas/scanner_schemas";
 
 export const scannerAPI = makeApi([
@@ -97,6 +98,20 @@ export const scannerAPI = makeApi([
             },
         ],
         response: schemas.GetWorkQueueJobsRes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/work-queue/jobs/:id",
+        description: "Get details for job with given id from the work queue",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.GetWorkQueueJobDetailsRes,
         errors,
     },
 ]);
