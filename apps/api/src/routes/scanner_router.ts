@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
+import { JobStatus } from "bull";
 import { Package, Prisma, ScannerJob } from "database";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
@@ -15,8 +16,12 @@ import { processPackageAndSendToScanner } from "../helpers/new_job_process";
 import { parsePurl } from "../helpers/purl_helpers";
 import { s3Client } from "../helpers/s3client";
 import { stateMap } from "../helpers/state_helpers";
+import { authzPermission } from "../middlewares/authz_permission";
+import QueueService from "../services/queue";
 
 const scannerRouter = zodiosRouter(scannerAPI);
+
+const workQueue = QueueService.getInstance();
 
 const jobStateMap: Map<string, string> = new Map();
 
@@ -730,6 +735,48 @@ scannerRouter.get(
         } catch (error) {
             console.log("Problem with database query: " + error);
             res.status(500).json({ message: "Internal server error" });
+        }
+    },
+);
+
+// Get all jobs in the work queue
+scannerRouter.get(
+    "/work-queue/jobs",
+    authzPermission({ resource: "WorkQueue", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const jobStatuses: JobStatus[] = req.query.status || [
+                "active",
+                "waiting",
+                "completed",
+                "failed",
+                "delayed",
+                "paused",
+            ];
+
+            const jobs = await workQueue.getJobs(jobStatuses);
+
+            const jobList: {
+                id: string;
+                state: string;
+                finishedOn: Date | undefined;
+            }[] = [];
+
+            for (const job of jobs) {
+                const state = await job.getState();
+                const finishedOn = job.finishedOn;
+                jobList.push({
+                    id: String(job.id),
+                    state,
+                    finishedOn: finishedOn ? new Date(finishedOn) : undefined,
+                });
+            }
+            res.status(200).json(jobList);
+        } catch (error) {
+            console.log("Error: ", error);
+            res.status(500).json({
+                message: "Internal server error: Unknown error",
+            });
         }
     },
 );

@@ -82,4 +82,21 @@ export const scannerAPI = makeApi([
         response: schemas.GetJobStateRes,
         errors,
     },
+    {
+        method: "get",
+        path: "/work-queue/jobs",
+        description: "List all jobs in the work queue. Alias: GetWorkQueueJobs",
+        alias: "GetWorkQueueJobs",
+        parameters: [
+            {
+                name: "status",
+                type: "Query",
+                schema: schemas.QueryParamWorkQueueJobsStatus,
+                description:
+                    "Filter jobs by status. Separate multiple statuses with comma.",
+            },
+        ],
+        response: schemas.GetWorkQueueJobsRes,
+        errors,
+    },
 ]);
