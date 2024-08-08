@@ -4,6 +4,7 @@
 
 import { assert } from "chai";
 import { parsePurl } from "../../src/helpers/purl_helpers";
+import { parseResult } from "../../src/helpers/result_parser";
 
 export default function suite(): void {
     describe("Testing purl helpers", function () {
@@ -65,6 +66,19 @@ export default function suite(): void {
             assert.strictEqual(parsedPurl.version, "1.5.2");
             assert.strictEqual(parsedPurl.qualifiers, undefined);
             assert.strictEqual(parsedPurl.subpath, null);
+        });
+    });
+
+    describe("Testing result parser", function () {
+        it("should parse a JSON string and nested JSON string to JSON object", function () {
+            const result = `{
+                "key": "value",
+                "nested": "{\\"key\\": \\"value\\"}"
+            }`;
+            const parsedResult = parseResult(result);
+
+            assert.strictEqual(parsedResult.key, "value");
+            assert.strictEqual(parsedResult.nested.key, "value");
         });
     });
 }
