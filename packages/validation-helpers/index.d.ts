@@ -489,1346 +489,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
 >;
 type ScannerJobResultType = z.infer<typeof ScannerJobResultSchema>;
 
-declare const scannerAgentApi: [
-    {
-        method: "get";
-        path: "/";
-        description: "Root endpoint";
-        response: zod.ZodObject<
-            {
-                message: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                message: string;
-            },
-            {
-                message: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "No token provided";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Token is invalid";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "No such job in the work queue";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/jobs";
-        description: "List all jobs";
-        response: zod.ZodArray<
-            zod.ZodObject<
-                {
-                    id: zod.ZodString;
-                    state: zod.ZodString;
-                    finishedOn: zod.ZodOptional<zod.ZodNumber>;
-                },
-                "strip",
-                zod.ZodTypeAny,
-                {
-                    id: string;
-                    state: string;
-                    finishedOn?: number | undefined;
-                },
-                {
-                    id: string;
-                    state: string;
-                    finishedOn?: number | undefined;
-                }
-            >,
-            "many"
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "No token provided";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Token is invalid";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "No such job in the work queue";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "post";
-        path: "/job";
-        description: "Add scanner job";
-        alias: "postJob";
-        parameters: [
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        jobId: zod.ZodString;
-                        options: zod.ZodObject<
-                            {
-                                timeout: zod.ZodNumber;
-                            },
-                            "strip",
-                            zod.ZodTypeAny,
-                            {
-                                timeout: number;
-                            },
-                            {
-                                timeout: number;
-                            }
-                        >;
-                        files: zod.ZodArray<
-                            zod.ZodObject<
-                                {
-                                    hash: zod.ZodString;
-                                    path: zod.ZodString;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    path: string;
-                                    hash: string;
-                                },
-                                {
-                                    path: string;
-                                    hash: string;
-                                }
-                            >,
-                            "many"
-                        >;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        options: {
-                            timeout: number;
-                        };
-                        files: {
-                            path: string;
-                            hash: string;
-                        }[];
-                        jobId: string;
-                    },
-                    {
-                        options: {
-                            timeout: number;
-                        };
-                        files: {
-                            path: string;
-                            hash: string;
-                        }[];
-                        jobId: string;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                id: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                id: string;
-            },
-            {
-                id: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "No token provided";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Token is invalid";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "No such job in the work queue";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/job/:id";
-        description: "Get scanner job status";
-        alias: "getJobDetails";
-        parameters: [
-            {
-                name: "id";
-                type: "Path";
-                schema: zod.ZodString;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                id: zod.ZodString;
-                state: zod.ZodString;
-                data: zod.ZodOptional<
-                    zod.ZodObject<
-                        {
-                            directory: zod.ZodOptional<zod.ZodString>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            directory?: string | undefined;
-                        },
-                        {
-                            directory?: string | undefined;
-                        }
-                    >
-                >;
-                finishedOn: zod.ZodOptional<zod.ZodNumber>;
-                result: zod.ZodOptional<
-                    zod.ZodObject<
-                        {
-                            headers: zod.ZodArray<
-                                zod.ZodObject<
-                                    {
-                                        tool_name: zod.ZodString;
-                                        tool_version: zod.ZodString;
-                                        options: zod.ZodObject<
-                                            {
-                                                "--copyright": zod.ZodBoolean;
-                                                "--info": zod.ZodBoolean;
-                                                "--json": zod.ZodOptional<zod.ZodString>;
-                                                "--json-pp": zod.ZodOptional<zod.ZodString>;
-                                                "--license": zod.ZodBoolean;
-                                                "--license-references": zod.ZodOptional<zod.ZodBoolean>;
-                                                "--package": zod.ZodOptional<zod.ZodBoolean>;
-                                                "--processes": zod.ZodOptional<zod.ZodString>;
-                                                "--quiet": zod.ZodOptional<zod.ZodBoolean>;
-                                                "--strip-root": zod.ZodOptional<zod.ZodBoolean>;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                "--copyright": boolean;
-                                                "--info": boolean;
-                                                "--license": boolean;
-                                                "--json"?: string | undefined;
-                                                "--json-pp"?:
-                                                    | string
-                                                    | undefined;
-                                                "--license-references"?:
-                                                    | boolean
-                                                    | undefined;
-                                                "--package"?:
-                                                    | boolean
-                                                    | undefined;
-                                                "--processes"?:
-                                                    | string
-                                                    | undefined;
-                                                "--quiet"?: boolean | undefined;
-                                                "--strip-root"?:
-                                                    | boolean
-                                                    | undefined;
-                                            },
-                                            {
-                                                "--copyright": boolean;
-                                                "--info": boolean;
-                                                "--license": boolean;
-                                                "--json"?: string | undefined;
-                                                "--json-pp"?:
-                                                    | string
-                                                    | undefined;
-                                                "--license-references"?:
-                                                    | boolean
-                                                    | undefined;
-                                                "--package"?:
-                                                    | boolean
-                                                    | undefined;
-                                                "--processes"?:
-                                                    | string
-                                                    | undefined;
-                                                "--quiet"?: boolean | undefined;
-                                                "--strip-root"?:
-                                                    | boolean
-                                                    | undefined;
-                                            }
-                                        >;
-                                        notice: zod.ZodString;
-                                        start_timestamp: zod.ZodString;
-                                        end_timestamp: zod.ZodString;
-                                        output_format_version: zod.ZodString;
-                                        duration: zod.ZodNumber;
-                                        message: zod.ZodNullable<zod.ZodString>;
-                                        errors: zod.ZodArray<
-                                            zod.ZodUnknown,
-                                            "many"
-                                        >;
-                                        warnings: zod.ZodArray<
-                                            zod.ZodUnknown,
-                                            "many"
-                                        >;
-                                        extra_data: zod.ZodObject<
-                                            {
-                                                system_environment: zod.ZodObject<
-                                                    {
-                                                        operating_system: zod.ZodString;
-                                                        cpu_architecture: zod.ZodString;
-                                                        platform: zod.ZodString;
-                                                        platform_version: zod.ZodString;
-                                                        python_version: zod.ZodString;
-                                                    },
-                                                    "strip",
-                                                    zod.ZodTypeAny,
-                                                    {
-                                                        operating_system: string;
-                                                        cpu_architecture: string;
-                                                        platform: string;
-                                                        platform_version: string;
-                                                        python_version: string;
-                                                    },
-                                                    {
-                                                        operating_system: string;
-                                                        cpu_architecture: string;
-                                                        platform: string;
-                                                        platform_version: string;
-                                                        python_version: string;
-                                                    }
-                                                >;
-                                                spdx_license_list_version: zod.ZodString;
-                                                files_count: zod.ZodNumber;
-                                            },
-                                            "strip",
-                                            zod.ZodTypeAny,
-                                            {
-                                                system_environment: {
-                                                    operating_system: string;
-                                                    cpu_architecture: string;
-                                                    platform: string;
-                                                    platform_version: string;
-                                                    python_version: string;
-                                                };
-                                                spdx_license_list_version: string;
-                                                files_count: number;
-                                            },
-                                            {
-                                                system_environment: {
-                                                    operating_system: string;
-                                                    cpu_architecture: string;
-                                                    platform: string;
-                                                    platform_version: string;
-                                                    python_version: string;
-                                                };
-                                                spdx_license_list_version: string;
-                                                files_count: number;
-                                            }
-                                        >;
-                                    },
-                                    "strip",
-                                    zod.ZodTypeAny,
-                                    {
-                                        message: string | null;
-                                        options: {
-                                            "--copyright": boolean;
-                                            "--info": boolean;
-                                            "--license": boolean;
-                                            "--json"?: string | undefined;
-                                            "--json-pp"?: string | undefined;
-                                            "--license-references"?:
-                                                | boolean
-                                                | undefined;
-                                            "--package"?: boolean | undefined;
-                                            "--processes"?: string | undefined;
-                                            "--quiet"?: boolean | undefined;
-                                            "--strip-root"?:
-                                                | boolean
-                                                | undefined;
-                                        };
-                                        tool_name: string;
-                                        tool_version: string;
-                                        notice: string;
-                                        start_timestamp: string;
-                                        end_timestamp: string;
-                                        output_format_version: string;
-                                        duration: number;
-                                        errors: unknown[];
-                                        warnings: unknown[];
-                                        extra_data: {
-                                            system_environment: {
-                                                operating_system: string;
-                                                cpu_architecture: string;
-                                                platform: string;
-                                                platform_version: string;
-                                                python_version: string;
-                                            };
-                                            spdx_license_list_version: string;
-                                            files_count: number;
-                                        };
-                                    },
-                                    {
-                                        message: string | null;
-                                        options: {
-                                            "--copyright": boolean;
-                                            "--info": boolean;
-                                            "--license": boolean;
-                                            "--json"?: string | undefined;
-                                            "--json-pp"?: string | undefined;
-                                            "--license-references"?:
-                                                | boolean
-                                                | undefined;
-                                            "--package"?: boolean | undefined;
-                                            "--processes"?: string | undefined;
-                                            "--quiet"?: boolean | undefined;
-                                            "--strip-root"?:
-                                                | boolean
-                                                | undefined;
-                                        };
-                                        tool_name: string;
-                                        tool_version: string;
-                                        notice: string;
-                                        start_timestamp: string;
-                                        end_timestamp: string;
-                                        output_format_version: string;
-                                        duration: number;
-                                        errors: unknown[];
-                                        warnings: unknown[];
-                                        extra_data: {
-                                            system_environment: {
-                                                operating_system: string;
-                                                cpu_architecture: string;
-                                                platform: string;
-                                                platform_version: string;
-                                                python_version: string;
-                                            };
-                                            spdx_license_list_version: string;
-                                            files_count: number;
-                                        };
-                                    }
-                                >,
-                                "many"
-                            >;
-                            license_references: zod.ZodArray<
-                                zod.ZodObject<
-                                    {
-                                        key: zod.ZodString;
-                                        spdx_license_key: zod.ZodString;
-                                    },
-                                    "strip",
-                                    zod.ZodTypeAny,
-                                    {
-                                        key: string;
-                                        spdx_license_key: string;
-                                    },
-                                    {
-                                        key: string;
-                                        spdx_license_key: string;
-                                    }
-                                >,
-                                "many"
-                            >;
-                            files: zod.ZodArray<
-                                zod.ZodObject<
-                                    {
-                                        path: zod.ZodString;
-                                        type: zod.ZodString;
-                                        sha256: zod.ZodNullable<zod.ZodString>;
-                                        detected_license_expression: zod.ZodNullable<zod.ZodString>;
-                                        detected_license_expression_spdx: zod.ZodNullable<zod.ZodString>;
-                                        license_detections: zod.ZodArray<
-                                            zod.ZodObject<
-                                                {
-                                                    license_expression: zod.ZodString;
-                                                    matches: zod.ZodArray<
-                                                        zod.ZodObject<
-                                                            {
-                                                                score: zod.ZodNumber;
-                                                                start_line: zod.ZodNumber;
-                                                                end_line: zod.ZodNumber;
-                                                                license_expression: zod.ZodString;
-                                                                spdx_license_expression: zod.ZodNullable<zod.ZodString>;
-                                                            },
-                                                            "strip",
-                                                            zod.ZodTypeAny,
-                                                            {
-                                                                license_expression: string;
-                                                                score: number;
-                                                                start_line: number;
-                                                                end_line: number;
-                                                                spdx_license_expression:
-                                                                    | string
-                                                                    | null;
-                                                            },
-                                                            {
-                                                                license_expression: string;
-                                                                score: number;
-                                                                start_line: number;
-                                                                end_line: number;
-                                                                spdx_license_expression:
-                                                                    | string
-                                                                    | null;
-                                                            }
-                                                        >,
-                                                        "many"
-                                                    >;
-                                                },
-                                                "strip",
-                                                zod.ZodTypeAny,
-                                                {
-                                                    license_expression: string;
-                                                    matches: {
-                                                        license_expression: string;
-                                                        score: number;
-                                                        start_line: number;
-                                                        end_line: number;
-                                                        spdx_license_expression:
-                                                            | string
-                                                            | null;
-                                                    }[];
-                                                },
-                                                {
-                                                    license_expression: string;
-                                                    matches: {
-                                                        license_expression: string;
-                                                        score: number;
-                                                        start_line: number;
-                                                        end_line: number;
-                                                        spdx_license_expression:
-                                                            | string
-                                                            | null;
-                                                    }[];
-                                                }
-                                            >,
-                                            "many"
-                                        >;
-                                        copyrights: zod.ZodArray<
-                                            zod.ZodObject<
-                                                {
-                                                    copyright: zod.ZodString;
-                                                    start_line: zod.ZodNumber;
-                                                    end_line: zod.ZodNumber;
-                                                },
-                                                "strip",
-                                                zod.ZodTypeAny,
-                                                {
-                                                    start_line: number;
-                                                    end_line: number;
-                                                    copyright: string;
-                                                },
-                                                {
-                                                    start_line: number;
-                                                    end_line: number;
-                                                    copyright: string;
-                                                }
-                                            >,
-                                            "many"
-                                        >;
-                                        scan_errors: zod.ZodArray<
-                                            zod.ZodString,
-                                            "many"
-                                        >;
-                                    },
-                                    "strip",
-                                    zod.ZodTypeAny,
-                                    {
-                                        path: string;
-                                        type: string;
-                                        sha256: string | null;
-                                        detected_license_expression:
-                                            | string
-                                            | null;
-                                        detected_license_expression_spdx:
-                                            | string
-                                            | null;
-                                        license_detections: {
-                                            license_expression: string;
-                                            matches: {
-                                                license_expression: string;
-                                                score: number;
-                                                start_line: number;
-                                                end_line: number;
-                                                spdx_license_expression:
-                                                    | string
-                                                    | null;
-                                            }[];
-                                        }[];
-                                        copyrights: {
-                                            start_line: number;
-                                            end_line: number;
-                                            copyright: string;
-                                        }[];
-                                        scan_errors: string[];
-                                    },
-                                    {
-                                        path: string;
-                                        type: string;
-                                        sha256: string | null;
-                                        detected_license_expression:
-                                            | string
-                                            | null;
-                                        detected_license_expression_spdx:
-                                            | string
-                                            | null;
-                                        license_detections: {
-                                            license_expression: string;
-                                            matches: {
-                                                license_expression: string;
-                                                score: number;
-                                                start_line: number;
-                                                end_line: number;
-                                                spdx_license_expression:
-                                                    | string
-                                                    | null;
-                                            }[];
-                                        }[];
-                                        copyrights: {
-                                            start_line: number;
-                                            end_line: number;
-                                            copyright: string;
-                                        }[];
-                                        scan_errors: string[];
-                                    }
-                                >,
-                                "many"
-                            >;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            headers: {
-                                message: string | null;
-                                options: {
-                                    "--copyright": boolean;
-                                    "--info": boolean;
-                                    "--license": boolean;
-                                    "--json"?: string | undefined;
-                                    "--json-pp"?: string | undefined;
-                                    "--license-references"?:
-                                        | boolean
-                                        | undefined;
-                                    "--package"?: boolean | undefined;
-                                    "--processes"?: string | undefined;
-                                    "--quiet"?: boolean | undefined;
-                                    "--strip-root"?: boolean | undefined;
-                                };
-                                tool_name: string;
-                                tool_version: string;
-                                notice: string;
-                                start_timestamp: string;
-                                end_timestamp: string;
-                                output_format_version: string;
-                                duration: number;
-                                errors: unknown[];
-                                warnings: unknown[];
-                                extra_data: {
-                                    system_environment: {
-                                        operating_system: string;
-                                        cpu_architecture: string;
-                                        platform: string;
-                                        platform_version: string;
-                                        python_version: string;
-                                    };
-                                    spdx_license_list_version: string;
-                                    files_count: number;
-                                };
-                            }[];
-                            license_references: {
-                                key: string;
-                                spdx_license_key: string;
-                            }[];
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
-                        },
-                        {
-                            headers: {
-                                message: string | null;
-                                options: {
-                                    "--copyright": boolean;
-                                    "--info": boolean;
-                                    "--license": boolean;
-                                    "--json"?: string | undefined;
-                                    "--json-pp"?: string | undefined;
-                                    "--license-references"?:
-                                        | boolean
-                                        | undefined;
-                                    "--package"?: boolean | undefined;
-                                    "--processes"?: string | undefined;
-                                    "--quiet"?: boolean | undefined;
-                                    "--strip-root"?: boolean | undefined;
-                                };
-                                tool_name: string;
-                                tool_version: string;
-                                notice: string;
-                                start_timestamp: string;
-                                end_timestamp: string;
-                                output_format_version: string;
-                                duration: number;
-                                errors: unknown[];
-                                warnings: unknown[];
-                                extra_data: {
-                                    system_environment: {
-                                        operating_system: string;
-                                        cpu_architecture: string;
-                                        platform: string;
-                                        platform_version: string;
-                                        python_version: string;
-                                    };
-                                    spdx_license_list_version: string;
-                                    files_count: number;
-                                };
-                            }[];
-                            license_references: {
-                                key: string;
-                                spdx_license_key: string;
-                            }[];
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
-                        }
-                    >
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                id: string;
-                state: string;
-                data?:
-                    | {
-                          directory?: string | undefined;
-                      }
-                    | undefined;
-                finishedOn?: number | undefined;
-                result?:
-                    | {
-                          headers: {
-                              message: string | null;
-                              options: {
-                                  "--copyright": boolean;
-                                  "--info": boolean;
-                                  "--license": boolean;
-                                  "--json"?: string | undefined;
-                                  "--json-pp"?: string | undefined;
-                                  "--license-references"?: boolean | undefined;
-                                  "--package"?: boolean | undefined;
-                                  "--processes"?: string | undefined;
-                                  "--quiet"?: boolean | undefined;
-                                  "--strip-root"?: boolean | undefined;
-                              };
-                              tool_name: string;
-                              tool_version: string;
-                              notice: string;
-                              start_timestamp: string;
-                              end_timestamp: string;
-                              output_format_version: string;
-                              duration: number;
-                              errors: unknown[];
-                              warnings: unknown[];
-                              extra_data: {
-                                  system_environment: {
-                                      operating_system: string;
-                                      cpu_architecture: string;
-                                      platform: string;
-                                      platform_version: string;
-                                      python_version: string;
-                                  };
-                                  spdx_license_list_version: string;
-                                  files_count: number;
-                              };
-                          }[];
-                          license_references: {
-                              key: string;
-                              spdx_license_key: string;
-                          }[];
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
-                      }
-                    | undefined;
-            },
-            {
-                id: string;
-                state: string;
-                data?:
-                    | {
-                          directory?: string | undefined;
-                      }
-                    | undefined;
-                finishedOn?: number | undefined;
-                result?:
-                    | {
-                          headers: {
-                              message: string | null;
-                              options: {
-                                  "--copyright": boolean;
-                                  "--info": boolean;
-                                  "--license": boolean;
-                                  "--json"?: string | undefined;
-                                  "--json-pp"?: string | undefined;
-                                  "--license-references"?: boolean | undefined;
-                                  "--package"?: boolean | undefined;
-                                  "--processes"?: string | undefined;
-                                  "--quiet"?: boolean | undefined;
-                                  "--strip-root"?: boolean | undefined;
-                              };
-                              tool_name: string;
-                              tool_version: string;
-                              notice: string;
-                              start_timestamp: string;
-                              end_timestamp: string;
-                              output_format_version: string;
-                              duration: number;
-                              errors: unknown[];
-                              warnings: unknown[];
-                              extra_data: {
-                                  system_environment: {
-                                      operating_system: string;
-                                      cpu_architecture: string;
-                                      platform: string;
-                                      platform_version: string;
-                                      python_version: string;
-                                  };
-                                  spdx_license_list_version: string;
-                                  files_count: number;
-                              };
-                          }[];
-                          license_references: {
-                              key: string;
-                              spdx_license_key: string;
-                          }[];
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
-                      }
-                    | undefined;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "No token provided";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Token is invalid";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "No such job in the work queue";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "post";
-        path: "/result-state/:id";
-        description: "Set scanner job result state";
-        alias: "postResultState";
-        parameters: [
-            {
-                name: "id";
-                type: "Path";
-                schema: zod.ZodString;
-            },
-            {
-                name: "body";
-                type: "Body";
-                schema: zod.ZodObject<
-                    {
-                        state: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        state: string;
-                    },
-                    {
-                        state: string;
-                    }
-                >;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                message: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                message: string;
-            },
-            {
-                message: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "No token provided";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Token is invalid";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "No such job in the work queue";
-                schema: zod.ZodObject<
-                    {
-                        error: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        error: string;
-                    },
-                    {
-                        error: string;
-                    }
-                >;
-            },
-        ];
-    },
-];
-
 declare const adminAPI: [
     {
         method: "delete";
@@ -2030,8 +690,8 @@ declare const adminAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                id: string;
                 username: string;
+                id: string;
                 realmRoles: string[];
                 dosApiToken?: string | undefined;
                 firstName?: string | undefined;
@@ -2041,8 +701,8 @@ declare const adminAPI: [
                 requiredActions?: string[] | undefined;
             },
             {
-                id: string;
                 username: string;
+                id: string;
                 realmRoles: string[];
                 dosApiToken?: string | undefined;
                 firstName?: string | undefined;
@@ -2968,11 +1628,11 @@ declare const scannerAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                purls: string[];
                 state: {
                     status: "no-results" | "pending" | "ready";
                     jobId: string | null;
                 };
-                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -3000,11 +1660,11 @@ declare const scannerAPI: [
                 } | null;
             },
             {
+                purls: string[];
                 state: {
                     status: "no-results" | "pending" | "ready";
                     jobId: string | null;
                 };
-                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -9847,8 +8507,8 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             type: string;
-                            name: string;
                             purl: string;
+                            name: string;
                             updatedAt: Date;
                             version: string | null;
                             namespace: string | null;
@@ -9857,8 +8517,8 @@ declare const userAPI: [
                         },
                         {
                             type: string;
-                            name: string;
                             purl: string;
+                            name: string;
                             updatedAt: Date;
                             version: string | null;
                             namespace: string | null;
@@ -9874,8 +8534,8 @@ declare const userAPI: [
             {
                 packages: {
                     type: string;
-                    name: string;
                     purl: string;
+                    name: string;
                     updatedAt: Date;
                     version: string | null;
                     namespace: string | null;
@@ -9886,8 +8546,8 @@ declare const userAPI: [
             {
                 packages: {
                     type: string;
-                    name: string;
                     purl: string;
+                    name: string;
                     updatedAt: Date;
                     version: string | null;
                     namespace: string | null;
@@ -11122,11 +9782,11 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                purls: string[];
                 state: {
                     status: "no-results" | "pending" | "ready";
                     jobId: string | null;
                 };
-                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -11154,11 +9814,11 @@ declare const dosAPI: [
                 } | null;
             },
             {
+                purls: string[];
                 state: {
                     status: "no-results" | "pending" | "ready";
                     jobId: string | null;
                 };
-                purls: string[];
                 results: {
                     copyrights: {
                         location: {
@@ -17998,8 +16658,8 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             type: string;
-                            name: string;
                             purl: string;
+                            name: string;
                             updatedAt: Date;
                             version: string | null;
                             namespace: string | null;
@@ -18008,8 +16668,8 @@ declare const dosAPI: [
                         },
                         {
                             type: string;
-                            name: string;
                             purl: string;
+                            name: string;
                             updatedAt: Date;
                             version: string | null;
                             namespace: string | null;
@@ -18025,8 +16685,8 @@ declare const dosAPI: [
             {
                 packages: {
                     type: string;
-                    name: string;
                     purl: string;
+                    name: string;
                     updatedAt: Date;
                     version: string | null;
                     namespace: string | null;
@@ -18037,8 +16697,8 @@ declare const dosAPI: [
             {
                 packages: {
                     type: string;
-                    name: string;
                     purl: string;
+                    name: string;
                     updatedAt: Date;
                     version: string | null;
                     namespace: string | null;
@@ -19116,8 +17776,8 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
-                id: string;
                 username: string;
+                id: string;
                 realmRoles: string[];
                 dosApiToken?: string | undefined;
                 firstName?: string | undefined;
@@ -19127,8 +17787,8 @@ declare const dosAPI: [
                 requiredActions?: string[] | undefined;
             },
             {
-                id: string;
                 username: string;
+                id: string;
                 realmRoles: string[];
                 dosApiToken?: string | undefined;
                 firstName?: string | undefined;
@@ -20103,8 +18763,8 @@ declare const keycloakAPI: [
                 "strip",
                 zod.ZodTypeAny,
                 {
-                    id: string;
                     username: string;
+                    id: string;
                     firstName?: string | undefined;
                     lastName?: string | undefined;
                     email?: string | undefined;
@@ -20116,8 +18776,8 @@ declare const keycloakAPI: [
                     requiredActions?: string[] | undefined;
                 },
                 {
-                    id: string;
                     username: string;
+                    id: string;
                     firstName?: string | undefined;
                     lastName?: string | undefined;
                     email?: string | undefined;
@@ -20609,7 +19269,6 @@ export {
     keycloakAPI,
     pePatternGlobSchema,
     scannerAPI,
-    scannerAgentApi,
     userAPI,
     validReasons,
 };
