@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-export type { ScannerJobResultType } from "./scanner_agent/schemas";
-export { ScannerJobResultSchema } from "./scanner_agent/schemas";
+export type { ScannerJobResultType } from "./other_schemas/scan_job_result";
 export * from "./scanner_agent/api";
 export { adminAPI } from "./api/apis/admin";
 export { authAPI } from "./api/apis/auth";

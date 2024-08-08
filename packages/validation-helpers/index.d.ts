@@ -359,29 +359,6 @@ declare const ScannerJobResultSchema: z.ZodObject<
     "strip",
     z.ZodTypeAny,
     {
-        files: {
-            path: string;
-            type: string;
-            sha256: string | null;
-            detected_license_expression: string | null;
-            detected_license_expression_spdx: string | null;
-            license_detections: {
-                license_expression: string;
-                matches: {
-                    license_expression: string;
-                    score: number;
-                    start_line: number;
-                    end_line: number;
-                    spdx_license_expression: string | null;
-                }[];
-            }[];
-            copyrights: {
-                start_line: number;
-                end_line: number;
-                copyright: string;
-            }[];
-            scan_errors: string[];
-        }[];
         headers: {
             message: string | null;
             options: {
@@ -420,32 +397,32 @@ declare const ScannerJobResultSchema: z.ZodObject<
         license_references: {
             key: string;
             spdx_license_key: string;
+        }[];
+        files: {
+            path: string;
+            type: string;
+            sha256: string | null;
+            detected_license_expression: string | null;
+            detected_license_expression_spdx: string | null;
+            license_detections: {
+                license_expression: string;
+                matches: {
+                    license_expression: string;
+                    score: number;
+                    start_line: number;
+                    end_line: number;
+                    spdx_license_expression: string | null;
+                }[];
+            }[];
+            copyrights: {
+                start_line: number;
+                end_line: number;
+                copyright: string;
+            }[];
+            scan_errors: string[];
         }[];
     },
     {
-        files: {
-            path: string;
-            type: string;
-            sha256: string | null;
-            detected_license_expression: string | null;
-            detected_license_expression_spdx: string | null;
-            license_detections: {
-                license_expression: string;
-                matches: {
-                    license_expression: string;
-                    score: number;
-                    start_line: number;
-                    end_line: number;
-                    spdx_license_expression: string | null;
-                }[];
-            }[];
-            copyrights: {
-                start_line: number;
-                end_line: number;
-                copyright: string;
-            }[];
-            scan_errors: string[];
-        }[];
         headers: {
             message: string | null;
             options: {
@@ -484,6 +461,29 @@ declare const ScannerJobResultSchema: z.ZodObject<
         license_references: {
             key: string;
             spdx_license_key: string;
+        }[];
+        files: {
+            path: string;
+            type: string;
+            sha256: string | null;
+            detected_license_expression: string | null;
+            detected_license_expression_spdx: string | null;
+            license_detections: {
+                license_expression: string;
+                matches: {
+                    license_expression: string;
+                    score: number;
+                    start_line: number;
+                    end_line: number;
+                    spdx_license_expression: string | null;
+                }[];
+            }[];
+            copyrights: {
+                start_line: number;
+                end_line: number;
+                copyright: string;
+            }[];
+            scan_errors: string[];
         }[];
     }
 >;
@@ -760,21 +760,21 @@ declare const scannerAgentApi: [
                         options: {
                             timeout: number;
                         };
-                        jobId: string;
                         files: {
                             path: string;
                             hash: string;
                         }[];
+                        jobId: string;
                     },
                     {
                         options: {
                             timeout: number;
                         };
-                        jobId: string;
                         files: {
                             path: string;
                             hash: string;
                         }[];
+                        jobId: string;
                     }
                 >;
             },
@@ -1320,29 +1320,6 @@ declare const scannerAgentApi: [
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -1383,32 +1360,32 @@ declare const scannerAgentApi: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         },
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -1449,6 +1426,29 @@ declare const scannerAgentApi: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         }
                     >
@@ -1467,29 +1467,6 @@ declare const scannerAgentApi: [
                 finishedOn?: number | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -1528,6 +1505,29 @@ declare const scannerAgentApi: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -1543,29 +1543,6 @@ declare const scannerAgentApi: [
                 finishedOn?: number | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -1604,6 +1581,29 @@ declare const scannerAgentApi: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -3663,12 +3663,12 @@ declare const scannerAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        message: string;
                         status: string;
+                        message: string;
                     },
                     {
-                        message: string;
                         status: string;
+                        message: string;
                     }
                 >;
             },
@@ -3676,14 +3676,14 @@ declare const scannerAPI: [
             zod.ZodTypeAny,
             {
                 state: {
-                    message: string;
                     status: string;
+                    message: string;
                 };
             },
             {
                 state: {
-                    message: string;
                     status: string;
+                    message: string;
                 };
             }
         >;
@@ -3978,11 +3978,11 @@ declare const scannerAPI: [
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            jobId: string;
                             files: {
                                 path: string;
                                 hash: string;
                             }[];
+                            jobId: string;
                             options?:
                                 | {
                                       timeout?: number | undefined;
@@ -3990,11 +3990,11 @@ declare const scannerAPI: [
                                 | undefined;
                         },
                         {
-                            jobId: string;
                             files: {
                                 path: string;
                                 hash: string;
                             }[];
+                            jobId: string;
                             options?:
                                 | {
                                       timeout?: number | undefined;
@@ -4412,29 +4412,6 @@ declare const scannerAPI: [
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -4475,32 +4452,32 @@ declare const scannerAPI: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         },
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -4541,6 +4518,29 @@ declare const scannerAPI: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         }
                     >
@@ -4553,11 +4553,11 @@ declare const scannerAPI: [
                 state: string;
                 data?:
                     | {
-                          jobId: string;
                           files: {
                               path: string;
                               hash: string;
                           }[];
+                          jobId: string;
                           options?:
                               | {
                                     timeout?: number | undefined;
@@ -4568,29 +4568,6 @@ declare const scannerAPI: [
                 finishedOn?: Date | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -4629,6 +4606,29 @@ declare const scannerAPI: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -4638,11 +4638,11 @@ declare const scannerAPI: [
                 state: string;
                 data?:
                     | {
-                          jobId: string;
                           files: {
                               path: string;
                               hash: string;
                           }[];
+                          jobId: string;
                           options?:
                               | {
                                     timeout?: number | undefined;
@@ -4653,29 +4653,6 @@ declare const scannerAPI: [
                 finishedOn?: Date | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -4714,6 +4691,29 @@ declare const scannerAPI: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -10572,8 +10572,8 @@ declare const userAPI: [
                                     "strip",
                                     zod.ZodTypeAny,
                                     {
-                                        id: number;
                                         score: number;
+                                        id: number;
                                         createdAt: Date;
                                         updatedAt: Date;
                                         licenseExpression: string | null;
@@ -10581,8 +10581,8 @@ declare const userAPI: [
                                         endLine: number;
                                     },
                                     {
-                                        id: number;
                                         score: number;
+                                        id: number;
                                         createdAt: Date;
                                         updatedAt: Date;
                                         licenseExpression: string | null;
@@ -10603,8 +10603,8 @@ declare const userAPI: [
                             licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
-                                id: number;
                                 score: number;
+                                id: number;
                                 createdAt: Date;
                                 updatedAt: Date;
                                 licenseExpression: string | null;
@@ -10620,8 +10620,8 @@ declare const userAPI: [
                             licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
-                                id: number;
                                 score: number;
+                                id: number;
                                 createdAt: Date;
                                 updatedAt: Date;
                                 licenseExpression: string | null;
@@ -10644,8 +10644,8 @@ declare const userAPI: [
                     licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
-                        id: number;
                         score: number;
+                        id: number;
                         createdAt: Date;
                         updatedAt: Date;
                         licenseExpression: string | null;
@@ -10663,8 +10663,8 @@ declare const userAPI: [
                     licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
-                        id: number;
                         score: number;
+                        id: number;
                         createdAt: Date;
                         updatedAt: Date;
                         licenseExpression: string | null;
@@ -11817,12 +11817,12 @@ declare const dosAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        message: string;
                         status: string;
+                        message: string;
                     },
                     {
-                        message: string;
                         status: string;
+                        message: string;
                     }
                 >;
             },
@@ -11830,14 +11830,14 @@ declare const dosAPI: [
             zod.ZodTypeAny,
             {
                 state: {
-                    message: string;
                     status: string;
+                    message: string;
                 };
             },
             {
                 state: {
-                    message: string;
                     status: string;
+                    message: string;
                 };
             }
         >;
@@ -12132,11 +12132,11 @@ declare const dosAPI: [
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            jobId: string;
                             files: {
                                 path: string;
                                 hash: string;
                             }[];
+                            jobId: string;
                             options?:
                                 | {
                                       timeout?: number | undefined;
@@ -12144,11 +12144,11 @@ declare const dosAPI: [
                                 | undefined;
                         },
                         {
-                            jobId: string;
                             files: {
                                 path: string;
                                 hash: string;
                             }[];
+                            jobId: string;
                             options?:
                                 | {
                                       timeout?: number | undefined;
@@ -12566,29 +12566,6 @@ declare const dosAPI: [
                         "strip",
                         zod.ZodTypeAny,
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -12629,32 +12606,32 @@ declare const dosAPI: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         },
                         {
-                            files: {
-                                path: string;
-                                type: string;
-                                sha256: string | null;
-                                detected_license_expression: string | null;
-                                detected_license_expression_spdx: string | null;
-                                license_detections: {
-                                    license_expression: string;
-                                    matches: {
-                                        license_expression: string;
-                                        score: number;
-                                        start_line: number;
-                                        end_line: number;
-                                        spdx_license_expression: string | null;
-                                    }[];
-                                }[];
-                                copyrights: {
-                                    start_line: number;
-                                    end_line: number;
-                                    copyright: string;
-                                }[];
-                                scan_errors: string[];
-                            }[];
                             headers: {
                                 message: string | null;
                                 options: {
@@ -12695,6 +12672,29 @@ declare const dosAPI: [
                             license_references: {
                                 key: string;
                                 spdx_license_key: string;
+                            }[];
+                            files: {
+                                path: string;
+                                type: string;
+                                sha256: string | null;
+                                detected_license_expression: string | null;
+                                detected_license_expression_spdx: string | null;
+                                license_detections: {
+                                    license_expression: string;
+                                    matches: {
+                                        license_expression: string;
+                                        score: number;
+                                        start_line: number;
+                                        end_line: number;
+                                        spdx_license_expression: string | null;
+                                    }[];
+                                }[];
+                                copyrights: {
+                                    start_line: number;
+                                    end_line: number;
+                                    copyright: string;
+                                }[];
+                                scan_errors: string[];
                             }[];
                         }
                     >
@@ -12707,11 +12707,11 @@ declare const dosAPI: [
                 state: string;
                 data?:
                     | {
-                          jobId: string;
                           files: {
                               path: string;
                               hash: string;
                           }[];
+                          jobId: string;
                           options?:
                               | {
                                     timeout?: number | undefined;
@@ -12722,29 +12722,6 @@ declare const dosAPI: [
                 finishedOn?: Date | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -12783,6 +12760,29 @@ declare const dosAPI: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -12792,11 +12792,11 @@ declare const dosAPI: [
                 state: string;
                 data?:
                     | {
-                          jobId: string;
                           files: {
                               path: string;
                               hash: string;
                           }[];
+                          jobId: string;
                           options?:
                               | {
                                     timeout?: number | undefined;
@@ -12807,29 +12807,6 @@ declare const dosAPI: [
                 finishedOn?: Date | undefined;
                 result?:
                     | {
-                          files: {
-                              path: string;
-                              type: string;
-                              sha256: string | null;
-                              detected_license_expression: string | null;
-                              detected_license_expression_spdx: string | null;
-                              license_detections: {
-                                  license_expression: string;
-                                  matches: {
-                                      license_expression: string;
-                                      score: number;
-                                      start_line: number;
-                                      end_line: number;
-                                      spdx_license_expression: string | null;
-                                  }[];
-                              }[];
-                              copyrights: {
-                                  start_line: number;
-                                  end_line: number;
-                                  copyright: string;
-                              }[];
-                              scan_errors: string[];
-                          }[];
                           headers: {
                               message: string | null;
                               options: {
@@ -12868,6 +12845,29 @@ declare const dosAPI: [
                           license_references: {
                               key: string;
                               spdx_license_key: string;
+                          }[];
+                          files: {
+                              path: string;
+                              type: string;
+                              sha256: string | null;
+                              detected_license_expression: string | null;
+                              detected_license_expression_spdx: string | null;
+                              license_detections: {
+                                  license_expression: string;
+                                  matches: {
+                                      license_expression: string;
+                                      score: number;
+                                      start_line: number;
+                                      end_line: number;
+                                      spdx_license_expression: string | null;
+                                  }[];
+                              }[];
+                              copyrights: {
+                                  start_line: number;
+                                  end_line: number;
+                                  copyright: string;
+                              }[];
+                              scan_errors: string[];
                           }[];
                       }
                     | undefined;
@@ -18723,8 +18723,8 @@ declare const dosAPI: [
                                     "strip",
                                     zod.ZodTypeAny,
                                     {
-                                        id: number;
                                         score: number;
+                                        id: number;
                                         createdAt: Date;
                                         updatedAt: Date;
                                         licenseExpression: string | null;
@@ -18732,8 +18732,8 @@ declare const dosAPI: [
                                         endLine: number;
                                     },
                                     {
-                                        id: number;
                                         score: number;
+                                        id: number;
                                         createdAt: Date;
                                         updatedAt: Date;
                                         licenseExpression: string | null;
@@ -18754,8 +18754,8 @@ declare const dosAPI: [
                             licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
-                                id: number;
                                 score: number;
+                                id: number;
                                 createdAt: Date;
                                 updatedAt: Date;
                                 licenseExpression: string | null;
@@ -18771,8 +18771,8 @@ declare const dosAPI: [
                             licenseExpressionSPDX: string;
                             scannerConfig: string;
                             licenseFindingMatches: {
-                                id: number;
                                 score: number;
+                                id: number;
                                 createdAt: Date;
                                 updatedAt: Date;
                                 licenseExpression: string | null;
@@ -18795,8 +18795,8 @@ declare const dosAPI: [
                     licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
-                        id: number;
                         score: number;
+                        id: number;
                         createdAt: Date;
                         updatedAt: Date;
                         licenseExpression: string | null;
@@ -18814,8 +18814,8 @@ declare const dosAPI: [
                     licenseExpressionSPDX: string;
                     scannerConfig: string;
                     licenseFindingMatches: {
-                        id: number;
                         score: number;
+                        id: number;
                         createdAt: Date;
                         updatedAt: Date;
                         licenseExpression: string | null;
@@ -19955,13 +19955,13 @@ declare const keycloakAPI: [
                                 "strip",
                                 zod.ZodTypeAny,
                                 {
-                                    type: string;
                                     value: string;
+                                    type: string;
                                     temporary: boolean;
                                 },
                                 {
-                                    type: string;
                                     value: string;
+                                    type: string;
                                     temporary: boolean;
                                 }
                             >,
@@ -19991,8 +19991,8 @@ declare const keycloakAPI: [
                     {
                         username: string;
                         credentials: {
-                            type: string;
                             value: string;
+                            type: string;
                             temporary: boolean;
                         }[];
                         attributes: {
@@ -20007,8 +20007,8 @@ declare const keycloakAPI: [
                     {
                         username: string;
                         credentials: {
-                            type: string;
                             value: string;
+                            type: string;
                             temporary: boolean;
                         }[];
                         attributes: {
@@ -20358,13 +20358,13 @@ declare const keycloakAPI: [
                                     "strip",
                                     zod.ZodTypeAny,
                                     {
-                                        type: string;
                                         value: string;
+                                        type: string;
                                         temporary: boolean;
                                     },
                                     {
-                                        type: string;
                                         value: string;
+                                        type: string;
                                         temporary: boolean;
                                     }
                                 >,
@@ -20401,8 +20401,8 @@ declare const keycloakAPI: [
                         username?: string | undefined;
                         credentials?:
                             | {
-                                  type: string;
                                   value: string;
+                                  type: string;
                                   temporary: boolean;
                               }[]
                             | undefined;
@@ -20422,8 +20422,8 @@ declare const keycloakAPI: [
                         username?: string | undefined;
                         credentials?:
                             | {
-                                  type: string;
                                   value: string;
+                                  type: string;
                                   temporary: boolean;
                               }[]
                             | undefined;
@@ -20491,13 +20491,13 @@ declare const keycloakAPI: [
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        type: string;
                         value: string;
+                        type: string;
                         temporary: boolean;
                     },
                     {
-                        type: string;
                         value: string;
+                        type: string;
                         temporary: boolean;
                     }
                 >;
@@ -20598,7 +20598,6 @@ declare const pePatternGlobSchema: z.ZodEffects<
 
 export {
     type Permissions,
-    ScannerJobResultSchema,
     type ScannerJobResultType,
     type Token,
     adminAPI,
