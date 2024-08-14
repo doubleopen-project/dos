@@ -43,7 +43,7 @@
         "@zodios/core": "10.9.6",
         "@zodios/react": "10.4.5",
         "autoprefixer": "10.4.19",
-        "axios": "1.7.2",
+        "axios": "1.7.4",
         "check-password-strength": "2.0.10",
         "class-variance-authority": "0.7.0",
         "clsx": "2.1.1",
