@@ -3569,6 +3569,7 @@ export const findLicenseConclusionsByFileSha256 = async (
 export const findSystemIssues = async (
     errorCode: string,
     message: string,
+    resolved?: boolean,
 ): Promise<SystemIssue[]> => {
     let retries = initialRetryCount;
     let systemIssues: SystemIssue[] = [];
@@ -3579,6 +3580,7 @@ export const findSystemIssues = async (
                 where: {
                     errorCode: errorCode,
                     message: message,
+                    resolved: resolved,
                 },
             });
             break;
