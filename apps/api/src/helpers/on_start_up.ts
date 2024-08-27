@@ -61,6 +61,7 @@ export const onStartUp = async () => {
             const existingIssues = await findSystemIssues(
                 errorCode,
                 msgBase + job.package.purl,
+                false,
             );
 
             if (existingIssues.length === 0) {
@@ -81,32 +82,16 @@ export const onStartUp = async () => {
                     "SystemIssue(s) found for package " + job.package.purl,
                 );
                 for (const issue of existingIssues) {
-                    if (!issue.resolved) {
-                        log.info("Updating SystemIssue");
-                        await updateSystemIssue(issue.id, {
-                            info: {
-                                latestJobId: [job.id],
-                                packageId: job.package.id,
-                            },
-                            severity: "CRITICAL",
-                            details:
-                                "Severity updated to CRITICAL as the same issue was found multiple times, which implies that the processing of this package is causing the server to restart",
-                        });
-                    } else {
-                        log.info(
-                            "Existing SystemIssue is already resolved. Creating a new one.",
-                        );
-                        await createSystemIssue({
-                            message: msgBase + job.package.purl,
-                            severity: severity,
-                            errorCode: errorCode,
-                            errorType: "ScannerRouterError",
-                            info: {
-                                latestJobId: [job.id],
-                                packageId: job.package.id,
-                            },
-                        });
-                    }
+                    log.info("Updating SystemIssue");
+                    await updateSystemIssue(issue.id, {
+                        info: {
+                            latestJobId: [job.id],
+                            packageId: job.package.id,
+                        },
+                        severity: "CRITICAL",
+                        details:
+                            "Severity updated to CRITICAL as the same issue was found multiple times, which implies that the processing of this package is causing the server to restart",
+                    });
                 }
             }
         }
