@@ -505,7 +505,6 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
         if (packagesArray.length === 1) {
             if (
                 packagesArray[0].existingJob &&
-                packagesArray[0].existingJob.state !== "resultsDeleted" &&
                 packagesArray[0].existingJob.state !== "failed"
             ) {
                 // Deleting zip file from object storage
@@ -580,7 +579,6 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                     break;
                 } else if (
                     pkg.existingJob &&
-                    pkg.existingJob.state !== "resultsDeleted" &&
                     pkg.existingJob.state !== "failed"
                 ) {
                     // Case where a still running ScannerJob exists for the package

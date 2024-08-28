@@ -16,5 +16,4 @@ export const stateMap = new Map([
     ["savingResults", "Saving scan results"],
     ["completed", "Scan job completed"],
     ["failed", "Scan job failed"],
-    ["resultsDeleted", "Scan results deleted"],
 ]);
