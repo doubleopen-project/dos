@@ -83,6 +83,84 @@ export const jobStateQuery = async () => {
 
             const packageId = value.packageId;
             const parentId = value.parentId;
+
+            if (parentId) {
+                /*
+                 * Case where the job is a child job.
+                 * The state of the job in the job queue is not queried, as the state of the parent job is the one that matters.
+                 */
+                const parentJob = scannerJobsInNonFinalState.get(parentId);
+                if (parentJob) {
+                    /*
+                     * If the parent job is in the list of jobs in non-final state, and the
+                     * state of the parent job is different from the state of the child job,
+                     * update the state of the child job to match the state of the parent job
+                     */
+                    if (parentJob.state !== dbState) {
+                        console.log(
+                            scannerJobId +
+                                ": Changing state from " +
+                                dbState +
+                                " to " +
+                                parentJob.state +
+                                " as the parent job has changed state",
+                        );
+                        await updateScannerJob(scannerJobId, {
+                            state: parentJob.state,
+                        });
+                    }
+                } else {
+                    // The parent job is not in the list of jobs in non-final state, so it must be in a final state
+
+                    // Get the state and data of the parent job from the database
+                    const parentJob = await findScannerJobById(parentId);
+
+                    if (!parentJob) {
+                        // If the parent job is not found in the database, mark the child job as failed
+                        console.log(
+                            scannerJobId +
+                                ": Changing state to failed as the parent job is not found in the database",
+                        );
+                        await updateScannerJob(scannerJobId, {
+                            state: "failed",
+                        });
+                        await updatePackage({
+                            id: packageId,
+                            data: { scanStatus: "failed" },
+                        });
+                    } else if (parentJob.state === "failed") {
+                        console.log(
+                            scannerJobId +
+                                ": Changing state to failed as the parent job has failed",
+                        );
+                        await updateScannerJob(scannerJobId, {
+                            state: "failed",
+                        });
+                        await updatePackage({
+                            id: packageId,
+                            data: { scanStatus: "failed" },
+                        });
+                    } else if (parentJob.state === "completed") {
+                        console.log(
+                            scannerJobId +
+                                ": Copying results and changing state to completed as the parent job has completed",
+                        );
+                        await copyDataToNewPackages(parentJob.packageId, [
+                            packageId,
+                        ]);
+                        await updateScannerJob(scannerJobId, {
+                            state: "completed",
+                        });
+                        await updatePackage({
+                            id: packageId,
+                            data: { scanStatus: "scanned" },
+                        });
+                    }
+                }
+                // Continue to the next job
+                continue;
+            }
+
             if (dbState === "created" || dbState === "processing") {
                 /*
                  * Case where the job hasn't yet been added to the queue.
@@ -179,79 +257,6 @@ export const jobStateQuery = async () => {
                         queueState: "postscan",
                         flagCount: 1,
                     });
-                }
-            } else if (parentId) {
-                /*
-                 * Case where the job is a child job.
-                 * The state of the job in the job queue is not queried, as the state of the parent job is the one that matters.
-                 */
-                const parentJob = scannerJobsInNonFinalState.get(parentId);
-                if (parentJob) {
-                    /*
-                     * If the parent job is in the list of jobs in non-final state, and the
-                     * state of the parent job is different from the state of the child job,
-                     * update the state of the child job to match the state of the parent job
-                     */
-                    if (parentJob.state !== dbState) {
-                        console.log(
-                            scannerJobId +
-                                ": Changing state from " +
-                                dbState +
-                                " to " +
-                                parentJob.state +
-                                " as the parent job has changed state",
-                        );
-                        await updateScannerJob(scannerJobId, {
-                            state: parentJob.state,
-                        });
-                    }
-                } else {
-                    // The parent job is not in the list of jobs in non-final state, so it must be in a final state
-
-                    // Get the state and data of the parent job from the database
-                    const parentJob = await findScannerJobById(parentId);
-
-                    if (!parentJob) {
-                        // If the parent job is not found in the database, mark the child job as failed
-                        console.log(
-                            scannerJobId +
-                                ": Changing state to failed as the parent job is not found in the database",
-                        );
-                        await updateScannerJob(scannerJobId, {
-                            state: "failed",
-                        });
-                        await updatePackage({
-                            id: packageId,
-                            data: { scanStatus: "failed" },
-                        });
-                    } else if (parentJob.state === "failed") {
-                        console.log(
-                            scannerJobId +
-                                ": Changing state to failed as the parent job has failed",
-                        );
-                        await updateScannerJob(scannerJobId, {
-                            state: "failed",
-                        });
-                        await updatePackage({
-                            id: packageId,
-                            data: { scanStatus: "failed" },
-                        });
-                    } else if (parentJob.state === "completed") {
-                        console.log(
-                            scannerJobId +
-                                ": Copying results and changing state to completed as the parent job has completed",
-                        );
-                        await copyDataToNewPackages(parentJob.packageId, [
-                            packageId,
-                        ]);
-                        await updateScannerJob(scannerJobId, {
-                            state: "completed",
-                        });
-                        await updatePackage({
-                            id: packageId,
-                            data: { scanStatus: "scanned" },
-                        });
-                    }
                 }
             } else {
                 const workQueueJob = await workQueue.getJob(scannerJobId);
