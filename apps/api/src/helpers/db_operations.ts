@@ -300,6 +300,11 @@ export const saveJobResults = async (
             scanDuration: result.headers[0].duration,
         });
 
+        // Update child scanner jobs (if any)
+        await dbQueries.updateManyScannerJobChildren(jobId, {
+            state: "savingResults",
+        });
+
         const packageId: number = scannerJob.packageId;
 
         const scannerJobChildren =
