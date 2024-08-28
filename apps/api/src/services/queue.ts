@@ -5,6 +5,8 @@
 import Queue from "bull";
 import { saveJobResults } from "../helpers/db_operations";
 import {
+    updateManyScannerJobChildren,
+    updateScannerJob,
     updateScannerJobAndPackagesStateToFailedRecursive,
     updateScannerJobStateRecursive,
 } from "../helpers/db_queries";
@@ -40,7 +42,10 @@ export default class QueueService {
         workQueue.on("global:waiting", async (jobId: string) => {
             try {
                 // Update scanner job and its children (if any) states
-                await updateScannerJobStateRecursive(jobId, {
+                await updateScannerJob(jobId, {
+                    state: "waiting",
+                });
+                await updateManyScannerJobChildren(jobId, {
                     state: "waiting",
                 });
                 console.log(`${jobId}: Changed state to waiting`);
@@ -52,7 +57,10 @@ export default class QueueService {
         workQueue.on("global:active", async (jobId: string) => {
             try {
                 // Update scanner job and its children (if any) states
-                await updateScannerJobStateRecursive(jobId, {
+                await updateScannerJob(jobId, {
+                    state: "active",
+                });
+                await updateManyScannerJobChildren(jobId, {
                     state: "active",
                 });
                 console.log(`${jobId}: Changed state to active`);
