@@ -448,7 +448,19 @@ export const createFileIfNotExists = async (
             break;
         } catch (error) {
             console.log("Error with trying to create File: " + error);
-            handleError(error);
+            /* In this case, if the error has code "P2002" (unique constraint violation),
+             * the query should be retried (the handleError function would throw the error
+             * otherwise).
+             */
+            if (
+                !(
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === "P2002"
+                )
+            ) {
+                handleError(error);
+            }
+
             retries--;
             if (retries > 0) await waitToRetry();
             else throw error;
@@ -463,11 +475,39 @@ export const createFileIfNotExists = async (
 export const createFileTreeIfNotExists = async (
     input: CreateFileTreeType,
 ): Promise<FileTree> => {
-    let fileTree = await findFileTree(input);
+    let retries = initialRetryCount;
+    let fileTree: FileTree | null = null;
 
-    if (!fileTree) {
-        fileTree = await createFileTree(input);
+    while (retries > 0) {
+        try {
+            fileTree = await findFileTree(input);
+
+            if (!fileTree) {
+                fileTree = await createFileTree(input);
+            }
+            break;
+        } catch (error) {
+            console.log("Error with trying to create File: " + error);
+            /* In this case, if the error has code "P2002" (unique constraint violation),
+             * the queries should be retried (the handleError function would throw the error
+             * otherwise).
+             */
+            if (
+                !(
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === "P2002"
+                )
+            ) {
+                handleError(error);
+            }
+
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
     }
+
+    if (!fileTree) throw new Error("Error: Unable to create FileTree");
 
     return fileTree;
 };
