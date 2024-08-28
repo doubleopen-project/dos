@@ -510,7 +510,7 @@ export const updateScannerJob = async (
 
 export const updateManyScannerJobChildren = async (
     id: string,
-    parentId: string | null,
+    data: Prisma.ScannerJobUpdateInput & { parentId?: string | null },
 ): Promise<{ count: number }> => {
     let retries = initialRetryCount;
     let batchUpdate = null;
@@ -521,9 +521,7 @@ export const updateManyScannerJobChildren = async (
                 where: {
                     parentId: id,
                 },
-                data: {
-                    parentId: parentId,
-                },
+                data: data,
             });
         } catch (error) {
             console.log(

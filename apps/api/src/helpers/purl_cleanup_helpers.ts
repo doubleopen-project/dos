@@ -517,7 +517,9 @@ const deleteOldPurlBookmarks = async (
                         else
                             await dbQueries.updateManyScannerJobChildren(
                                 scannerJob.id,
-                                null,
+                                {
+                                    parentId: null,
+                                },
                             );
                     }
                 }
