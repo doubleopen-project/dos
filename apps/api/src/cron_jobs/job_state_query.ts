@@ -19,6 +19,7 @@ import {
 } from "../helpers/db_operations";
 import {
     findScannerJobById,
+    findScannerJobStateById,
     findScannerJobsWithStates,
     updatePackage,
     updateScannerJob,
@@ -74,7 +75,12 @@ export const jobStateQuery = async () => {
             const scannerJobId = key;
             // The get() method of Map will return a reference to the flagged job object (not a copy), so it can be directly modified
             const flaggedJob = flaggedMap.get(scannerJobId);
-            const dbState = value.state;
+            const dbState = (await findScannerJobStateById(scannerJobId))
+                ?.state;
+
+            if (!dbState || dbState === "failed" || dbState === "completed")
+                continue;
+
             const packageId = value.packageId;
             const parentId = value.parentId;
             if (dbState === "created" || dbState === "processing") {
