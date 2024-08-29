@@ -3,7 +3,7 @@
         "lib": ["ES2022"],
         "outDir": "./dist",
         "rootDir": "./",
-        "types": ["@types/node", "@types/chai", "@types/mocha", "@types/jest"],
+        "types": ["@types/node", "@types/jest"],
         "module": "ESNext"
     },
     "exclude": ["node_modules"],
