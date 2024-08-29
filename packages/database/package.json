@@ -24,14 +24,14 @@
         "s3-helpers": "*"
     },
     "devDependencies": {
-        "@types/node": "20.14.9",
+        "@types/node": "22.5.1",
         "eslint-config-custom-server": "*",
         "prisma": "5.15.0",
         "prisma-zod-generator": "0.8.13",
         "ts-node": "10.9.2",
         "tsconfig": "*",
-        "tsup": "8.1.0",
-        "typescript": "5.5.2"
+        "tsup": "8.2.4",
+        "typescript": "5.5.4"
     },
     "prisma": {
         "seed": "ts-node src/seed.ts"

@@ -44,7 +44,7 @@
     "devDependencies": {
         "@types/adm-zip": "0.5.5",
         "@types/braces": "^3.0.4",
-        "@types/chai": "4.3.16",
+        "@types/chai": "4.3.19",
         "@types/compression": "1.7.5",
         "@types/connect-pg-simple": "7.0.3",
         "@types/cookie-parser": "1.4.7",
@@ -55,7 +55,7 @@
         "@types/glob-to-regexp": "^0.4.4",
         "@types/is-valid-path": "0.1.2",
         "@types/mocha": "10.0.7",
-        "@types/node": "20.14.9",
+        "@types/node": "22.5.1",
         "@types/node-cron": "3.0.11",
         "@types/passport": "1.0.16",
         "@types/passport-local": "1.0.38",
@@ -64,7 +64,7 @@
         "eslint-config-custom-server": "*",
         "mocha": "10.5.2",
         "tsconfig": "*",
-        "tsup": "8.1.0",
-        "typescript": "5.5.2"
+        "tsup": "8.2.4",
+        "typescript": "5.5.4"
     }
 }
