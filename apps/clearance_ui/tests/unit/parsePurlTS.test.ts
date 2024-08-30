@@ -68,7 +68,7 @@ describe("parsePurlAndQualifiers tests", () => {
         expect(parsedPurl.namespace).toBe("@radix-ui");
         expect(parsedPurl.name).toBe("react-context");
         expect(parsedPurl.version).toBe("1.0.0");
-        expect(parsedPurl.subpath).toBe(null);
+        expect(parsedPurl.subpath).toBe(undefined);
         expect(parsedPurl.qualifiers?.download_url).toBe(
             "https://registry.npmjs.org/@radix-ui/react-context/-/react-context-1.0.0.tgz",
         );
