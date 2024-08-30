@@ -64,9 +64,9 @@
         "dotenv-cli": "7.4.2",
         "prettier": "3.3.2",
         "prettier-plugin-tailwindcss": "0.6.5",
-        "rimraf": "5.0.7",
+        "rimraf": "6.0.1",
         "tsx": "4.19.0",
-        "turbo": "2.0.5"
+        "turbo": "2.1.0"
     },
     "engines": {
         "node": "20.10.0",

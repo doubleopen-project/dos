@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@prisma/client": "5.15.0",
-        "adm-zip": "0.5.14",
+        "adm-zip": "0.5.16",
         "s3-helpers": "*"
     },
     "devDependencies": {
