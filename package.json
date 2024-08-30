@@ -60,10 +60,10 @@
         "test:validation": "npm run build:validation && turbo run test --filter=validation-helpers"
     },
     "devDependencies": {
-        "@ianvs/prettier-plugin-sort-imports": "4.3.0",
+        "@ianvs/prettier-plugin-sort-imports": "4.3.1",
         "dotenv-cli": "7.4.2",
-        "prettier": "3.3.2",
-        "prettier-plugin-tailwindcss": "0.6.5",
+        "prettier": "3.3.3",
+        "prettier-plugin-tailwindcss": "0.6.6",
         "rimraf": "6.0.1",
         "tsx": "4.19.0",
         "turbo": "2.1.0"
