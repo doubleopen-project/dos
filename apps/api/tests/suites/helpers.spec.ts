@@ -37,7 +37,7 @@ export default function suite(): void {
                 parsedPurl.qualifiers,
                 "download_url=https%3A%2F%2Fregistry.npmjs.org%2F%40radix-ui%2Freact-context%2F-%2Freact-context-1.0.0.tgz&checksum=sha1%3Af38e30c5859a9fb5e9aa9a9da452ee3ed9e0aee0",
             );
-            assert.strictEqual(parsedPurl.subpath, null);
+            assert.strictEqual(parsedPurl.subpath, undefined);
         });
 
         it("should uri encode all qualifier values", function () {
@@ -53,7 +53,7 @@ export default function suite(): void {
                 parsedPurl.qualifiers,
                 "vcs_type=Subversion&vcs_url=http%3A%2F%2Fsvn.apache.org%2Frepos%2Fasf%2Fcommons%2Fproper%2Fbeanutils&vcs_revision=tags%2FBEANUTILS_1_9_3_RC3&resolved_revision=603598",
             );
-            assert.strictEqual(parsedPurl.subpath, null);
+            assert.strictEqual(parsedPurl.subpath, undefined);
         });
 
         it("should decode a PackageURL without qualifiers into its main components", function () {
@@ -65,7 +65,7 @@ export default function suite(): void {
             assert.strictEqual(parsedPurl.name, "core");
             assert.strictEqual(parsedPurl.version, "1.5.2");
             assert.strictEqual(parsedPurl.qualifiers, undefined);
-            assert.strictEqual(parsedPurl.subpath, null);
+            assert.strictEqual(parsedPurl.subpath, undefined);
         });
     });
 

@@ -34,7 +34,7 @@
         "minimatch": "10.0.1",
         "node-cache": "5.1.2",
         "node-cron": "3.0.3",
-        "packageurl-js": "1.2.1",
+        "packageurl-js": "2.0.0",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
         "s3-helpers": "*",
