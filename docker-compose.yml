@@ -70,7 +70,7 @@ services:
 
     scanner-worker:
         build:
-            dockerfile: Dockerfile
+            dockerfile: Worker.Dockerfile
         env_file:
             - path: .env.local
               required: false
