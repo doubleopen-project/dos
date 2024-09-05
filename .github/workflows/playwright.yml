@@ -10,6 +10,23 @@ on:
         branches: [main, master]
     workflow_dispatch:
 
+env:
+    DATABASE_URL: ${{ vars.DATABASE_URL }}
+    E2E_USER_USERNAME: ${{ secrets.E2E_USER_USERNAME }}
+    E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+    KEYCLOAK_URL: ${{ vars.KEYCLOAK_URL }}
+    KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+    KEYCLOAK_CLIENT_ID_UI: ${{ secrets.KEYCLOAK_CLIENT_ID_UI }}
+    KEYCLOAK_CLIENT_SECRET_UI: ${{ secrets.KEYCLOAK_CLIENT_SECRET_UI }}
+    KEYCLOAK_CLIENT_ID_API: ${{ secrets.KEYCLOAK_CLIENT_ID_API }}
+    KEYCLOAK_CLIENT_SECRET_API: ${{ secrets.KEYCLOAK_CLIENT_SECRET_API }}
+    KEYCLOAK_ADMIN_USERNAME: ${{ secrets.KEYCLOAK_ADMIN_USERNAME }}
+    KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+    KEYCLOAK_ADMIN_USER_ID: ${{ secrets.KEYCLOAK_ADMIN_USER_ID }}
+    KEYCLOAK_ADMIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }}
+    NEXTAUTH_URL: http://localhost:3000
+    NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
 jobs:
     test:
         timeout-minutes: 60
@@ -26,24 +43,6 @@ jobs:
             - name: Install Playwright Browsers
               working-directory: apps/clearance_ui
               run: npx playwright install --with-deps
-            - name: Create env file
-              run: |
-                  touch .env.local
-                  echo DATABASE_URL=${{ vars.DATABASE_URL }} >> .env.local
-                  echo E2E_USER_USERNAME=${{ secrets.E2E_USER_USERNAME }} >> .env.local
-                  echo E2E_USER_PASSWORD=${{ secrets.E2E_USER_PASSWORD }} >> .env.local
-                  echo KEYCLOAK_URL=${{ vars.KEYCLOAK_URL }} >> .env.local
-                  echo KEYCLOAK_REALM=${{ secrets.KEYCLOAK_REALM }} >> .env.local
-                  echo KEYCLOAK_CLIENT_ID_UI=${{ secrets.KEYCLOAK_CLIENT_ID_UI }} >> .env.local
-                  echo KEYCLOAK_CLIENT_SECRET_UI=${{ secrets.KEYCLOAK_CLIENT_SECRET_UI }} >> .env.local
-                  echo KEYCLOAK_CLIENT_ID_API=${{ secrets.KEYCLOAK_CLIENT_ID_API }} >> .env.local
-                  echo KEYCLOAK_CLIENT_SECRET_API=${{ secrets.KEYCLOAK_CLIENT_SECRET_API }} >> .env.local
-                  echo KEYCLOAK_ADMIN_USERNAME=${{ secrets.KEYCLOAK_ADMIN_USERNAME }} >> .env.local
-                  echo KEYCLOAK_ADMIN_PASSWORD=${{ secrets.KEYCLOAK_ADMIN_PASSWORD }} >> .env.local
-                  echo KEYCLOAK_ADMIN_USER_ID=${{ secrets.KEYCLOAK_ADMIN_USER_ID }} >> .env.local
-                  echo KEYCLOAK_ADMIN_CLIENT_SECRET=${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }} >> .env.local
-                  echo NEXTAUTH_URL=http://localhost:3000 >> .env.local
-                  echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env.local
             - name: Run prisma generate
               run: npm run db:generate
             - name: Build project
