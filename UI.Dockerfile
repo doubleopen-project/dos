@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2024 HH Partners
+# 
+# SPDX-License-Identifier: MIT
+
+FROM node:20.10.0 AS base
+
+FROM base AS builder
+WORKDIR /app
+
+RUN npm i -g turbo
+
+COPY . .
+
+RUN turbo prune clearance_ui --docker
+
+FROM base AS installer
+WORKDIR /app
+
+COPY --from=builder /app/out/json/ .
+RUN npm install
+
+COPY --from=builder /app/out/full/ .
+RUN npm exec turbo build --filter=clearance_ui...
+
+FROM base AS runner
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD node apps/web/server.js
