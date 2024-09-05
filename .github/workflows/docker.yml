@@ -44,11 +44,12 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build and push Docker image
+            - name: Build and push Worker Docker image
               uses: docker/build-push-action@v6
               continue-on-error: false
               with:
                   context: .
+                  file: "{context}/Worker.Dockerfile"
                   push: true
                   tags: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
