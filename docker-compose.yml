@@ -15,7 +15,8 @@ services:
             - POSTGRES_PASSWORD=postgres
             - POSTGRES_DB=postgres
         env_file:
-            - .env.local
+            - path: .env.local
+              required: false
         restart: always
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -71,7 +72,8 @@ services:
         build:
             dockerfile: Dockerfile
         env_file:
-            - .env.local
+            - path: .env.local
+              required: false
         environment:
             - REDIS_URL=redis://redis:6379
             - SPACES_ENDPOINT=http://minio:9000
