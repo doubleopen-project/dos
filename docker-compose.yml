@@ -69,6 +69,35 @@ services:
             exit 0;
             "
 
+    api:
+        build:
+            dockerfile: API.Dockerfile
+        env_file:
+            - path: .env.local
+              required: false
+        ports:
+            - 3001:5000
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+            - KEYCLOAK_URL=$KEYCLOAK_URL
+            - KEYCLOAK_REALM=$KEYCLOAK_REALM
+            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
+            - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
+            - KEYCLOAK_ADMIN_USERNAME=$KEYCLOAK_ADMIN_USERNAME
+            - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD
+            - KEYCLOAK_ADMIN_USER_ID=$KEYCLOAK_ADMIN_USER_ID
+            - KEYCLOAK_ADMIN_CLIENT_SECRET=$KEYCLOAK_ADMIN_CLIENT_SECRET
+        depends_on:
+            postgres:
+                condition: service_healthy
+                required: true
+            redis:
+                condition: service_healthy
+                required: true
+            minio:
+                condition: service_healthy
+                required: true
+
     scanner-worker:
         build:
             dockerfile: Worker.Dockerfile
