@@ -6,7 +6,11 @@ import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
 import { adminAPI, authAPI, userAPI } from "validation-helpers";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL not set");
+}
 
 export const authZodios = new Zodios(baseUrl + "auth/", authAPI);
 export const authHooks = new ZodiosHooks("authApi", authZodios);

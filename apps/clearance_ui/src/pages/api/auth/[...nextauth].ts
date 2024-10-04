@@ -16,7 +16,31 @@ import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import { keycloakAPI, type Token } from "validation-helpers";
 
-const kcClient = new Zodios(process.env.KEYCLOAK_URL!, keycloakAPI);
+const keycloakUrl = process.env.KEYCLOAK_URL;
+
+if (!keycloakUrl) {
+    throw new Error("KEYCLOAK_URL not set");
+}
+
+const keycloakRealm = process.env.KEYCLOAK_REALM;
+
+if (!keycloakRealm) {
+    throw new Error("KEYCLOAK_REALM not set");
+}
+
+const keycloakClientIdUi = process.env.KEYCLOAK_CLIENT_ID_UI;
+
+if (!keycloakClientIdUi) {
+    throw new Error("KEYCLOAK_CLIENT_ID_UI not set");
+}
+
+const keycloakClientSecretUi = process.env.KEYCLOAK_CLIENT_SECRET_UI;
+
+if (!keycloakClientSecretUi) {
+    throw new Error("KEYCLOAK_CLIENT_SECRET_UI not set");
+}
+
+const kcClient = new Zodios(keycloakUrl, keycloakAPI);
 
 /**
  * Takes a token, and returns a new token with updated
@@ -25,19 +49,25 @@ const kcClient = new Zodios(process.env.KEYCLOAK_URL!, keycloakAPI);
  */
 async function refreshAccessToken(token: JWT) {
     let retries = 3;
+    if (!keycloakClientIdUi) {
+        throw new Error("KEYCLOAK_CLIENT_ID_UI not set");
+    }
+    if (!keycloakRealm) {
+        throw new Error("KEYCLOAK_REALM not set");
+    }
 
     while (retries > 0) {
         try {
             const refreshedTokens = (await kcClient.PostToken(
                 {
-                    client_id: process.env.KEYCLOAK_CLIENT_ID_UI!,
+                    client_id: keycloakClientIdUi,
                     grant_type: "refresh_token",
                     refresh_token: token.refreshToken,
-                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET_UI!,
+                    client_secret: keycloakClientSecretUi,
                 },
                 {
                     params: {
-                        realm: process.env.KEYCLOAK_REALM!,
+                        realm: keycloakRealm,
                     },
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -115,10 +145,10 @@ export default NextAuth({
         KeycloakProvider({
             id: "keycloak",
             name: "Keycloak",
-            clientId: process.env.KEYCLOAK_CLIENT_ID_UI!,
-            clientSecret: process.env.KEYCLOAK_CLIENT_SECRET_UI!,
-            issuer: `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`,
-            requestTokenUrl: `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/auth`,
+            clientId: keycloakClientIdUi,
+            clientSecret: keycloakClientSecretUi,
+            issuer: `${keycloakUrl}/realms/${keycloakRealm}`,
+            requestTokenUrl: `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/auth`,
             authorization: {
                 params: {
                     scope: "openid email profile",
