@@ -91,11 +91,13 @@ services:
     ui:
         build:
             dockerfile: UI.Dockerfile
+            args:
+                - NEXT_PUBLIC_API_URL=http://localhost:3001/api/
         env_file:
             - path: .env.local
               required: false
         environment:
-            - NEXT_PUBLIC_API_URL=http://localhost:3001/api
+            - NEXT_PUBLIC_API_URL=http://localhost:3001/api/
         depends_on:
             - api
         ports:

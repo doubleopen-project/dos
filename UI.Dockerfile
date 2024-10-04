@@ -20,6 +20,10 @@ COPY --from=builder /app/out/json/ .
 RUN npm install
 
 COPY --from=builder /app/out/full/ .
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 RUN npm exec turbo build --filter=clearance_ui...
 
 FROM base AS runner
