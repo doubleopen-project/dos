@@ -26,6 +26,7 @@ env:
     KEYCLOAK_ADMIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }}
     NEXTAUTH_URL: http://localhost:3000
     NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+    NEXT_PUBLIC_API_URL: http://localhost:5000/api/
 
 jobs:
     test:
