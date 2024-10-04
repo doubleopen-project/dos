@@ -51,11 +51,10 @@ services:
         command: server --console-address ":9001" /data
         restart: always
         healthcheck:
-            test:
-                ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-            interval: 30s
-            timeout: 20s
-            retries: 3
+            test: ["CMD", "mc", "ready", "local"]
+            interval: 1s
+            timeout: 1s
+            retries: 20
 
     createbuckets:
         image: minio/mc
