@@ -68,6 +68,39 @@ services:
             exit 0;
             "
 
+    api:
+        build:
+            dockerfile: API.Dockerfile
+        env_file:
+            - path: .env.local
+              required: false
+        ports:
+          -  3001:3001
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+            - REDIS_URL=redis://redis:6379
+            - SPACES_ENDPOINT=http://minio:9000
+            - ALLOWED_ORIGINS=http://localhost:3000
+            - PORT=3001
+            - NODE_ENV=development
+        depends_on:
+            - postgres
+            - redis
+            - minio
+
+    ui:
+        build:
+            dockerfile: UI.Dockerfile
+        env_file:
+            - path: .env.local
+              required: false
+        environment:
+            - NEXT_PUBLIC_API_URL=http://localhost:3001/api
+        depends_on:
+            - api
+        ports:
+            - 3000:3000
+
     scanner-worker:
         build:
             dockerfile: Worker.Dockerfile
