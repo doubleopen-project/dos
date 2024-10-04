@@ -26,7 +26,7 @@ env:
     KEYCLOAK_ADMIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }}
     NEXTAUTH_URL: http://localhost:3000
     NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-    NEXT_PUBLIC_API_URL: http://localhost:5000/api/
+    NEXT_PUBLIC_API_URL: http://localhost:3001/api/
 
 jobs:
     test:
@@ -52,14 +52,14 @@ jobs:
               run: docker compose up -d
             - name: Seed the database and populate the spaces bucket
               run: npm run db:migrate:reset
-            - name: Run API in background
-              working-directory: apps/api
-              run: npm run start &
             - name: Run front end in the background
               working-directory: apps/clearance_ui
               run: npx dotenv -e ../../.env -- npm run start &
             - name: Run Playwright tests
               run: npm run test:cui:e2e
+            - name: Print Docker Compose logs
+              run: docker compose logs
+              if: failure()
             - uses: actions/upload-artifact@v3
               if: always()
               with:
