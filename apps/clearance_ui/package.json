@@ -3,11 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "prebuild": "dotenv -e ../../.env.local -- ts-node check_env_vars.ts",
+        "prebuild": "dotenv -e ../../.env -- ts-node check_env_vars.ts",
         "build": "next build",
         "clever-cui-prebuild": "npm i --also-dev next",
         "clever-logs": "clever logs",
-        "dev": "dotenv -e ../../.env.local -- next dev",
+        "dev": "dotenv -e ../../.env -- next dev",
         "dev:prod": "dotenv -e ../../.env.production -- next dev",
         "lint": "next lint",
         "start": "next start",

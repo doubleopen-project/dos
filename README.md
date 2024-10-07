@@ -38,7 +38,7 @@ To run this project you will need Node.js, npm and Docker installed.
 
 3.  Set needed environment variables.
 
-    Create a .env.local file in the project root, and set the following environment variables in the file:
+    Create a .env file in the project root, and set the following environment variables in the file:
 
     ```shell
     DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres

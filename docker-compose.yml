@@ -15,7 +15,7 @@ services:
             - POSTGRES_PASSWORD=postgres
             - POSTGRES_DB=postgres
         env_file:
-            - path: .env.local
+            - path: .env
               required: false
         restart: always
         healthcheck:
@@ -73,7 +73,7 @@ services:
         build:
             dockerfile: Dockerfile
         env_file:
-            - path: .env.local
+            - path: .env
               required: false
         environment:
             - REDIS_URL=redis://redis:6379
