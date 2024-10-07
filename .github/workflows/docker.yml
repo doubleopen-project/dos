@@ -44,14 +44,41 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build and push Docker image
+            - name: Build and push Worker Docker image
               uses: docker/build-push-action@v6
               continue-on-error: false
               with:
                   context: .
+                  file: "{context}/Worker.Dockerfile"
                   push: true
                   tags: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
                       ghcr.io/${{ github.repository }}/worker:latest
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache
+
+            - name: Build and push API Docker image
+              uses: docker/build-push-action@v6
+              continue-on-error: false
+              with:
+                  context: .
+                  file: "{context}/API.Dockerfile"
+                  push: true
+                  tags: |
+                      ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
+                      ghcr.io/${{ github.repository }}/api:latest
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache
+
+            - name: Build and push UI Docker image
+              uses: docker/build-push-action@v6
+              continue-on-error: false
+              with:
+                  context: .
+                  file: "{context}/UI.Dockerfile"
+                  push: true
+                  tags: |
+                      ${{ secrets.DOCKER_HUB_USERNAME }}/ui:latest
+                      ghcr.io/${{ github.repository }}/ui:latest
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache
