@@ -44,6 +44,17 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Docker metadata for Worker
+              id: meta-worker
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ${{ secrets.DOCKER_HUB_USERNAME }}/worker
+                      ghcr.io/${{ github.repository }}/worker
+                  tags: |
+                      type=sha  
+                      type=raw,value=latest
+
             - name: Build and push Worker Docker image
               uses: docker/build-push-action@v6
               continue-on-error: false
@@ -51,11 +62,21 @@ jobs:
                   context: .
                   file: "Worker.Dockerfile"
                   push: true
-                  tags: |
-                      ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
-                      ghcr.io/${{ github.repository }}/worker:latest
+                  tags: ${{ steps.meta-worker.outputs.tags }}
+                  labels: ${{ steps.meta-worker.outputs.labels }}
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache
+
+            - name: Docker metadata for API
+              id: meta-api
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ${{ secrets.DOCKER_HUB_USERNAME }}/api
+                      ghcr.io/${{ github.repository }}/api
+                  tags: |
+                      type=sha  
+                      type=raw,value=latest
 
             - name: Build and push API Docker image
               uses: docker/build-push-action@v6
@@ -64,8 +85,7 @@ jobs:
                   context: .
                   file: "API.Dockerfile"
                   push: true
-                  tags: |
-                      ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
-                      ghcr.io/${{ github.repository }}/api:latest
+                  tags: ${{ steps.meta-api.outputs.tags }}
+                  labels: ${{ steps.meta-api.outputs.labels }}
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache
