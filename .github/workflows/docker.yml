@@ -49,7 +49,7 @@ jobs:
               continue-on-error: false
               with:
                   context: .
-                  file: "{context}/Worker.Dockerfile"
+                  file: "Worker.Dockerfile"
                   push: true
                   tags: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/worker:latest
@@ -62,7 +62,7 @@ jobs:
               continue-on-error: false
               with:
                   context: .
-                  file: "{context}/API.Dockerfile"
+                  file: "API.Dockerfile"
                   push: true
                   tags: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
