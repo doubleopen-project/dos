@@ -89,3 +89,28 @@ jobs:
                   labels: ${{ steps.meta-api.outputs.labels }}
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache
+
+            - name: Docker metadata for Clearance UI
+              id: meta-clearance-ui
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ${{ secrets.DOCKER_HUB_USERNAME }}/clearance-ui
+                      ghcr.io/${{ github.repository }}/clearance-ui
+                  tags: |
+                      type=sha  
+                      type=raw,value=latest
+
+            - name: Build and push API Docker image
+              uses: docker/build-push-action@v6
+              continue-on-error: false
+              with:
+                  build-args: |
+                      NEXT_PUBLIC_API_URL=https://api.doubleopen.io/
+                  context: .
+                  file: "UI.Dockerfile"
+                  push: true
+                  tags: ${{ steps.meta-clearance-ui.outputs.tags }}
+                  labels: ${{ steps.meta-clearance-ui.outputs.labels }}
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache
