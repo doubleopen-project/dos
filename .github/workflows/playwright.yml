@@ -51,9 +51,6 @@ jobs:
               run: docker compose up -d
             - name: Seed the database and populate the spaces bucket
               run: npm run db:migrate:reset
-            - name: Run front end in the background
-              working-directory: apps/clearance_ui
-              run: npx dotenv -e ../../.env -- npm run start &
             - name: Run Playwright tests
               run: npm run test:cui:e2e
             - name: Print Docker Compose logs

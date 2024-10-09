@@ -70,7 +70,7 @@ services:
         build:
             dockerfile: API.Dockerfile
         ports:
-            - 3001:5000
+            - 3001:3001
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
             - KEYCLOAK_URL=$KEYCLOAK_URL
@@ -81,6 +81,8 @@ services:
             - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD
             - KEYCLOAK_ADMIN_USER_ID=$KEYCLOAK_ADMIN_USER_ID
             - KEYCLOAK_ADMIN_CLIENT_SECRET=$KEYCLOAK_ADMIN_CLIENT_SECRET
+            - ALLOWED_ORIGINS=http://localhost:3002,http://localhost:3000
+            - PORT=3001
         depends_on:
             postgres:
                 condition: service_healthy
@@ -101,6 +103,22 @@ services:
         depends_on:
             - redis
             - minio
+
+    clearance-ui:
+        build:
+            dockerfile: UI.Dockerfile
+            args:
+                - NEXT_PUBLIC_API_URL=http://localhost:3001/api/
+        environment:
+            - NEXTAUTH_URL=http://localhost:3002
+            - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+            - KEYCLOAK_URL=$KEYCLOAK_URL
+            - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
+            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
+            - KEYCLOAK_CLIENT_SECRET_UI=$KEYCLOAK_CLIENT_SECRET_UI
+            - KEYCLOAK_REALM=dos-dev
+        ports:
+            - 3002:3000
 
 volumes:
     db-data:
