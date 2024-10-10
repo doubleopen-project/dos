@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { expect, test as setup } from "@playwright/test";
-import { STORAGE_STATE } from "../../playwright.config";
+import { STORAGE_STATE } from "../../../playwright.config";
 
 setup("logs in", async ({ page }) => {
     if (!process.env.E2E_USER_USERNAME || !process.env.E2E_USER_PASSWORD) {

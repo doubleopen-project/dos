@@ -47,11 +47,11 @@ export default defineConfig({
     projects: [
         {
             name: "setup",
-            testMatch: /global\.setup\.ts/,
+            testMatch: "**/clearance-ui/global.setup.ts",
         },
         {
             name: "logged in as test user",
-            testMatch: "**/logged-as-test-user/*.spec.ts",
+            testMatch: "**/clearance-ui/logged-as-test-user/*.spec.ts",
             dependencies: ["setup"],
             use: {
                 ...devices["Desktop Chrome"],
@@ -63,6 +63,7 @@ export default defineConfig({
             use: {
                 ...devices["Desktop Chrome"],
             },
+            testMatch: ["**/clearance-ui/**"],
             testIgnore: ["**/logged-as-test-user/*.spec.ts"],
         },
     ],
