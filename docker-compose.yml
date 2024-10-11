@@ -82,6 +82,8 @@ services:
             - KEYCLOAK_ADMIN_USER_ID=$KEYCLOAK_ADMIN_USER_ID
             - KEYCLOAK_ADMIN_CLIENT_SECRET=$KEYCLOAK_ADMIN_CLIENT_SECRET
             - ALLOWED_ORIGINS=http://localhost:3002,http://localhost:3000
+            - SPACES_ENDPOINT=http://minio:9000
+            - REDIS_URL=redis://redis:6379
             - PORT=3001
         depends_on:
             postgres:

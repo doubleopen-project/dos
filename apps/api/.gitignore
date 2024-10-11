@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2024 Double Open Oy
+#
+# SPDX-License-Identifier: MIT
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
