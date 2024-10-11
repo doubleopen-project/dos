@@ -10,12 +10,10 @@
     "dependencies": {
         "bull": "4.16.1",
         "common-helpers": "*",
-        "s3-helpers": "*",
-        "throng": "5.0.0"
+        "s3-helpers": "*"
     },
     "devDependencies": {
         "@types/node": "22.5.1",
-        "@types/throng": "5.0.7",
         "dotenv-cli": "7.4.2",
         "tsconfig": "*",
         "tsup": "8.2.4",

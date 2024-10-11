@@ -8,7 +8,6 @@ import Queue, { Job } from "bull";
 import { getCurrentDateTime } from "common-helpers";
 import { rimraf } from "rimraf";
 import { downloadFile, S3Client } from "s3-helpers";
-import throng from "throng";
 
 //////////////////////////
 // Environment variables
@@ -39,11 +38,6 @@ const baseDir = "/tmp/scanjobs";
 // Connect to Heroku-provided URL on Heroku and local redis instance locally
 const REDIS_URL: string = process.env.REDIS_URL || "redis://localhost:6379";
 const REDIS_PW: string = process.env.REDIS_PW || "redis";
-
-// How many workers for ScanCode
-const WORKERS: number = process.env.WEB_CONCURRENCY
-    ? parseInt(process.env.WEB_CONCURRENCY)
-    : 1;
 
 // Concurrency limit for downloading files from S3
 const DL_CONCURRENCY: number = process.env.DL_CONCURRENCY
@@ -254,7 +248,4 @@ const start = (): void => {
     });
 };
 
-// Initialise the clustered worker process
-throng({ workers: WORKERS, start: start }).catch((error: string) => {
-    console.log("Scanner Worker: Throng error:", error);
-});
+start();
