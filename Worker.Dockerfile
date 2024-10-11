@@ -38,4 +38,4 @@ RUN npm run build:scanner_worker
 # Ensure scancode is accessible from the PATH
 ENV PATH="/venv/bin:${PATH}"
 
-CMD cd apps/scanner_worker && npm run start
+CMD ["node", "apps/scanner_worker/dist/index.js"]
