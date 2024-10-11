@@ -41,6 +41,7 @@
         "SPACES_ENDPOINT",
         "SPACES_KEY",
         "SPACES_SECRET",
+        "SPACES_REGION",
         "UL_CONCURRENCY",
         "UL_RETRIES",
         "UL_RETRY_INTERVAL",

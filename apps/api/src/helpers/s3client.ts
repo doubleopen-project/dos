@@ -9,4 +9,5 @@ export const s3Client: S3 = S3Client(
     process.env.SPACES_ENDPOINT,
     process.env.SPACES_KEY,
     process.env.SPACES_SECRET,
+    process.env.SPACES_REGION,
 );

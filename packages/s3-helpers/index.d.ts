@@ -66,6 +66,7 @@ declare const S3Client: (
     endpoint?: string,
     key?: string,
     secret?: string,
+    region?: string,
 ) => S3;
 
 export {

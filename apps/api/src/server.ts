@@ -35,6 +35,7 @@ if (process.env.NODE_ENV === "production") {
         "SESSION_SECRET",
         "COOKIE_SECRET",
         "SPACES_ENDPOINT",
+        "SPACES_REGION",
         "SPACES_KEY",
         "SPACES_SECRET",
         "SPACES_BUCKET",

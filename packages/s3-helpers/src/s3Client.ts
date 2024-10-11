@@ -11,11 +11,12 @@ export const getS3Client = (
     endpoint?: string,
     key?: string,
     secret?: string,
+    region?: string,
 ): S3 => {
     return new S3({
         forcePathStyle: forcePathStyle,
         endpoint: endpoint || "http://localhost:9000",
-        region: "us-east-1",
+        region: region || "us-east-1",
         credentials: {
             accessKeyId: key || "miniouser",
             secretAccessKey: secret || "miniopassword",
