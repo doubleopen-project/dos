@@ -9,7 +9,8 @@
         "dev:prod": "tsup src/server.ts --format cjs --watch --onSuccess \"node --env-file ../../.env.production dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node --env-file ../../.env dist/src/server.js",
-        "test": "mocha dist/tests --exit --timeout 10000"
+        "test": "mocha dist/tests --exit --timeout 10000",
+        "test:e2e": "playwright test"
     },
     "dependencies": {
         "@zodios/express": "10.6.0",
@@ -42,6 +43,8 @@
         "validation-helpers": "*"
     },
     "devDependencies": {
+        "@ngneat/falso": "^7.2.0",
+        "@playwright/test": "1.46.1",
         "@types/adm-zip": "0.5.5",
         "@types/braces": "^3.0.4",
         "@types/chai": "4.3.19",
