@@ -246,6 +246,15 @@ const start = (): void => {
         // Finally, return the result of the ScanCode process
         return processPromise;
     });
+
+    process.on("SIGTERM", async () => {
+        console.log("Worker is shutting down, closing the work queue...");
+        await workQueue.close();
+        console.log(
+            "Worker has shut down and no longer processing jobs, exiting...",
+        );
+        process.exit(0);
+    });
 };
 
 start();
