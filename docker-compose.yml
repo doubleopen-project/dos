@@ -66,6 +66,17 @@ services:
             exit 0;
             "
 
+    run-migrations:
+        build:
+            dockerfile: API.Dockerfile
+        command: ["run", "db:migrate:deploy"]
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+        depends_on:
+            postgres:
+                condition: service_healthy
+                required: true
+
     api:
         build:
             dockerfile: API.Dockerfile
@@ -88,6 +99,9 @@ services:
         depends_on:
             postgres:
                 condition: service_healthy
+                required: true
+            run-migrations:
+                condition: service_completed_successfully
                 required: true
             redis:
                 condition: service_healthy
