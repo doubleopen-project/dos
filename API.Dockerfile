@@ -7,6 +7,10 @@ FROM node:20.10.0
 
 WORKDIR /app/dos
 
+# Use the major version installed locally in the project. When updating the local version, update
+# this as well.
+RUN npm install -g turbo@2
+
 COPY package.json ./package.json
 COPY apps/api/package.json ./apps/api/package.json
 COPY packages/database/package.json ./packages/database/package.json
@@ -22,4 +26,6 @@ RUN npm run db:generate
 
 RUN npm run build:api
 
-CMD cd apps/api && npm run start
+ENTRYPOINT [ "turbo" ]
+
+CMD [ "run", "start", "--filter=api", "--no-cache", "--no-daemon" ]
