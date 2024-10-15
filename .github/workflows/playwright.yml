@@ -52,7 +52,7 @@ jobs:
             - name: Seed the database and populate the spaces bucket
               run: npm run db:migrate:reset
             - name: Run Playwright tests
-              run: npm run test:cui:e2e
+              run: npm run test:e2e
             - name: Print Docker Compose logs
               run: docker compose logs
               if: failure()
