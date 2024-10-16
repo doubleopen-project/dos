@@ -106,7 +106,7 @@ jobs:
               continue-on-error: false
               with:
                   build-args: |
-                      NEXT_PUBLIC_API_URL=https://api.doubleopen.io/api/
+                      NEXT_PUBLIC_API_URL=https://dos-api.scw.doubleopen.io/api/
                   context: .
                   file: "UI.Dockerfile"
                   push: true
