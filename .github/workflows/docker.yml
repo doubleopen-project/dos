@@ -16,6 +16,9 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
+        env:
+            NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+
         steps:
             - name: Check out code
               uses: actions/checkout@v3
@@ -106,7 +109,7 @@ jobs:
               continue-on-error: false
               with:
                   build-args: |
-                      NEXT_PUBLIC_API_URL=https://api.doubleopen.io/api/
+                      NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
                   context: .
                   file: "UI.Dockerfile"
                   push: true
