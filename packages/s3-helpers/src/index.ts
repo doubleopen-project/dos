@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { getS3Client, type S3 } from "./s3Client";
+import { getS3Client } from "./s3Client";
 
 export const S3Client = getS3Client;
 export * from "./s3Operations";
-export type { S3 };

@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { S3Client, type S3 } from "s3-helpers";
+import { S3Client } from "s3-helpers";
 
-export const s3Client: S3 = S3Client(
+export const s3Client = S3Client(
     process.env.NODE_ENV !== "production",
     process.env.SPACES_ENDPOINT,
     process.env.SPACES_KEY,
