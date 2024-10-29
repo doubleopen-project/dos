@@ -19,13 +19,13 @@ import {
     PutObjectCommand,
     PutObjectCommandInput,
     PutObjectCommandOutput,
-    S3,
+    S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // Download a file from a bucket
 export const downloadFile = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     fileName: string,
     filePath: string,
@@ -64,14 +64,17 @@ export const downloadFile = async (
             throw new Error("Error: no such file in object storage");
         }
     } catch (err) {
-        console.log("Error trying to download a file from S3 bucket", err);
+        console.log(
+            "Error trying to download a file from S3Client bucket",
+            err,
+        );
         return false;
     }
 };
 
 // Check if object exists in bucket
 export const objectExistsCheck = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     key: string,
 ): Promise<boolean | undefined> => {
@@ -128,7 +131,7 @@ interface expectedError {
 
 // Get presigned put url
 export const getPresignedPutUrl = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     key: string,
 ): Promise<string | undefined> => {
@@ -148,7 +151,7 @@ export const getPresignedPutUrl = async (
 
 // Get presigned get url
 export const getPresignedGetUrl = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     key: string,
 ): Promise<string | undefined> => {
@@ -171,7 +174,7 @@ export const getPresignedGetUrl = async (
 
 // Upload a file to a bucket
 export const uploadFile = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     fileName: string,
     fileContent: string | Buffer,
@@ -192,15 +195,15 @@ export const uploadFile = async (
         //console.log("Success uploadFile():" + " uploaded " + fileName + " to " + bucketName);
         return JSON.stringify(data);
     } catch (err) {
-        console.log("Error trying to upload a file to S3 bucket", err);
+        console.log("Error trying to upload a file to S3Client bucket", err);
         //testCounter++;
-        throw new Error("Error trying to upload a file to S3 bucket");
+        throw new Error("Error trying to upload a file to S3Client bucket");
     }
 };
 
 // Upload files to a bucket with their hash as the key
 export const saveFilesWithHashKey = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     fileHashesAndPaths: Array<{ hash: string; path: string }>,
     baseDir: string,
@@ -223,7 +226,7 @@ export const saveFilesWithHashKey = async (
                 let uploadSuccess = false;
                 while (!uploadSuccess && retries > 0) {
                     try {
-                        // Upload file to S3
+                        // Upload file to S3Client
                         const fileBuffer: Buffer = fs.readFileSync(
                             baseDir + file.path,
                         );
@@ -281,7 +284,7 @@ export const saveFilesWithHashKey = async (
 
 // Delete a file from a bucket
 export const deleteFile = async (
-    s3Client: S3,
+    s3Client: S3Client,
     bucketName: string,
     fileName: string,
 ): Promise<boolean> => {

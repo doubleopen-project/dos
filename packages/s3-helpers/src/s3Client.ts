@@ -4,7 +4,7 @@
 
 // This is the Digital Ocean Spaces S3 client
 
-import { S3 } from "@aws-sdk/client-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 
 export const getS3Client = (
     forcePathStyle: boolean,
@@ -12,8 +12,8 @@ export const getS3Client = (
     key?: string,
     secret?: string,
     region?: string,
-): S3 => {
-    return new S3({
+): S3Client => {
+    return new S3Client({
         forcePathStyle: forcePathStyle,
         endpoint: endpoint || "http://localhost:9000",
         region: region || "us-east-1",
@@ -23,5 +23,3 @@ export const getS3Client = (
         },
     });
 };
-
-export type { S3 };
