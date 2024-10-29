@@ -226,6 +226,17 @@ export const saveFilesWithHashKey = async (
                 let uploadSuccess = false;
                 while (!uploadSuccess && retries > 0) {
                     try {
+                        // Check that the file doesn't already exist in the bucket
+                        if (
+                            await objectExistsCheck(
+                                s3Client,
+                                bucketName,
+                                file.hash,
+                            )
+                        ) {
+                            uploadSuccess = true;
+                            break;
+                        }
                         // Upload file to S3Client
                         const fileBuffer: Buffer = fs.readFileSync(
                             baseDir + file.path,
