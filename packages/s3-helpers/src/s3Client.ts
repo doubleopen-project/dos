@@ -4,7 +4,9 @@
 
 // This is the Digital Ocean Spaces S3 client
 
+import https from "https";
 import { S3Client } from "@aws-sdk/client-s3";
+import { NodeHttpHandler } from "@smithy/node-http-handler";
 
 export const getS3Client = (
     forcePathStyle: boolean,
@@ -21,5 +23,14 @@ export const getS3Client = (
             accessKeyId: key || "miniouser",
             secretAccessKey: secret || "miniopassword",
         },
+        requestHandler: new NodeHttpHandler({
+            httpsAgent: new https.Agent({
+                keepAlive: true,
+                maxSockets: 200,
+            }),
+
+            requestTimeout: 15000,
+            connectionTimeout: 6000,
+        }),
     });
 };
