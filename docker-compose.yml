@@ -116,6 +116,7 @@ services:
         environment:
             - REDIS_URL=redis://redis:6379
             - SPACES_ENDPOINT=http://minio:9000
+            - DEBUG=true
         depends_on:
             - redis
             - minio

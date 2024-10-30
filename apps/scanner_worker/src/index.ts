@@ -145,10 +145,11 @@ const start = (): void => {
         console.timeEnd(job.id + ": Downloading files took");
 
         // Spawn a child process to run ScanCode inside this container
-        const options: string[] = [
+        const options: (string | undefined)[] = [
             "-clp",
             "-i",
-            "-q",
+            // Enable debug logs if DEBUG env variable is set.
+            process.env.DEBUG ? "-v" : undefined,
             "--strip-root",
             "--license-references",
             "--max-in-memory",
@@ -161,9 +162,14 @@ const start = (): void => {
             localJobDir,
         ];
 
+        // spawn doesn't accept undefined values.
+        const filteredOptions = options.filter(
+            (option) => option !== undefined,
+        );
+
         const childProcess: ChildProcessWithoutNullStreams = spawn(
             "scancode",
-            options,
+            filteredOptions,
         );
 
         const pid = childProcess.pid;
@@ -174,10 +180,8 @@ const start = (): void => {
             result += data.toString();
         });
 
-        let error = "";
         childProcess.stderr.on("data", (data) => {
-            error += data.toString();
-            console.log(`[${pid}] process error: ${error}`);
+            console.log(`[${pid}] process: ${data}`);
         });
 
         const processPromise = new Promise<{ result: string }>(
