@@ -9,6 +9,7 @@
         "DB_CONCURRENCY",
         "DB_RETRIES",
         "DB_RETRY_INTERVAL",
+        "DEBUG",
         "DL_CONCURRENCY",
         "E2E_USER_USERNAME",
         "E2E_USER_PASSWORD",
