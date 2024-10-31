@@ -234,6 +234,7 @@ model ScannerJob {
   updatedAt        DateTime @updatedAt
   state            String
   failureState     String?
+  failureMessage   String?
   objectStorageKey String?
   timeout          Int?
   fileCount        Int?
