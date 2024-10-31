@@ -181,7 +181,10 @@ const start = (): void => {
         });
 
         childProcess.stderr.on("data", (data) => {
-            console.log(`[${pid}] process: ${data}`);
+            // Filter empty lines
+            if (data.toString().trim() !== "") {
+                console.log(`[${pid}] process: ${data}`);
+            }
         });
 
         const processPromise = new Promise<{ result: string }>(
