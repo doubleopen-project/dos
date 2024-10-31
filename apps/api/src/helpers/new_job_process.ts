@@ -32,7 +32,8 @@ export const processPackageAndSendToScanner = async (
         log.debug(scannerJobId + ": Search for main Scanner Job");
         const mainScannerJob = await dbQueries.findScannerJobById(scannerJobId);
 
-        if (!mainScannerJob) throw new Error("ScannerJob not found");
+        if (!mainScannerJob)
+            throw new Error("Scanner job not found in database.");
 
         // Create ScannerJobs for each package
         const scannerJobIds: string[] = [scannerJobId];
@@ -67,22 +68,7 @@ export const processPackageAndSendToScanner = async (
             downloadPath,
         );
 
-        if (!downloaded) {
-            log.debug(
-                scannerJobId +
-                    ': Changing Package(s) scanStatus(es) to "failed"',
-            );
-            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
-            log.debug(
-                scannerJobId + ': Changing ScannerJob(s) state(s) to "failed"',
-            );
-            dbQueries.updateManyScannerJobStates(
-                scannerJobIds,
-                "failed",
-                "processing",
-            );
-            throw new Error("Zip file download failed");
-        }
+        if (!downloaded) throw new Error("Zip file download failed.");
 
         log.debug(scannerJobId + ": Zip file downloaded");
 
@@ -97,22 +83,7 @@ export const processPackageAndSendToScanner = async (
             extractPath,
         );
 
-        if (!fileUnzipped) {
-            log.debug(
-                scannerJobId +
-                    ': Changing Package(s) scanStatus(es) to "failed"',
-            );
-            dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
-            log.debug(
-                scannerJobId + ': Changing ScannerJob(s) state(s) to "failed"',
-            );
-            dbQueries.updateManyScannerJobStates(
-                scannerJobIds,
-                "failed",
-                "processing",
-            );
-            throw new Error("Zip file unzipping failed");
-        }
+        if (!fileUnzipped) throw new Error("Zip file unzipping failed.");
 
         log.debug(scannerJobId + ": Zip file unzipped");
 
@@ -163,28 +134,8 @@ export const processPackageAndSendToScanner = async (
                 jobStateMap,
             );
 
-            if (!uploadedWithHash) {
-                log.debug(
-                    scannerJobId + ": Uploading files to object storage failed",
-                );
-                log.debug(
-                    scannerJobId +
-                        ': Changing Package(s) scanStatus(es) to "failed"',
-                );
-                dbQueries.updateManyPackagesScanStatuses(packageIds, "failed");
-                log.debug(
-                    scannerJobId +
-                        ': Changing ScannerJob(s) state(s) to "failed"',
-                );
-                dbQueries.updateManyScannerJobStates(
-                    scannerJobIds,
-                    "failed",
-                    "processing",
-                );
-                throw new Error(
-                    "Error: Uploading files to object storage failed",
-                );
-            }
+            if (!uploadedWithHash)
+                throw new Error("Uploading files to object storage failed.");
         }
         jobStateMap.delete(scannerJobId);
 
@@ -211,7 +162,7 @@ export const processPackageAndSendToScanner = async (
                     },
                 );
             } catch (error) {
-                throw new Error("Error: Adding to queue was unsuccessful.");
+                throw new Error("Adding job to job queue was unsuccessful.");
             }
 
             await dbQueries.updateScannerJob(scannerJobId, {
@@ -233,7 +184,7 @@ export const processPackageAndSendToScanner = async (
         filesToBeScanned = null;
         log.debug(scannerJobId + ": Processing phase completed");
     } catch (error) {
-        log.error(error);
+        log.error(scannerJobId + ": Error in processing phase\n" + error);
         try {
             log.info(
                 scannerJobId +
