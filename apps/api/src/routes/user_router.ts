@@ -64,6 +64,10 @@ userRouter.put("/token", async (req, res) => {
 
         // Update user token
         await updateUser(req.kauth.grant.access_token.content.sub, {
+            username: req.kauth.grant.access_token.content.preferred_username,
+            email: req.kauth.grant.access_token.content.email,
+            firstName: req.kauth.grant.access_token.content.given_name,
+            lastName: req.kauth.grant.access_token.content.family_name,
             attributes: { dosApiToken: token },
         });
 
