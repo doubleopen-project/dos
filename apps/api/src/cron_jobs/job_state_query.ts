@@ -193,6 +193,9 @@ export const jobStateQuery = async () => {
                             // Update scanner job and its children (if any), and related packages
                             await updateScannerJobAndPackagesStateToFailedRecursive(
                                 scannerJobId,
+                                "Job was cleaned up automatically as it was stuck in the " +
+                                    dbState +
+                                    " state.",
                             );
                             flaggedMap.delete(scannerJobId);
                         }
@@ -240,6 +243,7 @@ export const jobStateQuery = async () => {
                                 // Update scanner job and its children (if any), and related packages
                                 await updateScannerJobAndPackagesStateToFailedRecursive(
                                     scannerJobId,
+                                    "Job was cleaned up automatically as it was completed, but no result was found.",
                                 );
                             }
 
@@ -281,6 +285,7 @@ export const jobStateQuery = async () => {
                         // Update scanner job and its children (if any), and related packages
                         await updateScannerJobAndPackagesStateToFailedRecursive(
                             scannerJobId,
+                            "Job was cleaned up automatically as it was not found in the job queue.",
                         );
                         flaggedMap.delete(scannerJobId);
                         break;
@@ -308,6 +313,7 @@ export const jobStateQuery = async () => {
                                 // Update scanner job and its children (if any), and related packages
                                 await updateScannerJobAndPackagesStateToFailedRecursive(
                                     scannerJobId,
+                                    "Job was cleaned up automatically as it has failed during scanning.",
                                 );
                                 break;
                             case "completed":
@@ -340,6 +346,7 @@ export const jobStateQuery = async () => {
                                     // Update scanner job and its children (if any), and related packages
                                     await updateScannerJobAndPackagesStateToFailedRecursive(
                                         scannerJobId,
+                                        "Job was cleaned up automatically as it was completed, but no result was found.",
                                     );
                                     flaggedMap.delete(scannerJobId);
                                 }

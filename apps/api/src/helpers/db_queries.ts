@@ -583,6 +583,7 @@ export const updateManyScannerJobStates = async (
     ids: string[],
     state: string,
     failureState?: string,
+    failureMessage?: string,
 ): Promise<{ count: number }> => {
     let retries = initialRetryCount;
     let batchUpdate = null;
@@ -598,6 +599,7 @@ export const updateManyScannerJobStates = async (
                 data: {
                     state: state,
                     failureState: failureState,
+                    failureMessage: failureMessage,
                 },
             });
         } catch (error) {
@@ -4574,6 +4576,7 @@ export const updateScannerJobStateRecursive = async (
 // and update the related Packages' scanStatus to failed
 export const updateScannerJobAndPackagesStateToFailedRecursive = async (
     scannerJobId: string,
+    failureMessage: string,
 ): Promise<void> => {
     let retries = initialRetryCount;
 
@@ -4593,6 +4596,7 @@ export const updateScannerJobAndPackagesStateToFailedRecursive = async (
                     data: {
                         state: "failed",
                         failureState: job.state,
+                        failureMessage: failureMessage,
                     },
                 });
 
@@ -4611,6 +4615,7 @@ export const updateScannerJobAndPackagesStateToFailedRecursive = async (
                         data: {
                             state: "failed",
                             failureState: job.state,
+                            failureMessage: failureMessage,
                         },
                     });
 

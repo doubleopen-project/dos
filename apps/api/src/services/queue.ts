@@ -93,15 +93,23 @@ export default class QueueService {
             }
         });
 
-        workQueue.on("global:failed", async (jobId: string) => {
-            try {
-                // Update scanner job and its children (if any), and related packages
-                await updateScannerJobAndPackagesStateToFailedRecursive(jobId);
-                console.log(`${jobId}: Changed state to failed`);
-            } catch (error) {
-                console.log(error);
-            }
-        });
+        workQueue.on(
+            "global:failed",
+            async (jobId: string, failedReason: string) => {
+                try {
+                    const message = `Job failed in queue. Reason: ${failedReason}`;
+                    console.error(`${jobId}: ${message}`);
+                    // Update scanner job and its children (if any), and related packages
+                    await updateScannerJobAndPackagesStateToFailedRecursive(
+                        jobId,
+                        message,
+                    );
+                    console.log(`${jobId}: Changed state to failed`);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        );
 
         workQueue.on(
             "global:completed",
