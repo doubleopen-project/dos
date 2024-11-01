@@ -714,7 +714,9 @@ scannerRouter.get(
                 let message =
                     stateMap.get(scannerJob.state) || scannerJob.state;
 
-                if (
+                if (scannerJob.state === "failed") {
+                    message = scannerJob.failureMessage || message;
+                } else if (
                     scannerJob.state === "processing" ||
                     scannerJob.state === "savingResults"
                 ) {
