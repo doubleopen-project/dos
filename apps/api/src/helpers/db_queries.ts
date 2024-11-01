@@ -1688,9 +1688,17 @@ export const findScannerJobById = async (
 
 export const findScannerJobStateById = async (
     id: string,
-): Promise<{ id: string; state: string } | null> => {
+): Promise<{
+    id: string;
+    state: string;
+    failureMessage: string | null;
+} | null> => {
     let retries = initialRetryCount;
-    let scannerJob: { id: string; state: string } | null = null;
+    let scannerJob: {
+        id: string;
+        state: string;
+        failureMessage: string | null;
+    } | null = null;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
@@ -1702,6 +1710,7 @@ export const findScannerJobStateById = async (
                 select: {
                     id: true,
                     state: true,
+                    failureMessage: true,
                 },
             });
             querySuccess = true;
