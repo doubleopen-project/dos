@@ -7,6 +7,7 @@ import { saveFilesWithHashKey } from "s3-helpers";
 import QueueService from "../services/queue";
 import { findFilesToBeScanned } from "./db_operations";
 import * as dbQueries from "./db_queries";
+import { getErrorCodeAndMessage } from "./error_handling";
 import * as fileHelpers from "./file_helpers";
 import { s3Client } from "./s3client";
 
@@ -190,8 +191,14 @@ export const processPackageAndSendToScanner = async (
                 scannerJobId +
                     ': Changing ScannerJob and children (if any) states and related Packages scanStatuses to "failed"',
             );
-            dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
+
+            const errorObject = await getErrorCodeAndMessage(error);
+
+            await dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
                 scannerJobId,
+                errorObject.message !== "Internal server error"
+                    ? errorObject.message
+                    : "Internal server error. Processing failed due to unknown reason.",
             );
         } catch (error) {
             log.error(

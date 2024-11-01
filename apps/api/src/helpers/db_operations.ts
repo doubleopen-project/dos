@@ -12,6 +12,7 @@ import { deleteFile } from "s3-helpers";
 import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import QueueService from "../services/queue";
+import { getErrorCodeAndMessage } from "./error_handling";
 import { s3Client } from "./s3client";
 
 const logLevel: log.LogLevelDesc =
@@ -626,35 +627,17 @@ export const saveJobResults = async (
     } catch (error) {
         console.log(error);
         try {
-            console.log(jobId + ': Changing ScannerJob state to "failed"');
-            const editedScannerJob = await dbQueries.updateScannerJob(jobId, {
-                state: "failed",
-            });
-            console.log(jobId + ': Changing Package scanStatus to "failed"');
-            await dbQueries.updatePackage({
-                id: editedScannerJob.packageId,
-                data: { scanStatus: "failed" },
-            });
-
-            const childScannerJobs =
-                await dbQueries.findScannerJobsByParentId(jobId);
-
-            if (childScannerJobs.length > 0) {
-                console.log(
-                    jobId +
-                        ': Changing ScannerJob states and Package scanStatuses to "failed" for child jobs',
-                );
-                await dbQueries.updateManyScannerJobStates(
-                    childScannerJobs.map((job) => job.id),
-                    "failed",
-                );
-
-                await dbQueries.updateManyPackagesScanStatuses(
-                    childScannerJobs.map((job) => job.packageId),
-                    "failed",
-                );
-            }
-
+            console.log(
+                jobId +
+                    ': Changing ScannerJob and children (if any) states and related Packages scanStatuses to "failed"',
+            );
+            const errorObject = await getErrorCodeAndMessage(error);
+            await dbQueries.updateScannerJobAndPackagesStateToFailedRecursive(
+                jobId,
+                errorObject.message !== "Internal server error"
+                    ? errorObject.message
+                    : "Internal server error. Saving results failed due to unknown reason.",
+            );
             await dbQueries.createSystemIssue({
                 message: "Saving results failed",
                 severity: "MODERATE",
@@ -677,7 +660,6 @@ export const saveJobResults = async (
                             : null,
                 info: JSON.stringify({
                     jobId: jobId,
-                    packageId: editedScannerJob.packageId,
                 }),
             });
         } catch (error) {
