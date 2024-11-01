@@ -28,7 +28,7 @@ setup("logs in", async ({ page }) => {
     await page.fill("#password", process.env.E2E_USER_PASSWORD);
 
     // Submit login form
-    await page.click('input[type="submit"]');
+    await page.click('button[type="submit"]');
 
     // Expect to be redirected to the home page
     await expect(
