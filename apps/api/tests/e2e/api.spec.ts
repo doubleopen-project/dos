@@ -168,4 +168,27 @@ test.describe("API lets authenticated users to", () => {
             ).toContain("Copyright 2024 Double Open Oy");
         }).toPass();
     });
+
+    test("adding a job with a non-existent S3 file key should result in job failing", async ({}) => {
+        const purl = `pkg:npm/${randSlug()}@${randSemver()}`;
+
+        const res = await dosZodios.post("/job", {
+            zipFileKey: "non-existent.zip",
+            purls: [purl],
+        });
+
+        // Query job state until it is available and is failed.
+        await expect(async () => {
+            const jobState = await dosZodios.get("/job-state/:id", {
+                params: {
+                    id: res.scannerJobId,
+                },
+            });
+
+            expect(jobState.state.status).toBe("failed");
+            expect(jobState.state.message).toBe(
+                "Internal server error. Zip file download failed.",
+            );
+        }).toPass();
+    });
 });
