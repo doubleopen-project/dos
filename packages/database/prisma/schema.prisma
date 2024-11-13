@@ -201,6 +201,8 @@ model ScanIssue {
   message       String
   scanner       String
   scannerConfig String
+  timeoutIssue  Boolean @default(false)
+  timeout       Int?
 
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
