@@ -13,6 +13,7 @@ import { ScannerJobResultType } from "validation-helpers";
 import * as dbQueries from "../helpers/db_queries";
 import QueueService from "../services/queue";
 import { getErrorCodeAndMessage } from "./error_handling";
+import { isTimeoutError } from "./is_timeout_error";
 import { s3Client } from "./s3client";
 
 const logLevel: log.LogLevelDesc =
@@ -104,33 +105,13 @@ export const getScanResults = async (
             }
 
             if (filetree.file.scanIssues.length > 0) {
-                const timeoutErrorRegex =
-                    "(ERROR: for scanner: (?<scanner>\\w+):\n)?" +
-                    "ERROR: Processing interrupted: timeout after (?<timeout>\\d+) seconds.";
-
                 for (const issue of filetree.file.scanIssues) {
                     let message = issue.message;
-                    const timeoutErrorMatch =
-                        issue.message.match(timeoutErrorRegex);
 
-                    if (timeoutErrorMatch) {
-                        let timeout = 120;
-
-                        if (issue.scannerConfig.includes("timeout")) {
-                            const scannerConfigList =
-                                issue.scannerConfig.split(" ");
-                            // index of timeout flag
-                            const timeoutIndex =
-                                scannerConfigList.indexOf("--timeout");
-                            // timeout value
-                            timeout = parseInt(
-                                scannerConfigList[timeoutIndex + 1],
-                            );
-                        }
-
+                    if (issue.timeoutIssue) {
                         message =
                             "ERROR: Timeout after " +
-                            timeout +
+                            issue.timeout +
                             " seconds while scanning file '" +
                             filetree.path +
                             "'.";
@@ -537,12 +518,17 @@ export const saveJobResults = async (
                             }
 
                             for (const scanError of file.scan_errors) {
+                                const timeoutError = isTimeoutError(scanError);
                                 await dbQueries.createScanIssue({
                                     severity: "ERROR",
                                     message: scanError,
                                     scanner: scanner,
                                     scannerConfig: scannerConfig,
                                     fileSha256: file.sha256,
+                                    timeoutIssue: timeoutError,
+                                    timeout: timeoutError
+                                        ? (scannerJob.timeout ?? undefined)
+                                        : undefined,
                                 });
                             }
 
