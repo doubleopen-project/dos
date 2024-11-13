@@ -350,6 +350,8 @@ export const createScanIssue = async (input: {
     scanner: string;
     scannerConfig: string;
     fileSha256: string;
+    timeoutIssue?: boolean;
+    timeout?: number;
 }): Promise<ScanIssue> => {
     let retries = initialRetryCount;
     let scanIssue: ScanIssue | null = null;
@@ -2138,6 +2140,8 @@ export const getPackageScanResults = async (purl: string) => {
                                     scannerConfig: true,
                                     message: true,
                                     severity: true,
+                                    timeoutIssue: true,
+                                    timeout: true,
                                 },
                             },
                         },
