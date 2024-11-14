@@ -5,6 +5,7 @@
 import log from "loglevel";
 import { saveFilesWithHashKey } from "s3-helpers";
 import QueueService from "../services/queue";
+import { timeout } from "./constants";
 import { findFilesToBeScanned } from "./db_operations";
 import * as dbQueries from "./db_queries";
 import { getErrorCodeAndMessage } from "./error_handling";
@@ -148,8 +149,6 @@ export const processPackageAndSendToScanner = async (
 
         if (filesToBeScanned.length > 0) {
             log.info(scannerJobId + ": Adding job to the work queue");
-
-            const timeout = 600;
 
             try {
                 await workQueue.add(

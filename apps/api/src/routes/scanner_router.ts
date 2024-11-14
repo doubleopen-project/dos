@@ -8,6 +8,7 @@ import { Package, Prisma, ScannerJob } from "database";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
 import { authenticateDosApiToken } from "../helpers/auth_helpers";
+import { timeout } from "../helpers/constants";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
@@ -106,6 +107,13 @@ scannerRouter.post(
                     }
                 }
 
+                /*
+                 * Collect the ids for new packages in case there are any timeout issues that
+                 * require re-scanning files that timed out, so that all the packages can be
+                 * set to pending state.
+                 */
+                const newPackageIds: number[] = [];
+
                 if (scannedPackages.length > 0) {
                     console.log("Found scan results");
                     // The results will be the same for all packages, so we can just get the results for the first one
@@ -135,6 +143,8 @@ scannerRouter.post(
                                     (elem) => elem.purl === purl,
                                 )?.declaredLicenseExpressionSPDX,
                             });
+
+                            newPackageIds.push(newPackage.id);
 
                             if (newPackage.purl !== purl) {
                                 dbQueries.deletePackage(newPackage.id);
@@ -199,14 +209,103 @@ scannerRouter.post(
                             });
                         }
                     }
-                    res.status(200).json({
-                        purls: purls,
-                        state: {
-                            status: "ready",
-                            jobId: null,
-                        },
-                        results: results,
-                    });
+
+                    // Look for timeout scan issues that used a lower timeout than the current one
+                    const scanIssues =
+                        await dbQueries.findTimeoutScanIssuesByPackageIdAndTimeout(
+                            scannedPackages[0].id,
+                            timeout,
+                        );
+
+                    // Re-scan files that timed out
+                    if (scanIssues.length > 0) {
+                        const filesToScan: { hash: string; path: string }[] =
+                            [];
+                        for (const issue of scanIssues) {
+                            const ft =
+                                await dbQueries.findFileTreeByHashAndPackageId(
+                                    issue.fileSha256,
+                                    scannedPackages[0].id,
+                                );
+
+                            if (ft) {
+                                filesToScan.push({
+                                    hash: issue.fileSha256,
+                                    path: ft.path,
+                                });
+                            }
+                        }
+
+                        const rescanScannerJobIds: string[] = [];
+
+                        const parentJob = await dbQueries.createScannerJob({
+                            state: "created",
+                            packageId: scannedPackages[0].id,
+                        });
+
+                        rescanScannerJobIds.push(parentJob.id);
+
+                        const affectedPackageIds: number[] = scannedPackages
+                            .map((pkg) => pkg.id)
+                            .concat(newPackageIds);
+
+                        for (const pkgId of affectedPackageIds) {
+                            if (pkgId !== scannedPackages[0].id) {
+                                const childJob =
+                                    await dbQueries.createScannerJob({
+                                        packageId: pkgId,
+                                        state: "created",
+                                        parentId: parentJob.id,
+                                    });
+
+                                rescanScannerJobIds.push(childJob.id);
+                            }
+                        }
+
+                        await workQueue.add(
+                            {
+                                jobId: parentJob.id,
+                                options: { timeout: timeout },
+                                files: filesToScan,
+                            },
+                            {
+                                jobId: parentJob.id,
+                            },
+                        );
+
+                        await dbQueries.updateScannerJob(parentJob.id, {
+                            fileCount: filesToScan.length,
+                            timeout: timeout,
+                        });
+
+                        await dbQueries.updateManyScannerJobStates(
+                            rescanScannerJobIds,
+                            "queued",
+                        );
+
+                        await dbQueries.updateManyPackagesScanStatuses(
+                            affectedPackageIds,
+                            "pending",
+                        );
+
+                        res.status(200).json({
+                            purls: purls,
+                            state: {
+                                status: "pending",
+                                jobId: parentJob.id,
+                            },
+                            results: null,
+                        });
+                    } else {
+                        res.status(200).json({
+                            purls: purls,
+                            state: {
+                                status: "ready",
+                                jobId: null,
+                            },
+                            results: results,
+                        });
+                    }
                 } else if (pendingJobs.length > 0) {
                     console.log("Found pending ScannerJob");
 
