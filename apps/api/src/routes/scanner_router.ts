@@ -5,6 +5,7 @@
 import { zodiosRouter } from "@zodios/express";
 import { JobStatus } from "bull";
 import { Package, Prisma, ScannerJob } from "database";
+import log from "loglevel";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
 import { authenticateDosApiToken } from "../helpers/auth_helpers";
@@ -25,6 +26,11 @@ const scannerRouter = zodiosRouter(scannerAPI);
 const workQueue = QueueService.getInstance();
 
 const jobStateMap: Map<string, string> = new Map();
+
+const logLevel: log.LogLevelDesc =
+    (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
+
+log.setLevel(logLevel);
 
 // Get scan results for package with purl
 scannerRouter.post(
@@ -360,6 +366,9 @@ scannerRouter.post(
                                         generatedPurl: newPackage.purl,
                                     }),
                                 });
+                                log.debug(
+                                    `Generated purl does not match the requested purl.\nRequested purl: ${purl}\nGenerated purl: ${newPackage.purl}`,
+                                );
                                 throw new CustomError(
                                     "Internal server error. Generated purl does not match the requested purl",
                                     500,
@@ -577,6 +586,9 @@ scannerRouter.post("/job", authenticateDosApiToken, async (req, res) => {
                             zipFileKey: req.body.zipFileKey,
                         }),
                     });
+                    log.debug(
+                        `Generated purl does not match the requested purl.\nRequested purl: ${pkg.purl}\nGenerated purl: ${jobPackage.purl}`,
+                    );
                     throw new CustomError(
                         "Internal server error. Generated purl does not match the requested purl",
                         500,
