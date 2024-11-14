@@ -2242,6 +2242,43 @@ export const findScanIssuesWithRelatedFileAndPackageAndFileTree =
         return scanIssues;
     };
 
+export const findTimeoutScanIssuesByPackageIdAndTimeout = async (
+    packageId: number,
+    timeout: number,
+): Promise<ScanIssue[]> => {
+    let retries = initialRetryCount;
+    let scanIssues: ScanIssue[] = [];
+
+    while (retries > 0) {
+        try {
+            scanIssues = await prisma.scanIssue.findMany({
+                where: {
+                    timeoutIssue: true,
+                    timeout: {
+                        lt: timeout,
+                    },
+                    file: {
+                        filetrees: {
+                            some: {
+                                packageId: packageId,
+                            },
+                        },
+                    },
+                },
+            });
+            break;
+        } catch (error) {
+            console.log("Error with trying to find ScanIssues: " + error);
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return scanIssues;
+};
+
 export const findAllScannedPackages = async (
     pkgNameStartsWith?: string,
 ): Promise<Package[]> => {
