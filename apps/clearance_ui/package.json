@@ -56,7 +56,7 @@
         "next-themes": "0.3.0",
         "node-cache": "^5.1.2",
         "nuqs": "1.17.8",
-        "packageurl-js": "2.0.0",
+        "packageurl-js": "1.2.1",
         "react-arborist": "3.4.0",
         "react-copy-to-clipboard": "5.1.0",
         "react-hook-form": "7.53.0",
