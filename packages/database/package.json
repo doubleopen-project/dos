@@ -19,19 +19,19 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
-        "@prisma/client": "5.15.0",
+        "@prisma/client": "6.0.1",
         "adm-zip": "0.5.16",
         "s3-helpers": "*"
     },
     "devDependencies": {
-        "@types/node": "22.5.1",
+        "@types/node": "22.10.1",
         "eslint-config-custom-server": "*",
-        "prisma": "5.15.0",
+        "prisma": "6.0.1",
         "prisma-zod-generator": "0.8.13",
         "ts-node": "10.9.2",
         "tsconfig": "*",
-        "tsup": "8.2.4",
-        "typescript": "5.5.4"
+        "tsup": "8.3.5",
+        "typescript": "5.7.2"
     },
     "prisma": {
         "seed": "ts-node src/seed.ts"
