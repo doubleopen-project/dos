@@ -146,7 +146,7 @@ const start = (): void => {
 
         // Spawn a child process to run ScanCode inside this container
         const options: (string | undefined)[] = [
-            "-clp",
+            "-cl",
             "-i",
             // Enable debug logs if DEBUG env variable is set.
             process.env.DEBUG ? "-v" : undefined,
