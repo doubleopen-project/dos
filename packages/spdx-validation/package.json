@@ -13,12 +13,12 @@
         "spdx-license-ids": "^3.0.20"
     },
     "devDependencies": {
-        "@types/jest": "29.5.12",
-        "@types/node": "22.5.1",
+        "@types/jest": "29.5.14",
+        "@types/node": "22.10.2",
         "eslint-config-custom-server": "*",
         "jest": "^29.7.0",
-        "tsup": "8.2.4",
+        "tsup": "8.3.5",
         "tsconfig": "*",
-        "typescript": "5.5.4"
+        "typescript": "5.7.2"
     }
 }
