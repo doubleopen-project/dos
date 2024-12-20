@@ -8,13 +8,13 @@
         "start": "dotenv -e ../../.env node dist/index.js"
     },
     "dependencies": {
-        "bull": "4.16.1",
+        "bull": "4.16.5",
         "common-helpers": "*",
         "s3-helpers": "*"
     },
     "devDependencies": {
         "@types/node": "22.5.1",
-        "dotenv-cli": "7.4.2",
+        "dotenv-cli": "7.4.4",
         "tsconfig": "*",
         "tsup": "8.2.4",
         "typescript": "5.5.4"
