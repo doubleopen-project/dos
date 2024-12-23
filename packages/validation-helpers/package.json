@@ -5,7 +5,6 @@
     "types": "./index.d.ts",
     "scripts": {
         "build": "tsup && prettier --write dist/index.d.ts && (head -n 4 src/index.ts && cat dist/index.d.ts) > temp_file && mv temp_file index.d.ts",
-        "clever-cui-prebuild": "tsup",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "test": "jest"
     },
