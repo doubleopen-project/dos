@@ -4,9 +4,7 @@
     "license": "MIT",
     "scripts": {
         "build": "tsup --format cjs",
-        "clever-logs": "clever logs",
         "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node --env-file ../../.env dist/server.js\"",
-        "dev:prod": "tsup src/server.ts --format cjs --watch --onSuccess \"node --env-file ../../.env.production dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "start": "node --env-file ../../.env dist/src/server.js",
         "test": "mocha dist/tests --exit --timeout 10000",

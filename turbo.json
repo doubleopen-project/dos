@@ -59,9 +59,6 @@
                 "validation-helpers:build"
             ]
         },
-        "curation:build": {
-            "dependsOn": ["validation-helpers:build"]
-        },
         "scanner-worker:build": {
             "dependsOn": ["s3-helpers:build", "common-helpers:build"]
         },
@@ -69,8 +66,6 @@
             "dependsOn": ["^build"],
             "outputs": [".next/**", "!.next/cache/**"]
         },
-        "clever-cui-prebuild": {},
-        "clever-logs": {},
         "copy-types": {},
         "db:format": {},
         "db:generate": {
