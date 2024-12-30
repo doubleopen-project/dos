@@ -12,13 +12,13 @@
         "pako": "2.1.0"
     },
     "devDependencies": {
-        "@types/chai": "4.3.19",
-        "@types/mocha": "10.0.7",
-        "@types/node": "22.5.1",
+        "@types/chai": "5.0.1",
+        "@types/mocha": "10.0.10",
+        "@types/node": "22.10.2",
         "@types/pako": "2.0.3",
         "chai": "5.1.2",
         "mocha": "11.0.1",
-        "tsup": "8.2.4",
-        "typescript": "5.5.4"
+        "tsup": "8.3.5",
+        "typescript": "5.7.2"
     }
 }
