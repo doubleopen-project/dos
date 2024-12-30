@@ -41,6 +41,7 @@
         "lint:api": "turbo run lint --filter=api",
         "lint:cui": "turbo run lint --filter=clearance_ui",
         "prettier": "prettier --write .",
+        "prettier:check": "prettier --check .",
         "production:cui": "turbo run start --filter=clearance_ui --no-daemon",
         "start:api": "turbo run dev --no-cache --continue --no-daemon --filter=api",
         "start:cui": "turbo run dev --no-cache --continue --no-daemon --filter=clearance_ui",
