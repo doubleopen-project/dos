@@ -25,7 +25,8 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
             model: {};
             query: {};
             client: {};
-        }
+        },
+        _prisma_client.Prisma.PrismaClientOptions
     >,
     _prisma_client.Prisma.TypeMapCb,
     {
@@ -44,7 +45,8 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
         model: {};
         query: {};
         client: {};
-    }
+    },
+    {}
 >;
 
 export { prisma };
