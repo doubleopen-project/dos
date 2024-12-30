@@ -37,7 +37,7 @@ export type Package = ZodiosResponseByPath<
 export const columns = (
     sortBy: string | null,
     sortOrder: string | null,
-    setSortBy: <Shallow>(
+    setSortBy: (
         value:
             | "purl"
             | "name"
@@ -63,19 +63,19 @@ export const columns = (
                   | "namespace"
                   | null)
             | null,
-        options?: Options<Shallow> | undefined,
+        options?: Options | undefined,
     ) => Promise<URLSearchParams>,
-    setSortOrder: <Shallow>(
+    setSortOrder: (
         value:
             | "asc"
             | "desc"
             | ((old: "asc" | "desc" | null) => "asc" | "desc" | null)
             | null,
-        options?: Options<Shallow> | undefined,
+        options?: Options | undefined,
     ) => Promise<URLSearchParams>,
-    setPageIndex: <Shallow>(
+    setPageIndex: (
         value: number | ((old: number) => number | null) | null,
-        options?: Options<Shallow> | undefined,
+        options?: Options | undefined,
     ) => Promise<URLSearchParams>,
 ): ColumnDef<Package>[] => {
     return [
