@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { JSX } from "react";
 import { NodeApi } from "react-arborist";
 
 export type TreeNode = {

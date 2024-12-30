@@ -13,10 +13,10 @@
         "s3-helpers": "*"
     },
     "devDependencies": {
-        "@types/node": "22.5.1",
+        "@types/node": "22.10.2",
         "dotenv-cli": "7.4.4",
         "tsconfig": "*",
-        "tsup": "8.2.4",
-        "typescript": "5.5.4"
+        "tsup": "8.3.5",
+        "typescript": "5.7.2"
     }
 }

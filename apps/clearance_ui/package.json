@@ -72,8 +72,8 @@
         "@testing-library/react": "16.1.0",
         "@types/js-yaml": "4.0.9",
         "@types/lodash.debounce": "4.0.9",
-        "@types/node": "22.5.1",
-        "@types/react": "18.3.4",
+        "@types/node": "22.10.2",
+        "@types/react": "19.0.2",
         "@types/react-copy-to-clipboard": "5.0.7",
         "@types/spdx-expression-parse": "3.0.5",
         "dotenv-cli": "^7.4.4",
@@ -85,6 +85,6 @@
         "tailwindcss": "3.4.17",
         "ts-jest": "29.2.5",
         "ts-node": "10.9.2",
-        "typescript": "5.5.4"
+        "typescript": "5.7.2"
     }
 }

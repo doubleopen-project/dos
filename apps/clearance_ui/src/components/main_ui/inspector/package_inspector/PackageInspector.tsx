@@ -78,9 +78,9 @@ const PackageInspector = ({ purl, path }: Props) => {
     const treeDivRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathPurl = toPathPurl(purl);
-    const peWorkerRef = useRef<Worker>();
-    const lcWorkerRef = useRef<Worker>();
-    const lfWorkerRef = useRef<Worker>();
+    const peWorkerRef = useRef<Worker>(null);
+    const lcWorkerRef = useRef<Worker>(null);
+    const lfWorkerRef = useRef<Worker>(null);
 
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
@@ -134,7 +134,7 @@ const PackageInspector = ({ purl, path }: Props) => {
         { enabled: !!purl },
     );
 
-    const treeRef = useRef<TreeApi<TreeNode>>();
+    const treeRef = useRef<TreeApi<TreeNode>>(null);
 
     const handleTreeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTreeFilter(event.target.value);
