@@ -5,6 +5,7 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
+import { NuqsAdapter } from "nuqs/adapters/next/pages";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navigation/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
@@ -32,7 +33,9 @@ export default function App({
                     <div className="flex h-screen flex-col">
                         <Navbar />
                         <main className="h-full w-full overflow-auto">
-                            {<Component {...pageProps} />}
+                            <NuqsAdapter>
+                                {<Component {...pageProps} />}
+                            </NuqsAdapter>
                         </main>
                     </div>
                     <Toaster />
