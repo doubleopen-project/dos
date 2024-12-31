@@ -5,6 +5,21 @@
         {
             "matchPackageNames": ["@zodios/express"],
             "allowedVersions": ">=10.6.0 <10.6.1 || >10.6.1"
+        },
+        {
+            "matchPackageNames": [
+                "@tanstack/react-query",
+                "@tanstack/react-query-devtools"
+            ],
+            "allowedVersions": "4.35.3"
+        },
+        {
+            "matchPackageNames": ["zod"],
+            "allowedVersions": "3.22.4"
+        },
+        {
+            "matchPackageNames": ["express", "@types/express"],
+            "allowedVersions": "4.x"
         }
     ]
 }
