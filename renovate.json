@@ -20,6 +20,10 @@
         {
             "matchPackageNames": ["express", "@types/express"],
             "allowedVersions": "4.x"
+        },
+        {
+            "matchPackageNames": ["packageurl-js"],
+            "allowedVersions": "1.2.1"
         }
     ]
 }
