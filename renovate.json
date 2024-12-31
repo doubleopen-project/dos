@@ -24,6 +24,11 @@
         {
             "matchPackageNames": ["packageurl-js"],
             "allowedVersions": "1.2.1"
+        },
+        {
+            "matchFileNames": ["apps/api/package.json"],
+            "matchPackageNames": ["tsup"],
+            "allowedVersions": ">=8.2.4 <8.3.4 || >8.3.5"
         }
     ]
 }
