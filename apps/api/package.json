@@ -6,7 +6,7 @@
         "build": "tsup --format cjs",
         "dev": "tsup src/server.ts --format cjs --watch --onSuccess \"node --env-file ../../.env dist/server.js\"",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
-        "start": "node --env-file ../../.env dist/src/server.js",
+        "start": "node --env-file-if-exists ../../.env dist/src/server.js",
         "test": "mocha dist/tests --exit --timeout 10000",
         "test:e2e": "playwright test"
     },

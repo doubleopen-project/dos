@@ -2,7 +2,7 @@
 # 
 # SPDX-License-Identifier: MIT
 
-FROM node:20.10.0 AS base
+FROM node:22.12.0 AS base
 
 FROM base AS builder
 WORKDIR /app
