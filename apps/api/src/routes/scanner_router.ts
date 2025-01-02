@@ -32,6 +32,11 @@ const logLevel: log.LogLevelDesc =
 
 log.setLevel(logLevel);
 
+// Get health status of the API
+scannerRouter.get("/health", async (req, res) => {
+    res.status(200).json({ message: "DOS API running" });
+});
+
 // Get scan results for package with purl
 scannerRouter.post(
     "/scan-results",

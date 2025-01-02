@@ -9,6 +9,13 @@ import * as schemas from "../schemas/scanner_schemas";
 
 export const scannerAPI = makeApi([
     {
+        method: "get",
+        path: "/health",
+        description: "Get health status of the API",
+        response: schemas.GetHealthRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/scan-results",
         description:
