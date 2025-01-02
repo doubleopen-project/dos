@@ -96,6 +96,11 @@ services:
             - SPACES_ENDPOINT=http://minio:9000
             - REDIS_URL=redis://redis:6379
             - PORT=3001
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
         depends_on:
             postgres:
                 condition: service_healthy

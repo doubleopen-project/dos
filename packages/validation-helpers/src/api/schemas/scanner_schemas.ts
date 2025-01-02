@@ -6,6 +6,12 @@ import { z } from "zod";
 import { ScannerJobResultSchema } from "../../other_schemas/scan_job_result";
 import { purlSchema } from "./common_schemas";
 
+//---------------- GET health ----------------
+
+export const GetHealthRes = z.object({
+    message: z.string(),
+});
+
 //---------------- POST scan-results ----------------
 
 export const PostScanResultsReq = z.union([
