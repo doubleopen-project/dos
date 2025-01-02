@@ -17,7 +17,7 @@ RUN apt-get update && \
 RUN python3 -m venv /venv
 
 # Activate the virtual environment and install required Python packages
-RUN /venv/bin/pip install scancode-toolkit==32.1.0
+RUN /venv/bin/pip install scancode-toolkit==32.3.0
 
 # DOS
 
