@@ -38,6 +38,11 @@
                 "packages/eslint-config-custom-server/package.json",
                 "packages/eslint-config-custom/package.json"
             ]
+        },
+        {
+            "extends": ["monorepo:aws-sdk-js-v3"],
+            "groupName": "aws-sdk-js-v3 monorepo",
+            "schedule": ["after 9am on monday"]
         }
     ],
     "prHourlyLimit": 5
