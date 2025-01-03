@@ -31,6 +31,13 @@
             "matchFileNames": ["apps/api/package.json"],
             "matchPackageNames": ["tsup"],
             "allowedVersions": ">=8.2.4 <8.3.4 || >8.3.5"
+        },
+        {
+            "groupName": "eslint and related plugins",
+            "matchFileNames": [
+                "packages/eslint-config-custom-server/package.json",
+                "packages/eslint-config-custom/package.json"
+            ]
         }
     ],
     "prHourlyLimit": 5
