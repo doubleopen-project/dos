@@ -30,5 +30,6 @@
             "matchPackageNames": ["tsup"],
             "allowedVersions": ">=8.2.4 <8.3.4 || >8.3.5"
         }
-    ]
+    ],
+    "prHourlyLimit": 5
 }
