@@ -1,0 +1,49 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "schedule": ["after 9am and before 7pm on every weekday"],
+    "timezone": "Europe/Tallinn",
+    "packageRules": [
+        {
+            "matchPackageNames": ["@zodios/express"],
+            "allowedVersions": ">=10.6.0 <10.6.1 || >10.6.1"
+        },
+        {
+            "matchPackageNames": [
+                "@tanstack/react-query",
+                "@tanstack/react-query-devtools"
+            ],
+            "allowedVersions": "4.35.3"
+        },
+        {
+            "matchPackageNames": ["zod"],
+            "allowedVersions": "3.22.4"
+        },
+        {
+            "matchPackageNames": ["express", "@types/express"],
+            "allowedVersions": "4.x"
+        },
+        {
+            "matchPackageNames": ["packageurl-js"],
+            "allowedVersions": "1.2.1"
+        },
+        {
+            "matchFileNames": ["apps/api/package.json"],
+            "matchPackageNames": ["tsup"],
+            "allowedVersions": ">=8.2.4 <8.3.4 || >8.3.5"
+        },
+        {
+            "groupName": "eslint and related plugins",
+            "matchFileNames": [
+                "packages/eslint-config-custom-server/package.json",
+                "packages/eslint-config-custom/package.json"
+            ]
+        },
+        {
+            "extends": ["monorepo:aws-sdk-js-v3"],
+            "groupName": "aws-sdk-js-v3 monorepo",
+            "schedule": ["after 9am on monday"]
+        }
+    ],
+    "prHourlyLimit": 5
+}
