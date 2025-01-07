@@ -60,7 +60,7 @@
     },
     "devDependencies": {
         "@ianvs/prettier-plugin-sort-imports": "4.4.0",
-        "dotenv-cli": "7.4.4",
+        "dotenv-cli": "8.0.0",
         "prettier": "3.4.2",
         "prettier-plugin-tailwindcss": "0.6.9",
         "rimraf": "6.0.1",
