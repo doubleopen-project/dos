@@ -76,7 +76,7 @@
         "@types/react": "19.0.3",
         "@types/react-copy-to-clipboard": "5.0.7",
         "@types/spdx-expression-parse": "3.0.5",
-        "dotenv-cli": "^7.4.4",
+        "dotenv-cli": "^8.0.0",
         "eslint-config-custom": "*",
         "jest": "29.7.0",
         "jest-environment-jsdom": "29.7.0",

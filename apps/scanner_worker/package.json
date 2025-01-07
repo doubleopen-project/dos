@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@types/node": "22.10.5",
-        "dotenv-cli": "7.4.4",
+        "dotenv-cli": "8.0.0",
         "tsconfig": "*",
         "tsup": "8.3.5",
         "typescript": "5.7.2"
