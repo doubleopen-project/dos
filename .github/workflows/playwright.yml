@@ -33,7 +33,7 @@ jobs:
             NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
             NEXT_PUBLIC_API_URL: http://localhost:3001/api/
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: 22.12.0
