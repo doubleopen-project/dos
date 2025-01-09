@@ -19,6 +19,6 @@
         "jest": "^29.7.0",
         "tsup": "8.3.5",
         "tsconfig": "*",
-        "typescript": "5.7.2"
+        "typescript": "5.7.3"
     }
 }
