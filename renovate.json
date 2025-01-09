@@ -3,6 +3,17 @@
     "extends": ["config:recommended"],
     "schedule": ["after 9am and before 7pm every weekday"],
     "timezone": "Europe/Tallinn",
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/workflows/.*\\.yml$"],
+            "matchStrings": [
+                "node-version:\\s+(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+            ],
+            "depNameTemplate": "node",
+            "datasourceTemplate": "node"
+        }
+    ],
     "packageRules": [
         {
             "matchPackageNames": ["@zodios/express"],
