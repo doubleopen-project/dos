@@ -646,6 +646,8 @@ export const saveJobResults = async (
                     jobId: jobId,
                 }),
             });
+            // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             console.log(
                 jobId +

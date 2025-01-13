@@ -161,6 +161,8 @@ export const processPackageAndSendToScanner = async (
                         jobId: scannerJobId,
                     },
                 );
+                // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 throw new Error("Adding job to job queue was unsuccessful.");
             }
@@ -199,6 +201,8 @@ export const processPackageAndSendToScanner = async (
                     ? errorObject.message
                     : "Internal server error. Processing failed due to unknown reason.",
             );
+            // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             log.error(
                 scannerJobId +
