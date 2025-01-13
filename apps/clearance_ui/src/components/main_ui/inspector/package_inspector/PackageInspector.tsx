@@ -509,21 +509,20 @@ const PackageInspector = ({ purl, path }: Props) => {
                             setSelectedNode(node);
                             if (node.isLeaf) {
                                 setOpenedNodeId(node.id);
-                                {
-                                    !isSelectionMode &&
-                                        router.push({
-                                            pathname: `/packages/${encodeURIComponent(
-                                                purl || "",
-                                            )}/tree/${encodeURIComponent(
-                                                node.data.path || "",
-                                            )}`,
-                                            query: licenseFilter
-                                                ? {
-                                                      licenseFilter: `${licenseFilter}`,
-                                                      filtering: `${filtering}`,
-                                                  }
-                                                : {},
-                                        });
+                                if (!isSelectionMode) {
+                                    router.push({
+                                        pathname: `/packages/${encodeURIComponent(
+                                            purl || "",
+                                        )}/tree/${encodeURIComponent(
+                                            node.data.path || "",
+                                        )}`,
+                                        query: licenseFilter
+                                            ? {
+                                                  licenseFilter: `${licenseFilter}`,
+                                                  filtering: `${filtering}`,
+                                              }
+                                            : {},
+                                    });
                                 }
                             }
                         }}
