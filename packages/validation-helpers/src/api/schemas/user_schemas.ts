@@ -21,6 +21,8 @@ const concludedLicenseExpressionSPDX = z
             try {
                 parseSPDX(concludedLicenseExpressionSPDX);
                 return true;
+                // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (e) {
                 return false;
             }

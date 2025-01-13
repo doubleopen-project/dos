@@ -22,6 +22,8 @@ export const getErrorCodeAndMessage = async (
                         details: error.stack,
                         info: JSON.stringify(error),
                     });
+                    // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (err) {
                     console.log(
                         "Error: Unable to create system issue for database error: " +

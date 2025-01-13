@@ -46,6 +46,8 @@ export function decomposeLicenses(spdxExpressions: Set<string>): Set<string> {
             const parsedInfo = parseSPDX(spdxExpression);
             const licenses = extractLicenses(parsedInfo);
             allLicenses.push(...licenses);
+            // Disable eslint rule for unused variable as the error needs to be caught, but not used.
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             allLicenses.push(spdxExpression);
         }
