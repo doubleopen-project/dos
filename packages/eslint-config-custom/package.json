@@ -3,7 +3,7 @@
     "main": "index.js",
     "version": "1.0.0",
     "devDependencies": {
-        "@next/eslint-plugin-next": "15.1.4",
+        "@next/eslint-plugin-next": "15.1.5",
         "@typescript-eslint/eslint-plugin": "8.20.0",
         "@vercel/style-guide": "6.0.0",
         "eslint": "9.18.0",
