@@ -44,13 +44,6 @@
             "allowedVersions": ">=8.2.4 <8.3.4 || >8.3.5"
         },
         {
-            "groupName": "eslint and related plugins",
-            "matchFileNames": [
-                "packages/eslint-config-custom-server/package.json",
-                "packages/eslint-config-custom/package.json"
-            ]
-        },
-        {
             "extends": ["monorepo:aws-sdk-js-v3"],
             "groupName": "aws-sdk-js-v3 monorepo",
             "schedule": ["after 9am on monday"]
