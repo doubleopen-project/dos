@@ -190,7 +190,7 @@ const UserDataForm = () => {
         <div className="flex flex-col">
             {editMode && (
                 <Button
-                    className="mx-4 ml-auto mt-8 rounded-lg border border-violet-950 bg-gray-200 p-2"
+                    className="mx-4 mt-8 ml-auto rounded-lg border border-violet-950 bg-gray-200 p-2"
                     variant={"outline"}
                     disabled
                 >
@@ -200,7 +200,7 @@ const UserDataForm = () => {
 
             {!editMode && (
                 <Button
-                    className="mx-4 ml-auto mt-8 rounded-lg p-2"
+                    className="mx-4 mt-8 ml-auto rounded-lg p-2"
                     variant={"outline"}
                     onClick={() => setEditMode(true)}
                 >
@@ -288,7 +288,7 @@ const UserDataForm = () => {
                         control={form.control}
                         name="role"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>Role</FormLabel>
                                 <FormControl>
                                     <Input {...field} disabled />
@@ -301,7 +301,7 @@ const UserDataForm = () => {
                         control={form.control}
                         name="password"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <div className="flex flex-row">
                                     <FormLabel>New password</FormLabel>
                                     {editMode && <PasswordTooltip />}
@@ -322,7 +322,7 @@ const UserDataForm = () => {
                         control={form.control}
                         name="confirmPassword"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>Confirm new password</FormLabel>
                                 <FormControl>
                                     <Input
@@ -355,7 +355,7 @@ const UserDataForm = () => {
                         <Button
                             className={cn(
                                 "mr-1 flex-1",
-                                isSuccess ? "!opacity-100" : undefined,
+                                isSuccess ? "opacity-100!" : undefined,
                             )}
                             type="submit"
                             variant={isSuccess ? "success" : "default"}

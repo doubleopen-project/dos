@@ -170,7 +170,7 @@ const ConclusionForm = ({
             {user &&
                 user.permissions &&
                 !hasPermission(user.permissions, "ClearanceItems", "POST") && (
-                    <div className="mb-1 mr-1 rounded-md bg-red-100 p-1 text-xs">
+                    <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
                         Feel free to interact with the form but please note that
                         you do not currently have permission to add license
                         conclusions.
@@ -234,7 +234,7 @@ const ConclusionForm = ({
                             <FormItem className="mr-1 flex-1">
                                 <FormControl>
                                     <Textarea
-                                        className="!min-h-[40px] text-xs"
+                                        className="min-h-[40px]! text-xs"
                                         placeholder="Comment on your license conclusion..."
                                         {...field}
                                     />
@@ -248,7 +248,7 @@ const ConclusionForm = ({
                             control={form.control}
                             name="local"
                             render={({ field }) => (
-                                <FormItem className="ml-1 flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
+                                <FormItem className="ml-1 flex flex-row items-start space-y-0 space-x-3 rounded-md p-2">
                                     <FormControl>
                                         <Checkbox
                                             checked={field.value}

@@ -42,7 +42,7 @@ export default function PackageLibrary() {
         <div className="flex h-full flex-col p-2">
             {session.status === "authenticated" && (
                 <>
-                    <div className="m-1 flex-none rounded-md shadow">
+                    <div className="m-1 flex-none rounded-md shadow-sm">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Package Library</CardTitle>
@@ -79,7 +79,7 @@ export default function PackageLibrary() {
                             </CardContent>
                         </Card>
                     </div>
-                    <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow">
+                    <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow-sm">
                         {pkgCntData && (
                             <PackageList pkgCnt={pkgCntData.count} />
                         )}

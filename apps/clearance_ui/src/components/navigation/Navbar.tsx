@@ -44,7 +44,7 @@ const Navbar = () => {
         <div className="overflow-none flex flex-row items-center justify-between border-b-[1px] py-2">
             <div className="flex items-center justify-start">
                 <SideMenu />
-                <Link href="/" className="pl-2 pr-4">
+                <Link href="/" className="pr-4 pl-2">
                     <span
                         className={cn(
                             fira_code.className,
@@ -66,7 +66,7 @@ const Navbar = () => {
                     !session.data.error &&
                     mainPurl && (
                         <div className="flex-row items-center">
-                            <Label className="break-all text-xs">
+                            <Label className="text-xs break-all">
                                 {mainPurl}
                             </Label>
                             <CopyToClipboard copyText={mainPurl} />
@@ -76,11 +76,11 @@ const Navbar = () => {
                     !session.data.error &&
                     path && (
                         <>
-                            <Label className="pl-1 pr-2 text-lg font-semibold text-[#FF3366]">
+                            <Label className="pr-2 pl-1 text-lg font-semibold text-[#FF3366]">
                                 /
                             </Label>
                             <div className="flex-row items-center">
-                                <Label className="break-all text-xs">
+                                <Label className="text-xs break-all">
                                     {path}
                                 </Label>
                                 <CopyToClipboard copyText={path as string} />

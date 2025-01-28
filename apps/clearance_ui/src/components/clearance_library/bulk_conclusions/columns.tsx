@@ -188,7 +188,7 @@ export const columns = (
                         <Tooltip delayDuration={300}>
                             <TooltipTrigger asChild>
                                 <Link
-                                    className="break-all font-semibold text-blue-400"
+                                    className="font-semibold break-all text-blue-400"
                                     href={`/packages/${encodeURIComponent(
                                         row.original.package.purl,
                                     )}`}

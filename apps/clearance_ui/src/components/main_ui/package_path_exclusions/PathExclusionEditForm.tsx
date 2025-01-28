@@ -252,13 +252,13 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                 className="w-[2px]"
                             />
                             {isLoading ? (
-                                <Loader2 className="ml-2 mr-1 h-10 w-10 animate-spin" />
+                                <Loader2 className="mr-1 ml-2 h-10 w-10 animate-spin" />
                             ) : (
                                 <Button
                                     data-testid="path-exclusion-edit"
                                     variant="outline"
                                     type="submit"
-                                    className="ml-2 mr-1 px-2"
+                                    className="mr-1 ml-2 px-2"
                                 >
                                     <Check
                                         size={16}

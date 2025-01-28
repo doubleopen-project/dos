@@ -155,7 +155,7 @@ const Node = ({
                 />
             )}
 
-            <span className="ml-1 flex-grow truncate font-mono text-xs">
+            <span className="ml-1 grow truncate font-mono text-xs">
                 {isLeaf ? (
                     <Link
                         href={{

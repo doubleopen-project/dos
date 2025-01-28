@@ -32,7 +32,7 @@ const MultiSection = ({
             <div className="m-1 w-full p-10 sm:p-20">
                 <h1 className="pb-2">{title}</h1>
                 <Separator />
-                <div className="flex flex-col space-y-8 pt-4 lg:flex-row lg:space-x-12 lg:space-y-0">
+                <div className="flex flex-col space-y-8 pt-4 lg:flex-row lg:space-y-0 lg:space-x-12">
                     <aside className="lg:w-1/5">
                         <MultiSectionNavBar
                             defaultSection={defaultSection}

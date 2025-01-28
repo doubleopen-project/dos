@@ -47,7 +47,7 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Concluded:
                         </div>
                         <div className="rounded-sm bg-green-400 dark:text-black">
@@ -55,7 +55,7 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Pattern:
                         </div>
                         <div className="break-all">
@@ -73,13 +73,13 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="text-muted-foreground flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Comment:
                         </div>
                         <div className="italic">{bulkConclusion.comment}</div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Files affected in this package:
                         </div>
                         <div>
@@ -115,7 +115,7 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
-                            className="ml-2 mr-1 px-2"
+                            className="mr-1 ml-2 px-2"
                             onClick={() => editHandler(bulkConclusion.id)}
                             disabled={
                                 user.permissions === null ||

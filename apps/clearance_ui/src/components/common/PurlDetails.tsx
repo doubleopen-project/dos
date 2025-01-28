@@ -39,7 +39,7 @@ const PurlDetails = ({ purl, hideBorder, hideCopyToClipboard }: Props) => {
                     className={hideBorder ? "border-none" : undefined}
                 >
                     <AccordionTrigger>
-                        <Label className="break-all px-1 text-xs">
+                        <Label className="px-1 text-xs break-all">
                             {mainPurl}
                         </Label>
                     </AccordionTrigger>

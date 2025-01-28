@@ -37,7 +37,7 @@ export default function ClearanceLibrary() {
         <div className="flex h-full flex-col p-2">
             {user && (
                 <>
-                    <div className="m-1 flex-none rounded-md shadow">
+                    <div className="m-1 flex-none rounded-md shadow-sm">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Clearance Library</CardTitle>
@@ -52,7 +52,7 @@ export default function ClearanceLibrary() {
                         </Card>
                     </div>
 
-                    <div className="mx-1 flex-1 overflow-auto rounded-lg border shadow">
+                    <div className="mx-1 flex-1 overflow-auto rounded-lg border shadow-sm">
                         <Tabs
                             defaultValue={tab}
                             onValueChange={(value) => {
@@ -63,7 +63,7 @@ export default function ClearanceLibrary() {
                                 });
                             }}
                         >
-                            <TabsList className="ml-8 mt-2 p-2">
+                            <TabsList className="mt-2 ml-8 p-2">
                                 <TabsTrigger
                                     value="license_conclusions"
                                     data-testid="clearance-lib-lic-conclusions"

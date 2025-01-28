@@ -44,7 +44,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Glob pattern:
                         </div>
                         <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
@@ -52,19 +52,19 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Reason:
                         </div>
                         <div>{pathExclusion.reason}</div>
                     </div>
                     <div className="text-muted-foreground flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Comment:
                         </div>
                         <div className="italic">{pathExclusion.comment}</div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Files affected by this path exclusion:
                         </div>
                         <div>
@@ -82,7 +82,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
-                            className="ml-2 mr-1 px-2"
+                            className="mr-1 ml-2 px-2"
                             onClick={() => editHandler(pathExclusion.id)}
                             disabled={
                                 user.permissions === null ||
