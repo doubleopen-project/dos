@@ -92,7 +92,7 @@ const LicenseConclusionItem = ({
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                        <span className="ml-1 mt-0.5 h-5 font-bold text-gray-700">
+                        <span className="mt-0.5 ml-1 h-5 font-bold text-gray-700">
                             {
                                 new Date(license.updatedAt)
                                     .toISOString()
@@ -101,7 +101,7 @@ const LicenseConclusionItem = ({
                             {": "}
                         </span>
                     </div>
-                    <span className="ml-1 mt-0.5">
+                    <span className="mt-0.5 ml-1">
                         {license.concludedLicenseExpressionSPDX}{" "}
                     </span>
                 </div>
@@ -120,7 +120,7 @@ const LicenseConclusionItem = ({
             <div
                 className={cn(
                     showContent
-                        ? "mb-4 ml-4 mt-2 flex h-max scale-y-100 flex-col items-start"
+                        ? "mt-2 mb-4 ml-4 flex h-max scale-y-100 flex-col items-start"
                         : "h-0 scale-y-0",
                     "overflow-auto transition-all duration-300 ease-in-out",
                 )}

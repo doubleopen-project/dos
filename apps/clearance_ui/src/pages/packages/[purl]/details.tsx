@@ -59,15 +59,15 @@ const Details = () => {
                 <div className="mt-4 rounded-lg border p-2">
                     <dl>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Name:
                             </dt>
-                            <dd className="mt-1 text-sm font-bold leading-6 sm:col-span-2 sm:mt-0">
+                            <dd className="mt-1 text-sm leading-6 font-bold sm:col-span-2 sm:mt-0">
                                 {parsedPurl.name}
                             </dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Version:
                             </dt>
                             <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -75,7 +75,7 @@ const Details = () => {
                             </dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Type:
                             </dt>
                             <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -84,7 +84,7 @@ const Details = () => {
                         </div>
                         {parsedPurl.namespace && (
                             <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt className="text-right text-sm font-semibold leading-6">
+                                <dt className="text-right text-sm leading-6 font-semibold">
                                     Namespace:
                                 </dt>
                                 <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -94,7 +94,7 @@ const Details = () => {
                         )}
                         {parsedPurl.subpath && (
                             <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt className="text-right text-sm font-semibold leading-6">
+                                <dt className="text-right text-sm leading-6 font-semibold">
                                     Subpath:
                                 </dt>
                                 <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -103,7 +103,7 @@ const Details = () => {
                             </div>
                         )}
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Clean PURL:
                             </dt>
                             <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -111,10 +111,10 @@ const Details = () => {
                             </dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Full PURL:
                             </dt>
-                            <dd className="mt-1 break-all text-sm leading-6 sm:col-span-2 sm:mt-0">
+                            <dd className="mt-1 text-sm leading-6 break-all sm:col-span-2 sm:mt-0">
                                 {purl}
                             </dd>
                         </div>
@@ -125,7 +125,7 @@ const Details = () => {
                                         className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
                                         key={key}
                                     >
-                                        <dt className="text-right text-sm font-semibold leading-6">
+                                        <dt className="text-right text-sm leading-6 font-semibold">
                                             {key}:
                                         </dt>
                                         <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0">
@@ -147,10 +147,10 @@ const Details = () => {
                             )}
 
                         <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt className="text-right text-sm font-semibold leading-6">
+                            <dt className="text-right text-sm leading-6 font-semibold">
                                 Provenance type:
                             </dt>
-                            <dd className="mt-1 text-sm font-bold leading-6 sm:col-span-2 sm:mt-0">
+                            <dd className="mt-1 text-sm leading-6 font-bold sm:col-span-2 sm:mt-0">
                                 {provenanceType}
                             </dd>
                         </div>

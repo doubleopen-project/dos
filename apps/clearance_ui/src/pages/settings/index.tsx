@@ -36,7 +36,7 @@ export default function Settings() {
                     Here you can create a token you will need for running ORT
                     with DOS Scanner, or to use the scanner via the API.
                 </p>
-                <p className="pb-8 pt-4">
+                <p className="pt-4 pb-8">
                     Please note that your previous token will be invalidated
                     when you create a new one.
                 </p>

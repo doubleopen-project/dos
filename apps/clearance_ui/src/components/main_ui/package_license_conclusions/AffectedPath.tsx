@@ -18,7 +18,7 @@ const AffectedPath = ({ purl, path }: Props) => {
                 path ? `/tree/${encodeURIComponent(path)}` : ""
             }`}
         >
-            <div className="ml-10 break-all text-xs hover:font-extrabold">
+            <div className="ml-10 text-xs break-all hover:font-extrabold">
                 {path}
             </div>
         </Link>

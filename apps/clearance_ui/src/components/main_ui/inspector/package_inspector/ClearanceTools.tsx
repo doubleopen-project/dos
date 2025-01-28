@@ -38,11 +38,11 @@ const ClearanceTools = ({
     return (
         <div
             className={cn(
-                "relative mb-2 flex items-center rounded-md border px-1 pb-1 pt-2 text-sm",
+                "relative mb-2 flex items-center rounded-md border px-1 pt-2 pb-1 text-sm",
                 className,
             )}
         >
-            <span className="absolute left-2 top-[-10px] text-xs font-bold text-gray-500">
+            <span className="absolute top-[-10px] left-2 text-xs font-bold text-gray-500">
                 Clearance tools
             </span>
             <>

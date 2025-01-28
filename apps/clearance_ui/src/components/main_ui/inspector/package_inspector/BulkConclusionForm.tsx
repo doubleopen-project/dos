@@ -244,7 +244,7 @@ const BulkConclusionForm = ({
             {user &&
                 user.permissions &&
                 !hasPermission(user.permissions, "ClearanceItems", "POST") && (
-                    <div className="mb-1 mr-1 rounded-md bg-red-100 p-1 text-xs">
+                    <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
                         Feel free to interact with the form but please note that
                         you do not currently have permission to add license
                         conclusions.
@@ -268,7 +268,7 @@ const BulkConclusionForm = ({
                                                 errors.pattern
                                                     ? "border-destructive border"
                                                     : undefined,
-                                                "!min-h-[40px] text-xs",
+                                                "min-h-[40px]! text-xs",
                                             )}
                                             placeholder="Glob pattern matching to the files to be concluded..."
                                             data-testid="glob-pattern"
@@ -357,7 +357,7 @@ const BulkConclusionForm = ({
                                 <FormLabel>Comment</FormLabel>
                                 <FormControl>
                                     <Textarea
-                                        className="!min-h-[40px] text-xs"
+                                        className="min-h-[40px]! text-xs"
                                         placeholder="Comment on your bulk conclusion..."
                                         {...field}
                                     />
@@ -370,7 +370,7 @@ const BulkConclusionForm = ({
                         control={form.control}
                         name="local"
                         render={({ field }) => (
-                            <FormItem className="ml-1 flex flex-row items-end space-x-3 space-y-2 rounded-md">
+                            <FormItem className="ml-1 flex flex-row items-end space-y-2 space-x-3 rounded-md">
                                 <FormControl>
                                     <Checkbox
                                         checked={field.value}
@@ -428,7 +428,7 @@ const BulkConclusionForm = ({
                         <Button
                             type="reset"
                             variant="outline"
-                            className="mr-2 mt-2 rounded-md p-1 text-xs"
+                            className="mt-2 mr-2 rounded-md p-1 text-xs"
                             onClick={() => setOpen(false)}
                         >
                             Cancel

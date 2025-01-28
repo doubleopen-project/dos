@@ -135,7 +135,7 @@ const LicenseSelector = ({
                                             </span>
                                         )}
                                         <span
-                                            className="ml-2 mt-1 flex h-2 w-2 items-center justify-center rounded-full"
+                                            className="mt-1 ml-2 flex h-2 w-2 items-center justify-center rounded-full"
                                             style={{
                                                 backgroundColor:
                                                     license.bgcolor,

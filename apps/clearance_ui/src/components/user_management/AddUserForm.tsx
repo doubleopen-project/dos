@@ -175,7 +175,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="password"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <div className="flex flex-row">
                                     <FormLabel>Password</FormLabel>
                                     <PasswordTooltip />
@@ -213,7 +213,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="passwordIsTemporary"
                         render={({ field }) => (
-                            <FormItem className="!mt-4 flex items-center">
+                            <FormItem className="mt-4! flex items-center">
                                 <FormLabel className="mt-1">
                                     Temporary password
                                 </FormLabel>
@@ -252,7 +252,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="role"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>Role</FormLabel>
                                 <Select
                                     onValueChange={field.onChange}
@@ -280,7 +280,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="firstName"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>First name</FormLabel>
                                 <FormControl>
                                     <Input
@@ -296,7 +296,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="lastName"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>Last name</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Last name" {...field} />
@@ -309,7 +309,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                         control={form.control}
                         name="email"
                         render={({ field }) => (
-                            <FormItem className="!mt-4">
+                            <FormItem className="mt-4!">
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Email" {...field} />
@@ -366,7 +366,7 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                     {isSuccess && (
                         <div className="flex flex-row">
                             <Button
-                                className="grow !opacity-100"
+                                className="grow opacity-100!"
                                 variant={"success"}
                                 disabled
                             >

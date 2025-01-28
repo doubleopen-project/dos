@@ -56,7 +56,7 @@ const ClearanceToolbar = () => {
     );
 
     return (
-        <div className="pl-2 pt-1">
+        <div className="pt-1 pl-2">
             {/* Inspect package and its tree */}
             <Link
                 href={`/packages/${encodeURIComponent(purl)}${

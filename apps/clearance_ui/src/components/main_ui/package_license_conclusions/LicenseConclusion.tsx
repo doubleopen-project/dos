@@ -63,7 +63,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Concluded:
                         </div>
                         <div className="rounded-sm bg-green-400 dark:text-black">
@@ -71,7 +71,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                         </div>
                     </div>
                     <div className="flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Detected:
                         </div>
                         <div>
@@ -111,7 +111,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                         )}
                     </div>
                     <div className="text-muted-foreground flex text-xs">
-                        <div className="mr-2 flex whitespace-nowrap font-semibold">
+                        <div className="mr-2 flex font-semibold whitespace-nowrap">
                             Comment:
                         </div>
                         <div className="italic">
@@ -134,7 +134,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                         <Separator orientation="vertical" className="w-[2px]" />
                         <EditButton
                             name="edit"
-                            className="ml-2 mr-1 px-2"
+                            className="mr-1 ml-2 px-2"
                             onClick={() => editHandler(licenseConclusion.id)}
                             disabled={
                                 user.permissions === null ||
