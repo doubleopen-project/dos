@@ -16,8 +16,11 @@ RUN apt-get update && \
 # Create a virtual environment for Python
 RUN python3 -m venv /venv
 
+# Copy the requirements file to the container
+COPY requirements.txt /venv/
+
 # Activate the virtual environment and install required Python packages
-RUN /venv/bin/pip install scancode-toolkit==32.1.0
+RUN /venv/bin/pip install -r /venv/requirements.txt
 
 # DOS
 

@@ -181,3 +181,7 @@ License: CC-BY-4.0
 Files: renovate.json
 Copyright: 2024 Double Open Oy
 License: CC-BY-4.0
+
+Files: requirements.txt
+Copyright: 2025 Double Open Oy
+License: CC-BY-4.0
