@@ -1,5 +1,6 @@
 {
     "name": "common-helpers",
+    "version": "1.0.0",
     "main": "./dist/src/index.js",
     "module": "./dist/src/index.mjs",
     "types": "./index.d.ts",
