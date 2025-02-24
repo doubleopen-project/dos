@@ -66,15 +66,8 @@ const userDataFormSchema = z
             });
         }
     });
-type PutUserDataType = {
-    username: string | undefined;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    email: string | undefined;
-    role: string | undefined;
-    password: string | undefined;
-    confirmPassword: string | undefined;
-};
+
+type PutUserDataType = z.infer<typeof userDataFormSchema>;
 
 const UserDataForm = () => {
     const user = useUser();
