@@ -45,7 +45,7 @@
         "@playwright/test": "1.50.1",
         "@types/adm-zip": "0.5.7",
         "@types/braces": "^3.0.4",
-        "@types/chai": "5.0.1",
+        "@types/chai": "5.2.0",
         "@types/compression": "1.7.5",
         "@types/connect-pg-simple": "7.0.3",
         "@types/cookie-parser": "1.4.8",
