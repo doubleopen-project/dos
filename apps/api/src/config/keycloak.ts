@@ -9,15 +9,57 @@ import Keycloak, {
     KeycloakConfig,
     Keycloak as KeycloakType,
 } from "keycloak-connect";
+import log from "loglevel";
+import { connectionPool } from "database";
+
+const logLevel = (process.env.LOG_LEVEL as log.LogLevelDesc) || "info";
+
+log.setLevel(logLevel);
 
 let _keycloak: KeycloakType;
 
 const PostgresqlStore = genFunc(session);
 
 const memoryStore = new PostgresqlStore({
-    conString: process.env.DATABASE_URL,
+    pool: connectionPool,
     tableName: "Session",
 });
+
+(async () => {
+    try {
+        const client = await connectionPool.connect();
+        try {
+            const { rows } = await client.query("SHOW max_connections");
+            log.info(`Max connections: ${rows[0].max_connections}`);
+        } catch (error) {
+            log.error("Error querying database:", error);
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        log.error("Error connecting to database:", error);
+    }
+})();
+
+if (logLevel === "debug") {
+    setInterval(async () => {
+        try {
+            const client = await connectionPool.connect();
+            try {
+                const { rows } = await client.query(
+                    "SELECT COUNT(*) FROM pg_stat_activity WHERE datname = current_database();",
+                );
+                log.debug(`Active DB connections: ${rows[0].count}`);
+            } catch (error) {
+                log.error("Error querying database:", error);
+            } finally {
+                client.release();
+            }
+        } catch (error) {
+            log.error("Error connecting to database:", error);
+        }
+    }, 10000);
+}
 
 const keycloakConfig: KeycloakConfig = {
     realm: process.env.KEYCLOAK_REALM!,
