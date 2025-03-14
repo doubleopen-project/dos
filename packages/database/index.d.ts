@@ -26,9 +26,9 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
             query: {};
             client: {};
         },
-        _prisma_client.Prisma.PrismaClientOptions
+        {}
     >,
-    _prisma_client.Prisma.TypeMapCb,
+    _prisma_client.Prisma.TypeMapCb<_prisma_client.Prisma.PrismaClientOptions>,
     {
         result: {
             licenseFinding: {
@@ -45,8 +45,7 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
         model: {};
         query: {};
         client: {};
-    },
-    {}
+    }
 >;
 
 export { prisma };
