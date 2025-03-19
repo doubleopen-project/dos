@@ -6,7 +6,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -196,7 +197,7 @@ model ScanIssue {
   message       String
   scanner       String
   scannerConfig String
-  timeoutIssue  Boolean @default(false)
+  timeoutIssue  Boolean  @default(false)
   timeout       Int?
 
   fileSha256 String

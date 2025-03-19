@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { PrismaPg } from "@prisma/adapter-pg";
 import * as _prisma_client_runtime_library from "@prisma/client/runtime/library";
+import { Pool } from "pg";
 import * as _prisma_client from ".prisma/client";
 
 export * from "@prisma/client";
@@ -28,7 +30,10 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
         },
         {}
     >,
-    _prisma_client.Prisma.TypeMapCb<_prisma_client.Prisma.PrismaClientOptions>,
+    _prisma_client.Prisma.TypeMapCb<{
+        log: "info"[];
+        adapter: PrismaPg;
+    }>,
     {
         result: {
             licenseFinding: {
@@ -47,5 +52,6 @@ declare const prisma: _prisma_client_runtime_library.DynamicClientExtensionThis<
         client: {};
     }
 >;
+declare const connectionPool: Pool;
 
-export { prisma };
+export { connectionPool, prisma };
