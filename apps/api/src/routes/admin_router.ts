@@ -15,6 +15,8 @@ import {
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 import { authzPermission } from "../middlewares/authz_permission";
+import { countScannedPackages, findScannedPackages } from "../helpers/db_queries";
+import { getErrorCodeAndMessage } from "../helpers/error_handling";
 
 const adminRouter = zodiosRouter(adminAPI);
 
@@ -185,6 +187,70 @@ adminRouter.post(
         } catch (error) {
             console.log("Error: ", error);
             res.status(500).json({ message: "Internal server error" });
+        }
+    },
+);
+
+adminRouter.get(
+    "/packages",
+    // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const pageSize = req.query.pageSize;
+            const pageIndex = req.query.pageIndex;
+            const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+
+            const packages = await findScannedPackages(
+                skip,
+                pageSize,
+                // If sortBy and sortOrder are not provided, default to descending order by updatedAt
+                req.query.sortBy || "updatedAt",
+                !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder,
+                req.query.name,
+                req.query.version,
+                req.query.type,
+                req.query.namespace,
+                req.query.purl,
+                req.query.createdAtGte,
+                req.query.createdAtLte,
+                req.query.updatedAtGte,
+                req.query.updatedAtLte,
+            );
+
+            res.status(200).json({ packages: packages });
+        } catch (error) {
+            console.log("Error: ", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    },
+);
+
+adminRouter.get(
+    "/packages/count",
+    // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
+    authzPermission({ resource: "PackageData", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const count = await countScannedPackages(
+                req.query.name,
+                req.query.version,
+                req.query.type,
+                req.query.namespace,
+                req.query.purl,
+                req.query.createdAtGte,
+                req.query.createdAtLte,
+                req.query.updatedAtGte,
+                req.query.updatedAtLte,
+            );
+            res.status(200).json({ count: count });
+        } catch (error) {
+            console.log("Error: ", error);
+            // Find out if error is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
         }
     },
 );
