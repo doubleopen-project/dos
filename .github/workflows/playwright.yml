@@ -19,6 +19,10 @@ jobs:
             DATABASE_URL: ${{ vars.DATABASE_URL }}
             E2E_USER_USERNAME: ${{ secrets.E2E_USER_USERNAME }}
             E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+            E2E_READONLY_USERNAME: ${{ secrets.E2E_READONLY_USERNAME }}
+            E2E_READONLY_PASSWORD: ${{ secrets.E2E_READONLY_PASSWORD }}
+            E2E_ADMIN_USERNAME: ${{ secrets.E2E_ADMIN_USERNAME }}
+            E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
             KEYCLOAK_URL: ${{ vars.KEYCLOAK_URL }}
             KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
             KEYCLOAK_CLIENT_ID_UI: ${{ secrets.KEYCLOAK_CLIENT_ID_UI }}
