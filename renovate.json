@@ -47,10 +47,6 @@
             "extends": ["monorepo:aws-sdk-js-v3"],
             "groupName": "aws-sdk-js-v3 monorepo",
             "schedule": ["after 9am on monday"]
-        },
-        {
-            "matchPackageNames": ["beautifulsoup4"],
-            "allowedVersions": "4.12.x"
         }
     ],
     "prHourlyLimit": 5
