@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { TsRestRequest } from "@ts-rest/express";
 import { NextFunction, Request, Response } from "express";
 import { authorizationByPermission } from "keycloak-authorization-services";
 import log from "loglevel";
+import { contract } from "validation-helpers";
 
 const logLevel: log.LogLevelDesc =
     (process.env.LOG_LEVEL as log.LogLevelDesc) || "info"; // trace/debug/info/warn/error/silent
@@ -26,7 +28,7 @@ export const authzPermission = (permission: {
     };
 
     return async function customAuthorizationMiddleware(
-        req: Request,
+        req: Request | TsRestRequest<typeof contract>,
         res: Response,
         next: NextFunction,
     ) {
@@ -34,7 +36,7 @@ export const authzPermission = (permission: {
             // Call the original authorization middleware with the provided parameters
             await new Promise<void>((resolve, reject) => {
                 authorizationByPermission(config, options)(
-                    req,
+                    req as Request,
                     res,
                     (error?: unknown) => {
                         if (error) {

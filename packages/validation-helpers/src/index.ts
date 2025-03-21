@@ -19,3 +19,4 @@ export {
     bcPatternGlobSchema,
     pePatternGlobSchema,
 } from "./param_schemas/pattern_schemas";
+export { contract } from "./api/v1/contract";

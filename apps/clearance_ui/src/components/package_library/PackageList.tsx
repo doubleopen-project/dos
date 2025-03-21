@@ -12,7 +12,7 @@ import {
     useQueryState,
 } from "nuqs";
 import { useUser } from "@/hooks/useUser";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { adminHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/package_library/columns";
 import { DataTable } from "@/components/package_library/DataTable";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
@@ -54,7 +54,7 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
         setPageIndex,
     );
 
-    const { data, isLoading, error } = userHooks.useGetPackages(
+    const { data, isLoading, error } = adminHooks.useGetPackages(
         {
             headers: {
                 Authorization: `Bearer ${session.data?.accessToken}`,
@@ -70,7 +70,7 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
         { enabled: !!user && !!pageSize && !!pageIndex },
     );
 
-    const pkgCntQuery = userHooks.useGetPackagesCount(
+    const pkgCntQuery = adminHooks.useGetPackagesCount(
         {
             headers: {
                 Authorization: `Bearer ${session.data?.accessToken}`,
