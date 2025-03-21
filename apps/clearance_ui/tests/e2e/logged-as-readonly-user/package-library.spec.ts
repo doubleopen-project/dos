@@ -4,10 +4,6 @@
 
 import { expect, test } from "@playwright/test";
 
-test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-});
-
 test("gets redirected to 403 page", async ({ page }) => {
     // Navigate to the package library
     await page.goto("/packages");
