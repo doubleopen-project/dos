@@ -15,7 +15,10 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export const USER_AUTH_STORAGE_PATH = path.join(__dirname, ".auth/user.json");
-export const READONLY_AUTH_STORAGE_PATH = path.join(__dirname, ".auth/readonly.json");
+export const READONLY_AUTH_STORAGE_PATH = path.join(
+    __dirname,
+    ".auth/readonly.json",
+);
 export const ADMIN_AUTH_STORAGE_PATH = path.join(__dirname, ".auth/admin.json");
 
 export default defineConfig({
@@ -66,7 +69,29 @@ export default defineConfig({
             use: {
                 ...devices["Desktop Chrome"],
             },
-            testIgnore: ["**/logged-as-test-user/*.spec.ts"],
+            testIgnore: [
+                "**/logged-as-test-user/*.spec.ts",
+                "**/logged-as-readonly-user/*.spec.ts",
+                "**/logged-as-admin/*.spec.ts",
+            ],
+        },
+        {
+            name: "logged in as readonly user",
+            testMatch: "**/logged-as-readonly-user/*.spec.ts",
+            dependencies: ["setup"],
+            use: {
+                ...devices["Desktop Chrome"],
+                storageState: READONLY_AUTH_STORAGE_PATH,
+            },
+        },
+        {
+            name: "logged in as admin",
+            testMatch: "**/logged-as-admin/*.spec.ts",
+            dependencies: ["setup"],
+            use: {
+                ...devices["Desktop Chrome"],
+                storageState: ADMIN_AUTH_STORAGE_PATH,
+            },
         },
     ],
 
