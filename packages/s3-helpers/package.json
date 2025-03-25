@@ -15,7 +15,7 @@
         "stream": "0.0.3"
     },
     "devDependencies": {
-        "@types/chai": "5.2.0",
+        "@types/chai": "5.2.1",
         "@types/mocha": "10.0.10",
         "@types/node": "22.13.13",
         "chai": "5.2.0",
