@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import genFunc from "connect-pg-simple";
+import { connectionPool } from "database";
 import type { Request, Response } from "express";
 import session from "express-session";
 import Keycloak, {
@@ -15,7 +16,7 @@ let _keycloak: KeycloakType;
 const PostgresqlStore = genFunc(session);
 
 const memoryStore = new PostgresqlStore({
-    conString: process.env.DATABASE_URL,
+    pool: connectionPool,
     tableName: "Session",
 });
 

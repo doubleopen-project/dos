@@ -19,8 +19,10 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
+        "@prisma/adapter-pg": "^6.5.0",
         "@prisma/client": "6.5.0",
         "adm-zip": "0.5.16",
+        "pg": "^8.14.0",
         "s3-helpers": "*"
     },
     "devDependencies": {
