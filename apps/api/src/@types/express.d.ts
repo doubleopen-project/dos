@@ -31,7 +31,8 @@ declare namespace Express {
                             roles: string[];
                         };
                         resource_access: {
-                            [process.env.KEYCLOAK_CLIENT_ID_API]: {
+                            [process.env.KEYCLOAK_CLIENT_ID_API ||
+                                "dos-dev-api"]: {
                                 roles: string[];
                             };
                             account: {

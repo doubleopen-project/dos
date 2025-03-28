@@ -4,4 +4,13 @@
 
 declare const getCurrentDateTime: () => string;
 
-export { getCurrentDateTime };
+declare const authConfig: {
+    url: string;
+    realm: string;
+    clientIdAPI: string;
+    clientSecretAPI: string;
+    clientIdUI: string;
+    clientSecretUI: string;
+};
+
+export { authConfig, getCurrentDateTime };
