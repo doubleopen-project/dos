@@ -24,10 +24,6 @@ const requiredEnvVars: string[] = [
     "KEYCLOAK_REALM",
     "KEYCLOAK_CLIENT_ID_API",
     "KEYCLOAK_CLIENT_SECRET_API",
-    "KEYCLOAK_ADMIN_USERNAME",
-    "KEYCLOAK_ADMIN_PASSWORD",
-    "KEYCLOAK_ADMIN_USER_ID",
-    "KEYCLOAK_ADMIN_CLIENT_SECRET",
 ];
 
 if (process.env.NODE_ENV === "production") {

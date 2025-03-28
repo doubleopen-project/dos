@@ -25,10 +25,6 @@ jobs:
             KEYCLOAK_CLIENT_SECRET_UI: ${{ secrets.KEYCLOAK_CLIENT_SECRET_UI }}
             KEYCLOAK_CLIENT_ID_API: ${{ secrets.KEYCLOAK_CLIENT_ID_API }}
             KEYCLOAK_CLIENT_SECRET_API: ${{ secrets.KEYCLOAK_CLIENT_SECRET_API }}
-            KEYCLOAK_ADMIN_USERNAME: ${{ secrets.KEYCLOAK_ADMIN_USERNAME }}
-            KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
-            KEYCLOAK_ADMIN_USER_ID: ${{ secrets.KEYCLOAK_ADMIN_USER_ID }}
-            KEYCLOAK_ADMIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ADMIN_CLIENT_SECRET }}
             NEXTAUTH_URL: http://localhost:3000
             NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
             NEXT_PUBLIC_API_URL: http://localhost:3001/api/

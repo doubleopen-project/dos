@@ -5,7 +5,7 @@
 import { Zodios, ZodiosResponseByAlias } from "@zodios/core";
 import { isAxiosError } from "axios";
 import NodeCache from "node-cache";
-import { keycloakAPI, type Token } from "validation-helpers";
+import { keycloakAPI, type ClientCredentialsToken } from "validation-helpers";
 import { CustomError } from "./custom_error";
 
 const kcClient = new Zodios(
@@ -19,55 +19,24 @@ type RealmRole = ZodiosResponseByAlias<typeof keycloakAPI, "GetRealmRoles">[0];
 
 type User = ZodiosResponseByAlias<typeof keycloakAPI, "GetUsers">[0];
 
-export const getAccessToken = async (): Promise<Token> => {
+export const getAccessToken = async (): Promise<ClientCredentialsToken> => {
     let retries = 3;
-    let token: { token: Token; expires_at: number } | undefined =
-        cache.get("adminToken");
+    let token:
+        | { token: ClientCredentialsToken; expires_at: number }
+        | undefined = cache.get("adminToken");
 
     const tokenExpired: boolean =
         token !== undefined && new Date(token.expires_at) < new Date();
 
     if (token && !tokenExpired) return token.token;
 
-    if (token) {
-        try {
-            const accessToken = (await kcClient.PostToken(
-                {
-                    client_id: "admin-cli",
-                    grant_type: "refresh_token",
-                    refresh_token: token.token.refresh_token,
-                    client_secret: process.env.KEYCLOAK_ADMIN_CLIENT_SECRET!,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    params: {
-                        realm: process.env.KEYCLOAK_REALM!,
-                    },
-                },
-            )) as Token; // The endpoint provides a union type, but we know it's a Token with this type of request
-
-            cache.set("adminToken", {
-                token: accessToken,
-                expires_at: Date.now() + accessToken.expires_in * 1000,
-            });
-            return accessToken;
-        } catch (error) {
-            console.log("Failed to refresh token. Error: ", error);
-            console.log("Getting new token...");
-        }
-    }
-
     while (retries > 0) {
         try {
             const accessToken = (await kcClient.PostToken(
                 {
-                    client_id: "admin-cli",
-                    username: process.env.KEYCLOAK_ADMIN_USERNAME!,
-                    password: process.env.KEYCLOAK_ADMIN_PASSWORD!,
-                    grant_type: "password",
-                    client_secret: process.env.KEYCLOAK_ADMIN_CLIENT_SECRET!,
+                    client_id: process.env.KEYCLOAK_CLIENT_ID_API!,
+                    grant_type: "client_credentials",
+                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET_API!,
                 },
                 {
                     headers: {
@@ -77,7 +46,7 @@ export const getAccessToken = async (): Promise<Token> => {
                         realm: process.env.KEYCLOAK_REALM!,
                     },
                 },
-            )) as Token; // The endpoint provides a union type, but we know it's a Token with this type of request
+            )) as ClientCredentialsToken; // The endpoint provides a union type, but we know it's a ClientCredentialsToken with this type of request
             token = {
                 token: accessToken,
                 expires_at: Date.now() + accessToken.expires_in * 1000,

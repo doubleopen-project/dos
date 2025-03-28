@@ -14,7 +14,7 @@ export {
     getPasswordSchema,
 } from "./api/schemas/common_schemas";
 export { keycloakAPI } from "./kc/api";
-export type { Token, Permissions } from "./kc/schemas";
+export type { ClientCredentialsToken, Token, Permissions } from "./kc/schemas";
 export {
     bcPatternGlobSchema,
     pePatternGlobSchema,
