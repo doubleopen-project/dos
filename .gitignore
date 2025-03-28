@@ -157,3 +157,7 @@ yarn.lock
 
 # Playwright mounted files
 playwright-artifacts/
+
+# Terraform
+terraform/.terraform/*
+terraform/terraform.tfstate*
