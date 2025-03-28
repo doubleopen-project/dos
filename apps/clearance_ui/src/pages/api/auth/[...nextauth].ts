@@ -11,34 +11,16 @@
 
 import { Zodios } from "@zodios/core";
 import { isAxiosError } from "axios";
+import { authConfig } from "common-helpers";
 import NextAuth from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import { keycloakAPI, type Token } from "validation-helpers";
 
-const keycloakUrl = process.env.KEYCLOAK_URL;
-
-if (!keycloakUrl) {
-    throw new Error("KEYCLOAK_URL not set");
-}
-
-const keycloakRealm = process.env.KEYCLOAK_REALM;
-
-if (!keycloakRealm) {
-    throw new Error("KEYCLOAK_REALM not set");
-}
-
-const keycloakClientIdUi = process.env.KEYCLOAK_CLIENT_ID_UI;
-
-if (!keycloakClientIdUi) {
-    throw new Error("KEYCLOAK_CLIENT_ID_UI not set");
-}
-
-const keycloakClientSecretUi = process.env.KEYCLOAK_CLIENT_SECRET_UI;
-
-if (!keycloakClientSecretUi) {
-    throw new Error("KEYCLOAK_CLIENT_SECRET_UI not set");
-}
+const keycloakUrl = authConfig.url;
+const keycloakRealm = authConfig.realm;
+const keycloakClientIdUi = authConfig.clientIdUI;
+const keycloakClientSecretUi = authConfig.clientSecretUI;
 
 const kcClient = new Zodios(keycloakUrl, keycloakAPI);
 
@@ -49,12 +31,6 @@ const kcClient = new Zodios(keycloakUrl, keycloakAPI);
  */
 async function refreshAccessToken(token: JWT) {
     let retries = 3;
-    if (!keycloakClientIdUi) {
-        throw new Error("KEYCLOAK_CLIENT_ID_UI not set");
-    }
-    if (!keycloakRealm) {
-        throw new Error("KEYCLOAK_REALM not set");
-    }
 
     while (retries > 0) {
         try {

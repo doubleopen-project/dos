@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { authConfig } from "common-helpers";
 import genFunc from "connect-pg-simple";
 import type { Request, Response } from "express";
 import session from "express-session";
@@ -20,9 +21,9 @@ const memoryStore = new PostgresqlStore({
 });
 
 const keycloakConfig: KeycloakConfig = {
-    realm: process.env.KEYCLOAK_REALM!,
-    resource: process.env.KEYCLOAK_CLIENT_ID_API!,
-    "auth-server-url": process.env.KEYCLOAK_URL!,
+    realm: authConfig.realm,
+    resource: authConfig.clientIdAPI,
+    "auth-server-url": authConfig.url,
     "bearer-only": true,
     "confidential-port": 0,
     "ssl-required": "external",

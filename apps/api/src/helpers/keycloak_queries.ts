@@ -4,14 +4,12 @@
 
 import { Zodios, ZodiosResponseByAlias } from "@zodios/core";
 import { isAxiosError } from "axios";
+import { authConfig } from "common-helpers";
 import NodeCache from "node-cache";
 import { keycloakAPI, type ClientCredentialsToken } from "validation-helpers";
 import { CustomError } from "./custom_error";
 
-const kcClient = new Zodios(
-    process.env.KEYCLOAK_URL || "https://auth.dev.doubleopen.io/",
-    keycloakAPI,
-);
+const kcClient = new Zodios(authConfig.url, keycloakAPI);
 
 const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
 
@@ -34,16 +32,16 @@ export const getAccessToken = async (): Promise<ClientCredentialsToken> => {
         try {
             const accessToken = (await kcClient.PostToken(
                 {
-                    client_id: process.env.KEYCLOAK_CLIENT_ID_API!,
+                    client_id: authConfig.clientIdAPI,
                     grant_type: "client_credentials",
-                    client_secret: process.env.KEYCLOAK_CLIENT_SECRET_API!,
+                    client_secret: authConfig.clientSecretAPI,
                 },
                 {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
                     params: {
-                        realm: process.env.KEYCLOAK_REALM!,
+                        realm: authConfig.realm,
                     },
                 },
             )) as ClientCredentialsToken; // The endpoint provides a union type, but we know it's a ClientCredentialsToken with this type of request
@@ -100,7 +98,7 @@ export const logoutUser = async (
             const token = await getAccessToken();
             await kcClient.LogoutUser(undefined, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                     id: userId,
                 },
                 headers: {
@@ -173,7 +171,7 @@ export const createUser = async (data: {
             const token = await getAccessToken();
             await kcClient.CreateUser(data, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                 },
                 headers: {
                     Authorization: "Bearer " + token.access_token,
@@ -239,7 +237,7 @@ export const deleteUser = async (userId: string): Promise<boolean> => {
             const token = await getAccessToken();
             await kcClient.DeleteUser(undefined, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                     id: userId,
                 },
                 headers: {
@@ -294,7 +292,7 @@ export const getRealmRoles = async (): Promise<RealmRole[]> => {
             const token = await getAccessToken();
             roles = await kcClient.GetRealmRoles({
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                 },
                 headers: {
                     Authorization: "Bearer " + token.access_token,
@@ -360,7 +358,7 @@ export const addRealmRolesToUser = async (
 
             await kcClient.AddRealmRoleToUser(roles, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                     id: userId,
                 },
                 headers: {
@@ -420,7 +418,7 @@ export const getUsers = async (
             const token = await getAccessToken();
             users = await kcClient.GetUsers({
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                 },
                 queries: {
                     username: username,
@@ -496,7 +494,7 @@ export const updateUser = async (
             const token = await getAccessToken();
             await kcClient.UpdateUser(data, {
                 params: {
-                    realm: process.env.KEYCLOAK_REALM!,
+                    realm: authConfig.realm,
                     id: userId,
                 },
                 headers: {
