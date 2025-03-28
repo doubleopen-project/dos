@@ -88,13 +88,6 @@ adminRouter.delete(
     authzPermission({ resource: "Users", scopes: ["DELETE"] }),
     async (req, res) => {
         try {
-            if (req.params.id === process.env.KEYCLOAK_ADMIN_USER_ID)
-                throw new CustomError(
-                    "Cannot delete the admin user",
-                    400,
-                    "id",
-                );
-
             if (req.params.id === req.kauth.grant.access_token.content.sub)
                 throw new CustomError(
                     "Cannot delete the user making this request",

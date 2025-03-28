@@ -18608,25 +18608,19 @@ declare const keycloakAPI: [
                         zod.ZodObject<
                             {
                                 client_id: zod.ZodString;
-                                username: zod.ZodString;
-                                password: zod.ZodString;
-                                grant_type: zod.ZodLiteral<"password">;
+                                grant_type: zod.ZodLiteral<"client_credentials">;
                                 client_secret: zod.ZodString;
                             },
                             "strip",
                             zod.ZodTypeAny,
                             {
-                                username: string;
-                                password: string;
                                 client_id: string;
-                                grant_type: "password";
+                                grant_type: "client_credentials";
                                 client_secret: string;
                             },
                             {
-                                username: string;
-                                password: string;
                                 client_id: string;
-                                grant_type: "password";
+                                grant_type: "client_credentials";
                                 client_secret: string;
                             }
                         >,
@@ -18719,6 +18713,34 @@ declare const keycloakAPI: [
                         token_type: "Bearer";
                         "not-before-policy": number;
                         session_state: string;
+                        scope: string;
+                    }
+                >,
+                zod.ZodObject<
+                    {
+                        access_token: zod.ZodString;
+                        expires_in: zod.ZodNumber;
+                        refresh_expires_in: zod.ZodNumber;
+                        token_type: zod.ZodLiteral<"Bearer">;
+                        "not-before-policy": zod.ZodNumber;
+                        scope: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        access_token: string;
+                        expires_in: number;
+                        refresh_expires_in: number;
+                        token_type: "Bearer";
+                        "not-before-policy": number;
+                        scope: string;
+                    },
+                    {
+                        access_token: string;
+                        expires_in: number;
+                        refresh_expires_in: number;
+                        token_type: "Bearer";
+                        "not-before-policy": number;
                         scope: string;
                     }
                 >,
@@ -19436,6 +19458,34 @@ declare const TokenResponse: z.ZodObject<
         scope: string;
     }
 >;
+declare const ClientCredentialsTokenResponse: z.ZodObject<
+    {
+        access_token: z.ZodString;
+        expires_in: z.ZodNumber;
+        refresh_expires_in: z.ZodNumber;
+        token_type: z.ZodLiteral<"Bearer">;
+        "not-before-policy": z.ZodNumber;
+        scope: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        access_token: string;
+        expires_in: number;
+        refresh_expires_in: number;
+        token_type: "Bearer";
+        "not-before-policy": number;
+        scope: string;
+    },
+    {
+        access_token: string;
+        expires_in: number;
+        refresh_expires_in: number;
+        token_type: "Bearer";
+        "not-before-policy": number;
+        scope: string;
+    }
+>;
 declare const PermissionResponse: z.ZodArray<
     z.ZodObject<
         {
@@ -19459,6 +19509,7 @@ declare const PermissionResponse: z.ZodArray<
     "many"
 >;
 type Token = z.infer<typeof TokenResponse>;
+type ClientCredentialsToken = z.infer<typeof ClientCredentialsTokenResponse>;
 type Permissions = z.infer<typeof PermissionResponse>;
 
 declare const bcPatternGlobSchema: z.ZodEffects<
@@ -19473,6 +19524,7 @@ declare const pePatternGlobSchema: z.ZodEffects<
 >;
 
 export {
+    type ClientCredentialsToken,
     type Permissions,
     type ScannerJobResultType,
     type Token,

@@ -7,9 +7,7 @@ import { z } from "zod";
 export const PostTokenReq = z.union([
     z.object({
         client_id: z.string(),
-        username: z.string(),
-        password: z.string(),
-        grant_type: z.literal("password"),
+        grant_type: z.literal("client_credentials"),
         client_secret: z.string(),
     }),
     z.object({
@@ -37,6 +35,15 @@ const TokenResponse = z.object({
     scope: z.string(),
 });
 
+const ClientCredentialsTokenResponse = z.object({
+    access_token: z.string(),
+    expires_in: z.number(),
+    refresh_expires_in: z.number(),
+    token_type: z.literal("Bearer"),
+    "not-before-policy": z.number(),
+    scope: z.string(),
+});
+
 const PermissionResponse = z.array(
     z.object({
         scopes: z.array(z.string()),
@@ -45,9 +52,16 @@ const PermissionResponse = z.array(
     }),
 );
 
-export const PostTokenRes = z.union([TokenResponse, PermissionResponse]);
+export const PostTokenRes = z.union([
+    TokenResponse,
+    ClientCredentialsTokenResponse,
+    PermissionResponse,
+]);
 
 export type Token = z.infer<typeof TokenResponse>;
+export type ClientCredentialsToken = z.infer<
+    typeof ClientCredentialsTokenResponse
+>;
 export type Permissions = z.infer<typeof PermissionResponse>;
 
 export const CreateUserReq = z.object({
