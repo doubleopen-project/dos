@@ -185,3 +185,7 @@ License: CC-BY-4.0
 Files: requirements.txt
 Copyright: 2025 Double Open Oy
 License: CC-BY-4.0
+
+Files: terraform/.terraform.lock.hcl
+Copyright: 2025 Double Open Oy
+License: CC-BY-4.0
