@@ -11,8 +11,6 @@
         "DB_RETRY_INTERVAL",
         "DEBUG",
         "DL_CONCURRENCY",
-        "E2E_USER_USERNAME",
-        "E2E_USER_PASSWORD",
         "KEYCLOAK_CLIENT_ID_API",
         "KEYCLOAK_CLIENT_ID_UI",
         "KEYCLOAK_CLIENT_SECRET_API",
