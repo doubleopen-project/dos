@@ -42,12 +42,6 @@ To run this project you will need Node.js, npm and Docker installed.
 
     ```shell
     DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
-    KEYCLOAK_URL=
-    KEYCLOAK_REALM=
-    KEYCLOAK_CLIENT_ID_API=
-    KEYCLOAK_CLIENT_SECRET_API=
-    KEYCLOAK_CLIENT_ID_UI=
-    KEYCLOAK_CLIENT_SECRET_UI=
     E2E_USER_USERNAME=
     E2E_USER_PASSWORD=
     ```
