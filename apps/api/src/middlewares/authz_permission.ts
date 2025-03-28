@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { authConfig } from "common-helpers";
 import { NextFunction, Request, Response } from "express";
 import { authorizationByPermission } from "keycloak-authorization-services";
 import log from "loglevel";
@@ -16,13 +17,13 @@ export const authzPermission = (permission: {
     scopes: string[];
 }) => {
     const config = {
-        baseUrl: process.env.KEYCLOAK_URL!,
-        realm: process.env.KEYCLOAK_REALM!,
+        baseUrl: authConfig.url,
+        realm: authConfig.realm,
     };
 
     const options = {
         permission,
-        audience: process.env.KEYCLOAK_CLIENT_ID_API!,
+        audience: authConfig.clientIdAPI,
     };
 
     return async function customAuthorizationMiddleware(
