@@ -42,8 +42,6 @@ To run this project you will need Node.js, npm and Docker installed.
 
     ```shell
     DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
-    E2E_USER_USERNAME=
-    E2E_USER_PASSWORD=
     ```
 
     See [.env.example](https://github.com/doubleopen-project/dos/blob/main/.env.example) file for other non-compulsory configurable variables.

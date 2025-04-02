@@ -11,6 +11,7 @@ import {
 import test, { expect } from "@playwright/test";
 import { Zodios, ZodiosInstance } from "@zodios/core";
 import AdmZip from "adm-zip";
+import { authConfig } from "common-helpers";
 import { getPresignedPutUrl, S3Client } from "s3-helpers";
 import { dosAPI, userAPI } from "validation-helpers";
 
@@ -18,18 +19,13 @@ import { dosAPI, userAPI } from "validation-helpers";
  * Construct Zodios callers for the API endpoints to easily call them in the tests.
  */
 
-const server = process.env.KEYCLOAK_URL;
-const realm = process.env.KEYCLOAK_REALM;
-const clientId = process.env.KEYCLOAK_CLIENT_ID_API;
-const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET_API;
-const username = process.env.E2E_USER_USERNAME;
-const password = process.env.E2E_USER_PASSWORD;
-
-if (!server || !realm || !clientId || !clientSecret || !username || !password) {
-    throw new Error(
-        "KEYCLOAK_URL, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID_API, KEYCLOAK_CLIENT_SECRET_API, E2E_USER_USERNAME and E2E_USER_PASSWORD environment variables must be set",
-    );
-}
+const server = authConfig.url;
+const realm = authConfig.realm;
+const clientId = authConfig.clientIdUI;
+const clientSecret = authConfig.clientSecretUI;
+const username = "test-user";
+const password = "test-user";
+const apiPort = process.env.PORT || "3001";
 
 const s3Client = S3Client(
     process.env.NODE_ENV !== "production",
@@ -72,13 +68,17 @@ test.describe("API lets authenticated users to", () => {
         const body = await result.json();
         keycloakToken = (body as { access_token: string }).access_token;
 
-        userZodios = new Zodios("http://localhost:3001/api/user/", userAPI, {
-            axiosConfig: {
-                headers: {
-                    Authorization: `Bearer ${keycloakToken}`,
+        userZodios = new Zodios(
+            `http://localhost:${apiPort}/api/user`,
+            userAPI,
+            {
+                axiosConfig: {
+                    headers: {
+                        Authorization: `Bearer ${keycloakToken}`,
+                    },
                 },
             },
-        });
+        );
 
         const userToken = await userZodios.put("/token", undefined, {
             headers: {
@@ -88,7 +88,7 @@ test.describe("API lets authenticated users to", () => {
 
         dosToken = userToken.token;
 
-        dosZodios = new Zodios("http://localhost:3001/api/", dosAPI, {
+        dosZodios = new Zodios(`http://localhost:${apiPort}/api/`, dosAPI, {
             axiosConfig: {
                 headers: {
                     Authorization: `Bearer ${dosToken}`,
