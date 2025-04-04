@@ -18,16 +18,14 @@ import { onStartUp } from "./helpers/on_start_up";
 import { adminRouter, authRouter, scannerRouter, userRouter } from "./routes";
 import QueueService from "./services/queue";
 
-const requiredEnvVars: string[] = [
-    "DATABASE_URL",
-    "KEYCLOAK_URL",
-    "KEYCLOAK_REALM",
-    "KEYCLOAK_CLIENT_ID_API",
-    "KEYCLOAK_CLIENT_SECRET_API",
-];
+const requiredEnvVars: string[] = ["DATABASE_URL"];
 
 if (process.env.NODE_ENV === "production") {
     requiredEnvVars.push(
+        "KEYCLOAK_URL",
+        "KEYCLOAK_REALM",
+        "KEYCLOAK_CLIENT_ID_API",
+        "KEYCLOAK_CLIENT_SECRET_API",
         "SESSION_SECRET",
         "COOKIE_SECRET",
         "SPACES_ENDPOINT",
