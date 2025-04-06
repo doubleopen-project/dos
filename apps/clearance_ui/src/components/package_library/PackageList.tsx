@@ -4,7 +4,6 @@
 
 import React from "react";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import {
     parseAsInteger,
     parseAsString,
@@ -19,7 +18,6 @@ import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
     const user = useUser();
-    const session = useSession();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -56,9 +54,6 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
 
     const { data, isLoading, error } = userHooks.useGetPackages(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 pageIndex: pageIndex - 1,
                 pageSize,
@@ -72,9 +67,6 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
 
     const pkgCntQuery = userHooks.useGetPackagesCount(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: { name: name !== null ? name : undefined },
         },
         { enabled: !!user },

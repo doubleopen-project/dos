@@ -4,7 +4,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { KeyRound, LogOut, UserRound, UsersRound } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { GrLogin } from "react-icons/gr";
 import { LiaUser } from "react-icons/lia";
@@ -29,32 +29,23 @@ type UserMenuItemProps = {
 };
 const UserMenuItem = ({ className }: UserMenuItemProps) => {
     const user = useUser();
-    const session = useSession();
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { mutate: logoutUser } = authHooks.usePostLogout(
-        {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
-            //withCredentials: true },
+    const { mutate: logoutUser } = authHooks.usePostLogout(undefined, {
+        onSuccess: () => {
+            queryClient.removeQueries();
+            signOut({ callbackUrl: "/", redirect: true });
         },
-        {
-            onSuccess: () => {
-                queryClient.removeQueries();
-                signOut({ callbackUrl: "/", redirect: true });
-            },
-            onError: (error) => {
-                console.error("Failed to log out", error);
-                toast({
-                    variant: "destructive",
-                    title: "Failed to log out",
-                    description: "Please try again",
-                });
-            },
+        onError: (error) => {
+            console.error("Failed to log out", error);
+            toast({
+                variant: "destructive",
+                title: "Failed to log out",
+                description: "Please try again",
+            });
         },
-    );
+    });
 
     if (!user) {
         return (

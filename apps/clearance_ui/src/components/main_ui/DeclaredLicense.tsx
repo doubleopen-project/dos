@@ -3,18 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 const DeclaredLicense = ({ purl }: { purl: string }) => {
-    const session = useSession();
     const { data, isLoading, error } = userHooks.useGetPackage({
-        headers: {
-            Authorization: `Bearer ${session.data?.accessToken}`,
-        },
         params: {
             purl: toPathPurl(purl),
         },

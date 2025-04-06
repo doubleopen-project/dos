@@ -4,7 +4,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
 import { NodeApi, Tree, TreeApi } from "react-arborist";
@@ -42,7 +41,6 @@ type Props = {
 };
 
 const PackageInspector = ({ purl, path }: Props) => {
-    const session = useSession();
     const [treeFilter, setTreeFilter] = useState("");
     const [licenseFilter] = useQueryState(
         "licenseFilter",
@@ -85,9 +83,6 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Fetch the package file tree data
     const { data, isLoading, error } = userHooks.useGetFileTree(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 purl: pathPurl,
             },
@@ -98,9 +93,6 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Fetch the package license findings data
     const { data: lfData } = userHooks.useGetLicenseFindingsForPackage(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 purl: pathPurl,
             },
@@ -111,9 +103,6 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Fetch the package path exclusions data
     const { data: pathExclusionsData } = userHooks.useGetPathExclusionsByPurl(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 purl: pathPurl,
             },
@@ -124,9 +113,6 @@ const PackageInspector = ({ purl, path }: Props) => {
     // Fetch the package license conclusions data
     const { data: licenseConclusionsData } = userHooks.useGetLicenseConclusions(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 purl: purl,
             },

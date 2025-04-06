@@ -9,7 +9,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import axios from "axios";
 import { Check, Loader2, X } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { pePatternGlobSchema, userAPI, validReasons } from "validation-helpers";
 import { z } from "zod";
@@ -56,7 +55,6 @@ type Props = {
 };
 
 const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
-    const session = useSession();
     const defaultValues: ExclusionFormType = {
         pattern: pathExclusion.pattern || "",
         reason: pathExclusion.reason || "",
@@ -75,9 +73,6 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
     const { mutate: editPathExclusion, isLoading } =
         userHooks.usePutPathExclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: pathExclusion.id || -1,
                 },

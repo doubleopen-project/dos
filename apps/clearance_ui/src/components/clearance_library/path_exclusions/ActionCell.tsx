@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CellContext } from "@tanstack/react-table";
 import { ZodiosBodyByAlias, ZodiosResponseByAlias } from "@zodios/core";
 import { Check, Loader2, X } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -30,7 +29,6 @@ type PathExclusionUpdateData = ZodiosBodyByAlias<
 const ActionCell = ({ row, table }: CellContext<PathExclusion, unknown>) => {
     // Get user role, to decide what rights the user has for this view
     const user = useUser();
-    const session = useSession();
     const peKey = userHooks.getKeyByAlias("GetPathExclusions");
     const queryClient = useQueryClient();
     const meta = table.options.meta;
@@ -38,9 +36,6 @@ const ActionCell = ({ row, table }: CellContext<PathExclusion, unknown>) => {
     const { mutate: UpdatePathExclusion, isLoading } =
         userHooks.usePutPathExclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: row.original.id,
                 },

@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Info, Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import { bcPatternGlobSchema } from "validation-helpers";
@@ -73,16 +72,12 @@ const BulkConclusionForm = ({
     className,
     setOpen,
 }: Props) => {
-    const session = useSession();
     const user = useUser();
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useGetFileTree(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 purl: pathPurl,
             },
@@ -124,9 +119,6 @@ const BulkConclusionForm = ({
     const { mutate: addBulkConclusion, isLoading } =
         userHooks.usePostBulkConclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     purl: pathPurl,
                 },

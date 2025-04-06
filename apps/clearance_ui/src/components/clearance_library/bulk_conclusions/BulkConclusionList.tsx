@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { useSession } from "next-auth/react";
 import {
     parseAsInteger,
     parseAsString,
@@ -18,7 +17,6 @@ import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const BulkConclusionList = () => {
     const user = useUser();
-    const session = useSession();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -49,9 +47,6 @@ const BulkConclusionList = () => {
 
     const bcCntQuery = userHooks.useGetBulkConclusionsCount(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 purl: searchPurl !== null ? searchPurl : undefined,
             },
@@ -61,9 +56,6 @@ const BulkConclusionList = () => {
 
     const { data, isLoading, error } = userHooks.useGetBulkConclusions(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 pageIndex: pageIndex - 1,
                 pageSize,

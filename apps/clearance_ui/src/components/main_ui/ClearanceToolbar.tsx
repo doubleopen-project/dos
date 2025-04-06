@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GoInfo } from "react-icons/go";
@@ -18,7 +17,6 @@ import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 
 const ClearanceToolbar = () => {
-    const session = useSession();
     const router = useRouter();
     const [purl, path] = useMainUiStore(
         useShallow((state) => [state.purl, state.path]),
@@ -28,9 +26,6 @@ const ClearanceToolbar = () => {
     const { data: licenseConclusionCount } =
         userHooks.useGetLicenseConclusionsCount(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 queries: { purl: purl, hasBulkConclusionId: false },
             },
             { enabled: !!purl },
@@ -38,18 +33,12 @@ const ClearanceToolbar = () => {
     const { data: bulkConclusionCount } =
         userHooks.useGetBulkConclusionsCountByPurl(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: { purl: toPathPurl(purl) },
             },
             { enabled: !!purl },
         );
     const { data: pathExclusionCount } = userHooks.useGetPathExclusionsCount(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: { purl: purl, purlStrict: true },
         },
         { enabled: !!purl },
