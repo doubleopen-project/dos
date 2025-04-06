@@ -58,7 +58,6 @@ const DeletePackage = ({ data }: Props) => {
                 headers: {
                     Authorization: `Bearer ${session.data?.accessToken}`,
                 },
-                purl: data.purl,
             },
             {
                 onSuccess: () => {
