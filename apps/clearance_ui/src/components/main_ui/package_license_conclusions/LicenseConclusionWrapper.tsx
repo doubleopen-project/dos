@@ -4,7 +4,6 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import {
     Card,
@@ -22,13 +21,9 @@ type Props = {
 };
 
 const LicenseConclusionWrapper = ({ purl }: Props) => {
-    const session = useSession();
     const pathPurl = toPathPurl(purl);
     const { data, isLoading, error } = userHooks.useGetLicenseConclusions(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: { purl, hasBulkConclusionId: false },
         },
         { enabled: !!pathPurl },

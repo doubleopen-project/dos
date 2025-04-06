@@ -5,7 +5,6 @@
 import React from "react";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
@@ -30,12 +29,8 @@ type Props = {
 
 const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
     const user = useUser();
-    const session = useSession();
     const { data, isLoading, error } =
         userHooks.useGetAffectedFilesForLicenseConclusion({
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 id: licenseConclusion.id,
             },

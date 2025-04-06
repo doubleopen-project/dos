@@ -6,7 +6,6 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
@@ -32,7 +31,6 @@ const DeletePathExclusion = ({
     disabledTooltipMsg,
     enabledTooltipMsg,
 }: Props) => {
-    const session = useSession();
     const { toast } = useToast();
     const keyPathExclusionsByPurl = userHooks.getKeyByAlias(
         "GetPathExclusionsByPurl",
@@ -71,9 +69,6 @@ const DeletePathExclusion = ({
     const { mutate: deletePathExclusion, isLoading } =
         userHooks.useDeletePathExclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: data.id,
                 },

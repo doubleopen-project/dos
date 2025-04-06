@@ -5,7 +5,6 @@
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
@@ -25,7 +24,6 @@ const DeleteBulkConclusion = ({
     disabledTooltipMsg,
     enabledTooltipMsg,
 }: Props) => {
-    const session = useSession();
     const { toast } = useToast();
     const keyLCs = userHooks.getKeyByAlias(
         "GetLicenseConclusionsForFileInPackage",
@@ -51,9 +49,6 @@ const DeleteBulkConclusion = ({
     const deleteActions: DeleteAction[] = [];
 
     const { data: bulkConclusion } = userHooks.useGetBulkConclusionById({
-        headers: {
-            Authorization: `Bearer ${session.data?.accessToken}`,
-        },
         params: {
             id: id,
         },
@@ -87,9 +82,6 @@ const DeleteBulkConclusion = ({
     const { mutate: deleteBulkConclusion, isLoading: isBulkLoading } =
         userHooks.useDeleteBulkConclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: id,
                 },

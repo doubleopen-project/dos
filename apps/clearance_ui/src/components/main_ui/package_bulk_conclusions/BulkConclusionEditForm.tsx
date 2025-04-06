@@ -8,7 +8,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import axios from "axios";
 import { Check, Info, Loader2, X } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { bcPatternGlobSchema, userAPI } from "validation-helpers";
 import { z } from "zod";
@@ -61,7 +60,6 @@ type Props = {
 };
 
 const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
-    const session = useSession();
     const defaultValues: BulkConclusionFormType = {
         pattern: bulkConclusion?.pattern || "",
         concludedLicenseSPDX:
@@ -96,9 +94,6 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
     const { mutate: editBulkConclusion, isLoading } =
         userHooks.usePutBulkConclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: bulkConclusion.id || -1,
                 },

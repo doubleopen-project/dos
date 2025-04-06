@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,12 +18,8 @@ type Props = {
 };
 
 const PEAffectedFilesTooltip = ({ pathExclusionId }: Props) => {
-    const session = useSession();
     const { data, isLoading, error } =
         userHooks.useGetAffectedFilesForPathExclusion({
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 id: pathExclusionId,
             },

@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Label } from "@/components/ui/label";
 import LicenseConclusionItem from "@/components/main_ui/inspector/clearance_inspector/LicenseConclusionItem";
@@ -18,15 +17,11 @@ type LicenseConclusionsProps = {
 };
 
 const LicenseConclusions = ({ purl, fileSha256 }: LicenseConclusionsProps) => {
-    const session = useSession();
     const [editBCId, setEditBCId] = useState<number | null>(null);
     const [contextPurl, setContextPurl] = useState<string | null>(null);
     const { data, isLoading, error } =
         userHooks.useGetLicenseConclusionsForFileInPackage(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     purl: toPathPurl(purl),
                     sha256: fileSha256,

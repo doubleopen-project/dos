@@ -6,7 +6,6 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userAPI } from "validation-helpers";
 import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
@@ -25,7 +24,6 @@ type Props = {
 };
 
 const DeletePackage = ({ data }: Props) => {
-    const session = useSession();
     const { toast } = useToast();
     const keyPackages = userHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
@@ -52,32 +50,24 @@ const DeletePackage = ({ data }: Props) => {
 
     // Delete a package
     const { mutate: deletePackage, isLoading: isPackageLoading } =
-        adminHooks.useDelete(
-            "/scan-results",
-            {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
+        adminHooks.useDelete("/scan-results", undefined, {
+            onSuccess: () => {
+                toast({
+                    title: "Delete successful",
+                    description: `Package deleted successfully.`,
+                });
+                // When a package deleted, invalidate the package query to refetch the data
+                queryClient.invalidateQueries(keyPackages);
             },
-            {
-                onSuccess: () => {
-                    toast({
-                        title: "Delete successful",
-                        description: `Package deleted successfully.`,
-                    });
-                    // When a package deleted, invalidate the package query to refetch the data
-                    queryClient.invalidateQueries(keyPackages);
-                },
-                onError: (error) => {
-                    const msg = getErrorMessage(error);
-                    toast({
-                        variant: "destructive",
-                        title: "Delete failed",
-                        description: msg,
-                    });
-                },
+            onError: (error) => {
+                const msg = getErrorMessage(error);
+                toast({
+                    variant: "destructive",
+                    title: "Delete failed",
+                    description: msg,
+                });
             },
-        );
+        });
 
     if (isPackageLoading) {
         return (

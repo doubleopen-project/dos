@@ -4,7 +4,6 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { userHooks } from "@/hooks/zodiosHooks";
 import PathExclusion from "@/components/main_ui/package_path_exclusions/PathExclusion";
 import PathExclusionEditForm from "@/components/main_ui/package_path_exclusions/PathExclusionEditForm";
@@ -16,13 +15,9 @@ type Props = {
 };
 
 const PathExclusionWrapper = ({ purl }: Props) => {
-    const session = useSession();
     const pathPurl = toPathPurl(purl);
     const { data, isLoading, error } = userHooks.useGetPathExclusionsByPurl(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: { purl: pathPurl },
         },
         { enabled: !!pathPurl },

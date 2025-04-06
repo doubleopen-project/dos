@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { useSession } from "next-auth/react";
 import {
     parseAsInteger,
     parseAsString,
@@ -18,7 +17,6 @@ import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const LicenseConclusionList = () => {
     const user = useUser();
-    const session = useSession();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -48,9 +46,6 @@ const LicenseConclusionList = () => {
 
     const lcCntQuery = userHooks.useGetLicenseConclusionsCount(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 contextPurl: contextPurl !== null ? contextPurl : undefined,
                 /*
@@ -69,9 +64,6 @@ const LicenseConclusionList = () => {
 
     const { data, isLoading, error } = userHooks.useGetLicenseConclusions(
         {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             queries: {
                 pageIndex: pageIndex - 1,
                 pageSize,

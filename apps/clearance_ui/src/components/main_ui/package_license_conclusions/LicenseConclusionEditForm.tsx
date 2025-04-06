@@ -8,7 +8,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import axios from "axios";
 import { Check, Info, Loader2, X } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useForm, useFormState } from "react-hook-form";
 import { userAPI } from "validation-helpers";
 import { z } from "zod";
@@ -60,7 +59,6 @@ const LicenseConclusionEditForm = ({
     licenseConclusion,
     editHandler,
 }: Props) => {
-    const session = useSession();
     const defaultValues: LicenseConclusionFormType = {
         concludedLicenseSPDX:
             licenseConclusion?.concludedLicenseExpressionSPDX || "",
@@ -90,9 +88,6 @@ const LicenseConclusionEditForm = ({
     const { mutate: editLicenseConclusion, isLoading } =
         userHooks.usePutLicenseConclusion(
             {
-                headers: {
-                    Authorization: `Bearer ${session.data?.accessToken}`,
-                },
                 params: {
                     id: licenseConclusion.id || -1,
                 },

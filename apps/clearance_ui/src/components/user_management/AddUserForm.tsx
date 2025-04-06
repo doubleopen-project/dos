@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import generator from "generate-password";
 import { Check, Dices, Info, Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { getPasswordSchema, getUsernameSchema } from "validation-helpers";
 import z from "zod";
@@ -67,57 +66,49 @@ type AddUserFormProps = {
 };
 
 const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
-    const session = useSession();
     const {
         isError,
         isLoading,
         isSuccess,
         reset,
         mutate: addUser,
-    } = adminHooks.useCreateUser(
-        {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
+    } = adminHooks.useCreateUser(undefined, {
+        onSuccess: (data) => {
+            onNewUserCreated({
+                id: data.id,
+                username: data.username,
+                password: form.getValues("password"),
+                realmRoles: data.realmRoles,
+                dosApiToken: data.dosApiToken,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                requiredActions: data.requiredActions,
+            });
         },
-        {
-            onSuccess: (data) => {
-                onNewUserCreated({
-                    id: data.id,
-                    username: data.username,
-                    password: form.getValues("password"),
-                    realmRoles: data.realmRoles,
-                    dosApiToken: data.dosApiToken,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    email: data.email,
-                    requiredActions: data.requiredActions,
-                });
-            },
-            onError: (error) => {
-                onNewUserCreated(null);
-                console.log(error);
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data?.path === "username") {
-                        form.setError("username", {
-                            type: "manual",
-                            message: error.response?.data?.message,
-                        });
-                    } else if (error.response?.data?.message) {
-                        form.setError("root", {
-                            type: "manual",
-                            message: error.response?.data?.message,
-                        });
-                    }
-                } else {
+        onError: (error) => {
+            onNewUserCreated(null);
+            console.log(error);
+            if (axios.isAxiosError(error)) {
+                if (error.response?.data?.path === "username") {
+                    form.setError("username", {
+                        type: "manual",
+                        message: error.response?.data?.message,
+                    });
+                } else if (error.response?.data?.message) {
                     form.setError("root", {
                         type: "manual",
-                        message: error.message,
+                        message: error.response?.data?.message,
                     });
                 }
-            },
+            } else {
+                form.setError("root", {
+                    type: "manual",
+                    message: error.message,
+                });
+            }
         },
-    );
+    });
 
     const form = useForm<AddUserDataType>({
         resolver: zodResolver(addUserFormSchema),

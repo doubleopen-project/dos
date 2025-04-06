@@ -81,66 +81,57 @@ const UserDataForm = () => {
         isSuccess,
         reset,
         mutate: updateUser,
-    } = userHooks.usePutUser(
-        {
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
+    } = userHooks.usePutUser(undefined, {
+        onSuccess: () => {
+            // This will update the user data in the session
+            signIn("keycloak");
         },
-        {
-            onSuccess: () => {
-                // This will update the user data in the session
-                signIn("keycloak");
-            },
-            onError: (error) => {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.data?.path === "username") {
-                        form.setError("username", {
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.data?.path === "username") {
+                    form.setError("username", {
+                        type: "manual",
+                        message: error.response?.data?.message,
+                    });
+                } else if (
+                    error.response?.data?.message ===
+                    "User with this username or email already exists"
+                ) {
+                    if (
+                        form.getValues("username") ===
+                        session.data?.user?.preferred_username
+                    ) {
+                        form.setError("email", {
                             type: "manual",
-                            message: error.response?.data?.message,
+                            message: "Email already in use with another user",
                         });
                     } else if (
-                        error.response?.data?.message ===
-                        "User with this username or email already exists"
+                        form.getValues("email") === session.data?.user?.email
                     ) {
-                        if (
-                            form.getValues("username") ===
-                            session.data?.user?.preferred_username
-                        ) {
-                            form.setError("email", {
-                                type: "manual",
-                                message:
-                                    "Email already in use with another user",
-                            });
-                        } else if (
-                            form.getValues("email") ===
-                            session.data?.user?.email
-                        ) {
-                            form.setError("username", {
-                                type: "manual",
-                                message: "Username already in use",
-                            });
-                        } else {
-                            form.setError("root", {
-                                type: "manual",
-                                message: error.response?.data?.message,
-                            });
-                        }
-                    } else if (error.response?.data?.message) {
+                        form.setError("username", {
+                            type: "manual",
+                            message: "Username already in use",
+                        });
+                    } else {
                         form.setError("root", {
                             type: "manual",
                             message: error.response?.data?.message,
                         });
                     }
-                } else {
+                } else if (error.response?.data?.message) {
                     form.setError("root", {
                         type: "manual",
-                        message: error.message,
+                        message: error.response?.data?.message,
                     });
                 }
-            },
+            } else {
+                form.setError("root", {
+                    type: "manual",
+                    message: error.message,
+                });
+            }
         },
-    );
+    });
 
     const form = useForm<PutUserDataType>({
         resolver: zodResolver(userDataFormSchema),

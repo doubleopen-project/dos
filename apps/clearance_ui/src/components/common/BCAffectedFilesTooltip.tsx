@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { PackageURL } from "packageurl-js";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
@@ -28,12 +27,8 @@ const BCAffectedFilesTooltip = ({
     queryPurl,
     mode,
 }: Props) => {
-    const session = useSession();
     const { data, isLoading, error } =
         userHooks.useGetAffectedFilesForBulkConclusion({
-            headers: {
-                Authorization: `Bearer ${session.data?.accessToken}`,
-            },
             params: {
                 id: bulkConclusionId,
             },
