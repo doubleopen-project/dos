@@ -32,7 +32,6 @@ const TokenDialog = () => {
         reset,
         mutate: generateToken,
     } = userHooks.usePut("/token", {
-        params: { id: true },
         headers: {
             Authorization: `Bearer ${session.data?.accessToken}`,
         },
