@@ -19,7 +19,7 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
-        "@prisma/client": "6.5.0",
+        "@prisma/client": "6.6.0",
         "adm-zip": "0.5.16",
         "s3-helpers": "*"
     },
@@ -27,7 +27,7 @@
         "@types/adm-zip": "0.5.7",
         "@types/node": "22.14.0",
         "eslint-config-custom-server": "*",
-        "prisma": "6.5.0",
+        "prisma": "6.6.0",
         "ts-node": "10.9.2",
         "tsconfig": "*",
         "tsup": "8.4.0",
