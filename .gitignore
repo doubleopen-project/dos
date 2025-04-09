@@ -158,3 +158,6 @@ yarn.lock
 # Terraform
 terraform/.terraform/*
 terraform/terraform.tfstate*
+
+# Playwright artifacts
+playwright-artifacts/*

@@ -169,8 +169,8 @@ resource "keycloak_openid_client" "dos_ui_openid_client" {
     }
 
     root_url = "http://localhost:3000"
-    valid_redirect_uris = ["/*", "http://localhost:3002/*"]
-    valid_post_logout_redirect_uris = ["/*", "http://localhost:3002/*"]
+    valid_redirect_uris = ["/*", "http://clearance-ui:3000/*"]
+    valid_post_logout_redirect_uris = ["/*", "http://clearance-ui:3000/*"]
     web_origins = ["+"] # + means all origins of Valid Redirect URIs
 }
 
