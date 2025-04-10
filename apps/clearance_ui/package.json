@@ -80,7 +80,7 @@
         "eslint-config-custom": "*",
         "jest": "29.7.0",
         "jest-environment-jsdom": "29.7.0",
-        "next": "15.2.5",
+        "next": "15.3.0",
         "next-router-mock": "0.9.13",
         "tailwindcss": "^4.0.0",
         "ts-jest": "29.3.1",
