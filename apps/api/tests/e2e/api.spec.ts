@@ -24,6 +24,9 @@ const clientId = process.env.KEYCLOAK_CLIENT_ID_API;
 const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET_API;
 const username = process.env.E2E_USER_USERNAME;
 const password = process.env.E2E_USER_PASSWORD;
+const baseUrl = process.env.CI
+    ? "http://localhost:3001"
+    : "http://localhost:5000";
 
 if (!server || !realm || !clientId || !clientSecret || !username || !password) {
     throw new Error(
@@ -72,7 +75,7 @@ test.describe("API lets authenticated users to", () => {
         const body = await result.json();
         keycloakToken = (body as { access_token: string }).access_token;
 
-        userZodios = new Zodios("http://localhost:3001/api/user/", userAPI, {
+        userZodios = new Zodios(`${baseUrl}/api/user/`, userAPI, {
             axiosConfig: {
                 headers: {
                     Authorization: `Bearer ${keycloakToken}`,
@@ -88,7 +91,7 @@ test.describe("API lets authenticated users to", () => {
 
         dosToken = userToken.token;
 
-        dosZodios = new Zodios("http://localhost:3001/api/", dosAPI, {
+        dosZodios = new Zodios(`${baseUrl}/api/`, dosAPI, {
             axiosConfig: {
                 headers: {
                     Authorization: `Bearer ${dosToken}`,
