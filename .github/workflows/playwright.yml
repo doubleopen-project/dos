@@ -25,30 +25,25 @@ jobs:
             KEYCLOAK_CLIENT_SECRET_UI: ${{ secrets.KEYCLOAK_CLIENT_SECRET_UI }}
             KEYCLOAK_CLIENT_ID_API: ${{ secrets.KEYCLOAK_CLIENT_ID_API }}
             KEYCLOAK_CLIENT_SECRET_API: ${{ secrets.KEYCLOAK_CLIENT_SECRET_API }}
-            NEXTAUTH_URL: http://localhost:3000
             NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-            NEXT_PUBLIC_API_URL: http://localhost:3001/api/
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: 22.14.0
                   cache: "npm"
-            - name: Install dependencies
-              run: npm ci
-            - name: Install Playwright Browsers
-              working-directory: apps/clearance_ui
-              run: npx playwright install --with-deps
+            - name: Install dependencies for root
+              run: npm i --workspaces=false
+            - name: Install dependencies for the database package
+              run: npm i --workspace packages/database
             - name: Run prisma generate
               run: npm run db:generate
-            - name: Build project
-              run: npm run build
             - name: Start the testing environment
-              run: docker compose up -d
+              run: docker compose up api clearance-ui scanner-worker createbuckets -d
             - name: Seed the database and populate the spaces bucket
               run: npm run db:migrate:reset
             - name: Run Playwright tests
-              run: npm run test:e2e
+              run: docker compose up playwright-tests --abort-on-container-exit --exit-code-from playwright-tests
             - name: Print Docker Compose logs
               run: docker compose logs
               if: failure()
@@ -56,5 +51,5 @@ jobs:
               if: always()
               with:
                   name: playwright-report
-                  path: apps/clearance_ui/playwright-report/
+                  path: playwright-artifacts/clearance_ui
                   retention-days: 30

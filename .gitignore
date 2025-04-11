@@ -154,3 +154,6 @@ generated-zod-schemas/
 
 # Yarn lockfile
 yarn.lock
+
+# Playwright mounted files
+playwright-artifacts/
