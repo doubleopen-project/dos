@@ -88,7 +88,7 @@ services:
             - KEYCLOAK_REALM=$KEYCLOAK_REALM
             - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
             - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
-            - ALLOWED_ORIGINS=http://localhost:3002,http://localhost:3000
+            - ALLOWED_ORIGINS=http://clearance-ui:3000
             - SPACES_ENDPOINT=http://minio:9000
             - REDIS_URL=redis://redis:6379
             - PORT=3001
@@ -126,9 +126,9 @@ services:
         build:
             dockerfile: UI.Dockerfile
             args:
-                - NEXT_PUBLIC_API_URL=http://localhost:3001/api/
+                - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
-            - NEXTAUTH_URL=http://localhost:3002
+            - NEXTAUTH_URL=http://clearance-ui:3000
             - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
             - KEYCLOAK_URL=$KEYCLOAK_URL
             - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
@@ -137,6 +137,30 @@ services:
             - KEYCLOAK_REALM=dos-dev
         ports:
             - 3002:3000
+
+    playwright-tests:
+        build:
+            context: .
+            dockerfile: Playwright.Dockerfile
+            args:
+                - NEXT_PUBLIC_API_URL=http://api:3001/api/
+        environment:
+            - KEYCLOAK_URL=$KEYCLOAK_URL
+            - KEYCLOAK_REALM=$KEYCLOAK_REALM
+            - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
+            - KEYCLOAK_CLIENT_SECRET_UI=$KEYCLOAK_CLIENT_SECRET_UI
+            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
+            - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
+            - E2E_USER_USERNAME=$E2E_USER_USERNAME
+            - E2E_USER_PASSWORD=$E2E_USER_PASSWORD
+            - CI=true
+        depends_on:
+            api:
+                condition: service_healthy
+            clearance-ui:
+                condition: service_started
+        volumes:
+            - ./playwright-artifacts/clearance_ui:/workspace/apps/clearance_ui/playwright-report
 
 volumes:
     db-data:
