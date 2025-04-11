@@ -154,3 +154,10 @@ generated-zod-schemas/
 
 # Yarn lockfile
 yarn.lock
+
+# Terraform
+terraform/.terraform/*
+terraform/terraform.tfstate*
+
+# Playwright artifacts
+playwright-artifacts/*

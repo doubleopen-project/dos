@@ -11,26 +11,23 @@ import {
 import test, { expect } from "@playwright/test";
 import { Zodios, ZodiosInstance } from "@zodios/core";
 import AdmZip from "adm-zip";
-import { getPresignedPutUrl, S3Client } from "s3-helpers";
+import { authConfig } from "common-helpers";
+//import { getPresignedPutUrl, S3Client } from "s3-helpers";
 import { dosAPI, userAPI } from "validation-helpers";
 
 /**
  * Construct Zodios callers for the API endpoints to easily call them in the tests.
  */
 
-const server = process.env.KEYCLOAK_URL;
-const realm = process.env.KEYCLOAK_REALM;
-const clientId = process.env.KEYCLOAK_CLIENT_ID_API;
-const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET_API;
-const username = process.env.E2E_USER_USERNAME;
-const password = process.env.E2E_USER_PASSWORD;
+const server = authConfig.url;
+const realm = authConfig.realm;
+const clientId = authConfig.clientIdUI;
+const clientSecret = authConfig.clientSecretUI;
+const username = "test-user";
+const password = "test-user";
+const apiUrl = process.env.E2E_API_BASE_URL || "http://localhost:5000";
 
-if (!server || !realm || !clientId || !clientSecret || !username || !password) {
-    throw new Error(
-        "KEYCLOAK_URL, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID_API, KEYCLOAK_CLIENT_SECRET_API, E2E_USER_USERNAME and E2E_USER_PASSWORD environment variables must be set",
-    );
-}
-
+/*
 const s3Client = S3Client(
     process.env.NODE_ENV !== "production",
     // This needs to be localhost instead of SPACES_ENDPOINT due to the containers needing to access
@@ -38,7 +35,7 @@ const s3Client = S3Client(
     "http://localhost:9000",
     process.env.SPACES_KEY,
     process.env.SPACES_SECRET,
-);
+);*/
 
 test.describe("API lets authenticated users to", () => {
     let keycloakToken: string;
@@ -72,7 +69,7 @@ test.describe("API lets authenticated users to", () => {
         const body = await result.json();
         keycloakToken = (body as { access_token: string }).access_token;
 
-        userZodios = new Zodios("http://localhost:3001/api/user/", userAPI, {
+        userZodios = new Zodios(`${apiUrl}/api/user/`, userAPI, {
             axiosConfig: {
                 headers: {
                     Authorization: `Bearer ${keycloakToken}`,
@@ -88,7 +85,7 @@ test.describe("API lets authenticated users to", () => {
 
         dosToken = userToken.token;
 
-        dosZodios = new Zodios("http://localhost:3001/api/", dosAPI, {
+        dosZodios = new Zodios(`${apiUrl}/api/`, dosAPI, {
             axiosConfig: {
                 headers: {
                     Authorization: `Bearer ${dosToken}`,
@@ -133,11 +130,18 @@ test.describe("API lets authenticated users to", () => {
          * running on host. This means that we need to create the presigned URL with an external S3
          * client that can access the Minio on localhost.
          */
+        /*
         const presignedUrl = await getPresignedPutUrl(
             s3Client,
             "doubleopen",
             zipKey,
-        );
+        );*/
+
+        const presignedUrl = (
+            await dosZodios.post("/upload-url", {
+                key: zipKey,
+            })
+        ).presignedUrl;
 
         expect(presignedUrl).toBeDefined();
 

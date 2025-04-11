@@ -77,6 +77,34 @@ services:
                 condition: service_healthy
                 required: true
 
+    keycloak:
+        image: quay.io/keycloak/keycloak:26.1.4
+        command: start-dev
+        ports:
+            - "8083:8080"
+        environment:
+            - KC_BOOTSTRAP_ADMIN_USERNAME=keycloak-admin
+            - KC_BOOTSTRAP_ADMIN_PASSWORD=keycloak-admin
+        healthcheck:
+            test: timeout 10s bash -c ':> /dev/tcp/localhost/8080'
+            interval: 10s
+            timeout: 5s
+            retries: 20
+
+    terraform:
+        build:
+            context: ./terraform
+        working_dir: /workspace
+        volumes:
+            - ./terraform:/workspace
+        depends_on:
+            keycloak:
+                condition: service_healthy
+        entrypoint: ["/bin/sh", "-c"]
+        command: >
+            "terraform init &&
+            terraform apply -auto-approve"
+
     api:
         build:
             dockerfile: API.Dockerfile
@@ -84,11 +112,8 @@ services:
             - 3001:3001
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
-            - KEYCLOAK_URL=$KEYCLOAK_URL
-            - KEYCLOAK_REALM=$KEYCLOAK_REALM
-            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
-            - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
-            - ALLOWED_ORIGINS=http://localhost:3002,http://localhost:3000
+            - KEYCLOAK_URL=http://keycloak:8080
+            - ALLOWED_ORIGINS=http://clearance-ui:3000
             - SPACES_ENDPOINT=http://minio:9000
             - REDIS_URL=redis://redis:6379
             - PORT=3001
@@ -110,6 +135,15 @@ services:
             minio:
                 condition: service_healthy
                 required: true
+            createbuckets:
+                condition: service_completed_successfully
+                required: true
+            keycloak:
+                condition: service_healthy
+                required: true
+            terraform:
+                condition: service_completed_successfully
+                required: true
 
     scanner-worker:
         build:
@@ -126,17 +160,37 @@ services:
         build:
             dockerfile: UI.Dockerfile
             args:
-                - NEXT_PUBLIC_API_URL=http://localhost:3001/api/
+                - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
-            - NEXTAUTH_URL=http://localhost:3002
-            - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-            - KEYCLOAK_URL=$KEYCLOAK_URL
-            - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
-            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
-            - KEYCLOAK_CLIENT_SECRET_UI=$KEYCLOAK_CLIENT_SECRET_UI
-            - KEYCLOAK_REALM=dos-dev
-        ports:
-            - 3002:3000
+            - NEXTAUTH_URL=http://clearance-ui:3000
+            - NEXTAUTH_SECRET=secret
+            - KEYCLOAK_URL=http://keycloak:8080
+
+    playwright-tests:
+        build:
+            context: .
+            dockerfile: Playwright.Dockerfile
+            args:
+                - NEXT_PUBLIC_API_URL=http://api:3001/api/
+        environment:
+            - KEYCLOAK_URL=http://keycloak:8080
+            - E2E_API_BASE_URL=http://api:3001
+            - E2E_UI_BASE_URL=http://clearance-ui:3000
+        depends_on:
+            api:
+                condition: service_healthy
+            clearance-ui:
+                condition: service_started
+        volumes:
+            - ./playwright-artifacts/clearance_ui:/workspace/apps/clearance_ui/playwright-report
+        working_dir: /workspace
+        command: >
+            bash -c "
+                echo 'Waiting for services...';
+                until curl -s http://api:3001/api/health; do echo 'Waiting for API...'; sleep 2; done;
+                echo 'API is up!';
+                npm run test:e2e;
+            "
 
 volumes:
     db-data:

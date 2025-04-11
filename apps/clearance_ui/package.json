@@ -11,7 +11,8 @@
         "test:watch": "jest --watchAll --verbose",
         "test:e2e": "playwright test",
         "test:e2e:report": "playwright show-report",
-        "test:e2e:ui": "playwright test --ui"
+        "test:e2e:ui": "playwright test --ui",
+        "install-browsers": "playwright install --with-deps"
     },
     "dependencies": {
         "@hookform/resolvers": "5.0.1",
@@ -43,6 +44,7 @@
         "class-variance-authority": "0.7.1",
         "clsx": "2.1.1",
         "cmdk": "1.1.1",
+        "common-helpers": "*",
         "generate-password": "1.7.1",
         "js-yaml": "4.1.0",
         "lodash.debounce": "4.0.8",
