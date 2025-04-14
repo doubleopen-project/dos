@@ -112,10 +112,7 @@ services:
             - 3001:3001
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
-            - KEYCLOAK_URL=$KEYCLOAK_URL
-            - KEYCLOAK_REALM=$KEYCLOAK_REALM
-            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
-            - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
+            - KEYCLOAK_URL=http://keycloak:8080
             - ALLOWED_ORIGINS=http://clearance-ui:3000
             - SPACES_ENDPOINT=http://minio:9000
             - REDIS_URL=redis://redis:6379
@@ -138,6 +135,12 @@ services:
             minio:
                 condition: service_healthy
                 required: true
+            keycloak:
+                condition: service_healthy
+                required: true
+            terraform:
+                condition: service_completed_successfully
+                required: true
 
     scanner-worker:
         build:
@@ -158,11 +161,7 @@ services:
         environment:
             - NEXTAUTH_URL=http://clearance-ui:3000
             - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-            - KEYCLOAK_URL=$KEYCLOAK_URL
-            - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
-            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
-            - KEYCLOAK_CLIENT_SECRET_UI=$KEYCLOAK_CLIENT_SECRET_UI
-            - KEYCLOAK_REALM=dos-dev
+            - KEYCLOAK_URL=http://keycloak:8080
         ports:
             - 3002:3000
 
@@ -173,14 +172,7 @@ services:
             args:
                 - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
-            - KEYCLOAK_URL=$KEYCLOAK_URL
-            - KEYCLOAK_REALM=$KEYCLOAK_REALM
-            - KEYCLOAK_CLIENT_ID_UI=$KEYCLOAK_CLIENT_ID_UI
-            - KEYCLOAK_CLIENT_SECRET_UI=$KEYCLOAK_CLIENT_SECRET_UI
-            - KEYCLOAK_CLIENT_ID_API=$KEYCLOAK_CLIENT_ID_API
-            - KEYCLOAK_CLIENT_SECRET_API=$KEYCLOAK_CLIENT_SECRET_API
-            - E2E_USER_USERNAME=$E2E_USER_USERNAME
-            - E2E_USER_PASSWORD=$E2E_USER_PASSWORD
+            - KEYCLOAK_URL=http://keycloak:8080
             - CI=true
         depends_on:
             api:

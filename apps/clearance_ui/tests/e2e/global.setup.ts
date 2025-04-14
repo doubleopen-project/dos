@@ -6,11 +6,6 @@ import { expect, test as setup } from "@playwright/test";
 import { STORAGE_STATE } from "../../playwright.config";
 
 setup("logs in", async ({ page }) => {
-    if (!process.env.E2E_USER_USERNAME || !process.env.E2E_USER_PASSWORD) {
-        throw new Error(
-            "E2E_USER_USERNAME and E2E_USER_PASSWORD environment variables must be set",
-        );
-    }
     // Clear old session cookie from the browser
     await page.goto("/api/auth/signout");
 
@@ -24,8 +19,8 @@ setup("logs in", async ({ page }) => {
     await page.click("button:has-text('Sign in with Keycloak')");
 
     // Fill the login form
-    await page.fill("#username", process.env.E2E_USER_USERNAME);
-    await page.fill("#password", process.env.E2E_USER_PASSWORD);
+    await page.fill("#username", "test-user");
+    await page.fill("#password", "test-user");
 
     // Submit login form
     await page.click('button[type="submit"]');

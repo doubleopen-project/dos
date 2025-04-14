@@ -11,18 +11,19 @@ import {
 import test, { expect } from "@playwright/test";
 import { Zodios, ZodiosInstance } from "@zodios/core";
 import AdmZip from "adm-zip";
+import { authConfig } from "common-helpers";
 import { dosAPI, userAPI } from "validation-helpers";
 
 /**
  * Construct Zodios callers for the API endpoints to easily call them in the tests.
  */
 
-const server = process.env.KEYCLOAK_URL;
-const realm = process.env.KEYCLOAK_REALM;
-const clientId = process.env.KEYCLOAK_CLIENT_ID_API;
-const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET_API;
-const username = process.env.E2E_USER_USERNAME;
-const password = process.env.E2E_USER_PASSWORD;
+const server = authConfig.url;
+const realm = authConfig.realm;
+const clientId = authConfig.clientIdUI;
+const clientSecret = authConfig.clientSecretUI;
+const username = "test-user";
+const password = "test-user";
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
 
 if (!server || !realm || !clientId || !clientSecret || !username || !password) {
