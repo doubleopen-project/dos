@@ -17,7 +17,7 @@
     "devDependencies": {
         "@types/chai": "5.2.1",
         "@types/mocha": "10.0.10",
-        "@types/node": "22.14.0",
+        "@types/node": "22.14.1",
         "chai": "5.2.0",
         "eslint-config-custom-server": "*",
         "mocha": "11.1.0",
