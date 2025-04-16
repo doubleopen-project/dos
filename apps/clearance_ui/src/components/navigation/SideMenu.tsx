@@ -18,6 +18,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import { hasPermission } from "@/helpers/hasPermission";
 
 const SideMenu = () => {
     const user = useUser();
@@ -25,7 +26,12 @@ const SideMenu = () => {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="ml-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2"
+                    aria-label="Open side menu"
+                >
                     <IoMenuSharp size="20px" color="gray" />
                 </Button>
             </SheetTrigger>
@@ -40,17 +46,26 @@ const SideMenu = () => {
                 </SheetHeader>
                 {user && (
                     <div className="grid gap-4 py-4">
-                        <SheetClose asChild>
-                            <Link
-                                href="/packages"
-                                className="inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900"
-                            >
-                                <div className="flex items-center">
-                                    <LuFileStack size="20px" className="mr-2" />
-                                    Package Library
-                                </div>
-                            </Link>
-                        </SheetClose>
+                        {hasPermission(
+                            user.permissions || [],
+                            "PackageLibraryData",
+                            "GET",
+                        ) && (
+                            <SheetClose asChild>
+                                <Link
+                                    href="/packages"
+                                    className="inline-block rounded-lg px-2 py-1 text-sm hover:bg-gray-100 hover:text-gray-900"
+                                >
+                                    <div className="flex items-center">
+                                        <LuFileStack
+                                            size="20px"
+                                            className="mr-2"
+                                        />
+                                        Package Library
+                                    </div>
+                                </Link>
+                            </SheetClose>
+                        )}
                         <SheetClose asChild>
                             <Link
                                 href="/clearances"
