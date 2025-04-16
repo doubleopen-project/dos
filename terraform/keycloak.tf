@@ -605,6 +605,58 @@ resource "keycloak_user_roles" "test_user_roles" {
   ]
 }
 
+# Add an admin user to the DOS development realm.
+resource "keycloak_user" "test_admin" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    username = "test-admin"
+    enabled = true
+
+    email = "test-admin@example.com"
+    first_name = "Test"
+    last_name = "Admin"
+
+    initial_password {
+        value = "test-admin"
+        temporary = false
+    }
+}
+
+# Assign the "app-admin" role to the test admin user.
+resource "keycloak_user_roles" "test_admin_roles" {
+  realm_id = keycloak_realm.dos_dev_realm.id
+  user_id  = keycloak_user.test_admin.id
+
+  role_ids = [
+    keycloak_role.realm_role_app_admin.id
+  ]
+}
+
+# Add a read-only user to the DOS development realm.
+resource "keycloak_user" "test_readonly" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    username = "test-readonly"
+    enabled = true
+
+    email = "test-readonly@example.com"
+    first_name = "Test"
+    last_name = "Readonly"
+
+    initial_password {
+        value = "test-readonly"
+        temporary = false
+    }
+}
+
+# Assign the "app-read-only-user" role to the test read-only user.
+resource "keycloak_user_roles" "test_readonly_roles" {
+  realm_id = keycloak_realm.dos_dev_realm.id
+  user_id  = keycloak_user.test_readonly.id
+
+  role_ids = [
+    keycloak_role.realm_role_app_read_only_user.id
+  ]
+}
+
 # This resource is used to run a script that patches the client roles mapper
 # and the realm roles mapper in Keycloak to enable the "Add to userinfo" and
 # "Add to ID token" options. This needs a workaround because the mapper would
