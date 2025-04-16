@@ -5,15 +5,30 @@
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PackageList from "@/components/package_library/PackageList";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
+import { hasPermission } from "@/helpers/hasPermission";
 
 export default function PackageLibrary() {
     const session = useSession({
         required: true,
     });
+    const router = useRouter();
+    const user = useUser();
+
+    useEffect(() => {
+        if (
+            user &&
+            user.permissions &&
+            !hasPermission(user.permissions, "PackageLibraryData", "GET")
+        ) {
+            router.push("/403");
+        }
+    }, [user, router]);
 
     const {
         data: pkgCntData,
@@ -40,7 +55,11 @@ export default function PackageLibrary() {
 
     return (
         <div className="flex h-full flex-col p-2">
-            {session.status === "authenticated" && (
+            {hasPermission(
+                user?.permissions || [],
+                "PackageLibraryData",
+                "GET",
+            ) && (
                 <>
                     <div className="m-1 flex-none rounded-md shadow-sm">
                         <Card>
