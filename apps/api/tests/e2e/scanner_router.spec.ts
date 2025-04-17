@@ -11,19 +11,13 @@ import {
 import test, { expect } from "@playwright/test";
 import { Zodios, ZodiosInstance } from "@zodios/core";
 import AdmZip from "adm-zip";
-import { authConfig } from "common-helpers";
 import { dosAPI, userAPI } from "validation-helpers";
+import { getAccessToken } from "./utils/get_access_token";
 
 /**
  * Construct Zodios callers for the API endpoints to easily call them in the tests.
  */
 
-const server = authConfig.url;
-const realm = authConfig.realm;
-const clientId = authConfig.clientIdUI;
-const clientSecret = authConfig.clientSecretUI;
-const username = "test-user";
-const password = "test-user";
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
 
 test.describe.configure({ mode: "default" });
@@ -39,26 +33,8 @@ test.describe("API lets authenticated users to", () => {
      * calls to authenticate the user. Also retrieve the DOS token.
      */
     test.beforeAll(async ({}) => {
-        // creating the request URL
-        const url = `${server}/realms/${realm}/protocol/openid-connect/token`;
-        // creating the body of the request
-
-        const result = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-                client_id: clientId,
-                grant_type: "password",
-                username: username,
-                password: password,
-                client_secret: clientSecret,
-            }),
-        });
-
-        const body = await result.json();
-        keycloakToken = (body as { access_token: string }).access_token;
+        keycloakToken = await getAccessToken("test-user", "test-user");
+        expect(keycloakToken).toBeDefined();
 
         userZodios = new Zodios(`${baseUrl}/api/user/`, userAPI, {
             axiosConfig: {
