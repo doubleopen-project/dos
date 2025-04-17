@@ -26,6 +26,8 @@ const username = "test-user";
 const password = "test-user";
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
 
+test.describe.configure({ mode: "default" });
+
 test.describe("API lets authenticated users to", () => {
     let keycloakToken: string;
     let dosToken: string;
