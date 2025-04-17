@@ -1159,6 +1159,422 @@ declare const adminAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/packages";
+        description: "Get packages. Alias: GetPackages";
+        alias: "GetPackages";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "purl",
+                            "name",
+                            "version",
+                            "type",
+                            "namespace",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                packages: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            purl: zod.ZodString;
+                            updatedAt: zod.ZodDate;
+                            name: zod.ZodString;
+                            version: zod.ZodNullable<zod.ZodString>;
+                            type: zod.ZodString;
+                            namespace: zod.ZodNullable<zod.ZodString>;
+                            qualifiers: zod.ZodNullable<zod.ZodString>;
+                            subpath: zod.ZodNullable<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            type: string;
+                            purl: string;
+                            name: string;
+                            version: string | null;
+                            namespace: string | null;
+                            updatedAt: Date;
+                            qualifiers: string | null;
+                            subpath: string | null;
+                        },
+                        {
+                            type: string;
+                            purl: string;
+                            name: string;
+                            version: string | null;
+                            namespace: string | null;
+                            updatedAt: Date;
+                            qualifiers: string | null;
+                            subpath: string | null;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                packages: {
+                    type: string;
+                    purl: string;
+                    name: string;
+                    version: string | null;
+                    namespace: string | null;
+                    updatedAt: Date;
+                    qualifiers: string | null;
+                    subpath: string | null;
+                }[];
+            },
+            {
+                packages: {
+                    type: string;
+                    purl: string;
+                    name: string;
+                    version: string | null;
+                    namespace: string | null;
+                    updatedAt: Date;
+                    qualifiers: string | null;
+                    subpath: string | null;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/packages/count";
+        description: "Get packages count. Alias: GetPackagesCount";
+        alias: "GetPackagesCount";
+        parameters: [
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const authAPI: [
@@ -4119,12 +4535,12 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4133,12 +4549,12 @@ declare const userAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4154,12 +4570,12 @@ declare const userAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -4170,12 +4586,12 @@ declare const userAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -4834,12 +5250,12 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4847,12 +5263,12 @@ declare const userAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -4867,12 +5283,12 @@ declare const userAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -4882,12 +5298,12 @@ declare const userAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -5552,6 +5968,7 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             licenseConclusions: {
                                 id: number;
                                 file: {
@@ -5566,7 +5983,6 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5576,6 +5992,7 @@ declare const userAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             licenseConclusions: {
                                 id: number;
                                 file: {
@@ -5590,7 +6007,6 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -5607,6 +6023,7 @@ declare const userAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     licenseConclusions: {
                         id: number;
                         file: {
@@ -5621,7 +6038,6 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -5633,6 +6049,7 @@ declare const userAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     licenseConclusions: {
                         id: number;
                         file: {
@@ -5647,7 +6064,6 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -6203,12 +6619,12 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -6218,12 +6634,12 @@ declare const userAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -6240,12 +6656,12 @@ declare const userAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -6257,12 +6673,12 @@ declare const userAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -7309,10 +7725,10 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -7322,10 +7738,10 @@ declare const userAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -7342,10 +7758,10 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -7357,10 +7773,10 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -8219,20 +8635,20 @@ declare const userAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -8246,10 +8662,10 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -8258,10 +8674,10 @@ declare const userAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -8411,422 +8827,6 @@ declare const userAPI: [
                     fileSha256: string;
                     packageId: number;
                 }[];
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/packages";
-        description: "Get packages. Alias: GetPackages";
-        alias: "GetPackages";
-        parameters: [
-            {
-                name: "pageSize";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodNumber>;
-            },
-            {
-                name: "pageIndex";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodNumber>;
-            },
-            {
-                name: "sortBy";
-                type: "Query";
-                schema: zod.ZodOptional<
-                    zod.ZodEnum<
-                        [
-                            "purl",
-                            "name",
-                            "version",
-                            "type",
-                            "namespace",
-                            "createdAt",
-                            "updatedAt",
-                        ]
-                    >
-                >;
-            },
-            {
-                name: "sortOrder";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
-            },
-            {
-                name: "name";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "namespace";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "version";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "type";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "purl";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "createdAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "createdAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                packages: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            purl: zod.ZodString;
-                            updatedAt: zod.ZodDate;
-                            name: zod.ZodString;
-                            version: zod.ZodNullable<zod.ZodString>;
-                            type: zod.ZodString;
-                            namespace: zod.ZodNullable<zod.ZodString>;
-                            qualifiers: zod.ZodNullable<zod.ZodString>;
-                            subpath: zod.ZodNullable<zod.ZodString>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            type: string;
-                            purl: string;
-                            name: string;
-                            updatedAt: Date;
-                            version: string | null;
-                            namespace: string | null;
-                            qualifiers: string | null;
-                            subpath: string | null;
-                        },
-                        {
-                            type: string;
-                            purl: string;
-                            name: string;
-                            updatedAt: Date;
-                            version: string | null;
-                            namespace: string | null;
-                            qualifiers: string | null;
-                            subpath: string | null;
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                packages: {
-                    type: string;
-                    purl: string;
-                    name: string;
-                    updatedAt: Date;
-                    version: string | null;
-                    namespace: string | null;
-                    qualifiers: string | null;
-                    subpath: string | null;
-                }[];
-            },
-            {
-                packages: {
-                    type: string;
-                    purl: string;
-                    name: string;
-                    updatedAt: Date;
-                    version: string | null;
-                    namespace: string | null;
-                    qualifiers: string | null;
-                    subpath: string | null;
-                }[];
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/packages/count";
-        description: "Get packages count. Alias: GetPackagesCount";
-        alias: "GetPackagesCount";
-        parameters: [
-            {
-                name: "name";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "namespace";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "version";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "type";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "purl";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "createdAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "createdAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                count: zod.ZodNumber;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                count: number;
-            },
-            {
-                count: number;
             }
         >;
         errors: [
@@ -12378,12 +12378,12 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -12392,12 +12392,12 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -12413,12 +12413,12 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -12429,12 +12429,12 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13093,12 +13093,12 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13106,12 +13106,12 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13126,12 +13126,12 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13141,12 +13141,12 @@ declare const dosAPI: [
             {
                 licenseConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13811,6 +13811,7 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             licenseConclusions: {
                                 id: number;
                                 file: {
@@ -13825,7 +13826,6 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13835,6 +13835,7 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             licenseConclusions: {
                                 id: number;
                                 file: {
@@ -13849,7 +13850,6 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -13866,6 +13866,7 @@ declare const dosAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     licenseConclusions: {
                         id: number;
                         file: {
@@ -13880,7 +13881,6 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -13892,6 +13892,7 @@ declare const dosAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     licenseConclusions: {
                         id: number;
                         file: {
@@ -13906,7 +13907,6 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -14462,12 +14462,12 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -14477,12 +14477,12 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -14499,12 +14499,12 @@ declare const dosAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -14516,12 +14516,12 @@ declare const dosAPI: [
             {
                 bulkConclusions: {
                     id: number;
+                    updatedAt: Date;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -15568,10 +15568,10 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -15581,10 +15581,10 @@ declare const dosAPI: [
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -15601,10 +15601,10 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -15616,10 +15616,10 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -16478,20 +16478,20 @@ declare const dosAPI: [
                         zod.ZodTypeAny,
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
                         },
                         {
                             id: number;
+                            updatedAt: Date;
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            updatedAt: Date;
                             user: {
                                 username: string;
                             };
@@ -16505,10 +16505,10 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -16517,10 +16517,10 @@ declare const dosAPI: [
             {
                 pathExclusions: {
                     id: number;
+                    updatedAt: Date;
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    updatedAt: Date;
                     user: {
                         username: string;
                     };
@@ -16670,422 +16670,6 @@ declare const dosAPI: [
                     fileSha256: string;
                     packageId: number;
                 }[];
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/user/packages";
-        description: "Get packages. Alias: GetPackages";
-        alias: "GetPackages";
-        parameters: [
-            {
-                name: "pageSize";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodNumber>;
-            },
-            {
-                name: "pageIndex";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodNumber>;
-            },
-            {
-                name: "sortBy";
-                type: "Query";
-                schema: zod.ZodOptional<
-                    zod.ZodEnum<
-                        [
-                            "purl",
-                            "name",
-                            "version",
-                            "type",
-                            "namespace",
-                            "createdAt",
-                            "updatedAt",
-                        ]
-                    >
-                >;
-            },
-            {
-                name: "sortOrder";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
-            },
-            {
-                name: "name";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "namespace";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "version";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "type";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "purl";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "createdAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "createdAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                packages: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            purl: zod.ZodString;
-                            updatedAt: zod.ZodDate;
-                            name: zod.ZodString;
-                            version: zod.ZodNullable<zod.ZodString>;
-                            type: zod.ZodString;
-                            namespace: zod.ZodNullable<zod.ZodString>;
-                            qualifiers: zod.ZodNullable<zod.ZodString>;
-                            subpath: zod.ZodNullable<zod.ZodString>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            type: string;
-                            purl: string;
-                            name: string;
-                            updatedAt: Date;
-                            version: string | null;
-                            namespace: string | null;
-                            qualifiers: string | null;
-                            subpath: string | null;
-                        },
-                        {
-                            type: string;
-                            purl: string;
-                            name: string;
-                            updatedAt: Date;
-                            version: string | null;
-                            namespace: string | null;
-                            qualifiers: string | null;
-                            subpath: string | null;
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                packages: {
-                    type: string;
-                    purl: string;
-                    name: string;
-                    updatedAt: Date;
-                    version: string | null;
-                    namespace: string | null;
-                    qualifiers: string | null;
-                    subpath: string | null;
-                }[];
-            },
-            {
-                packages: {
-                    type: string;
-                    purl: string;
-                    name: string;
-                    updatedAt: Date;
-                    version: string | null;
-                    namespace: string | null;
-                    qualifiers: string | null;
-                    subpath: string | null;
-                }[];
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "get";
-        path: "/user/packages/count";
-        description: "Get packages count. Alias: GetPackagesCount";
-        alias: "GetPackagesCount";
-        parameters: [
-            {
-                name: "name";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "namespace";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "version";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "type";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "purl";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodString>;
-                description: string;
-            },
-            {
-                name: "createdAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "createdAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtGte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-            {
-                name: "updatedAtLte";
-                type: "Query";
-                schema: zod.ZodOptional<zod.ZodDate>;
-                description: string;
-            },
-        ];
-        response: zod.ZodObject<
-            {
-                count: zod.ZodNumber;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                count: number;
-            },
-            {
-                count: number;
             }
         >;
         errors: [
@@ -18368,6 +17952,422 @@ declare const dosAPI: [
                     changeContextPurls: string;
                     deleteOldPurlBookmarks: string;
                 };
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/packages";
+        description: "Get packages. Alias: GetPackages";
+        alias: "GetPackages";
+        parameters: [
+            {
+                name: "pageSize";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "pageIndex";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodNumber>;
+            },
+            {
+                name: "sortBy";
+                type: "Query";
+                schema: zod.ZodOptional<
+                    zod.ZodEnum<
+                        [
+                            "purl",
+                            "name",
+                            "version",
+                            "type",
+                            "namespace",
+                            "createdAt",
+                            "updatedAt",
+                        ]
+                    >
+                >;
+            },
+            {
+                name: "sortOrder";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodEnum<["asc", "desc"]>>;
+            },
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                packages: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            purl: zod.ZodString;
+                            updatedAt: zod.ZodDate;
+                            name: zod.ZodString;
+                            version: zod.ZodNullable<zod.ZodString>;
+                            type: zod.ZodString;
+                            namespace: zod.ZodNullable<zod.ZodString>;
+                            qualifiers: zod.ZodNullable<zod.ZodString>;
+                            subpath: zod.ZodNullable<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            type: string;
+                            purl: string;
+                            name: string;
+                            version: string | null;
+                            namespace: string | null;
+                            updatedAt: Date;
+                            qualifiers: string | null;
+                            subpath: string | null;
+                        },
+                        {
+                            type: string;
+                            purl: string;
+                            name: string;
+                            version: string | null;
+                            namespace: string | null;
+                            updatedAt: Date;
+                            qualifiers: string | null;
+                            subpath: string | null;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                packages: {
+                    type: string;
+                    purl: string;
+                    name: string;
+                    version: string | null;
+                    namespace: string | null;
+                    updatedAt: Date;
+                    qualifiers: string | null;
+                    subpath: string | null;
+                }[];
+            },
+            {
+                packages: {
+                    type: string;
+                    purl: string;
+                    name: string;
+                    version: string | null;
+                    namespace: string | null;
+                    updatedAt: Date;
+                    qualifiers: string | null;
+                    subpath: string | null;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/packages/count";
+        description: "Get packages count. Alias: GetPackagesCount";
+        alias: "GetPackagesCount";
+        parameters: [
+            {
+                name: "name";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "namespace";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "version";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "type";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "purl";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodString>;
+                description: string;
+            },
+            {
+                name: "createdAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "createdAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtGte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+            {
+                name: "updatedAtLte";
+                type: "Query";
+                schema: zod.ZodOptional<zod.ZodDate>;
+                description: string;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                count: zod.ZodNumber;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                count: number;
+            },
+            {
+                count: number;
             }
         >;
         errors: [

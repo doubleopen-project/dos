@@ -11,6 +11,8 @@
         "test:e2e": "playwright test"
     },
     "dependencies": {
+        "@ts-rest/core": "^3.52.1",
+        "@ts-rest/express": "^3.52.1",
         "@zodios/express": "10.6.0",
         "@zodios/openapi": "10.5.0",
         "adm-zip": "0.5.16",

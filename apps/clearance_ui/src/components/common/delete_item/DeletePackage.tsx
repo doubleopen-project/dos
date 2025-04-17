@@ -6,15 +6,15 @@ import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ZodiosResponseByPath } from "@zodios/core";
 import { Loader2 } from "lucide-react";
-import { userAPI } from "validation-helpers";
-import { adminHooks, userHooks } from "@/hooks/zodiosHooks";
+import { adminAPI } from "validation-helpers";
+import { adminHooks } from "@/hooks/zodiosHooks";
 import { useToast } from "@/components/ui/use-toast";
 import DeleteDialog from "@/components/common/delete_item/DeleteDialog";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { DeleteAction } from "@/types";
 
 type ItemType = ZodiosResponseByPath<
-    typeof userAPI,
+    typeof adminAPI,
     "get",
     "/packages"
 >["packages"][0];
@@ -25,7 +25,7 @@ type Props = {
 
 const DeletePackage = ({ data }: Props) => {
     const { toast } = useToast();
-    const keyPackages = userHooks.getKeyByPath("get", "/packages");
+    const keyPackages = adminHooks.getKeyByPath("get", "/packages");
     const queryClient = useQueryClient();
     const deleteActions: DeleteAction[] = [];
 

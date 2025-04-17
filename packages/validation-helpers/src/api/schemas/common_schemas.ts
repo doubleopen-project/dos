@@ -113,8 +113,8 @@ export const PathParamUuid = z
 //------------------ Common query params -------------------
 
 export const QueryParamFilterValue = z.string().optional();
-export const QueryParamPageSize = z.number().optional();
-export const QueryParamPageIndex = z.number().optional();
+export const QueryParamPageSize = z.coerce.number().optional();
+export const QueryParamPageIndex = z.coerce.number().optional();
 export const QueryParamSortOrder = z.enum(["asc", "desc"]).optional();
 export const QueryParamFilterDate = z.coerce.date().optional();
 export const QueryParamFilterBoolean = z.boolean().optional();

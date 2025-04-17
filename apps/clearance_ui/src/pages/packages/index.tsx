@@ -5,7 +5,7 @@
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { userHooks } from "@/hooks/zodiosHooks";
+import { adminHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PackageList from "@/components/package_library/PackageList";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
@@ -19,7 +19,7 @@ export default function PackageLibrary() {
         data: pkgCntData,
         isLoading: pkgCntLoading,
         error: pkgCntError,
-    } = userHooks.useGetPackagesCount(
+    } = adminHooks.useGetPackagesCount(
         {
             headers: {
                 Authorization: `Bearer ${session?.data?.accessToken}`,

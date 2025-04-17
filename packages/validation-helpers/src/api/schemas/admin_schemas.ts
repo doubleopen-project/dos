@@ -77,3 +77,31 @@ export const PostPurlCleanupRes = z.object({
         deleteOldPurlBookmarks: z.string(),
     }),
 });
+
+//------------------ GET packages -------------------
+export const QueryParamSortPkgBy = z
+    .enum([
+        "purl",
+        "name",
+        "version",
+        "type",
+        "namespace",
+        "createdAt",
+        "updatedAt",
+    ])
+    .optional();
+
+export const GetPackagesRes = z.object({
+    packages: z.array(
+        z.object({
+            purl: z.string(),
+            updatedAt: z.coerce.date(),
+            name: z.string(),
+            version: z.nullable(z.string()),
+            type: z.string(),
+            namespace: z.nullable(z.string()),
+            qualifiers: z.nullable(z.string()),
+            subpath: z.nullable(z.string()),
+        }),
+    ),
+});

@@ -350,6 +350,18 @@ resource "keycloak_openid_client_authorization_resource" "package_data" {
     ]
 }
 
+# Add resource for package library data.
+resource "keycloak_openid_client_authorization_resource" "package_library_data" {
+    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
+    name               = "PackageLibraryData"
+    display_name       = "Package Library Data"
+    realm_id           = keycloak_realm.dos_dev_realm.id
+
+    scopes = [
+        keycloak_openid_client_authorization_scope.read_scope.name
+    ]
+}
+
 # Add resource for user data.
 resource "keycloak_openid_client_authorization_resource" "users" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
@@ -537,6 +549,26 @@ resource "keycloak_openid_client_authorization_permission" "r_package_data_permi
     ]
 }
 
+# Add permission for reading package library data.
+resource "keycloak_openid_client_authorization_permission" "r_package_library_data_permission" {
+    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
+    realm_id           = keycloak_realm.dos_dev_realm.id
+    name               = "Read package library data"
+    type               = "scope"
+
+    policies = [
+        keycloak_openid_client_role_policy.only_app_admins_policy.id
+    ]
+
+    resources = [
+        keycloak_openid_client_authorization_resource.package_library_data.id
+    ]
+
+    scopes = [
+        keycloak_openid_client_authorization_scope.read_scope.id
+    ]
+}
+
 # Add permission for performing maintenance tasks.
 resource "keycloak_openid_client_authorization_permission" "c_maintenance_permission" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
@@ -602,6 +634,58 @@ resource "keycloak_user_roles" "test_user_roles" {
 
   role_ids = [
     keycloak_role.realm_role_app_user.id
+  ]
+}
+
+# Add an admin user to the DOS development realm.
+resource "keycloak_user" "test_admin" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    username = "test-admin"
+    enabled = true
+
+    email = "test-admin@example.com"
+    first_name = "Test"
+    last_name = "Admin"
+
+    initial_password {
+        value = "test-admin"
+        temporary = false
+    }
+}
+
+# Assign the "app-admin" role to the test admin user.
+resource "keycloak_user_roles" "test_admin_roles" {
+  realm_id = keycloak_realm.dos_dev_realm.id
+  user_id  = keycloak_user.test_admin.id
+
+  role_ids = [
+    keycloak_role.realm_role_app_admin.id
+  ]
+}
+
+# Add a read-only user to the DOS development realm.
+resource "keycloak_user" "test_readonly" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    username = "test-readonly"
+    enabled = true
+
+    email = "test-readonly@example.com"
+    first_name = "Test"
+    last_name = "Readonly"
+
+    initial_password {
+        value = "test-readonly"
+        temporary = false
+    }
+}
+
+# Assign the "app-read-only-user" role to the test read-only user.
+resource "keycloak_user_roles" "test_readonly_roles" {
+  realm_id = keycloak_realm.dos_dev_realm.id
+  user_id  = keycloak_user.test_readonly.id
+
+  role_ids = [
+    keycloak_role.realm_role_app_read_only_user.id
   ]
 }
 

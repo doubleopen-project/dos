@@ -9,6 +9,8 @@
         "test": "jest"
     },
     "dependencies": {
+        "@anatine/zod-openapi": "^2.2.7",
+        "@ts-rest/core": "^3.52.1",
         "@zodios/express": "10.6.0",
         "check-password-strength": "3.0.0",
         "is-glob": "4.0.3",

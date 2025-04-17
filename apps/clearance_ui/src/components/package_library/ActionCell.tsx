@@ -4,13 +4,13 @@
 
 import { CellContext } from "@tanstack/react-table";
 import { ZodiosResponseByAlias } from "@zodios/core";
-import { userAPI } from "validation-helpers";
+import { adminAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import DeletePackage from "@/components/common/delete_item/DeletePackage";
 import { hasPermission } from "@/helpers/hasPermission";
 
 type Package = ZodiosResponseByAlias<
-    typeof userAPI,
+    typeof adminAPI,
     "GetPackages"
 >["packages"][0];
 
