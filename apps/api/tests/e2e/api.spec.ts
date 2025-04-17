@@ -26,12 +26,6 @@ const username = "test-user";
 const password = "test-user";
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
 
-if (!server || !realm || !clientId || !clientSecret || !username || !password) {
-    throw new Error(
-        "KEYCLOAK_URL, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID_API, KEYCLOAK_CLIENT_SECRET_API, E2E_USER_USERNAME and E2E_USER_PASSWORD environment variables must be set",
-    );
-}
-
 test.describe("API lets authenticated users to", () => {
     let keycloakToken: string;
     let dosToken: string;
