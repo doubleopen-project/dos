@@ -12,13 +12,12 @@ import test, { expect } from "@playwright/test";
 import { Zodios, ZodiosInstance } from "@zodios/core";
 import AdmZip from "adm-zip";
 import { dosAPI, userAPI } from "validation-helpers";
+import { baseUrl } from "./utils/constants";
 import { getAccessToken } from "./utils/get_access_token";
 
 /**
  * Construct Zodios callers for the API endpoints to easily call them in the tests.
  */
-
-const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
 
 test.describe.configure({ mode: "default" });
 
