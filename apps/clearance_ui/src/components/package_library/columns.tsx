@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Options } from "nuqs";
-import { userAPI } from "validation-helpers";
+import { adminAPI } from "validation-helpers";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,7 +29,7 @@ import { getProvenanceType } from "@/helpers/getProvenanceType";
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
 export type Package = ZodiosResponseByPath<
-    typeof userAPI,
+    typeof adminAPI,
     "get",
     "/packages"
 >["packages"][0];
