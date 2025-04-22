@@ -1,63 +1,63 @@
 // SPDX-FileCopyrightText: 2024 Double Open Oy
 //
 // SPDX-License-Identifier: MIT
-
 import {
     randCodeSnippet,
     randGitCommitSha,
     randSemver,
     randSlug,
 } from "@ngneat/falso";
-import test, { expect } from "@playwright/test";
-import { Zodios, ZodiosInstance } from "@zodios/core";
+import test, { APIRequestContext, expect } from "@playwright/test";
+import { ZodiosResponseByPath } from "@zodios/core";
 import AdmZip from "adm-zip";
-import { dosAPI, userAPI } from "validation-helpers";
+import { dosAPI } from "validation-helpers";
 import { baseUrl } from "./utils/constants";
 import { getAccessToken } from "./utils/get_access_token";
-
-/**
- * Construct Zodios callers for the API endpoints to easily call them in the tests.
- */
 
 test.describe.configure({ mode: "default" });
 
 test.describe("API lets authenticated users to", () => {
     let keycloakToken: string;
     let dosToken: string;
-    let userZodios: ZodiosInstance<typeof userAPI>;
-    let dosZodios: ZodiosInstance<typeof dosAPI>;
+    let userContext: APIRequestContext;
+    let apiContext: APIRequestContext;
 
     /**
      * Retrieve the token for an authenticated test user from Keycloak. This can be used in the API
      * calls to authenticate the user. Also retrieve the DOS token.
      */
-    test.beforeAll(async ({}) => {
+    test.beforeAll(async ({ playwright }) => {
         keycloakToken = await getAccessToken("test-user", "test-user");
         expect(keycloakToken).toBeDefined();
 
-        userZodios = new Zodios(`${baseUrl}/api/user/`, userAPI, {
-            axiosConfig: {
-                headers: {
-                    Authorization: `Bearer ${keycloakToken}`,
-                },
-            },
-        });
-
-        const userToken = await userZodios.put("/token", undefined, {
-            headers: {
+        // Create a new API context for the user API with the Keycloak token in the headers.
+        userContext = await playwright.request.newContext({
+            baseURL: `${baseUrl}/api/user/`,
+            extraHTTPHeaders: {
                 Authorization: `Bearer ${keycloakToken}`,
             },
         });
 
-        dosToken = userToken.token;
+        const userTokenRes = await userContext.put("token");
+        expect(userTokenRes.ok()).toBeTruthy();
 
-        dosZodios = new Zodios(`${baseUrl}/api/`, dosAPI, {
-            axiosConfig: {
-                headers: {
-                    Authorization: `Bearer ${dosToken}`,
-                },
+        const userToken = await userTokenRes.json();
+        dosToken = userToken.token;
+        expect(dosToken).toBeDefined();
+
+        // Create a new API context for the scanner API with the DOS token in the headers.
+        apiContext = await playwright.request.newContext({
+            baseURL: `${baseUrl}/api/`,
+            extraHTTPHeaders: {
+                Authorization: `Bearer ${dosToken}`,
             },
         });
+    });
+
+    test.afterAll(async () => {
+        // Close the API context to clean up resources.
+        await apiContext.dispose();
+        await userContext.dispose();
     });
 
     test("scan packages and retrieve their results", async ({}) => {
@@ -92,11 +92,13 @@ test.describe("API lets authenticated users to", () => {
         const purl = `pkg:npm/${packageName}@${version}`;
 
         // Fetch a presigned URL from the API and upload the zip file to S3.
-        const presignedUrl = (
-            await dosZodios.post("/upload-url", {
-                key: zipKey,
-            })
-        ).presignedUrl;
+        const presignedRes = await apiContext.post("upload-url", {
+            data: { key: zipKey },
+        });
+
+        expect(presignedRes.ok()).toBeTruthy();
+
+        const { presignedUrl } = await presignedRes.json();
 
         expect(presignedUrl).toBeDefined();
 
@@ -105,16 +107,26 @@ test.describe("API lets authenticated users to", () => {
             body: zipBuffer,
         });
 
-        await dosZodios.post("/job", {
-            zipFileKey: zipKey,
-            purls: [purl],
+        await apiContext.post("job", {
+            data: {
+                zipFileKey: zipKey,
+                purls: [purl],
+            },
         });
 
         // Query scan results until they are availabe and include the expected results.
         await expect(async () => {
-            const jobDetails = await dosZodios.post("/scan-results", {
-                purls: [purl],
+            const jobDetailsRes = await apiContext.post("scan-results", {
+                data: { purls: [purl] },
             });
+
+            expect(jobDetailsRes.ok()).toBeTruthy();
+
+            const jobDetails: ZodiosResponseByPath<
+                typeof dosAPI,
+                "post",
+                "/scan-results"
+            > = await jobDetailsRes.json();
 
             expect(
                 jobDetails.results?.licenses.map((license) => license.license),
@@ -131,18 +143,26 @@ test.describe("API lets authenticated users to", () => {
     test("adding a job with a non-existent S3 file key should result in job failing", async ({}) => {
         const purl = `pkg:npm/${randSlug()}@${randSemver()}`;
 
-        const res = await dosZodios.post("/job", {
-            zipFileKey: "non-existent.zip",
-            purls: [purl],
+        const jobRes = await apiContext.post("job", {
+            data: {
+                zipFileKey: "non-existent.zip",
+                purls: [purl],
+            },
         });
+
+        expect(jobRes.ok()).toBeTruthy();
+
+        const job = await jobRes.json();
 
         // Query job state until it is available and is failed.
         await expect(async () => {
-            const jobState = await dosZodios.get("/job-state/:id", {
-                params: {
-                    id: res.scannerJobId,
-                },
-            });
+            const jobStateRes = await apiContext.get(
+                `job-state/${job.scannerJobId}`,
+            );
+
+            expect(jobStateRes.ok()).toBeTruthy();
+
+            const jobState = await jobStateRes.json();
 
             expect(jobState.state.status).toBe("failed");
             expect(jobState.state.message).toBe(
