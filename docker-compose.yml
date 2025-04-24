@@ -190,3 +190,7 @@ volumes:
         driver: local
     minio-data:
         driver: local
+
+networks:
+    default:
+        name: ort-server_default
