@@ -5,7 +5,7 @@
 version: "3"
 
 services:
-    postgres:
+    db:
         image: postgres:17.5
         volumes:
             - db-data:/var/lib/postgresql/data
@@ -71,13 +71,13 @@ services:
             dockerfile: API.Dockerfile
         command: ["run", "db:migrate:deploy"]
         environment:
-            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
         depends_on:
-            postgres:
+            db:
                 condition: service_healthy
                 required: true
 
-    keycloak:
+    auth:
         image: quay.io/keycloak/keycloak:26.2.4
         command: start-dev
         ports:
@@ -98,7 +98,7 @@ services:
         volumes:
             - ./terraform:/workspace
         depends_on:
-            keycloak:
+            auth:
                 condition: service_healthy
         entrypoint: ["/bin/sh", "-c"]
         command: >
@@ -111,8 +111,8 @@ services:
         ports:
             - 3001:3001
         environment:
-            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
-            - KEYCLOAK_URL=http://keycloak:8080
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+            - KEYCLOAK_URL=http://auth:8080
             - ALLOWED_ORIGINS=http://clearance-ui:3000
             - SPACES_ENDPOINT=http://minio:9000
             - REDIS_URL=redis://redis:6379
@@ -123,7 +123,7 @@ services:
             timeout: 10s
             retries: 5
         depends_on:
-            postgres:
+            db:
                 condition: service_healthy
                 required: true
             run-migrations:
@@ -135,7 +135,7 @@ services:
             minio:
                 condition: service_healthy
                 required: true
-            keycloak:
+            auth:
                 condition: service_healthy
                 required: true
             terraform:
@@ -161,7 +161,7 @@ services:
         environment:
             - NEXTAUTH_URL=http://clearance-ui:3000
             - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-            - KEYCLOAK_URL=http://keycloak:8080
+            - KEYCLOAK_URL=http://auth:8080
         ports:
             - 3002:3000
 
@@ -172,8 +172,8 @@ services:
             args:
                 - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
-            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
-            - KEYCLOAK_URL=http://keycloak:8080
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+            - KEYCLOAK_URL=http://auth:8080
             - CI=true
         depends_on:
             api:
