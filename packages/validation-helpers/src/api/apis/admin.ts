@@ -232,4 +232,18 @@ export const adminAPI = makeApi([
         response: schemas.GetDistinctUsersForItemsRes,
         errors,
     },
+    {
+        method: "put",
+        path: "/clearance-items/reassign",
+        description: "Reassign clearance items to a new user ID",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PutReassignClearanceItemsReq,
+            },
+        ],
+        response: schemas.PutReassignClearanceItemsRes,
+        errors,
+    },
 ]);

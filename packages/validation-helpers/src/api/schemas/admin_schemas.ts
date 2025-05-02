@@ -113,3 +113,19 @@ export const GetDistinctUsersForItemsRes = z.object({
         z.object({ id: z.string(), username: z.string().optional() }),
     ),
 });
+
+//---------------- PUT reassign clearance items ----------------
+
+export const PutReassignClearanceItemsReq = z.object({
+    userId: z.string().uuid(),
+    newUserId: z.string().uuid(),
+});
+
+export const PutReassignClearanceItemsRes = z.object({
+    message: z.string(),
+    counts: z.object({
+        pathExclusions: z.number(),
+        bulkConclusions: z.number(),
+        licenseConclusions: z.number(),
+    }),
+});

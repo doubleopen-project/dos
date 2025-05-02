@@ -55,6 +55,7 @@ test.describe("API lets authenticated admins to", () => {
 test.describe("API lets authenticated admins to", () => {
     let keycloakToken: string;
     let adminUserId: string;
+    let userId: string;
     let apiContext: APIRequestContext;
     const testPurl =
         "pkg:npm/dos-monorepo@0.0.0?vcs_type=Git&vcs_url=https%3A%2F%2Fgithub.com%2Fdoubleopen-project%2Fdos.git&vcs_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6&resolved_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6";
@@ -65,6 +66,11 @@ test.describe("API lets authenticated admins to", () => {
         expect(adminUser).toBeDefined();
         expect(adminUser.length).toBe(1);
         adminUserId = adminUser[0].id;
+
+        const user = await getUsers("test-user");
+        expect(user).toBeDefined();
+        expect(user.length).toBe(1);
+        userId = user[0].id;
 
         // Retrieve the access token for the admin user from Keycloak.
         keycloakToken = await getAccessToken("test-admin", "test-admin");
@@ -139,6 +145,21 @@ test.describe("API lets authenticated admins to", () => {
         ).length;
         expect(userIdCount).toBe(1);
     });
+
+    test("reassign clearance items to a new user ID", async () => {
+        const newUserId = userId;
+        const response = await apiContext.put("clearance-items/reassign", {
+            data: {
+                userId: adminUserId,
+                newUserId: newUserId,
+            },
+        });
+        expect(response.ok()).toBe(true);
+        const responseBody = await response.json();
+        expect(responseBody.counts.licenseConclusions).toBeGreaterThanOrEqual(
+            2,
+        );
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -176,6 +197,16 @@ test.describe("API doesn't let authenticated regular users to", () => {
 
     test("retrieve data on distinct users that have made clearance items", async () => {
         const response = await apiContext.get("clearance-items/distinct-users");
+        expect(response.status()).toBe(403);
+    });
+
+    test("reassign clearance items to a new user ID", async () => {
+        const response = await apiContext.put("clearance-items/reassign", {
+            data: {
+                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+            },
+        });
         expect(response.status()).toBe(403);
     });
 });
@@ -216,6 +247,16 @@ test.describe("API doesn't let readonly users to", () => {
         const response = await apiContext.get("clearance-items/distinct-users");
         expect(response.status()).toBe(403);
     });
+
+    test("reassign clearance items to a new user ID", async () => {
+        const response = await apiContext.put("clearance-items/reassign", {
+            data: {
+                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -248,6 +289,17 @@ test.describe("API doesn't let unauthenticated users to", () => {
     test("retrieve data on distinct users that have made clearance items", async () => {
         // Attempt to retrieve distinct users without authentication.
         const response = await apiContext.get("clearance-items/distinct-users");
+        expect(response.status()).toBe(401);
+    });
+
+    test("reassign clearance items to a new user ID", async () => {
+        // Attempt to reassign clearance items without authentication.
+        const response = await apiContext.put("clearance-items/reassign", {
+            data: {
+                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+            },
+        });
         expect(response.status()).toBe(401);
     });
 });

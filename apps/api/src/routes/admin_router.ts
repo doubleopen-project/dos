@@ -12,12 +12,14 @@ import {
     countScannedPackages,
     findScannedPackages,
     getDistinctUserIdsForItems,
+    updateClearanceItemsUserId,
 } from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import {
     addRealmRolesToUser,
     createUser,
     deleteUser,
+    getUser,
     getUsers,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
@@ -272,6 +274,52 @@ adminRouter.get(
             // Find out if error is a Prisma error or an unknown error
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
+        }
+    },
+);
+
+adminRouter.put(
+    "/clearance-items/reassign",
+    authzPermission({ resource: "Users", scopes: ["PUT"] }),
+    async (req, res) => {
+        try {
+            const { userId, newUserId } = req.body;
+
+            if (userId === newUserId) {
+                throw new CustomError(
+                    "userId and newUserId cannot be the same",
+                    400,
+                    "newUserId",
+                );
+            }
+
+            const foundUser = await getUser(newUserId);
+
+            if (!foundUser) {
+                throw new CustomError(
+                    `User with ID ${newUserId} not found`,
+                    404,
+                    "newUserId",
+                );
+            }
+
+            const counts = await updateClearanceItemsUserId(userId, newUserId);
+            res.status(200).json({
+                message: `Reassigned clearance items from user ${userId} to user ${newUserId}`,
+                counts: counts,
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).send({
+                    message: error.message,
+                    path: error.path,
+                });
+            } else {
+                // Find out if error is a Prisma error or an unknown error
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
     },
 );
