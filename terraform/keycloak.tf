@@ -371,6 +371,8 @@ resource "keycloak_openid_client_authorization_resource" "users" {
 
     scopes = [
         keycloak_openid_client_authorization_scope.create_scope.name,
+        keycloak_openid_client_authorization_scope.read_scope.name,
+        keycloak_openid_client_authorization_scope.update_scope.name,
         keycloak_openid_client_authorization_scope.delete_scope.name
     ]
 }
@@ -446,11 +448,11 @@ resource "keycloak_openid_client_role_policy" "only_app_users_and_app_admins_pol
 
 ## Add permissions for the authorization services for the DOS API client.
 
-# Add permission for creating and deleting users.
-resource "keycloak_openid_client_authorization_permission" "cd_users_permission" {
+# Add permission for creating and deleting users, and reading and updating user data.
+resource "keycloak_openid_client_authorization_permission" "crud_users_permission" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
     realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Create and delete users"
+    name               = "Create and delete users, and read and update user data"
     type               = "scope"
 
     policies = [
@@ -463,6 +465,8 @@ resource "keycloak_openid_client_authorization_permission" "cd_users_permission"
 
     scopes = [
         keycloak_openid_client_authorization_scope.create_scope.id,
+        keycloak_openid_client_authorization_scope.read_scope.id,
+        keycloak_openid_client_authorization_scope.update_scope.id,
         keycloak_openid_client_authorization_scope.delete_scope.id
     ]
 }
