@@ -224,4 +224,12 @@ export const adminAPI = makeApi([
         response: commonSchemas.GetCountRes,
         errors,
     },
+    {
+        method: "get",
+        path: "/clearance-items/distinct-users",
+        description:
+            "Get information about the distinct users that have made clearance items",
+        response: schemas.GetDistinctUsersForItemsRes,
+        errors,
+    },
 ]);

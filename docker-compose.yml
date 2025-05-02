@@ -172,6 +172,7 @@ services:
             args:
                 - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
+            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
             - KEYCLOAK_URL=http://keycloak:8080
             - CI=true
         depends_on:

@@ -1575,6 +1575,138 @@ declare const adminAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/clearance-items/distinct-users";
+        description: "Get information about the distinct users that have made clearance items";
+        response: zod.ZodObject<
+            {
+                users: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodString;
+                            username: zod.ZodOptional<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: string;
+                            username?: string | undefined;
+                        },
+                        {
+                            id: string;
+                            username?: string | undefined;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                users: {
+                    id: string;
+                    username?: string | undefined;
+                }[];
+            },
+            {
+                users: {
+                    id: string;
+                    username?: string | undefined;
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const authAPI: [
@@ -18368,6 +18500,138 @@ declare const dosAPI: [
             },
             {
                 count: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/clearance-items/distinct-users";
+        description: "Get information about the distinct users that have made clearance items";
+        response: zod.ZodObject<
+            {
+                users: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            id: zod.ZodString;
+                            username: zod.ZodOptional<zod.ZodString>;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            id: string;
+                            username?: string | undefined;
+                        },
+                        {
+                            id: string;
+                            username?: string | undefined;
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                users: {
+                    id: string;
+                    username?: string | undefined;
+                }[];
+            },
+            {
+                users: {
+                    id: string;
+                    username?: string | undefined;
+                }[];
             }
         >;
         errors: [
