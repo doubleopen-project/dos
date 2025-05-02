@@ -1707,6 +1707,165 @@ declare const adminAPI: [
             },
         ];
     },
+    {
+        method: "put";
+        path: "/clearance-items/reassign";
+        description: "Reassign clearance items to a new user ID";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        userId: zod.ZodString;
+                        newUserId: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        userId: string;
+                        newUserId: string;
+                    },
+                    {
+                        userId: string;
+                        newUserId: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+                counts: zod.ZodObject<
+                    {
+                        pathExclusions: zod.ZodNumber;
+                        bulkConclusions: zod.ZodNumber;
+                        licenseConclusions: zod.ZodNumber;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        pathExclusions: number;
+                        bulkConclusions: number;
+                        licenseConclusions: number;
+                    },
+                    {
+                        pathExclusions: number;
+                        bulkConclusions: number;
+                        licenseConclusions: number;
+                    }
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+                counts: {
+                    pathExclusions: number;
+                    bulkConclusions: number;
+                    licenseConclusions: number;
+                };
+            },
+            {
+                message: string;
+                counts: {
+                    pathExclusions: number;
+                    bulkConclusions: number;
+                    licenseConclusions: number;
+                };
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const authAPI: [
@@ -2515,29 +2674,29 @@ declare const scannerAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                pathExclusions: {
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                }[];
                 licenseConclusions: {
                     path: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                }[];
-                pathExclusions: {
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                 }[];
             },
             {
+                pathExclusions: {
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                }[];
                 licenseConclusions: {
                     path: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                }[];
-                pathExclusions: {
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                 }[];
             }
         >;
@@ -10361,29 +10520,29 @@ declare const dosAPI: [
             "strip",
             zod.ZodTypeAny,
             {
+                pathExclusions: {
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                }[];
                 licenseConclusions: {
                     path: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                }[];
-                pathExclusions: {
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                 }[];
             },
             {
+                pathExclusions: {
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
+                }[];
                 licenseConclusions: {
                     path: string;
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
-                }[];
-                pathExclusions: {
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                 }[];
             }
         >;
@@ -18632,6 +18791,165 @@ declare const dosAPI: [
                     id: string;
                     username?: string | undefined;
                 }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "put";
+        path: "/admin/clearance-items/reassign";
+        description: "Reassign clearance items to a new user ID";
+        parameters: [
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        userId: zod.ZodString;
+                        newUserId: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        userId: string;
+                        newUserId: string;
+                    },
+                    {
+                        userId: string;
+                        newUserId: string;
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                message: zod.ZodString;
+                counts: zod.ZodObject<
+                    {
+                        pathExclusions: zod.ZodNumber;
+                        bulkConclusions: zod.ZodNumber;
+                        licenseConclusions: zod.ZodNumber;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        pathExclusions: number;
+                        bulkConclusions: number;
+                        licenseConclusions: number;
+                    },
+                    {
+                        pathExclusions: number;
+                        bulkConclusions: number;
+                        licenseConclusions: number;
+                    }
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                message: string;
+                counts: {
+                    pathExclusions: number;
+                    bulkConclusions: number;
+                    licenseConclusions: number;
+                };
+            },
+            {
+                message: string;
+                counts: {
+                    pathExclusions: number;
+                    bulkConclusions: number;
+                    licenseConclusions: number;
+                };
             }
         >;
         errors: [

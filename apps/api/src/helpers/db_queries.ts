@@ -4789,3 +4789,69 @@ export const updateScannerJobAndPackagesStateToFailedRecursive = async (
         }
     }
 };
+
+// Transaction to update the user ID for all clearance items that a user has made
+export const updateClearanceItemsUserId = async (
+    oldUserId: string,
+    newUserId: string,
+): Promise<{
+    pathExclusions: number;
+    bulkConclusions: number;
+    licenseConclusions: number;
+}> => {
+    let retries = initialRetryCount;
+    let pathExclusionCount = 0;
+    let bulkConclusionCount = 0;
+    let licenseConclusionCount = 0;
+
+    while (retries > 0) {
+        try {
+            const result = await prisma.$transaction([
+                prisma.pathExclusion.updateMany({
+                    where: {
+                        userId: oldUserId,
+                    },
+                    data: {
+                        userId: newUserId,
+                    },
+                }),
+                prisma.bulkConclusion.updateMany({
+                    where: {
+                        userId: oldUserId,
+                    },
+                    data: {
+                        userId: newUserId,
+                    },
+                }),
+                prisma.licenseConclusion.updateMany({
+                    where: {
+                        userId: oldUserId,
+                    },
+                    data: {
+                        userId: newUserId,
+                    },
+                }),
+            ]);
+
+            pathExclusionCount = result[0].count;
+            bulkConclusionCount = result[1].count;
+            licenseConclusionCount = result[2].count;
+
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to update ClearanceItems' user ID: " + error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return {
+        pathExclusions: pathExclusionCount,
+        bulkConclusions: bulkConclusionCount,
+        licenseConclusions: licenseConclusionCount,
+    };
+};
