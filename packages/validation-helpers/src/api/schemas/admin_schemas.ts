@@ -105,3 +105,11 @@ export const GetPackagesRes = z.object({
         }),
     ),
 });
+
+//---------------- GET distinct user IDs ----------------
+
+export const GetDistinctUsersForItemsRes = z.object({
+    users: z.array(
+        z.object({ id: z.string(), username: z.string().optional() }),
+    ),
+});

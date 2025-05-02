@@ -3686,6 +3686,92 @@ export const findSystemIssues = async (
     return systemIssues;
 };
 
+export const getDistinctUserIdsForItems = async (): Promise<Set<string>> => {
+    let retries = initialRetryCount;
+    const userIds: Set<string> = new Set();
+
+    while (retries > 0) {
+        try {
+            const items = await prisma.licenseConclusion.findMany({
+                select: {
+                    userId: true,
+                },
+                distinct: ["userId"],
+            });
+
+            for (const item of items) {
+                userIds.add(item.userId);
+            }
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find distinct userIds for items: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            const items = await prisma.bulkConclusion.findMany({
+                select: {
+                    userId: true,
+                },
+                distinct: ["userId"],
+            });
+
+            for (const item of items) {
+                userIds.add(item.userId);
+            }
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find distinct userIds for items: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    retries = initialRetryCount;
+
+    while (retries > 0) {
+        try {
+            const items = await prisma.pathExclusion.findMany({
+                select: {
+                    userId: true,
+                },
+                distinct: ["userId"],
+            });
+
+            for (const item of items) {
+                userIds.add(item.userId);
+            }
+            break;
+        } catch (error) {
+            console.log(
+                "Error with trying to find distinct userIds for items: " +
+                    error,
+            );
+            handleError(error);
+            retries--;
+            if (retries > 0) await waitToRetry();
+            else throw error;
+        }
+    }
+
+    return userIds;
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files

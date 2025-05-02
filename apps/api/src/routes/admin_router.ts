@@ -11,12 +11,14 @@ import * as dbOperations from "../helpers/db_operations";
 import {
     countScannedPackages,
     findScannedPackages,
+    getDistinctUserIdsForItems,
 } from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import {
     addRealmRolesToUser,
     createUser,
     deleteUser,
+    getUsers,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 import { authzPermission } from "../middlewares/authz_permission";
@@ -242,6 +244,29 @@ adminRouter.get(
                 req.query.updatedAtLte,
             );
             res.status(200).json({ count: count });
+        } catch (error) {
+            console.log("Error: ", error);
+            // Find out if error is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    },
+);
+
+adminRouter.get(
+    "/clearance-items/distinct-users",
+    authzPermission({ resource: "Users", scopes: ["GET"] }),
+    async (req, res) => {
+        try {
+            const distinctUserIds = await getDistinctUserIdsForItems();
+            const users = await getUsers();
+
+            const distinctUsers = Array.from(distinctUserIds).map((userId) => ({
+                id: userId,
+                username: users.find((user) => user.id === userId)?.username,
+            }));
+
+            res.status(200).json({ users: distinctUsers });
         } catch (error) {
             console.log("Error: ", error);
             // Find out if error is a Prisma error or an unknown error
