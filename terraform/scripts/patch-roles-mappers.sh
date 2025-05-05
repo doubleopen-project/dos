@@ -47,8 +47,8 @@ curl -s -X PUT -H "Authorization: Bearer $TOKEN" \
       "jsonType.label": "String",
       "multivalued": "true",
       "userinfo.token.claim": "true",
-      "access.token.claim": "true",
-      "id.token.claim": "true"
+      "access.token.claim": "false",
+      "id.token.claim": "false"
     }
   }'
 

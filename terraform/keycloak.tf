@@ -826,3 +826,24 @@ resource "keycloak_group_memberships" "superuser_group_members" {
         keycloak_user.test_admin.username
     ]
 }
+
+# Add protocol mapper for the dos-dev-api client roles
+resource "keycloak_generic_protocol_mapper" "dos_api_client_roles_mapper" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_scope_id = data.keycloak_openid_client_scope.roles.id
+    name = "DOS API client roles mapper"
+    protocol = "openid-connect"
+    protocol_mapper = "oidc-usermodel-client-role-mapper"
+
+    config = {
+        "introspection.token.claim" = "true"
+        "multivalued" = "true"
+        "userinfo.token.claim" = "true"
+        "id.token.claim" = "true"
+        "lightweight.claim" = "false"
+        "access.token.claim" = "true"
+        "claim.name" = "resource_access.$${client_id}.roles"
+        "jsonType.label" = "String"
+        "usermodel.clientRoleMapping.clientId" = "${keycloak_openid_client.dos_api_openid_client.client_id}"
+    }
+}
