@@ -544,3 +544,53 @@ export const updateUser = async (
     }
     return true;
 };
+
+export const getUser = async (id: string): Promise<User | null> => {
+    let retries = 3;
+    let user: User | null = null;
+
+    while (retries > 0) {
+        try {
+            const token = await getAccessToken();
+            user = await kcClient.GetUserById({
+                params: {
+                    realm: authConfig.realm,
+                    id: id,
+                },
+                headers: {
+                    Authorization: "Bearer " + token.access_token,
+                },
+            });
+            break;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                retries--;
+                if (error.response?.status === 404) {
+                    break;
+                } else if (error.response?.status === 504 && retries > 0) {
+                    console.log(
+                        "Failed to get user due to gateway timeout. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else if (error.code === "ETIMEDOUT" && retries > 0) {
+                    console.log(
+                        "Failed to get user due to timeout error. Retrying in 2 seconds...",
+                    );
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                } else {
+                    console.log(error);
+                    console.log(
+                        "Failed to get user. Keycloak responded with status code " +
+                            error.response?.status,
+                    );
+                    throw new CustomError(
+                        "Failed to get user. Error: " + error.message,
+                        500,
+                    );
+                }
+            }
+        }
+    }
+
+    return user;
+};

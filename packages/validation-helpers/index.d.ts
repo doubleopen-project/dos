@@ -19686,6 +19686,88 @@ declare const keycloakAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/admin/realms/:realm/users/:id";
+        description: "Get user by ID";
+        alias: "GetUserById";
+        response: zod.ZodObject<
+            {
+                id: zod.ZodString;
+                username: zod.ZodString;
+                firstName: zod.ZodOptional<zod.ZodString>;
+                lastName: zod.ZodOptional<zod.ZodString>;
+                email: zod.ZodOptional<zod.ZodString>;
+                attributes: zod.ZodOptional<
+                    zod.ZodObject<
+                        {
+                            dosApiToken: zod.ZodOptional<
+                                zod.ZodArray<zod.ZodString, "many">
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            dosApiToken?: string[] | undefined;
+                        },
+                        {
+                            dosApiToken?: string[] | undefined;
+                        }
+                    >
+                >;
+                requiredActions: zod.ZodOptional<
+                    zod.ZodArray<zod.ZodString, "many">
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                username: string;
+                id: string;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                attributes?:
+                    | {
+                          dosApiToken?: string[] | undefined;
+                      }
+                    | undefined;
+                requiredActions?: string[] | undefined;
+            },
+            {
+                username: string;
+                id: string;
+                firstName?: string | undefined;
+                lastName?: string | undefined;
+                email?: string | undefined;
+                attributes?:
+                    | {
+                          dosApiToken?: string[] | undefined;
+                      }
+                    | undefined;
+                requiredActions?: string[] | undefined;
+            }
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const TokenResponse: z.ZodObject<

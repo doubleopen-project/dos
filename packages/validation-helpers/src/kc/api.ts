@@ -210,4 +210,12 @@ export const keycloakAPI = makeApi([
         response: schemas.UndefinedResponse,
         errors,
     },
+    {
+        method: "get",
+        path: "/admin/realms/:realm/users/:id",
+        description: "Get user by ID",
+        alias: "GetUserById",
+        response: schemas.GetUserByIdResponse,
+        errors,
+    },
 ]);
