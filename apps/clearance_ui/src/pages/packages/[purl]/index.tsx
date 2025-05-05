@@ -31,6 +31,9 @@ export default function Package() {
         required: true,
     });
 
+    console.log("Session status:", session.status);
+    console.log("Session error:", session.data?.error);
+
     useEffect(() => {
         if (session.data?.error === "SessionNotActiveError") {
             signOut();

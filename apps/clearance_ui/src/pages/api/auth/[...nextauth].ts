@@ -186,6 +186,8 @@ export default NextAuth({
             return refreshAccessToken(token);
         },
         session({ session, token }) {
+            console.log("Session callback:", session, token);
+            console.log("Session error:", token.error);
             if (token) {
                 session.user = token.user;
                 session.error = token.error;

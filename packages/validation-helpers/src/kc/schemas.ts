@@ -143,3 +143,5 @@ export const ResetUserPasswordReq = z.object({
 });
 
 export const GetUserByIdResponse = UserRepresentation;
+
+export const GetUserInfoResponse;

@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import type { Permissions } from "validation-helpers";
 
 export type User = {
@@ -63,6 +63,16 @@ export const useUser: () => User | null = () => {
             console.error(error);
         }
     }, [error]);
+    /*
+    useEffect(() => {
+        if (
+            session.data?.error === "SessionNotActiveError" ||
+            session.data?.error === "TokenNotActiveError"
+        ) {
+            console.error("Session not active. Signing out.");
+            signOut();
+        }
+    }, [session.data?.error]);*/
 
     if (session.data?.error !== undefined) {
         return null;
