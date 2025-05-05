@@ -85,21 +85,21 @@ export const CreateUserReq = z.object({
 
 export const UndefinedResponse = z.undefined();
 
-export const GetUsersResponse = z.array(
-    z.object({
-        id: z.string(),
-        username: z.string(),
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        email: z.string().optional(),
-        attributes: z
-            .object({
-                dosApiToken: z.array(z.string()).optional(),
-            })
-            .optional(),
-        requiredActions: z.array(z.string()).optional(),
-    }),
-);
+const UserRepresentation = z.object({
+    id: z.string(),
+    username: z.string(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().optional(),
+    attributes: z
+        .object({
+            dosApiToken: z.array(z.string()).optional(),
+        })
+        .optional(),
+    requiredActions: z.array(z.string()).optional(),
+});
+
+export const GetUsersResponse = z.array(UserRepresentation);
 
 export const RealmRole = z.object({
     id: z.string(),
@@ -141,3 +141,5 @@ export const ResetUserPasswordReq = z.object({
     value: z.string(),
     temporary: z.boolean(),
 });
+
+export const GetUserByIdResponse = UserRepresentation;
