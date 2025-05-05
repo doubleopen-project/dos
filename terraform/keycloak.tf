@@ -718,3 +718,111 @@ resource "null_resource" "patch_roles_mappers" {
         realm_id = keycloak_realm.dos_dev_realm.id
     }
 }
+
+## Clients for ORT Server for local development in the same realm.
+
+# Add a client for ORT Server.
+resource "keycloak_openid_client" "ort_server_openid_client" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_id = "ort-server"
+    name = "ORT Server Client"
+    enabled = true
+    access_type = "CONFIDENTIAL"
+    standard_flow_enabled = true
+    service_accounts_enabled = true
+
+    client_secret = "client-secret"
+
+    valid_redirect_uris = ["http://localhost:8081/*", "http://localhost:8080/*"]
+}
+
+# Add a client for ORT Server UI.
+resource "keycloak_openid_client" "ort_server_ui_openid_client" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_id = "ort-server-ui"
+    name = "ORT Server UI Client"
+    enabled = true
+    access_type = "PUBLIC"
+    standard_flow_enabled = true
+
+    root_url = "http://localhost:8082"
+    valid_redirect_uris = ["/*"]
+    valid_post_logout_redirect_uris = ["/*"]
+    web_origins = ["+"]
+    admin_url = "http://localhost:8082"
+}
+
+# Get the "roles" client scope so it can be extended with a new client roles mapper.
+data "keycloak_openid_client_scope" "roles" {
+  realm_id = keycloak_realm.dos_dev_realm.id
+  name     = "roles"
+}
+
+# Add protocol mapper for the realm-management client roles
+resource "keycloak_generic_protocol_mapper" "realm_management_client_roles_mapper" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_scope_id = data.keycloak_openid_client_scope.roles.id
+    name = "Realm management client roles mapper"
+    protocol = "openid-connect"
+    protocol_mapper = "oidc-usermodel-client-role-mapper"
+
+    config = {
+        "introspection.token.claim" = "true"
+        "multivalued" = "true"
+        "userinfo.token.claim" = "true"
+        "id.token.claim" = "true"
+        "lightweight.claim" = "false"
+        "access.token.claim" = "true"
+        "claim.name" = "resource_access.$${client_id}.roles"
+        "jsonType.label" = "String"
+        "usermodel.clientRoleMapping.clientId" = "realm-management"
+    }
+}
+
+# Get the "realm-admin" role from the realm-management client.
+data "keycloak_role" "realm_management_realm_admin_role" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_id = data.keycloak_openid_client.realm_management_client.id
+    name = "realm-admin"
+}
+
+# Assign the "realm-admin" role to the service account of the ORT Server client.
+resource "keycloak_openid_client_service_account_role" "ort_server_realm_admin_role" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    service_account_user_id = keycloak_openid_client.ort_server_openid_client.service_account_user_id
+    client_id = data.keycloak_openid_client.realm_management_client.id
+    role = data.keycloak_role.realm_management_realm_admin_role.name
+}
+
+# Add group SUPERUSERS to the realm.
+resource "keycloak_group" "superusers" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    name = "SUPERUSERS"
+}
+
+# Add role superuser for the ORT Server client.
+resource "keycloak_role" "ort_server_superuser" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    client_id = keycloak_openid_client.ort_server_openid_client.id
+    name = "superuser"
+}
+
+# Assign the superuser role to the SUPERUSERS group.
+resource "keycloak_group_roles" "superuser_group_roles" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    group_id = keycloak_group.superusers.id
+
+    role_ids = [
+        keycloak_role.ort_server_superuser.id
+    ]
+}
+
+# Add the test admin user to the SUPERUSERS group.
+resource "keycloak_group_memberships" "superuser_group_members" {
+    realm_id = keycloak_realm.dos_dev_realm.id
+    group_id = keycloak_group.superusers.id
+
+    members = [
+        keycloak_user.test_admin.username
+    ]
+}
