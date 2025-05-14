@@ -7,13 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import type { Permissions } from "validation-helpers";
 
-export type User = {
-    username: string;
-    role: string;
-    permissions: Permissions | null;
-};
-
-export const useUser: () => User | null = () => {
+export const useUser = () => {
     const session = useSession();
     const [permissions, setPermissions] = useState<Permissions | null>(null);
 
