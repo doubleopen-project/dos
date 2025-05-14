@@ -143,3 +143,22 @@ export const ResetUserPasswordReq = z.object({
 });
 
 export const GetUserByIdResponse = UserRepresentation;
+
+export const GetUserInfoResponse = z.object({
+    sub: z.string(),
+    resource_access: z.record(
+        z.string(),
+        z.object({
+            roles: z.array(z.string()),
+        }),
+    ),
+    email_verified: z.boolean(),
+    realm_access: z.object({
+        roles: z.array(z.string()),
+    }),
+    name: z.string(),
+    preferred_username: z.string(),
+    given_name: z.string(),
+    family_name: z.string(),
+    email: z.string(),
+});

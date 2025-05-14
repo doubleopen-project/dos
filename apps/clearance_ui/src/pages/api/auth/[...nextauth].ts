@@ -159,6 +159,7 @@ export default NextAuth({
             }
         },
         jwt({ token, user, account }) {
+            console.log("jwt");
             // Initial sign in
             if (account && user) {
                 // Add access_token, refresh_token and expirations to the token right after signin
@@ -186,6 +187,9 @@ export default NextAuth({
             return refreshAccessToken(token);
         },
         session({ session, token }) {
+            console.log("Session acquired");
+            //console.log("Session callback:", session, token);
+            //console.log("Session error:", token.error);
             if (token) {
                 session.user = token.user;
                 session.error = token.error;

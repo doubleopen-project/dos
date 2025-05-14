@@ -29,6 +29,14 @@ export default function Package() {
 
     const session = useSession({
         required: true,
+
+        onUnauthenticated() {
+            // Redirect to the sign-in page if not authenticated
+            console.log("Redirecting to sign-in");
+            signIn("keycloak", {
+                callbackUrl: window.location.href,
+            });
+        },
     });
 
     useEffect(() => {

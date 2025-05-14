@@ -44,6 +44,18 @@ adminZodios.axios.interceptors.request.use(
         return Promise.reject(error);
     },
 );
+adminZodios.axios.interceptors.response.use(
+    (res) => res,
+    (error) => {
+        console.log("Interceptor");
+        if (error.response?.status === 401) {
+            console.error("Unauthorized access - 401");
+
+            // Check if the session is not valid anymore by attempting to call the userinfo endpoint
+        }
+        return Promise.reject(error);
+    },
+);
 export const adminHooks = new ZodiosHooks("adminApi", adminZodios);
 
 export const userZodios = new Zodios(baseUrl + "user/", userAPI);
@@ -57,6 +69,18 @@ userZodios.axios.interceptors.request.use(
     },
     (error) => {
         console.error("Error in request interceptor", error);
+        return Promise.reject(error);
+    },
+);
+userZodios.axios.interceptors.response.use(
+    (res) => res,
+    (error) => {
+        console.log("Interceptor");
+        if (error.response?.status === 401) {
+            console.error("Unauthorized access - 401");
+
+            // Check if the session is not valid anymore by attempting to call the userinfo endpoint
+        }
         return Promise.reject(error);
     },
 );
