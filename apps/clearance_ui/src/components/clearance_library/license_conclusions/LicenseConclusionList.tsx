@@ -9,14 +9,12 @@ import {
     parseAsStringEnum,
     useQueryState,
 } from "nuqs";
-import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/license_conclusions/columns";
 import { DataTable } from "@/components/clearance_library/license_conclusions/DataTable";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const LicenseConclusionList = () => {
-    const user = useUser();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -44,23 +42,20 @@ const LicenseConclusionList = () => {
         parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
     );
 
-    const lcCntQuery = userHooks.useGetLicenseConclusionsCount(
-        {
-            queries: {
-                contextPurl: contextPurl !== null ? contextPurl : undefined,
-                /*
-                 * The initial idea of these queries was to fetch the license conclusions that are
-                 * not part of a bulk conclusion (and their count) by setting the bulkConclusionId to
-                 * null, but for some reason a parameter with null value is completely dropped from the
-                 * query, and in the lack of a better solution, a workaround with the parameter
-                 * hasBulkConclusion is used here.
-                 */
-                //bulkConclusionId: null,
-                hasBulkConclusionId: false,
-            },
+    const lcCntQuery = userHooks.useGetLicenseConclusionsCount({
+        queries: {
+            contextPurl: contextPurl !== null ? contextPurl : undefined,
+            /*
+             * The initial idea of these queries was to fetch the license conclusions that are
+             * not part of a bulk conclusion (and their count) by setting the bulkConclusionId to
+             * null, but for some reason a parameter with null value is completely dropped from the
+             * query, and in the lack of a better solution, a workaround with the parameter
+             * hasBulkConclusion is used here.
+             */
+            //bulkConclusionId: null,
+            hasBulkConclusionId: false,
         },
-        { enabled: !!user },
-    );
+    });
 
     const { data, isLoading, error } = userHooks.useGetLicenseConclusions(
         {
@@ -74,7 +69,7 @@ const LicenseConclusionList = () => {
                 hasBulkConclusionId: false,
             },
         },
-        { enabled: !!user && !!pageSize && !!pageIndex },
+        { enabled: !!pageSize && !!pageIndex },
     );
     if (isLoading) {
         return (

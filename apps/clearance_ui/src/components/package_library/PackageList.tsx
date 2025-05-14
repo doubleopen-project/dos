@@ -10,14 +10,12 @@ import {
     parseAsStringEnum,
     useQueryState,
 } from "nuqs";
-import { useUser } from "@/hooks/useUser";
 import { adminHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/package_library/columns";
 import { DataTable } from "@/components/package_library/DataTable";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
-    const user = useUser();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -62,17 +60,12 @@ const PackageList = ({ pkgCnt }: { pkgCnt: number }) => {
                 name: name !== null ? name : undefined,
             },
         },
-        { enabled: !!user && !!pageSize && !!pageIndex },
+        { enabled: !!pageSize && !!pageIndex },
     );
 
-    const pkgCntQuery = adminHooks.useGetPackagesCount(
-        {
-            queries: { name: name !== null ? name : undefined },
-        },
-        { enabled: !!user },
-    );
-
-    if (!user) return null;
+    const pkgCntQuery = adminHooks.useGetPackagesCount({
+        queries: { name: name !== null ? name : undefined },
+    });
 
     return (
         <>

@@ -9,14 +9,12 @@ import {
     parseAsStringEnum,
     useQueryState,
 } from "nuqs";
-import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/bulk_conclusions/columns";
 import { DataTable } from "@/components/clearance_library/bulk_conclusions/DataTable";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const BulkConclusionList = () => {
-    const user = useUser();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -45,14 +43,11 @@ const BulkConclusionList = () => {
         parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
     );
 
-    const bcCntQuery = userHooks.useGetBulkConclusionsCount(
-        {
-            queries: {
-                purl: searchPurl !== null ? searchPurl : undefined,
-            },
+    const bcCntQuery = userHooks.useGetBulkConclusionsCount({
+        queries: {
+            purl: searchPurl !== null ? searchPurl : undefined,
         },
-        { enabled: !!user },
-    );
+    });
 
     const { data, isLoading, error } = userHooks.useGetBulkConclusions(
         {
@@ -64,7 +59,7 @@ const BulkConclusionList = () => {
                 purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
-        { enabled: !!user && !!pageSize && !!pageIndex },
+        { enabled: !!pageSize && !!pageIndex },
     );
     if (isLoading) {
         return (
