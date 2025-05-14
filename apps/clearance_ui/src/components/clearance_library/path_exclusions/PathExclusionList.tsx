@@ -9,14 +9,12 @@ import {
     parseAsStringEnum,
     useQueryState,
 } from "nuqs";
-import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { columns } from "@/components/clearance_library/path_exclusions/columns";
 import { DataTable } from "@/components/clearance_library/path_exclusions/DataTable";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
 
 const PathExclusionList = () => {
-    const user = useUser();
     const [pageSize] = useQueryState(
         "pageSize",
         parseAsInteger.withDefault(10),
@@ -43,14 +41,11 @@ const PathExclusionList = () => {
         parseAsStringEnum(["asc", "desc"]).withDefault("desc"),
     );
 
-    const peCntQuery = userHooks.useGetPathExclusionsCount(
-        {
-            queries: {
-                purl: searchPurl !== null ? searchPurl : undefined,
-            },
+    const peCntQuery = userHooks.useGetPathExclusionsCount({
+        queries: {
+            purl: searchPurl !== null ? searchPurl : undefined,
         },
-        { enabled: !!user },
-    );
+    });
 
     const { data, isLoading, error } = userHooks.useGetPathExclusions(
         {
@@ -62,7 +57,7 @@ const PathExclusionList = () => {
                 purl: searchPurl !== null ? searchPurl : undefined,
             },
         },
-        { enabled: !!user && !!pageSize && !!pageIndex },
+        { enabled: !!pageSize && !!pageIndex },
     );
     if (isLoading) {
         return (
