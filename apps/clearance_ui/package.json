@@ -84,7 +84,7 @@
         "next": "15.3.2",
         "next-router-mock": "1.0.2",
         "tailwindcss": "^4.0.0",
-        "ts-jest": "29.3.2",
+        "ts-jest": "29.3.3",
         "ts-node": "10.9.2",
         "typescript": "5.8.3"
     }
