@@ -20,7 +20,7 @@
         "@types/node": "22.15.19",
         "chai": "5.2.0",
         "eslint-config-custom-server": "*",
-        "mocha": "11.2.2",
+        "mocha": "11.3.0",
         "tsconfig": "*",
         "tsup": "8.4.0",
         "typescript": "5.8.3"
