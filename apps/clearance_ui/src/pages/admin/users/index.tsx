@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { useEffect } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
@@ -11,11 +10,10 @@ import RegisterUser from "@/components/user_management/RegisterUser";
 import { hasPermission } from "@/helpers/hasPermission";
 
 export default function UserManagement() {
-    const session = useSession({
+    const router = useRouter();
+    const user = useUser({
         required: true,
     });
-    const router = useRouter();
-    const user = useUser();
 
     useEffect(() => {
         if (
@@ -26,14 +24,6 @@ export default function UserManagement() {
             router.push("/403");
         }
     }, [user, router]);
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     return (
         <>

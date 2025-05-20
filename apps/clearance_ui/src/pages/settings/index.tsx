@@ -2,17 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
 import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
 
 export default function Settings() {
-    const user = useUser();
-    const session = useSession({
+    const user = useUser({
         required: true,
     });
 
@@ -35,14 +32,6 @@ export default function Settings() {
             </>
         );
     }
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     return (
         <>

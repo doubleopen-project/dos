@@ -4,7 +4,6 @@
 
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import { adminHooks } from "@/hooks/zodiosHooks";
@@ -14,11 +13,10 @@ import { getErrorMessage } from "@/helpers/getErrorMessage";
 import { hasPermission } from "@/helpers/hasPermission";
 
 export default function PackageLibrary() {
-    const session = useSession({
+    const router = useRouter();
+    const user = useUser({
         required: true,
     });
-    const router = useRouter();
-    const user = useUser();
 
     useEffect(() => {
         if (
@@ -37,14 +35,6 @@ export default function PackageLibrary() {
     } = adminHooks.useGetPackagesCount(undefined, {
         enabled: !!user,
     });
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     return (
         <div className="flex h-full flex-col p-2">
