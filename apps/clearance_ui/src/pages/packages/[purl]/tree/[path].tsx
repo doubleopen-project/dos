@@ -4,7 +4,6 @@
 
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
@@ -24,8 +23,7 @@ export default function PackageAndFile() {
     const { purl, path } = router.query;
     const setPurl = useMainUiStore((state) => state.setPurl);
     const setPath = useMainUiStore((state) => state.setPath);
-    const user = useUser();
-    const session = useSession({
+    const user = useUser({
         required: true,
     });
 
@@ -41,14 +39,6 @@ export default function PackageAndFile() {
         setPurl(purl);
         setPath(path);
     }, [purl, path]);
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     return (
         <div className="h-full">

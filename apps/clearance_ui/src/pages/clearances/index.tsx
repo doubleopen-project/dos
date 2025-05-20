@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { parseAsString, useQueryState } from "nuqs";
 import { useUser } from "@/hooks/useUser";
@@ -20,18 +18,9 @@ export default function ClearanceLibrary() {
         "tab",
         parseAsString.withDefault("license_conclusions"),
     );
-    const user = useUser();
-    const session = useSession({
+    const user = useUser({
         required: true,
     });
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     return (
         <div className="flex h-full flex-col p-2">

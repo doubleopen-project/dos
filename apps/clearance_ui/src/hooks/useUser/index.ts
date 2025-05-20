@@ -4,11 +4,23 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import type { Permissions } from "validation-helpers";
 
-export const useUser = () => {
-    const session = useSession();
+export const useUser = (options?: { required?: boolean }) => {
+    const session = useSession(
+        options?.required
+            ? {
+                  required: true,
+                  onUnauthenticated() {
+                      // Redirect to the sign-in page if not authenticated
+                      signIn("keycloak", {
+                          callbackUrl: window.location.href,
+                      });
+                  },
+              }
+            : undefined,
+    );
     const [permissions, setPermissions] = useState<Permissions | null>(null);
 
     const fetchPermissions = async () => {
@@ -57,6 +69,14 @@ export const useUser = () => {
             console.error(error);
         }
     }, [error]);
+
+    useEffect(() => {
+        if (session.data?.error !== undefined) {
+            signIn("keycloak", {
+                callbackUrl: window.location.href,
+            });
+        }
+    }, [session.data?.error]);
 
     if (session.data?.error !== undefined) {
         return null;

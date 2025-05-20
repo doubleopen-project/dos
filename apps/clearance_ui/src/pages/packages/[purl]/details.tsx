@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
@@ -15,18 +13,9 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 const Details = () => {
     const router = useRouter();
     const purl = router.query.purl;
-    const user = useUser();
-    const session = useSession({
+    const user = useUser({
         required: true,
     });
-
-    useEffect(() => {
-        if (session.data?.error === "SessionNotActiveError") {
-            signOut();
-        } else if (session.data?.error !== undefined) {
-            signIn("keycloak");
-        }
-    }, [session.data?.error]);
 
     if (!purl || !user) {
         return <div>Loading...</div>;
