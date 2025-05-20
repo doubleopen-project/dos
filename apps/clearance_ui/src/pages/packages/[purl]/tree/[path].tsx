@@ -52,15 +52,14 @@ export default function PackageAndFile() {
 
     return (
         <div className="h-full">
-            {user && purl && path && (
+            {user && purl && path ? (
                 <MainUI
                     purl={purl.toString().replace(/\/@/g, "/%40")}
                     path={path.toString()}
                     defaultMainWidths={mainWidths}
                     defaultClearanceHeights={clearanceHeights}
                 />
-            )}
-            {session.status === "loading" && (
+            ) : (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>

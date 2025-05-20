@@ -7,6 +7,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
+import { useUser } from "@/hooks/useUser";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import { getProvenanceType } from "@/helpers/getProvenanceType";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
@@ -14,6 +15,7 @@ import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 const Details = () => {
     const router = useRouter();
     const purl = router.query.purl;
+    const user = useUser();
     const session = useSession({
         required: true,
     });
@@ -26,7 +28,7 @@ const Details = () => {
         }
     }, [session.data?.error]);
 
-    if (!purl || session.status === "loading") {
+    if (!purl || !user) {
         return <div>Loading...</div>;
     }
     if (typeof purl !== "string") {

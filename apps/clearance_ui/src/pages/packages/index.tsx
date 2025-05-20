@@ -98,7 +98,7 @@ export default function PackageLibrary() {
                     </div>
                 </>
             )}
-            {session.status === "loading" && (
+            {!user && (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>

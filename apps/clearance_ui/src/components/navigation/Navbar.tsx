@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { useSession } from "next-auth/react";
 import { Fira_Code } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
+import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
 import CopyToClipboard from "@/components/common/CopyToClipboard";
 import { ModeToggle } from "@/components/common/ModeToggle";
@@ -23,7 +23,7 @@ const fira_code = Fira_Code({
 });
 
 const Navbar = () => {
-    const session = useSession();
+    const user = useUser();
     const router = useRouter();
     const { purl, path } = router.query;
     let mainPurl;
@@ -62,31 +62,23 @@ const Navbar = () => {
                         ()
                     </span>
                 </Link>
-                {session.status === "authenticated" &&
-                    !session.data.error &&
-                    mainPurl && (
+                {user && mainPurl && (
+                    <div className="flex-row items-center">
+                        <Label className="text-xs break-all">{mainPurl}</Label>
+                        <CopyToClipboard copyText={mainPurl} />
+                    </div>
+                )}
+                {user && path && (
+                    <>
+                        <Label className="pr-2 pl-1 text-lg font-semibold text-[#FF3366]">
+                            /
+                        </Label>
                         <div className="flex-row items-center">
-                            <Label className="text-xs break-all">
-                                {mainPurl}
-                            </Label>
-                            <CopyToClipboard copyText={mainPurl} />
+                            <Label className="text-xs break-all">{path}</Label>
+                            <CopyToClipboard copyText={path as string} />
                         </div>
-                    )}
-                {session.status === "authenticated" &&
-                    !session.data.error &&
-                    path && (
-                        <>
-                            <Label className="pr-2 pl-1 text-lg font-semibold text-[#FF3366]">
-                                /
-                            </Label>
-                            <div className="flex-row items-center">
-                                <Label className="text-xs break-all">
-                                    {path}
-                                </Label>
-                                <CopyToClipboard copyText={path as string} />
-                            </div>
-                        </>
-                    )}
+                    </>
+                )}
             </div>
             <div>
                 <UserMenuItem className="mr-1" />

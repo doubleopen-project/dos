@@ -35,7 +35,7 @@ export default function ClearanceLibrary() {
 
     return (
         <div className="flex h-full flex-col p-2">
-            {user && (
+            {user ? (
                 <>
                     <div className="m-1 flex-none rounded-md shadow-sm">
                         <Card>
@@ -96,8 +96,7 @@ export default function ClearanceLibrary() {
                         </Tabs>
                     </div>
                 </>
-            )}
-            {session.status === "loading" && (
+            ) : (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>
