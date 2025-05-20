@@ -17,16 +17,7 @@ export default function Settings() {
     });
 
     function Profile() {
-        return (
-            <>
-                {user && <UserDataForm />}
-                {session.status === "loading" && (
-                    <div className="flex h-full items-center justify-center">
-                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
-                    </div>
-                )}
-            </>
-        );
+        return <UserDataForm />;
     }
 
     function Tokens() {
@@ -40,12 +31,7 @@ export default function Settings() {
                     Please note that your previous token will be invalidated
                     when you create a new one.
                 </p>
-                {user && <TokenDialog />}
-                {session.status === "loading" && (
-                    <div className="flex h-full items-center justify-center">
-                        <Loader2 className="mr-2 h-16 w-16 animate-spin" />
-                    </div>
-                )}
+                <TokenDialog />
             </>
         );
     }
@@ -60,7 +46,7 @@ export default function Settings() {
 
     return (
         <>
-            {user && (
+            {user ? (
                 <MultiSection
                     title="Settings"
                     defaultSection="profile"
@@ -79,6 +65,10 @@ export default function Settings() {
                         },
                     ]}
                 />
+            ) : (
+                <div className="flex h-full items-center justify-center">
+                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+                </div>
             )}
         </>
     );

@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
 import useMainUiStore from "@/store/mainui.store";
 import useSettingsStore from "@/store/settings.store";
 
@@ -27,6 +28,8 @@ export default function Package() {
     setPurl(purl as string);
     setPath("");
 
+    const user = useUser();
+
     const session = useSession({
         required: true,
     });
@@ -41,15 +44,14 @@ export default function Package() {
 
     return (
         <div className="h-full">
-            {session.status === "authenticated" && purl && (
+            {user && purl ? (
                 <MainUI
                     purl={purl.toString().replace(/\/@/g, "/%40")}
                     path={undefined}
                     defaultMainWidths={mainWidths}
                     defaultClearanceHeights={clearanceHeights}
                 />
-            )}
-            {session.status === "loading" && (
+            ) : (
                 <div className="flex h-full items-center justify-center">
                     <Loader2 className="mr-2 h-16 w-16 animate-spin" />
                 </div>

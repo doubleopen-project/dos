@@ -5,12 +5,14 @@
 import React, { useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import BulkConclusionWrapper from "@/components/main_ui/package_bulk_conclusions/BulkConclusionWrapper";
 
 const BulkConclusions = () => {
     const router = useRouter();
     const purl = router.query.purl;
+    const user = useUser();
 
     const session = useSession({
         required: true,
@@ -24,7 +26,7 @@ const BulkConclusions = () => {
         }
     }, [session.data?.error]);
 
-    if (!purl || session.status === "loading") {
+    if (!purl || !user) {
         return <div>Loading...</div>;
     }
     if (typeof purl !== "string") {
