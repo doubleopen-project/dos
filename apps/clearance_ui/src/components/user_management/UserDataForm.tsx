@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { passwordStrength } from "check-password-strength";
 import { Check, Loader2, Pencil } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { getUsernameSchema } from "validation-helpers";
 import z from "zod";
@@ -71,7 +71,6 @@ type PutUserDataType = z.infer<typeof userDataFormSchema>;
 
 const UserDataForm = () => {
     const user = useUser();
-    const session = useSession();
     const [editMode, setEditMode] = useState(false);
     const queryClient = useQueryClient();
 
@@ -97,17 +96,12 @@ const UserDataForm = () => {
                     error.response?.data?.message ===
                     "User with this username or email already exists"
                 ) {
-                    if (
-                        form.getValues("username") ===
-                        session.data?.user?.preferred_username
-                    ) {
+                    if (form.getValues("username") === user?.username) {
                         form.setError("email", {
                             type: "manual",
                             message: "Email already in use with another user",
                         });
-                    } else if (
-                        form.getValues("email") === session.data?.user?.email
-                    ) {
+                    } else if (form.getValues("email") === user?.email) {
                         form.setError("username", {
                             type: "manual",
                             message: "Username already in use",
@@ -137,9 +131,9 @@ const UserDataForm = () => {
         resolver: zodResolver(userDataFormSchema),
         values: {
             username: user?.username,
-            firstName: session.data?.user?.given_name || "",
-            lastName: session.data?.user?.family_name || "",
-            email: session.data?.user?.email || "",
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            email: user?.email || "",
             password: "",
             confirmPassword: "",
             role: user?.role,
