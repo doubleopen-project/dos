@@ -20086,6 +20086,109 @@ declare const keycloakAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/realms/:realm/protocol/openid-connect/userinfo";
+        description: "Get user info";
+        alias: "GetUserInfo";
+        response: zod.ZodObject<
+            {
+                sub: zod.ZodString;
+                resource_access: zod.ZodRecord<
+                    zod.ZodString,
+                    zod.ZodObject<
+                        {
+                            roles: zod.ZodArray<zod.ZodString, "many">;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            roles: string[];
+                        },
+                        {
+                            roles: string[];
+                        }
+                    >
+                >;
+                email_verified: zod.ZodBoolean;
+                realm_access: zod.ZodObject<
+                    {
+                        roles: zod.ZodArray<zod.ZodString, "many">;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        roles: string[];
+                    },
+                    {
+                        roles: string[];
+                    }
+                >;
+                name: zod.ZodString;
+                preferred_username: zod.ZodString;
+                given_name: zod.ZodString;
+                family_name: zod.ZodString;
+                email: zod.ZodString;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                email: string;
+                name: string;
+                sub: string;
+                resource_access: Record<
+                    string,
+                    {
+                        roles: string[];
+                    }
+                >;
+                email_verified: boolean;
+                realm_access: {
+                    roles: string[];
+                };
+                preferred_username: string;
+                given_name: string;
+                family_name: string;
+            },
+            {
+                email: string;
+                name: string;
+                sub: string;
+                resource_access: Record<
+                    string,
+                    {
+                        roles: string[];
+                    }
+                >;
+                email_verified: boolean;
+                realm_access: {
+                    roles: string[];
+                };
+                preferred_username: string;
+                given_name: string;
+                family_name: string;
+            }
+        >;
+        errors: [
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        error: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        error: string;
+                    },
+                    {
+                        error: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const TokenResponse: z.ZodObject<
