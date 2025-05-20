@@ -34,16 +34,9 @@ export default function PackageLibrary() {
         data: pkgCntData,
         isLoading: pkgCntLoading,
         error: pkgCntError,
-    } = adminHooks.useGetPackagesCount(
-        {
-            headers: {
-                Authorization: `Bearer ${session?.data?.accessToken}`,
-            },
-        },
-        {
-            enabled: session.status === "authenticated",
-        },
-    );
+    } = adminHooks.useGetPackagesCount(undefined, {
+        enabled: session.status === "authenticated",
+    });
 
     useEffect(() => {
         if (session.data?.error === "SessionNotActiveError") {
