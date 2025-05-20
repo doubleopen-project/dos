@@ -35,7 +35,7 @@ export default function PackageLibrary() {
         isLoading: pkgCntLoading,
         error: pkgCntError,
     } = adminHooks.useGetPackagesCount(undefined, {
-        enabled: session.status === "authenticated",
+        enabled: !!user,
     });
 
     useEffect(() => {
