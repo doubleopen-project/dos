@@ -65,6 +65,9 @@ export const useUser = () => {
     return session.status === "authenticated"
         ? {
               username: session.data.user.preferred_username,
+              email: session.data.user.email,
+              firstName: session.data.user.given_name,
+              lastName: session.data.user.family_name,
               role:
                   session.data.user.realm_access.roles?.find((role) =>
                       role.startsWith("app-"),
