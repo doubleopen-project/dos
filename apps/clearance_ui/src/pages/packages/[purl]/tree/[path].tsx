@@ -44,7 +44,7 @@ export default function PackageAndFile() {
         <div className="h-full">
             {user && purl && path ? (
                 <MainUI
-                    purl={purl.toString().replace(/\/@/g, "/%40")}
+                    purl={purl.toString()}
                     path={path.toString()}
                     defaultMainWidths={mainWidths}
                     defaultClearanceHeights={clearanceHeights}
