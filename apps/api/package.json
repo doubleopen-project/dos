@@ -33,7 +33,7 @@
         "loglevel": "1.9.2",
         "minimatch": "10.0.1",
         "node-cache": "5.1.2",
-        "node-cron": "4.0.7",
+        "node-cron": "4.1.0",
         "packageurl-js": "1.2.1",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
