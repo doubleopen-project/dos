@@ -24,10 +24,7 @@ log.setLevel(logLevel);
 // ------------------------- Database operations -------------------------
 
 // Get scan results for package
-export const getScanResults = async (
-    purl: string,
-    options: { fetchConcluded?: boolean },
-) => {
+export const getScanResults = async (purl: string) => {
     const queriedScanResults = await dbQueries.getPackageScanResults(purl);
 
     if (queriedScanResults) {
@@ -36,30 +33,7 @@ export const getScanResults = async (
         const issues = [];
 
         for (const filetree of queriedScanResults) {
-            if (
-                options.fetchConcluded &&
-                filetree.file.licenseConclusions.length > 0
-            ) {
-                for (const licenseConclusion of filetree.file
-                    .licenseConclusions) {
-                    if (
-                        !licenseConclusion.local ||
-                        (licenseConclusion.local &&
-                            licenseConclusion.contextPurl === purl)
-                    ) {
-                        licenses.push({
-                            license:
-                                licenseConclusion.concludedLicenseExpressionSPDX,
-                            location: {
-                                path: filetree.path,
-                                start_line: undefined,
-                                end_line: undefined,
-                            },
-                            score: undefined,
-                        });
-                    }
-                }
-            } else if (filetree.file.licenseFindings.length > 0) {
+            if (filetree.file.licenseFindings.length > 0) {
                 let startLine = 0;
                 let endLine = 0;
                 let scoreSum = 0;
