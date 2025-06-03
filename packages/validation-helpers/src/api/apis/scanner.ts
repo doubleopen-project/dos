@@ -20,8 +20,7 @@ export const scannerAPI = makeApi([
         path: "/scan-results",
         description:
             "Get scan results for specified purl(s). Give multiple purls in the case where these purls are all part of the same source." +
-            " <ul><li>If only some of the purls are found in the database, bookmarks for the remaining ones will be made pointing to the same source files.</li>" +
-            "<li>If fetchConcluded is set to true, also human concluded licenses will be fetched from the license database and included in the results.</li></ul> ",
+            " If only some of the purls are found in the database, bookmarks for the remaining ones will be made pointing to the same source files.",
         parameters: [
             {
                 name: "body",

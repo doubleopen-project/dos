@@ -2109,43 +2109,14 @@ declare const scannerAPI: [
                                     >,
                                     "many"
                                 >;
-                                options: zod.ZodOptional<
-                                    zod.ZodObject<
-                                        {
-                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                        },
-                                        "strip",
-                                        zod.ZodTypeAny,
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        },
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        }
-                                    >
-                                >;
                             },
                             "strip",
                             zod.ZodTypeAny,
                             {
                                 purls: string[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             },
                             {
                                 purls: string[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             }
                         >,
                         zod.ZodObject<
@@ -2177,25 +2148,6 @@ declare const scannerAPI: [
                                     >,
                                     "many"
                                 >;
-                                options: zod.ZodOptional<
-                                    zod.ZodObject<
-                                        {
-                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                        },
-                                        "strip",
-                                        zod.ZodTypeAny,
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        },
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        }
-                                    >
-                                >;
                             },
                             "strip",
                             zod.ZodTypeAny,
@@ -2206,11 +2158,6 @@ declare const scannerAPI: [
                                         | string
                                         | null;
                                 }[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             },
                             {
                                 packages: {
@@ -2219,11 +2166,6 @@ declare const scannerAPI: [
                                         | string
                                         | null;
                                 }[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             }
                         >,
                     ]
@@ -9955,43 +9897,14 @@ declare const dosAPI: [
                                     >,
                                     "many"
                                 >;
-                                options: zod.ZodOptional<
-                                    zod.ZodObject<
-                                        {
-                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                        },
-                                        "strip",
-                                        zod.ZodTypeAny,
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        },
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        }
-                                    >
-                                >;
                             },
                             "strip",
                             zod.ZodTypeAny,
                             {
                                 purls: string[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             },
                             {
                                 purls: string[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             }
                         >,
                         zod.ZodObject<
@@ -10023,25 +9936,6 @@ declare const dosAPI: [
                                     >,
                                     "many"
                                 >;
-                                options: zod.ZodOptional<
-                                    zod.ZodObject<
-                                        {
-                                            fetchConcluded: zod.ZodOptional<zod.ZodBoolean>;
-                                        },
-                                        "strip",
-                                        zod.ZodTypeAny,
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        },
-                                        {
-                                            fetchConcluded?:
-                                                | boolean
-                                                | undefined;
-                                        }
-                                    >
-                                >;
                             },
                             "strip",
                             zod.ZodTypeAny,
@@ -10052,11 +9946,6 @@ declare const dosAPI: [
                                         | string
                                         | null;
                                 }[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             },
                             {
                                 packages: {
@@ -10065,11 +9954,6 @@ declare const dosAPI: [
                                         | string
                                         | null;
                                 }[];
-                                options?:
-                                    | {
-                                          fetchConcluded?: boolean | undefined;
-                                      }
-                                    | undefined;
                             }
                         >,
                     ]

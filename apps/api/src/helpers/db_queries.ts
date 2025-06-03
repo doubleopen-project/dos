@@ -2120,13 +2120,6 @@ export const getPackageScanResults = async (purl: string) => {
                                     },
                                 },
                             },
-                            licenseConclusions: {
-                                select: {
-                                    concludedLicenseExpressionSPDX: true,
-                                    local: true,
-                                    contextPurl: true,
-                                },
-                            },
                             copyrightFindings: {
                                 select: {
                                     copyright: true,

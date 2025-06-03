@@ -19,11 +19,6 @@ export const PostScanResultsReq = z.union([
         purls: z
             .array(purlSchema(true))
             .min(1, "At least one purl is required"),
-        options: z
-            .object({
-                fetchConcluded: z.boolean().optional(),
-            })
-            .optional(),
     }),
     z.object({
         packages: z
@@ -34,11 +29,6 @@ export const PostScanResultsReq = z.union([
                 }),
             )
             .min(1, "At least one package is required"),
-        options: z
-            .object({
-                fetchConcluded: z.boolean().optional(),
-            })
-            .optional(),
     }),
 ]);
 

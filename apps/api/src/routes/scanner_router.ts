@@ -62,8 +62,6 @@ scannerRouter.post(
                     reqPurls.join(", "),
             );
 
-            const options = req.body.options || {};
-
             const packages = await dbQueries.findPackagesByPurls(reqPurls);
 
             if (packages.length === 0) {
@@ -130,7 +128,6 @@ scannerRouter.post(
                     // The results will be the same for all packages, so we can just get the results for the first one
                     const results = await dbOperations.getScanResults(
                         scannedPackages[0].purl,
-                        options,
                     );
 
                     if (scannedPackages.length < reqPackages.length) {
