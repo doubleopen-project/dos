@@ -10,7 +10,7 @@
     "customManagers": [
         {
             "customType": "regex",
-            "fileMatch": ["^\\.github/workflows/.*\\.yml$"],
+            "managerFilePatterns": ["/^\\.github/workflows/.*\\.yml$/"],
             "matchStrings": [
                 "node-version:\\s+(?<currentValue>\\d+\\.\\d+\\.\\d+)"
             ],
