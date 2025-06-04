@@ -12,14 +12,11 @@ import { ZodiosResponseByPath } from "@zodios/core";
 import AdmZip from "adm-zip";
 import { dosAPI } from "validation-helpers";
 import { baseUrl } from "./utils/constants";
-import { getAccessToken } from "./utils/get_access_token";
 
 test.describe.configure({ mode: "default" });
 
 test.describe("API lets authenticated users to", () => {
-    let keycloakToken: string;
-    let dosToken: string;
-    let userContext: APIRequestContext;
+    const dosToken: string = "token";
     let apiContext: APIRequestContext;
 
     /**
@@ -27,24 +24,6 @@ test.describe("API lets authenticated users to", () => {
      * calls to authenticate the user. Also retrieve the DOS token.
      */
     test.beforeAll(async ({ playwright }) => {
-        keycloakToken = await getAccessToken("test-user", "test-user");
-        expect(keycloakToken).toBeDefined();
-
-        // Create a new API context for the user API with the Keycloak token in the headers.
-        userContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/user/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${keycloakToken}`,
-            },
-        });
-
-        const userTokenRes = await userContext.put("token");
-        expect(userTokenRes.ok()).toBeTruthy();
-
-        const userToken = await userTokenRes.json();
-        dosToken = userToken.token;
-        expect(dosToken).toBeDefined();
-
         // Create a new API context for the scanner API with the DOS token in the headers.
         apiContext = await playwright.request.newContext({
             baseURL: `${baseUrl}/api/`,
@@ -57,7 +36,6 @@ test.describe("API lets authenticated users to", () => {
     test.afterAll(async () => {
         // Close the API context to clean up resources.
         await apiContext.dispose();
-        await userContext.dispose();
     });
 
     test("scan packages and retrieve their results", async ({}) => {
