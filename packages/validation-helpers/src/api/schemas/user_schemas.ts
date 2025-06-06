@@ -502,12 +502,6 @@ export const GetPackageRes = z.object({
     declaredLicenseSPDX: z.nullable(z.string()),
 });
 
-//------------------ PUT token -------------------
-
-export const PutTokenRes = z.object({
-    token: z.string(),
-});
-
 //------------------ GET file -------------------
 export const GetFileRes = z.object({
     sha256: z.string(),
