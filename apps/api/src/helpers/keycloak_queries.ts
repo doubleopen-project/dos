@@ -155,9 +155,6 @@ export const createUser = async (data: {
         value: string;
         temporary: boolean;
     }[];
-    attributes: {
-        dosApiToken: string;
-    };
     enabled?: boolean;
     firstName?: string;
     lastName?: string;
@@ -221,7 +218,7 @@ export const createUser = async (data: {
         }
     }
 
-    const user = (await getUsers(data.username, undefined, true))[0];
+    const user = (await getUsers(data.username, true))[0];
 
     if (!user) {
         throw new CustomError("Failed to create user. User not found", 500);
@@ -407,7 +404,6 @@ export const addRealmRolesToUser = async (
 
 export const getUsers = async (
     username?: string,
-    dosApiToken?: string,
     exact?: boolean,
 ): Promise<User[]> => {
     let retries = 3;
@@ -423,7 +419,6 @@ export const getUsers = async (
                 queries: {
                     username: username,
                     exact: exact,
-                    q: dosApiToken ? "dosApiToken:" + dosApiToken : undefined,
                 },
                 headers: {
                     Authorization: "Bearer " + token.access_token,
@@ -477,9 +472,6 @@ export const updateUser = async (
             temporary: boolean;
         }[];
         realmRoles?: string[];
-        attributes?: {
-            dosApiToken?: string;
-        };
         enabled?: boolean;
         firstName?: string;
         lastName?: string;

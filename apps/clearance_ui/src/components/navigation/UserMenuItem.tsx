@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { useQueryClient } from "@tanstack/react-query";
-import { KeyRound, LogOut, UserRound, UsersRound } from "lucide-react";
+import { LogOut, UserRound, UsersRound } from "lucide-react";
 import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { GrLogin } from "react-icons/gr";
@@ -83,15 +83,6 @@ const UserMenuItem = ({ className }: UserMenuItemProps) => {
                             >
                                 <UserRound className="mr-2 inline-block h-4 w-4" />
                                 <span>Profile</span>
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Link
-                                href="/settings?section=tokens"
-                                className="w-full"
-                            >
-                                <KeyRound className="mr-2 inline-block h-4 w-4" />
-                                <span>Tokens</span>
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

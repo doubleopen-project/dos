@@ -32,14 +32,6 @@ export const userAPI = makeApi([
         errors,
     },
     {
-        method: "put",
-        path: "/token",
-        description:
-            "Get new personal token for using DOS Scanner with ORT or through the API",
-        response: schemas.PutTokenRes,
-        errors,
-    },
-    {
         method: "get",
         path: "/license-conclusions",
         alias: "GetLicenseConclusions",
