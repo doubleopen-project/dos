@@ -73,9 +73,6 @@ export const CreateUserReq = z.object({
             temporary: z.boolean(),
         }),
     ),
-    attributes: z.object({
-        dosApiToken: z.string(),
-    }),
     enabled: z.boolean().optional(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
@@ -91,11 +88,6 @@ const UserRepresentation = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     email: z.string().optional(),
-    attributes: z
-        .object({
-            dosApiToken: z.array(z.string()).optional(),
-        })
-        .optional(),
     requiredActions: z.array(z.string()).optional(),
 });
 
@@ -122,11 +114,6 @@ export const UpdateUserReq = z.object({
                 temporary: z.boolean(),
             }),
         )
-        .optional(),
-    attributes: z
-        .object({
-            dosApiToken: z.string().optional(),
-        })
         .optional(),
     realmRoles: z.array(z.string()).optional(),
     enabled: z.boolean().optional(),

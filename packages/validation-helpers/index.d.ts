@@ -644,7 +644,6 @@ declare const adminAPI: [
                         lastName: zod.ZodOptional<zod.ZodString>;
                         email: zod.ZodOptional<zod.ZodString>;
                         emailVerified: zod.ZodOptional<zod.ZodBoolean>;
-                        dosApiToken: zod.ZodOptional<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -657,7 +656,6 @@ declare const adminAPI: [
                         lastName?: string | undefined;
                         email?: string | undefined;
                         emailVerified?: boolean | undefined;
-                        dosApiToken?: string | undefined;
                     },
                     {
                         username: string;
@@ -668,7 +666,6 @@ declare const adminAPI: [
                         lastName?: string | undefined;
                         email?: string | undefined;
                         emailVerified?: boolean | undefined;
-                        dosApiToken?: string | undefined;
                     }
                 >;
             },
@@ -677,7 +674,6 @@ declare const adminAPI: [
             {
                 id: zod.ZodString;
                 username: zod.ZodString;
-                dosApiToken: zod.ZodOptional<zod.ZodString>;
                 realmRoles: zod.ZodArray<zod.ZodString, "many">;
                 firstName: zod.ZodOptional<zod.ZodString>;
                 lastName: zod.ZodOptional<zod.ZodString>;
@@ -693,7 +689,6 @@ declare const adminAPI: [
                 username: string;
                 id: string;
                 realmRoles: string[];
-                dosApiToken?: string | undefined;
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
@@ -704,7 +699,6 @@ declare const adminAPI: [
                 username: string;
                 id: string;
                 realmRoles: string[];
-                dosApiToken?: string | undefined;
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
@@ -4405,114 +4399,6 @@ declare const userAPI: [
             },
             {
                 message: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
-        method: "put";
-        path: "/token";
-        description: "Get new personal token for using DOS Scanner with ORT or through the API";
-        response: zod.ZodObject<
-            {
-                token: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                token: string;
-            },
-            {
-                token: string;
             }
         >;
         errors: [
@@ -12284,114 +12170,6 @@ declare const dosAPI: [
         ];
     },
     {
-        method: "put";
-        path: "/user/token";
-        description: "Get new personal token for using DOS Scanner with ORT or through the API";
-        response: zod.ZodObject<
-            {
-                token: zod.ZodString;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                token: string;
-            },
-            {
-                token: string;
-            }
-        >;
-        errors: [
-            {
-                status: 500;
-                description: "Internal server error";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 400;
-                description: "Bad request";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    },
-                    {
-                        message: string;
-                        path?: string | null | undefined;
-                    }
-                >;
-            },
-            {
-                status: 403;
-                description: "Forbidden";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 401;
-                description: "Unauthorized";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-            {
-                status: 404;
-                description: "Not found";
-                schema: zod.ZodObject<
-                    {
-                        message: zod.ZodString;
-                    },
-                    "strip",
-                    zod.ZodTypeAny,
-                    {
-                        message: string;
-                    },
-                    {
-                        message: string;
-                    }
-                >;
-            },
-        ];
-    },
-    {
         method: "get";
         path: "/user/license-conclusions";
         alias: "GetLicenseConclusions";
@@ -17705,7 +17483,6 @@ declare const dosAPI: [
                         lastName: zod.ZodOptional<zod.ZodString>;
                         email: zod.ZodOptional<zod.ZodString>;
                         emailVerified: zod.ZodOptional<zod.ZodBoolean>;
-                        dosApiToken: zod.ZodOptional<zod.ZodString>;
                     },
                     "strip",
                     zod.ZodTypeAny,
@@ -17718,7 +17495,6 @@ declare const dosAPI: [
                         lastName?: string | undefined;
                         email?: string | undefined;
                         emailVerified?: boolean | undefined;
-                        dosApiToken?: string | undefined;
                     },
                     {
                         username: string;
@@ -17729,7 +17505,6 @@ declare const dosAPI: [
                         lastName?: string | undefined;
                         email?: string | undefined;
                         emailVerified?: boolean | undefined;
-                        dosApiToken?: string | undefined;
                     }
                 >;
             },
@@ -17738,7 +17513,6 @@ declare const dosAPI: [
             {
                 id: zod.ZodString;
                 username: zod.ZodString;
-                dosApiToken: zod.ZodOptional<zod.ZodString>;
                 realmRoles: zod.ZodArray<zod.ZodString, "many">;
                 firstName: zod.ZodOptional<zod.ZodString>;
                 lastName: zod.ZodOptional<zod.ZodString>;
@@ -17754,7 +17528,6 @@ declare const dosAPI: [
                 username: string;
                 id: string;
                 realmRoles: string[];
-                dosApiToken?: string | undefined;
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
@@ -17765,7 +17538,6 @@ declare const dosAPI: [
                 username: string;
                 id: string;
                 realmRoles: string[];
-                dosApiToken?: string | undefined;
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
@@ -19127,18 +18899,18 @@ declare const keycloakAPI: [
                                 grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket";
                                 audience: string;
                                 response_mode:
-                                    | "token"
                                     | "permissions"
-                                    | "decision";
+                                    | "decision"
+                                    | "token";
                                 permission?: string | undefined;
                             },
                             {
                                 grant_type: "urn:ietf:params:oauth:grant-type:uma-ticket";
                                 audience: string;
                                 response_mode:
-                                    | "token"
                                     | "permissions"
-                                    | "decision";
+                                    | "decision"
+                                    | "token";
                                 permission?: string | undefined;
                             }
                         >,
@@ -19331,19 +19103,6 @@ declare const keycloakAPI: [
                             >,
                             "many"
                         >;
-                        attributes: zod.ZodObject<
-                            {
-                                dosApiToken: zod.ZodString;
-                            },
-                            "strip",
-                            zod.ZodTypeAny,
-                            {
-                                dosApiToken: string;
-                            },
-                            {
-                                dosApiToken: string;
-                            }
-                        >;
                         enabled: zod.ZodOptional<zod.ZodBoolean>;
                         firstName: zod.ZodOptional<zod.ZodString>;
                         lastName: zod.ZodOptional<zod.ZodString>;
@@ -19359,9 +19118,6 @@ declare const keycloakAPI: [
                             type: string;
                             temporary: boolean;
                         }[];
-                        attributes: {
-                            dosApiToken: string;
-                        };
                         enabled?: boolean | undefined;
                         firstName?: string | undefined;
                         lastName?: string | undefined;
@@ -19375,9 +19131,6 @@ declare const keycloakAPI: [
                             type: string;
                             temporary: boolean;
                         }[];
-                        attributes: {
-                            dosApiToken: string;
-                        };
                         enabled?: boolean | undefined;
                         firstName?: string | undefined;
                         lastName?: string | undefined;
@@ -19443,23 +19196,6 @@ declare const keycloakAPI: [
                     firstName: zod.ZodOptional<zod.ZodString>;
                     lastName: zod.ZodOptional<zod.ZodString>;
                     email: zod.ZodOptional<zod.ZodString>;
-                    attributes: zod.ZodOptional<
-                        zod.ZodObject<
-                            {
-                                dosApiToken: zod.ZodOptional<
-                                    zod.ZodArray<zod.ZodString, "many">
-                                >;
-                            },
-                            "strip",
-                            zod.ZodTypeAny,
-                            {
-                                dosApiToken?: string[] | undefined;
-                            },
-                            {
-                                dosApiToken?: string[] | undefined;
-                            }
-                        >
-                    >;
                     requiredActions: zod.ZodOptional<
                         zod.ZodArray<zod.ZodString, "many">
                     >;
@@ -19472,11 +19208,6 @@ declare const keycloakAPI: [
                     firstName?: string | undefined;
                     lastName?: string | undefined;
                     email?: string | undefined;
-                    attributes?:
-                        | {
-                              dosApiToken?: string[] | undefined;
-                          }
-                        | undefined;
                     requiredActions?: string[] | undefined;
                 },
                 {
@@ -19485,11 +19216,6 @@ declare const keycloakAPI: [
                     firstName?: string | undefined;
                     lastName?: string | undefined;
                     email?: string | undefined;
-                    attributes?:
-                        | {
-                              dosApiToken?: string[] | undefined;
-                          }
-                        | undefined;
                     requiredActions?: string[] | undefined;
                 }
             >,
@@ -19735,21 +19461,6 @@ declare const keycloakAPI: [
                                 "many"
                             >
                         >;
-                        attributes: zod.ZodOptional<
-                            zod.ZodObject<
-                                {
-                                    dosApiToken: zod.ZodOptional<zod.ZodString>;
-                                },
-                                "strip",
-                                zod.ZodTypeAny,
-                                {
-                                    dosApiToken?: string | undefined;
-                                },
-                                {
-                                    dosApiToken?: string | undefined;
-                                }
-                            >
-                        >;
                         realmRoles: zod.ZodOptional<
                             zod.ZodArray<zod.ZodString, "many">
                         >;
@@ -19770,11 +19481,6 @@ declare const keycloakAPI: [
                                   temporary: boolean;
                               }[]
                             | undefined;
-                        attributes?:
-                            | {
-                                  dosApiToken?: string | undefined;
-                              }
-                            | undefined;
                         realmRoles?: string[] | undefined;
                         enabled?: boolean | undefined;
                         firstName?: string | undefined;
@@ -19790,11 +19496,6 @@ declare const keycloakAPI: [
                                   type: string;
                                   temporary: boolean;
                               }[]
-                            | undefined;
-                        attributes?:
-                            | {
-                                  dosApiToken?: string | undefined;
-                              }
                             | undefined;
                         realmRoles?: string[] | undefined;
                         enabled?: boolean | undefined;
@@ -19900,23 +19601,6 @@ declare const keycloakAPI: [
                 firstName: zod.ZodOptional<zod.ZodString>;
                 lastName: zod.ZodOptional<zod.ZodString>;
                 email: zod.ZodOptional<zod.ZodString>;
-                attributes: zod.ZodOptional<
-                    zod.ZodObject<
-                        {
-                            dosApiToken: zod.ZodOptional<
-                                zod.ZodArray<zod.ZodString, "many">
-                            >;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            dosApiToken?: string[] | undefined;
-                        },
-                        {
-                            dosApiToken?: string[] | undefined;
-                        }
-                    >
-                >;
                 requiredActions: zod.ZodOptional<
                     zod.ZodArray<zod.ZodString, "many">
                 >;
@@ -19929,11 +19613,6 @@ declare const keycloakAPI: [
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
-                attributes?:
-                    | {
-                          dosApiToken?: string[] | undefined;
-                      }
-                    | undefined;
                 requiredActions?: string[] | undefined;
             },
             {
@@ -19942,11 +19621,6 @@ declare const keycloakAPI: [
                 firstName?: string | undefined;
                 lastName?: string | undefined;
                 email?: string | undefined;
-                attributes?:
-                    | {
-                          dosApiToken?: string[] | undefined;
-                      }
-                    | undefined;
                 requiredActions?: string[] | undefined;
             }
         >;
