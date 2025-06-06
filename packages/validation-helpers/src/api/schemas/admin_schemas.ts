@@ -28,13 +28,11 @@ export const PostUsersReq = z.object({
     lastName: z.string().optional(),
     email: z.string().email().optional(),
     emailVerified: z.boolean().optional(),
-    dosApiToken: z.string().optional(),
 });
 
 export const PostUsersRes = z.object({
     id: z.string().uuid(),
     username: z.string(),
-    dosApiToken: z.string().optional(),
     realmRoles: z.array(z.string()),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
