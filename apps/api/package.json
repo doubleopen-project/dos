@@ -47,7 +47,7 @@
         "@types/adm-zip": "0.5.7",
         "@types/braces": "^3.0.4",
         "@types/chai": "5.2.2",
-        "@types/compression": "1.8.0",
+        "@types/compression": "1.8.1",
         "@types/connect-pg-simple": "7.0.3",
         "@types/cookie-parser": "1.4.8",
         "@types/cors": "2.8.18",
