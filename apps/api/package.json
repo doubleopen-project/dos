@@ -50,7 +50,7 @@
         "@types/compression": "1.8.1",
         "@types/connect-pg-simple": "7.0.3",
         "@types/cookie-parser": "1.4.9",
-        "@types/cors": "2.8.18",
+        "@types/cors": "2.8.19",
         "@types/express": "4.17.23",
         "@types/express-session": "1.18.1",
         "@types/glob-parent": "5.1.3",
