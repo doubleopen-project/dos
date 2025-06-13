@@ -4,9 +4,10 @@
 
 import { NextFunction, Request, Response } from "express";
 import NodeCache from "node-cache";
-import { getUsers } from "./keycloak_queries";
 
 const cache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 60 });
+
+const tokens = process.env.API_TOKENS?.split(",") || ["token"];
 
 export const authenticateDosApiToken = async (
     req: Request,
@@ -25,8 +26,7 @@ export const authenticateDosApiToken = async (
 
         if (useCache && cache.has(token)) next();
         else {
-            const users = await getUsers(undefined, token, undefined);
-            if (users.length > 0) {
+            if (tokens.includes(token)) {
                 cache.set(token, true);
                 next();
             } else return res.status(403).json({ message: "Forbidden" });

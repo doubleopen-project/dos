@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
 import { getPresignedGetUrl } from "s3-helpers";
@@ -58,31 +57,11 @@ userRouter.put("/user", async (req, res) => {
     }
 });
 
-userRouter.put("/token", async (req, res) => {
-    try {
-        const token = crypto.randomBytes(16).toString("hex");
-
-        // Update user token
-        await updateUser(req.kauth.grant.access_token.content.sub, {
-            username: req.kauth.grant.access_token.content.preferred_username,
-            email: req.kauth.grant.access_token.content.email,
-            firstName: req.kauth.grant.access_token.content.given_name,
-            lastName: req.kauth.grant.access_token.content.family_name,
-            attributes: { dosApiToken: token },
-        });
-
-        res.status(200).json({ token: token });
-    } catch (error) {
-        console.log("Error: ", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
 const getUserIdArray = async (username: string, usernameStrict?: boolean) => {
     let userIds: string[] = [];
 
     if (usernameStrict) {
-        const matchingUsers = await getUsers(username, undefined, true);
+        const matchingUsers = await getUsers(username, true);
         if (matchingUsers.length === 1) userIds = [matchingUsers[0].id];
         else if (matchingUsers.length > 1)
             throw new CustomError(
