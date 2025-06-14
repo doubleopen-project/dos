@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import crypto from "crypto";
 import { zodiosRouter } from "@zodios/express";
 import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
@@ -38,8 +37,6 @@ adminRouter.post(
             const role = req.body.role ? req.body.role : "USER";
             const realmRoles =
                 role === "USER" ? ["app-user"] : ["app-user", "app-admin"];
-            const dosApiToken =
-                req.body.dosApiToken || crypto.randomBytes(16).toString("hex");
 
             const newUser = await createUser({
                 username,
@@ -53,9 +50,6 @@ adminRouter.post(
                                 : true,
                     },
                 ],
-                attributes: {
-                    dosApiToken: dosApiToken,
-                },
                 enabled: true,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -68,7 +62,6 @@ adminRouter.post(
             res.status(200).send({
                 id: newUser.id,
                 username: newUser.username,
-                dosApiToken: dosApiToken,
                 realmRoles: realmRoles,
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,

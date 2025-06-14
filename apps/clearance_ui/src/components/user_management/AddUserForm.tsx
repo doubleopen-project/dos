@@ -44,7 +44,6 @@ const addUserFormSchema = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     email: z.string().email().optional(),
-    dosApiToken: z.string().optional(),
 });
 
 type AddUserDataType = z.infer<typeof addUserFormSchema>;
@@ -56,7 +55,6 @@ type AddUserFormProps = {
             username: string;
             password: string;
             realmRoles: string[];
-            dosApiToken?: string;
             firstName?: string;
             lastName?: string;
             email?: string;
@@ -79,7 +77,6 @@ const AddUserForm = ({ onNewUserCreated }: AddUserFormProps) => {
                 username: data.username,
                 password: form.getValues("password"),
                 realmRoles: data.realmRoles,
-                dosApiToken: data.dosApiToken,
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,

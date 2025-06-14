@@ -5,7 +5,6 @@
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import MultiSection from "@/components/common/MultiSection";
-import TokenDialog from "@/components/user_management/TokenDialog";
 import UserDataForm from "@/components/user_management/UserDataForm";
 
 export default function Settings() {
@@ -15,22 +14,6 @@ export default function Settings() {
 
     function Profile() {
         return <UserDataForm />;
-    }
-
-    function Tokens() {
-        return (
-            <>
-                <p className="pt-4">
-                    Here you can create a token you will need for running ORT
-                    with DOS Scanner, or to use the scanner via the API.
-                </p>
-                <p className="pt-4 pb-8">
-                    Please note that your previous token will be invalidated
-                    when you create a new one.
-                </p>
-                <TokenDialog />
-            </>
-        );
     }
 
     return (
@@ -45,12 +28,6 @@ export default function Settings() {
                             tag: "profile",
                             href: "/settings?section=profile",
                             content: Profile,
-                        },
-                        {
-                            title: "Tokens",
-                            tag: "tokens",
-                            href: "/settings?section=tokens",
-                            content: Tokens,
                         },
                     ]}
                 />
