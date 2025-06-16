@@ -18,7 +18,7 @@
     },
     "devDependencies": {
         "@types/is-glob": "4.0.4",
-        "@types/jest": "^29.5.14",
+        "@types/jest": "^30.0.0",
         "eslint-config-custom-server": "*",
         "jest": "^30.0.0",
         "ts-jest": "^29.2.5",

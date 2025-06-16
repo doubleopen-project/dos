@@ -13,7 +13,7 @@
         "spdx-license-ids": "^3.0.20"
     },
     "devDependencies": {
-        "@types/jest": "29.5.14",
+        "@types/jest": "30.0.0",
         "@types/node": "22.15.31",
         "eslint-config-custom-server": "*",
         "jest": "^30.0.0",
