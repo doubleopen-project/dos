@@ -276,3 +276,13 @@ model Session {
   expire DateTime
   sess   Json
 }
+
+/// A curator
+model Curator {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  displayName String
+  enabled     Boolean  @default(true)
+  remoteId    String?  @unique
+}
