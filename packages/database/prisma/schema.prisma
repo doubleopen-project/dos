@@ -123,11 +123,15 @@ model BulkConclusion {
 
   userId String @db.Uuid
 
+  curatorId String?  @db.Uuid
+  curator   Curator? @relation(fields: [curatorId], references: [id])
+
   licenseConclusions LicenseConclusion[]
 
   @@index([packageId])
   @@index([updatedAt])
   @@index([userId])
+  @@index([curatorId])
 }
 
 /// A license conclusion.
@@ -146,6 +150,9 @@ model LicenseConclusion {
 
   userId String @db.Uuid
 
+  curatorId String?  @db.Uuid
+  curator   Curator? @relation(fields: [curatorId], references: [id])
+
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
 
@@ -153,6 +160,7 @@ model LicenseConclusion {
   @@index([bulkConclusionId])
   @@index([updatedAt])
   @@index([userId])
+  @@index([curatorId])
 }
 
 /// A copyright finding in a file.
@@ -219,9 +227,13 @@ model PathExclusion {
 
   userId String @db.Uuid
 
+  curatorId String?  @db.Uuid
+  curator   Curator? @relation(fields: [curatorId], references: [id])
+
   @@index([packageId])
   @@index([updatedAt])
   @@index([userId])
+  @@index([curatorId])
 }
 
 /// A scanner job.
@@ -285,4 +297,8 @@ model Curator {
   displayName String
   enabled     Boolean  @default(true)
   remoteId    String?  @unique
+
+  bulkConclusions    BulkConclusion[]
+  licenseConclusions LicenseConclusion[]
+  pathExclusions     PathExclusion[]
 }
