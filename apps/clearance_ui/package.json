@@ -67,7 +67,7 @@
         "zustand": "5.0.5"
     },
     "devDependencies": {
-        "@playwright/test": "1.53.0",
+        "@playwright/test": "1.53.1",
         "@tailwindcss/postcss": "^4.0.0",
         "@testing-library/jest-dom": "6.6.3",
         "@testing-library/react": "16.3.0",
