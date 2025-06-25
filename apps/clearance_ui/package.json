@@ -79,7 +79,7 @@
         "@types/spdx-expression-parse": "3.0.5",
         "dotenv-cli": "^8.0.0",
         "eslint-config-custom": "*",
-        "jest": "30.0.2",
+        "jest": "30.0.3",
         "jest-environment-jsdom": "30.0.2",
         "next": "15.3.4",
         "next-router-mock": "1.0.2",
