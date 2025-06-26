@@ -42,7 +42,7 @@
         "validation-helpers": "*"
     },
     "devDependencies": {
-        "@ngneat/falso": "^7.2.0",
+        "@ngneat/falso": "^8.0.0",
         "@playwright/test": "1.53.1",
         "@types/adm-zip": "0.5.7",
         "@types/braces": "^3.0.4",
