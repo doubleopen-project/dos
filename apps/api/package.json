@@ -62,7 +62,7 @@
         "@types/passport": "1.0.17",
         "@types/passport-local": "1.0.38",
         "@types/swagger-ui-express": "4.1.8",
-        "chai": "5.2.0",
+        "chai": "5.2.1",
         "dotenv-cli": "8.0.0",
         "eslint-config-custom-server": "*",
         "mocha": "11.7.1",
