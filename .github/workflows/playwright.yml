@@ -30,6 +30,8 @@ jobs:
               run: npm i --workspace packages/database
             - name: Run prisma generate
               run: npm run db:generate
+            - name: Build images
+              run: docker compose build
             - name: Start the testing environment
               run: docker compose up api clearance-ui scanner-worker createbuckets -d
             - name: Seed the database and populate the spaces bucket
