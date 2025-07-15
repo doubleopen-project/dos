@@ -277,7 +277,6 @@ const PackageInspector = ({ purl, path }: Props) => {
             const node = findNodeByPath(treeData, path);
             if (node) {
                 setOpenedNodeId(node.id);
-                treeRef.current?.select(node);
             }
         }
     }, [path, treeData, treeRef]);
@@ -513,6 +512,7 @@ const PackageInspector = ({ purl, path }: Props) => {
                             }
                         }}
                         ref={treeRef}
+                        selection={openedNodeId}
                     >
                         {(nodeProps) => (
                             <Node
