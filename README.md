@@ -69,6 +69,13 @@ To run this project you will need Node.js, npm and Docker installed.
 
     This will start the Clearance UI and the API.
 
+> [!NOTE]
+> In case of build errors for the database package you may need to generate the Prisma client with
+>
+> ```shell
+> npm run db:generate
+> ```
+
 # License
 
 DOS is licensed under the [MIT License](./LICENSE). Copyright (C) Double Open Oy.
