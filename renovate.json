@@ -40,6 +40,10 @@
             "allowedVersions": "4.x"
         },
         {
+            "matchPackageNames": ["@hookform/resolvers"],
+            "allowedVersions": "5.1.0"
+        },
+        {
             "matchPackageNames": ["packageurl-js"],
             "allowedVersions": "1.2.1"
         },
