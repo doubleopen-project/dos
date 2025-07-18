@@ -17,7 +17,7 @@
         "braces": "^3.0.3",
         "bull": "4.16.5",
         "common-helpers": "*",
-        "compression": "1.8.0",
+        "compression": "1.8.1",
         "connect-pg-simple": "10.0.0",
         "cookie-parser": "1.4.7",
         "cors": "2.8.5",
