@@ -1,1 +1,1 @@
-scancode-toolkit==32.4.0
+scancode-toolkit==32.4.1
