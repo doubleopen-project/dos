@@ -24,6 +24,8 @@ jobs:
               with:
                   node-version: 22.17.1
                   cache: "npm"
+            - name: Enable Corepack
+              run: npm install corepack@latest && corepack enable
             - name: Install dependencies
               run: |-
                   npm ci
