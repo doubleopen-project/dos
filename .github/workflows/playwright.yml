@@ -24,6 +24,8 @@ jobs:
               with:
                   node-version: 22.17.1
                   cache: "npm"
+            - name: Enable Corepack
+              run: npm install corepack@latest && corepack enable
             - name: Install dependencies for root
               run: npm i --workspaces=false
             - name: Install dependencies for the database package
