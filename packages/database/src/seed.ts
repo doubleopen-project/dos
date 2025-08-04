@@ -68,7 +68,7 @@ async function main() {
         crlfDelay: Infinity,
     });
 
-    rl.on("line", async (line) => {
+    for await (const line of rl) {
         const obj = JSON.parse(line);
         await prisma.file.upsert({
             where: {
@@ -80,7 +80,7 @@ async function main() {
                 scanStatus: obj.scanStatus,
             },
         });
-    });
+    }
 
     console.log("Upserting Package to database");
 
@@ -112,7 +112,7 @@ async function main() {
         crlfDelay: Infinity,
     });
 
-    rl2.on("line", async (line) => {
+    for await (const line of rl2) {
         const obj = JSON.parse(line);
 
         const fileTree = await prisma.fileTree.findFirst({
@@ -131,7 +131,7 @@ async function main() {
                     path: obj.path,
                 },
             });
-    });
+    }
 
     console.log(
         "Upserting LicenseFinding and LicenseFindingMatch rows from test_data/license_findings_and_matches.source to database",
@@ -147,7 +147,7 @@ async function main() {
         crlfDelay: Infinity,
     });
 
-    rl3.on("line", async (line) => {
+    for await (const line of rl3) {
         const obj = JSON.parse(line);
 
         let licenseFinding = await prisma.licenseFinding.findFirst({
@@ -200,7 +200,7 @@ async function main() {
                     },
                 });
         }
-    });
+    }
 
     console.log(
         "Upserting CopyrightFinding rows from test_data/copyright_findings.source to database",
@@ -213,7 +213,7 @@ async function main() {
         crlfDelay: Infinity,
     });
 
-    rl4.on("line", async (line) => {
+    for await (const line of rl4) {
         const obj = JSON.parse(line);
 
         const copyrightFinding = await prisma.copyrightFinding.findFirst({
@@ -238,7 +238,7 @@ async function main() {
                     endLine: obj.endLine,
                 },
             });
-    });
+    }
 }
 
 main()
