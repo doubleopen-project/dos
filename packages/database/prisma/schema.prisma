@@ -196,7 +196,7 @@ model ScanIssue {
   message       String
   scanner       String
   scannerConfig String
-  timeoutIssue  Boolean @default(false)
+  timeoutIssue  Boolean  @default(false)
   timeout       Int?
 
   fileSha256 String
