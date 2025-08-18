@@ -16,7 +16,7 @@
         "@types/mocha": "10.0.10",
         "@types/node": "22.17.2",
         "@types/pako": "2.0.4",
-        "chai": "5.2.1",
+        "chai": "5.3.1",
         "mocha": "11.7.1",
         "tsup": "8.5.0",
         "typescript": "5.9.2"
