@@ -64,7 +64,7 @@
         "tailwindcss-animate": "1.0.7",
         "validation-helpers": "*",
         "zod": "3.22.4",
-        "zustand": "5.0.7"
+        "zustand": "5.0.8"
     },
     "devDependencies": {
         "@playwright/test": "1.55.0",
