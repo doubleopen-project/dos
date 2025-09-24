@@ -17,10 +17,15 @@ RUN apt-get update && \
 RUN python3 -m venv /venv
 
 # Copy the requirements file to the container
-COPY requirements.txt /venv/
+COPY requirements.txt /tmp/
+
+# Extract ScanCode version from requirements.txt and fetch its constraints file
+RUN SCANCODE_VERSION=$(grep -oP 'scancode-toolkit==\K[^\s]+' /tmp/requirements.txt) && \
+    curl -fSL "https://raw.githubusercontent.com/nexB/scancode-toolkit/v${SCANCODE_VERSION}/requirements.txt" \
+      >> /tmp/requirements.txt
 
 # Activate the virtual environment and install required Python packages
-RUN /venv/bin/pip install -r /venv/requirements.txt
+RUN /venv/bin/pip install -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
 # DOS
 
