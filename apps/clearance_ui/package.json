@@ -68,7 +68,7 @@
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "15.5.4",
-        "@playwright/test": "1.55.0",
+        "@playwright/test": "1.55.1",
         "@tailwindcss/postcss": "^4.0.0",
         "@testing-library/jest-dom": "6.6.4",
         "@testing-library/react": "16.3.0",
