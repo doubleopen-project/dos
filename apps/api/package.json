@@ -68,6 +68,6 @@
         "mocha": "11.7.3",
         "tsconfig": "*",
         "tsup": "8.5.0",
-        "typescript": "5.9.2"
+        "typescript": "5.9.3"
     }
 }
