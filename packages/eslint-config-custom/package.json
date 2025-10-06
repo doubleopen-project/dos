@@ -6,7 +6,7 @@
         "@next/eslint-plugin-next": "15.5.4",
         "@typescript-eslint/eslint-plugin": "8.45.0",
         "@vercel/style-guide": "6.0.0",
-        "eslint": "9.36.0",
+        "eslint": "9.37.0",
         "eslint-config-next": "15.5.4",
         "eslint-config-prettier": "10.1.8",
         "eslint-config-turbo": "2.5.6",
