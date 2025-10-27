@@ -6,7 +6,7 @@ services:
     db:
         image: postgres:18.0
         volumes:
-            - db-data:/var/lib/postgresql/data
+            - db-data:/var/lib/postgresql
         ports:
             - 5432:5432
         environment:
