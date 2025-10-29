@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@types/jest": "30.0.0",
-        "@types/node": "22.18.13",
+        "@types/node": "24.9.2",
         "eslint-config-custom-server": "*",
         "jest": "^30.0.0",
         "tsup": "8.5.0",
