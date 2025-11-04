@@ -276,14 +276,3 @@ model Session {
   expire DateTime
   sess   Json
 }
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum Subscription {
-  FREE
-  SILVER
-  GOLD
-}
