@@ -407,6 +407,11 @@ userRouter.post(
     authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
+            const curatorId = await dbQueries.getOrCreateCurator(
+                req.kauth.grant.access_token.content.sub,
+                req.kauth.grant.access_token.content.preferred_username,
+            );
+
             const contextPurl = req.params.purl;
 
             // Make sure that a package with purl exists
@@ -443,6 +448,7 @@ userRouter.post(
                 contextPurl: contextPurl,
                 file: { connect: { sha256: req.params.sha256 } },
                 userId: req.kauth.grant.access_token.content.sub,
+                curator: { connect: { id: curatorId } },
             });
 
             res.status(200).json({
@@ -935,6 +941,11 @@ userRouter.post(
     authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
+            const curatorId = await dbQueries.getOrCreateCurator(
+                req.kauth.grant.access_token.content.sub,
+                req.kauth.grant.access_token.content.preferred_username,
+            );
+
             const contextPurl = req.params.purl;
 
             const packageId = await dbQueries.findPackageIdByPurl(contextPurl);
@@ -957,6 +968,7 @@ userRouter.post(
                 local: req.body.local,
                 package: { connect: { id: packageId } },
                 userId: req.kauth.grant.access_token.content.sub,
+                curator: { connect: { id: curatorId } },
             });
 
             const licenseConclusionInputs = [];
@@ -999,6 +1011,7 @@ userRouter.post(
                         fileSha256: fileTree.fileSha256,
                         bulkConclusionId: bulkConclusion.id,
                         userId: req.kauth.grant.access_token.content.sub,
+                        curatorId: curatorId,
                     });
             }
 
@@ -1129,6 +1142,11 @@ userRouter.put(
     authzPermission({ resource: "ClearanceItems", scopes: ["PUT"] }),
     async (req, res) => {
         try {
+            const curatorId = await dbQueries.getOrCreateCurator(
+                req.kauth.grant.access_token.content.sub,
+                req.kauth.grant.access_token.content.preferred_username,
+            );
+
             const bulkConclusionId = req.params.id;
 
             const origBulk =
@@ -1227,6 +1245,7 @@ userRouter.put(
                             fileSha256: fileTree.fileSha256,
                             bulkConclusionId: origBulk.id,
                             userId: req.kauth.grant.access_token.content.sub,
+                            curatorId: curatorId,
                         });
                     }
                 }
@@ -1563,6 +1582,11 @@ userRouter.post(
     authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
+            const curatorId = await dbQueries.getOrCreateCurator(
+                req.kauth.grant.access_token.content.sub,
+                req.kauth.grant.access_token.content.preferred_username,
+            );
+
             const purl = req.params.purl;
             const packageId = await dbQueries.findPackageIdByPurl(purl);
 
@@ -1587,6 +1611,7 @@ userRouter.post(
                 comment: req.body.comment || null,
                 package: { connect: { id: packageId } },
                 userId: req.kauth.grant.access_token.content.sub,
+                curator: { connect: { id: curatorId } },
             });
 
             res.status(200).json({

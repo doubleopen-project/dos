@@ -50,6 +50,25 @@ const waitToRetry = async () => {
     console.log("Retrying database query");
 };
 
+async function retry<T>(
+    fn: () => Promise<T>,
+    attempts = initialRetryCount,
+): Promise<T> {
+    let lastErr: unknown;
+    for (let i = 0; i < attempts; i++) {
+        try {
+            return await fn();
+        } catch (err) {
+            lastErr = err;
+            handleError(err);
+            if (i < attempts - 1) await waitToRetry();
+            else throw err;
+        }
+    }
+    // TS appeasement; practically unreachable
+    throw lastErr;
+}
+
 // ------------------------- Database queries -------------------------
 
 // ------------------------------ Create ------------------------------
@@ -3749,6 +3768,27 @@ export const getDistinctUserIdsForItems = async (): Promise<Set<string>> => {
     }
 
     return userIds;
+};
+
+export const getOrCreateCurator = async (
+    remoteId: string,
+    username: string,
+): Promise<string> => {
+    const curator = await retry(async () => {
+        return prisma.curator.upsert({
+            where: { remoteId: remoteId },
+            update: { username: username },
+            create: {
+                remoteId: remoteId,
+                username: username,
+            },
+            select: {
+                id: true,
+            },
+        });
+    });
+
+    return curator.id;
 };
 
 // ------------------------------ Delete ------------------------------
