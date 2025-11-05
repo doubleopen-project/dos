@@ -2017,7 +2017,9 @@ export const getPathExclusionsByPackagePurl = async (
         pattern: string;
         reason: string;
         comment: string | null;
-        userId: string;
+        curator: {
+            username: string;
+        };
     }[]
 > => {
     let retries = initialRetryCount;
@@ -2038,7 +2040,11 @@ export const getPathExclusionsByPackagePurl = async (
                             pattern: true,
                             reason: true,
                             comment: true,
-                            userId: true,
+                            curator: {
+                                select: {
+                                    username: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -2645,6 +2651,16 @@ export const findLicenseConclusionUserId = async (
     return licenseConclusion ? licenseConclusion.userId : null;
 };
 
+type LicenseConclusionWithCurator = Prisma.LicenseConclusionGetPayload<{
+    include: {
+        curator: {
+            select: {
+                username: true;
+            };
+        };
+    };
+}>;
+
 export const findLicenseConclusions = async (
     skip: number | undefined,
     take: number | undefined,
@@ -2656,12 +2672,13 @@ export const findLicenseConclusions = async (
         | "local"
         | "createdAt"
         | "updatedAt"
-        | undefined,
+        | "username",
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -2672,8 +2689,8 @@ export const findLicenseConclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
-): Promise<LicenseConclusion[]> => {
-    let licenseConclusions: LicenseConclusion[] = [];
+): Promise<LicenseConclusionWithCurator[]> => {
+    let licenseConclusions: LicenseConclusionWithCurator[] = [];
     let retries = initialRetryCount;
 
     /*
@@ -2690,6 +2707,13 @@ export const findLicenseConclusions = async (
             licenseConclusions = await prisma.licenseConclusion.findMany({
                 skip: skip,
                 take: take,
+                include: {
+                    curator: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                },
                 where: {
                     OR: purl
                         ? [
@@ -2750,8 +2774,11 @@ export const findLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     detectedLicenseExpressionSPDX: {
                         contains: detectedLicense,
@@ -2786,11 +2813,16 @@ export const findLicenseConclusions = async (
                                 : undefined,
                     },
                 },
-                orderBy: orderProperty
-                    ? {
-                          [orderProperty]: orderPropertyValue,
-                      }
-                    : undefined,
+                orderBy:
+                    orderProperty === "username"
+                        ? {
+                              curator: {
+                                  username: orderPropertyValue,
+                              },
+                          }
+                        : {
+                              [orderProperty]: orderPropertyValue,
+                          },
             });
             break;
         } catch (error) {
@@ -2901,7 +2933,11 @@ type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
                 };
             };
         };
-        userId: true;
+        curator: {
+            select: {
+                username: true;
+            };
+        };
     };
 }>;
 
@@ -2950,7 +2986,11 @@ export const findBulkConclusionWithRelationsById = async (
                             },
                         },
                     },
-                    userId: true,
+                    curator: {
+                        select: {
+                            username: true,
+                        },
+                    },
                 },
             });
             break;
@@ -3010,7 +3050,6 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                             purl: true,
                         },
                     },
-                    userId: true,
                     licenseConclusions: {
                         select: {
                             id: true,
@@ -3027,6 +3066,11 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                                     },
                                 },
                             },
+                        },
+                    },
+                    curator: {
+                        select: {
+                            username: true,
                         },
                     },
                 },
@@ -3131,7 +3175,11 @@ type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        userId: true;
+        curator: {
+            select: {
+                username: true;
+            };
+        };
     };
 }>;
 
@@ -3147,11 +3195,12 @@ export const findBulkConclusionsWithRelations = async (
         | "local"
         | "createdAt"
         | "updatedAt"
-        | undefined,
+        | "username",
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -3182,7 +3231,11 @@ export const findBulkConclusionsWithRelations = async (
                             purl: true,
                         },
                     },
-                    userId: true,
+                    curator: {
+                        select: {
+                            username: true,
+                        },
+                    },
                 },
                 skip: skip,
                 take: take,
@@ -3193,8 +3246,11 @@ export const findBulkConclusionsWithRelations = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     pattern: {
                         contains: pattern,
@@ -3218,17 +3274,22 @@ export const findBulkConclusionsWithRelations = async (
                         lte: updatedAtLte,
                     },
                 },
-                orderBy: orderProperty
-                    ? orderProperty === "pkg"
+                orderBy:
+                    orderProperty === "pkg"
                         ? {
                               package: {
                                   name: orderPropertyValue,
                               },
                           }
-                        : {
-                              [orderProperty]: orderPropertyValue,
-                          }
-                    : undefined,
+                        : orderProperty === "username"
+                          ? {
+                                curator: {
+                                    username: orderPropertyValue,
+                                },
+                            }
+                          : {
+                                [orderProperty]: orderPropertyValue,
+                            },
             });
             break;
         } catch (error) {
@@ -3362,10 +3423,14 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
         pattern: true;
         reason: true;
         comment: true;
-        userId: true;
         package: {
             select: {
                 purl: true;
+            };
+        };
+        curator: {
+            select: {
+                username: true;
             };
         };
     };
@@ -3381,11 +3446,12 @@ export const findPathExclusions = async (
         | "comment"
         | "createdAt"
         | "updatedAt"
-        | undefined,
+        | "username",
     orderPropertyValue: "asc" | "desc" | undefined,
     purl: string | undefined,
     purlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -3406,10 +3472,14 @@ export const findPathExclusions = async (
                     pattern: true,
                     reason: true,
                     comment: true,
-                    userId: true,
                     package: {
                         select: {
                             purl: true,
+                        },
+                    },
+                    curator: {
+                        select: {
+                            username: true,
                         },
                     },
                 },
@@ -3422,8 +3492,11 @@ export const findPathExclusions = async (
                             contains: purlStrict ? undefined : purl,
                         },
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     pattern: {
                         contains: pattern,
@@ -3443,17 +3516,22 @@ export const findPathExclusions = async (
                         lte: updatedAtLte,
                     },
                 },
-                orderBy: orderProperty
-                    ? orderProperty === "pkg"
+                orderBy:
+                    orderProperty === "pkg"
                         ? {
                               package: {
                                   name: orderPropertyValue,
                               },
                           }
-                        : {
-                              [orderProperty]: orderPropertyValue,
-                          }
-                    : undefined,
+                        : orderProperty === "username"
+                          ? {
+                                curator: {
+                                    username: orderPropertyValue,
+                                },
+                            }
+                          : {
+                                [orderProperty]: orderPropertyValue,
+                            },
             });
             break;
         } catch (error) {
@@ -3628,14 +3706,21 @@ export const findLicenseConclusionsByBulkConclusionId = async (
 
 export const findLicenseConclusionsByFileSha256 = async (
     sha256: string,
-): Promise<LicenseConclusion[]> => {
-    let licenseConclusions: LicenseConclusion[] = [];
+): Promise<LicenseConclusionWithCurator[]> => {
+    let licenseConclusions: LicenseConclusionWithCurator[] = [];
     let retries = initialRetryCount;
     let querySuccess = false;
 
     while (!querySuccess && retries > 0) {
         try {
             licenseConclusions = await prisma.licenseConclusion.findMany({
+                include: {
+                    curator: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                },
                 where: {
                     fileSha256: sha256,
                 },
@@ -4293,7 +4378,8 @@ export const countScannedPackages = async (
 export const countPathExclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     reason: string | undefined,
     comment: string | undefined,
@@ -4315,8 +4401,11 @@ export const countPathExclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     pattern: {
                         contains: pattern,
@@ -4352,7 +4441,8 @@ export const countPathExclusions = async (
 export const countBulkConclusions = async (
     purl: string | undefined,
     purlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     pattern: string | undefined,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
@@ -4376,8 +4466,11 @@ export const countBulkConclusions = async (
                             contains: !purlStrict ? purl : undefined,
                         },
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     pattern: {
                         contains: pattern,
@@ -4461,7 +4554,8 @@ export const countLicenseConclusions = async (
     purl: string | undefined,
     contextPurl: string | undefined,
     contextPurlStrict: boolean,
-    userIds: string[] | undefined,
+    username: string | undefined,
+    usernameStrict: boolean,
     detectedLicense: string | undefined,
     concludedLicense: string | undefined,
     comment: string | undefined,
@@ -4548,8 +4642,11 @@ export const countLicenseConclusions = async (
                                   ? contextPurl
                                   : undefined,
                     },
-                    userId: {
-                        in: userIds,
+                    curator: {
+                        username: {
+                            equals: usernameStrict ? username : undefined,
+                            contains: !usernameStrict ? username : undefined,
+                        },
                     },
                     detectedLicenseExpressionSPDX: {
                         contains: detectedLicense,

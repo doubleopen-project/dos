@@ -13,7 +13,7 @@ import {
 } from "../helpers/db_operations";
 import * as dbQueries from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
-import { getUsers, updateUser } from "../helpers/keycloak_queries";
+import { updateUser } from "../helpers/keycloak_queries";
 import { s3Client } from "../helpers/s3client";
 import { authzPermission } from "../middlewares/authz_permission";
 
@@ -57,25 +57,6 @@ userRouter.put("/user", async (req, res) => {
     }
 });
 
-const getUserIdArray = async (username: string, usernameStrict?: boolean) => {
-    let userIds: string[] = [];
-
-    if (usernameStrict) {
-        const matchingUsers = await getUsers(username, true);
-        if (matchingUsers.length === 1) userIds = [matchingUsers[0].id];
-        else if (matchingUsers.length > 1)
-            throw new CustomError(
-                "Internal server error. Error in getUsers query: multiple users found with the same username with exact set to true",
-                500,
-            );
-    } else {
-        const matchingUsers = await getUsers(username);
-        userIds = matchingUsers.map((user) => user.id);
-    }
-
-    return userIds;
-};
-
 userRouter.get(
     "/license-conclusions",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
@@ -84,14 +65,6 @@ userRouter.get(
         try {
             // TODO: return only license conclusions that belong to the user
             // or to a group that the user belongs to
-
-            // If a username filter is provided, get the user id(s) that match the username(s) from Keycloak
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
 
             if (req.query.purl) {
                 const pkg = await dbQueries.findPackageByPurl(req.query.purl);
@@ -110,23 +83,18 @@ userRouter.get(
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
 
             const licenseConclusions = await dbQueries.findLicenseConclusions(
-                // If sortBy is "username", the pagination will have to be handled in-memory
-                req.query.sortBy !== "username" ? skip : undefined,
-                req.query.sortBy !== "username" ? pageSize : undefined,
+                skip,
+                pageSize,
                 // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                // If sortBy is "username", the sorting will have to be handled in-memory
-                req.query.sortBy !== "username"
-                    ? req.query.sortBy || "updatedAt"
-                    : undefined,
-                req.query.sortBy !== "username"
-                    ? !req.query.sortBy && !req.query.sortOrder
-                        ? "desc"
-                        : req.query.sortOrder
-                    : undefined,
+                req.query.sortBy || "updatedAt",
+                !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder,
                 req.query.purl,
                 req.query.contextPurl,
                 req.query.contextPurlStrict || false,
-                userIds,
+                req.query.username,
+                req.query.usernameStrict || false,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
                 req.query.comment,
@@ -139,52 +107,8 @@ userRouter.get(
                 req.query.updatedAtLte,
             );
 
-            // Get users from Keycloak server to be able to match user ids to usernames
-            const users = await getUsers();
-
-            // Add username to each license conclusion
-            const lcsWithUsernames = licenseConclusions.map((lc) => {
-                const username = users.find(
-                    (u) => u.id === lc.userId,
-                )?.username;
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-                return {
-                    ...lc,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
-            let lcsToProcess = [...lcsWithUsernames];
-
-            // Handle sorting and pagination in-memory if sortBy is "username"
-            if (req.query.sortBy === "username") {
-                // Sort by username
-                lcsToProcess.sort((a, b) => {
-                    if (a.user.username < b.user.username) return -1;
-                    if (a.user.username > b.user.username) return 1;
-                    return 0;
-                });
-
-                // Reverse the array if sortOrder is "desc"
-                if (req.query.sortOrder === "desc") {
-                    lcsToProcess.reverse();
-                }
-
-                // If pageSize is provided, slice the array
-                if (pageSize) {
-                    lcsToProcess = lcsToProcess.slice(skip, skip + pageSize);
-                }
-            }
-
             res.status(200).json({
-                licenseConclusions: lcsToProcess,
+                licenseConclusions: licenseConclusions,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -207,13 +131,6 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
-
             if (req.query.purl) {
                 const pkg = await dbQueries.findPackageByPurl(req.query.purl);
 
@@ -231,7 +148,8 @@ userRouter.get(
                     req.query.purl,
                     req.query.contextPurl,
                     req.query.contextPurlStrict || false,
-                    userIds,
+                    req.query.username,
+                    req.query.usernameStrict || false,
                     req.query.detectedLicense,
                     req.query.concludedLicense,
                     req.query.comment,
@@ -364,28 +282,8 @@ userRouter.get(
                 }
             });
 
-            const users = await getUsers();
-
-            const lcs = licenseConclusions.map((lc) => {
-                const username = users.find(
-                    (u) => u.id === lc.userId,
-                )?.username;
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-                return {
-                    ...lc,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
             res.status(200).json({
-                licenseConclusions: lcs,
+                licenseConclusions: licenseConclusions,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -610,34 +508,22 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
-
             const pageSize = req.query.pageSize;
             const pageIndex = req.query.pageIndex;
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
             const bulkConclusions =
                 await dbQueries.findBulkConclusionsWithRelations(
-                    // If sortBy is "username", the pagination will have to be handled in-memory
-                    req.query.sortBy !== "username" ? skip : undefined,
-                    req.query.sortBy !== "username" ? pageSize : undefined,
+                    skip,
+                    pageSize,
                     // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                    // If sortBy is "username", the sorting will have to be handled in-memory
-                    req.query.sortBy !== "username"
-                        ? req.query.sortBy || "updatedAt"
-                        : undefined,
-                    req.query.sortBy !== "username"
-                        ? !req.query.sortBy && !req.query.sortOrder
-                            ? "desc"
-                            : req.query.sortOrder
-                        : undefined,
+                    req.query.sortBy || "updatedAt",
+                    !req.query.sortBy && !req.query.sortOrder
+                        ? "desc"
+                        : req.query.sortOrder,
                     req.query.purl,
                     req.query.purlStrict || false,
-                    userIds,
+                    req.query.username,
+                    req.query.usernameStrict || false,
                     req.query.pattern,
                     req.query.detectedLicense,
                     req.query.concludedLicense,
@@ -649,52 +535,8 @@ userRouter.get(
                     req.query.updatedAtLte,
                 );
 
-            // Get users from Keycloak server to be able to match user ids to usernames
-            const users = await getUsers();
-
-            // Add username to each bulk conclusion
-            const bcsWithUsernames = bulkConclusions.map((bc) => {
-                const username = users.find(
-                    (u) => u.id === bc.userId,
-                )?.username;
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-                return {
-                    ...bc,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
-            let bcs = [...bcsWithUsernames];
-
-            // Handle sorting and pagination in-memory if sortBy is "username"
-            if (req.query.sortBy === "username") {
-                // Sort by username
-                bcs.sort((a, b) => {
-                    if (a.user.username < b.user.username) return -1;
-                    if (a.user.username > b.user.username) return 1;
-                    return 0;
-                });
-
-                // Reverse the array if sortOrder is "desc"
-                if (req.query.sortOrder === "desc") {
-                    bcs.reverse();
-                }
-
-                // If pageSize is provided, slice the array
-                if (pageSize) {
-                    bcs = bcs.slice(skip, skip + pageSize);
-                }
-            }
-
             res.status(200).json({
-                bulkConclusions: bcs,
+                bulkConclusions: bulkConclusions,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -717,17 +559,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
-
             const bulkConclusionsCount = await dbQueries.countBulkConclusions(
                 req.query.purl,
                 req.query.purlStrict || false,
-                userIds,
+                req.query.username,
+                req.query.usernameStrict || false,
                 req.query.pattern,
                 req.query.detectedLicense,
                 req.query.concludedLicense,
@@ -846,30 +682,8 @@ userRouter.get(
                     packageId,
                 );
 
-            const users = await getUsers();
-
-            const bcs = bulkConclusions.map((bc) => {
-                const username = users.find(
-                    (u) => u.id === bc.userId,
-                )?.username;
-
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-
-                return {
-                    ...bc,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
             res.status(200).json({
-                bulkConclusions: bcs,
+                bulkConclusions: bulkConclusions,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -1356,33 +1170,21 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
-
             const pageSize = req.query.pageSize;
             const pageIndex = req.query.pageIndex;
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
             const pathExclusions = await dbQueries.findPathExclusions(
-                // If sortBy is "username", the pagination will have to be handled in-memory
-                req.query.sortBy !== "username" ? skip : undefined,
-                req.query.sortBy !== "username" ? pageSize : undefined,
+                skip,
+                pageSize,
                 // If sortBy and sortOrder are not provided, default to descending order by updatedAt
-                // If sortBy is "username", the sorting will have to be handled in-memory
-                req.query.sortBy !== "username"
-                    ? req.query.sortBy || "updatedAt"
-                    : undefined,
-                req.query.sortBy !== "username"
-                    ? !req.query.sortBy && !req.query.sortOrder
-                        ? "desc"
-                        : req.query.sortOrder
-                    : undefined,
+                req.query.sortBy || "updatedAt",
+                !req.query.sortBy && !req.query.sortOrder
+                    ? "desc"
+                    : req.query.sortOrder,
                 req.query.purl,
                 req.query.purlStrict || false,
-                userIds,
+                req.query.username,
+                req.query.usernameStrict || false,
                 req.query.pattern,
                 req.query.reason,
                 req.query.comment,
@@ -1392,51 +1194,8 @@ userRouter.get(
                 req.query.updatedAtLte,
             );
 
-            // Get users from Keycloak server to be able to match user ids to usernames
-            const users = await getUsers();
-
-            const pesWithUsernames = pathExclusions.map((pe) => {
-                const username = users.find(
-                    (u) => u.id === pe.userId,
-                )?.username;
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-                return {
-                    ...pe,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
-            let pes = [...pesWithUsernames];
-
-            // Handle sorting and pagination in-memory if sortBy is "username"
-            if (req.query.sortBy === "username") {
-                // Sort by username
-                pes.sort((a, b) => {
-                    if (a.user.username < b.user.username) return -1;
-                    if (a.user.username > b.user.username) return 1;
-                    return 0;
-                });
-
-                // Reverse the array if sortOrder is "desc"
-                if (req.query.sortOrder === "desc") {
-                    pes.reverse();
-                }
-
-                // If pageSize is provided, slice the array
-                if (pageSize) {
-                    pes = pes.slice(skip, skip + pageSize);
-                }
-            }
-
             return res.status(200).json({
-                pathExclusions: pes,
+                pathExclusions: pathExclusions,
             });
         } catch (error) {
             console.log("Error: ", error);
@@ -1459,17 +1218,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const userIds = req.query.username
-                ? await getUserIdArray(
-                      req.query.username,
-                      req.query.usernameStrict,
-                  )
-                : undefined;
-
             const pathExclusionsCount = await dbQueries.countPathExclusions(
                 req.query.purl,
                 req.query.purlStrict || false,
-                userIds,
+                req.query.username,
+                req.query.usernameStrict || false,
                 req.query.pattern,
                 req.query.reason,
                 req.query.comment,
@@ -1536,28 +1289,8 @@ userRouter.get(
             const pathExclusions =
                 await dbQueries.getPathExclusionsByPackagePurl(purl);
 
-            const users = await getUsers();
-
-            const pes = pathExclusions.map((pe) => {
-                const username = users.find(
-                    (u) => u.id === pe.userId,
-                )?.username;
-                if (!username) {
-                    throw new CustomError(
-                        "Internal server error: creator username not found",
-                        500,
-                    );
-                }
-                return {
-                    ...pe,
-                    user: {
-                        username: username,
-                    },
-                };
-            });
-
             res.status(200).json({
-                pathExclusions: pes,
+                pathExclusions: pathExclusions,
             });
         } catch (error) {
             console.log("Error: ", error);

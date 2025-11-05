@@ -54,7 +54,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                             }
                         </div>
                         <div className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                            {licenseConclusion.user.username}
+                            {licenseConclusion.curator.username}
                         </div>
                     </div>
                     <div className="flex text-xs">
@@ -123,7 +123,7 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                 </div>
             </div>
             <div className="flex pl-1">
-                {(user?.username === licenseConclusion.user.username ||
+                {(user?.username === licenseConclusion.curator.username ||
                     user?.role === "app-admin") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />

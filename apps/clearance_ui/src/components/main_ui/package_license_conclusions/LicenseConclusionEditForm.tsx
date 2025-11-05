@@ -181,7 +181,7 @@ const LicenseConclusionEditForm = ({
                                     }
                                 </span>
                                 <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                                    {licenseConclusion.user.username}
+                                    {licenseConclusion.curator.username}
                                 </span>
                             </div>
                             <div className="flex text-xs">

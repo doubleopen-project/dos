@@ -40,7 +40,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                             }
                         </div>
                         <div className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                            {pathExclusion.user.username}
+                            {pathExclusion.curator.username}
                         </div>
                     </div>
                     <div className="flex text-xs">
@@ -76,7 +76,7 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                 </div>
             </div>
             <div className="flex pl-1">
-                {(user?.username === pathExclusion.user.username ||
+                {(user?.username === pathExclusion.curator.username ||
                     user?.role === "app-admin") && (
                     <div className="flex items-center">
                         <Separator orientation="vertical" className="w-[2px]" />
