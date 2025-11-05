@@ -41,7 +41,7 @@ const LicenseConclusionItem = ({
     const [showContent, setShowContent] = useState(false);
     const [divWidth, setDivWidth] = useState(0);
 
-    const licenseCreator = license.user.username;
+    const licenseCreator = license.curator.username;
     const licenseCreatorColor = stringToColourRGBA(
         licenseCreator + "green",
         0.5,
@@ -81,14 +81,14 @@ const LicenseConclusionItem = ({
                                                     licenseCreatorColor,
                                             }}
                                         >
-                                            {license.user.username
+                                            {license.curator.username
                                                 .slice(0, 2)
                                                 .toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    {license.user.username}
+                                    {license.curator.username}
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
@@ -171,7 +171,7 @@ const LicenseConclusionItem = ({
                     </span>
                 </div>
                 <div>
-                    {(user?.username === license.user.username ||
+                    {(user?.username === license.curator.username ||
                         user?.role === "app-admin") && (
                         <div className="mt-2 flex">
                             {license.bulkConclusionId && (

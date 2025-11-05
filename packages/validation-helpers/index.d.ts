@@ -4633,7 +4633,7 @@ declare const userAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -4660,7 +4660,7 @@ declare const userAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -4674,7 +4674,7 @@ declare const userAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -4695,7 +4695,7 @@ declare const userAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -4711,7 +4711,7 @@ declare const userAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -5350,7 +5350,7 @@ declare const userAPI: [
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
                             contextPurl: zod.ZodString;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -5375,7 +5375,7 @@ declare const userAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -5388,7 +5388,7 @@ declare const userAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -5408,7 +5408,7 @@ declare const userAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -5423,7 +5423,7 @@ declare const userAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -6069,7 +6069,7 @@ declare const userAPI: [
                                 >,
                                 "many"
                             >;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -6102,7 +6102,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -6126,7 +6126,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -6157,7 +6157,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -6183,7 +6183,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -6720,7 +6720,7 @@ declare const userAPI: [
                                     purl: string;
                                 }
                             >;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -6744,7 +6744,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -6759,7 +6759,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -6781,7 +6781,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -6798,7 +6798,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -7813,7 +7813,7 @@ declare const userAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -7848,7 +7848,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -7861,7 +7861,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -7881,7 +7881,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -7896,7 +7896,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -8736,7 +8736,7 @@ declare const userAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -8758,7 +8758,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                         },
@@ -8768,7 +8768,7 @@ declare const userAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                         }
@@ -8785,7 +8785,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                 }[];
@@ -8797,7 +8797,7 @@ declare const userAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                 }[];
@@ -12310,7 +12310,7 @@ declare const dosAPI: [
                             detectedLicenseExpressionSPDX: zod.ZodNullable<zod.ZodString>;
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -12337,7 +12337,7 @@ declare const dosAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -12351,7 +12351,7 @@ declare const dosAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -12372,7 +12372,7 @@ declare const dosAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -12388,7 +12388,7 @@ declare const dosAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -13027,7 +13027,7 @@ declare const dosAPI: [
                             comment: zod.ZodNullable<zod.ZodString>;
                             local: zod.ZodBoolean;
                             contextPurl: zod.ZodString;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -13052,7 +13052,7 @@ declare const dosAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -13065,7 +13065,7 @@ declare const dosAPI: [
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             bulkConclusionId: number | null;
@@ -13085,7 +13085,7 @@ declare const dosAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -13100,7 +13100,7 @@ declare const dosAPI: [
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     bulkConclusionId: number | null;
@@ -13746,7 +13746,7 @@ declare const dosAPI: [
                                 >,
                                 "many"
                             >;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -13779,7 +13779,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -13803,7 +13803,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -13834,7 +13834,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -13860,7 +13860,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -14397,7 +14397,7 @@ declare const dosAPI: [
                                     purl: string;
                                 }
                             >;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -14421,7 +14421,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -14436,7 +14436,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -14458,7 +14458,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -14475,7 +14475,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -15490,7 +15490,7 @@ declare const dosAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -15525,7 +15525,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -15538,7 +15538,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                             package: {
@@ -15558,7 +15558,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -15573,7 +15573,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                     package: {
@@ -16413,7 +16413,7 @@ declare const dosAPI: [
                             pattern: zod.ZodString;
                             reason: zod.ZodString;
                             comment: zod.ZodNullable<zod.ZodString>;
-                            user: zod.ZodObject<
+                            curator: zod.ZodObject<
                                 {
                                     username: zod.ZodString;
                                 },
@@ -16435,7 +16435,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                         },
@@ -16445,7 +16445,7 @@ declare const dosAPI: [
                             comment: string | null;
                             pattern: string;
                             reason: string;
-                            user: {
+                            curator: {
                                 username: string;
                             };
                         }
@@ -16462,7 +16462,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                 }[];
@@ -16474,7 +16474,7 @@ declare const dosAPI: [
                     comment: string | null;
                     pattern: string;
                     reason: string;
-                    user: {
+                    curator: {
                         username: string;
                     };
                 }[];

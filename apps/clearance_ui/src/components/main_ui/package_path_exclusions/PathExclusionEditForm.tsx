@@ -135,7 +135,7 @@ const PathExclusionEditForm = ({ pathExclusion, editHandler }: Props) => {
                                     }
                                 </span>
                                 <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                                    {pathExclusion.user.username}
+                                    {pathExclusion.curator.username}
                                 </span>
                             </div>
                             <FormField

@@ -54,7 +54,7 @@ const DeletePathExclusion = ({
                 <br />
                 Comment: {data.comment}
                 <br />
-                Created by: <strong>{data.user.username}</strong>
+                Created by: <strong>{data.curator.username}</strong>
             </>
         ),
         buttonText: "Delete",

@@ -248,7 +248,7 @@ export const columns = (
             },
             cell: ({ row }) => (
                 <Badge className="bg-green-400 text-sm">
-                    {row.original.user.username}
+                    {row.original.curator.username}
                 </Badge>
             ),
         },

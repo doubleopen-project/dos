@@ -143,7 +143,7 @@ const ActionCell = ({ row, table }: CellContext<BulkConclusion, unknown>) => {
         </div>
     ) : (
         <>
-            {(user?.username === row.original.user.username ||
+            {(user?.username === row.original.curator.username ||
                 user?.role === "app-admin") && (
                 <div className="flex items-center">
                     {isLoading ? (

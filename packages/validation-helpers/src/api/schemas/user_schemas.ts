@@ -78,7 +78,7 @@ export const GetLicenseConclusionsRes = z.object({
             detectedLicenseExpressionSPDX: z.nullable(z.string()),
             comment: z.nullable(z.string()),
             local: z.boolean(),
-            user: z.object({ username: z.string() }),
+            curator: z.object({ username: z.string() }),
             bulkConclusionId: z.nullable(z.number()),
             fileSha256: z.string(),
             contextPurl: z.string(),
@@ -129,7 +129,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
             comment: z.nullable(z.string()),
             local: z.boolean(),
             contextPurl: z.string(),
-            user: z.object({ username: z.string() }),
+            curator: z.object({ username: z.string() }),
             bulkConclusionId: z.nullable(z.number()),
         }),
     ),
@@ -210,7 +210,7 @@ export const GetBulkConclusionsRes = z.object({
             package: z.object({
                 purl: z.string(),
             }),
-            user: z.object({
+            curator: z.object({
                 username: z.string(),
             }),
         }),
@@ -314,7 +314,7 @@ export const GetBulkConclusionsByPurlRes = z.object({
                     }),
                 }),
             ),
-            user: z.object({
+            curator: z.object({
                 username: z.string(),
             }),
         }),
@@ -342,7 +342,7 @@ export const GetPathExclusionsRes = z.object({
             pattern: z.string(),
             reason: z.string(),
             comment: z.nullable(z.string()),
-            user: z.object({
+            curator: z.object({
                 username: z.string(),
             }),
             package: z.object({
@@ -478,7 +478,7 @@ export const GetPathExclusionsForPkgRes = z.object({
             pattern: z.string(),
             reason: z.string(),
             comment: z.nullable(z.string()),
-            user: z.object({
+            curator: z.object({
                 username: z.string(),
             }),
         }),

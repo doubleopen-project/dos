@@ -187,7 +187,7 @@ const BulkConclusionEditForm = ({ bulkConclusion, editHandler }: Props) => {
                                     }
                                 </span>
                                 <span className="rounded-sm bg-orange-400 p-1 text-xs font-semibold">
-                                    {bulkConclusion.user.username}
+                                    {bulkConclusion.curator.username}
                                 </span>
                             </div>
                             <FormField

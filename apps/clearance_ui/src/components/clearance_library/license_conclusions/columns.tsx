@@ -243,12 +243,12 @@ export const columns = (
             },
             cell: ({ row }) => (
                 <Badge className="bg-green-400 text-sm">
-                    {row.original.user.username}
+                    {row.original.curator.username}
                 </Badge>
             ),
             sortingFn: (a, b) => {
-                return a.original.user.username.localeCompare(
-                    b.original.user.username,
+                return a.original.curator.username.localeCompare(
+                    b.original.curator.username,
                 );
             },
         },
