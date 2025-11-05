@@ -123,8 +123,8 @@ model BulkConclusion {
 
   userId String @db.Uuid
 
-  curatorId String?  @db.Uuid
-  curator   Curator? @relation(fields: [curatorId], references: [id])
+  curatorId String  @db.Uuid
+  curator   Curator @relation(fields: [curatorId], references: [id])
 
   licenseConclusions LicenseConclusion[]
 
@@ -150,8 +150,8 @@ model LicenseConclusion {
 
   userId String @db.Uuid
 
-  curatorId String?  @db.Uuid
-  curator   Curator? @relation(fields: [curatorId], references: [id])
+  curatorId String  @db.Uuid
+  curator   Curator @relation(fields: [curatorId], references: [id])
 
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
@@ -227,8 +227,8 @@ model PathExclusion {
 
   userId String @db.Uuid
 
-  curatorId String?  @db.Uuid
-  curator   Curator? @relation(fields: [curatorId], references: [id])
+  curatorId String  @db.Uuid
+  curator   Curator @relation(fields: [curatorId], references: [id])
 
   @@index([packageId])
   @@index([updatedAt])
