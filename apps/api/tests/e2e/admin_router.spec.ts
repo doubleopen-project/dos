@@ -6,6 +6,7 @@ import test, { APIRequestContext, expect } from "@playwright/test";
 import {
     createLicenseConclusion,
     deleteLicenseConclusion,
+    getOrCreateCurator,
 } from "../../src/helpers/db_queries";
 import { getUsers } from "../../src/helpers/keycloak_queries";
 import { getAccessToken } from "./utils/get_access_token";
@@ -84,6 +85,8 @@ test.describe("API lets authenticated admins to", () => {
             },
         });
 
+        const curatorId = await getOrCreateCurator(adminUserId, "test-admin");
+
         // Add license conclusions for the tests.
         const licenseConclusion1 = await createLicenseConclusion({
             concludedLicenseExpressionSPDX: "MIT",
@@ -98,6 +101,7 @@ test.describe("API lets authenticated admins to", () => {
                 },
             },
             userId: adminUserId,
+            curator: { connect: { id: curatorId } },
         });
         licenseConclusionIds.push(licenseConclusion1.id);
 
@@ -114,6 +118,7 @@ test.describe("API lets authenticated admins to", () => {
                 },
             },
             userId: adminUserId,
+            curator: { connect: { id: curatorId } },
         });
 
         licenseConclusionIds.push(licenseConclusion2.id);
