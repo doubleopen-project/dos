@@ -65,7 +65,7 @@
         "chai": "6.2.0",
         "dotenv-cli": "11.0.0",
         "eslint-config-custom-server": "*",
-        "mocha": "11.7.4",
+        "mocha": "11.7.5",
         "tsconfig": "*",
         "tsup": "8.5.0",
         "typescript": "5.9.3"
