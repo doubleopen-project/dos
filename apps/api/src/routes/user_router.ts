@@ -394,15 +394,11 @@ userRouter.put(
                     404,
                 );
 
-            // Make sure that the license conclusion belongs to the user or the user is admin
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !==
-                    licenseConclusion.userId
-            )
-                throw new CustomError("Forbidden", 403);
+            await ensureAdminOrLicenseConclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                licenseConclusionId,
+            );
 
             await dbQueries.updateLicenseConclusion(licenseConclusionId, {
                 concludedLicenseExpressionSPDX:
@@ -454,26 +450,12 @@ userRouter.delete(
     async (req, res) => {
         try {
             const licenseConclusionId = req.params.id;
-            const licenseConclusionUserId =
-                await dbQueries.findLicenseConclusionUserId(
-                    licenseConclusionId,
-                );
 
-            if (!licenseConclusionUserId)
-                throw new CustomError(
-                    "License conclusion to delete not found",
-                    404,
-                );
-
-            // Make sure that the license conclusion belongs to the user or the user is admin
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !==
-                    licenseConclusionUserId
-            )
-                throw new CustomError("Forbidden", 403);
+            await ensureAdminOrLicenseConclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                licenseConclusionId,
+            );
 
             await dbQueries.deleteLicenseConclusion(licenseConclusionId);
 
@@ -972,14 +954,11 @@ userRouter.put(
                     404,
                 );
 
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !== origBulk.userId
-            ) {
-                throw new CustomError("Forbidden", 403);
-            }
+            await ensureAdminOrBulkConclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                bulkConclusionId,
+            );
 
             const reqPattern = req.body.pattern;
             const reqCLESPDX = req.body.concludedLicenseExpressionSPDX;
@@ -1120,25 +1099,11 @@ userRouter.delete(
         try {
             const bulkConclusionId = req.params.id;
 
-            const bulkConclusionUserId =
-                await dbQueries.findBulkConclusionUserId(bulkConclusionId);
-
-            if (!bulkConclusionUserId) {
-                throw new CustomError(
-                    "Bulk conclusion to delete not found",
-                    404,
-                );
-            }
-
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !==
-                    bulkConclusionUserId
-            ) {
-                throw new CustomError("Forbidden", 403);
-            }
+            await ensureAdminOrBulkConclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                bulkConclusionId,
+            );
 
             await dbQueries.deleteBulkAndLicenseConclusions(bulkConclusionId);
 
@@ -1382,15 +1347,11 @@ userRouter.put(
                     404,
                 );
 
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !==
-                    pathExclusion.userId
-            ) {
-                throw new CustomError("Forbidden", 403);
-            }
+            await ensureAdminOrPathExclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                pathExclusion.id,
+            );
 
             const reqPattern = req.body.pattern;
             const reqReason = req.body.reason;
@@ -1463,24 +1424,11 @@ userRouter.delete(
         try {
             const pathExclusionId = req.params.id;
 
-            const pathExclusionUserId =
-                await dbQueries.findPathExclusionUserId(pathExclusionId);
-
-            if (!pathExclusionUserId)
-                throw new CustomError(
-                    "Path exclusion to delete not found",
-                    404,
-                );
-
-            // Make sure that the path exclusion belongs to the user or the user is admin
-            if (
-                !req.kauth.grant.access_token.content.realm_access.roles.includes(
-                    "app-admin",
-                ) &&
-                req.kauth.grant.access_token.content.sub !== pathExclusionUserId
-            ) {
-                throw new CustomError("Forbidden", 403);
-            }
+            await ensureAdminOrPathExclusionBelongsToUser(
+                req.kauth.grant.access_token.content.realm_access.roles,
+                req.kauth.grant.access_token.content.sub,
+                pathExclusionId,
+            );
 
             await dbQueries.deletePathExclusion(pathExclusionId);
 
@@ -1671,5 +1619,65 @@ userRouter.get(
         }
     },
 );
+
+const ensureAdminOrLicenseConclusionBelongsToUser = async (
+    roles: string[],
+    sub: string,
+    licenseConclusionId: number,
+) => {
+    const licenseConclusionRemoteId =
+        await dbQueries.findLicenseConclusionRemoteId(licenseConclusionId);
+
+    if (!licenseConclusionRemoteId) {
+        throw new CustomError(
+            "License conclusion with the requested id does not exist",
+            404,
+        );
+    }
+
+    if (!roles.includes("app-admin") && sub !== licenseConclusionRemoteId) {
+        throw new CustomError("Forbidden", 403);
+    }
+};
+
+const ensureAdminOrBulkConclusionBelongsToUser = async (
+    roles: string[],
+    sub: string,
+    bulkConclusionId: number,
+) => {
+    const bulkConclusionRemoteId =
+        await dbQueries.findBulkConclusionRemoteId(bulkConclusionId);
+
+    if (!bulkConclusionRemoteId) {
+        throw new CustomError(
+            "Bulk conclusion with the requested id does not exist",
+            404,
+        );
+    }
+
+    if (!roles.includes("app-admin") && sub !== bulkConclusionRemoteId) {
+        throw new CustomError("Forbidden", 403);
+    }
+};
+
+const ensureAdminOrPathExclusionBelongsToUser = async (
+    roles: string[],
+    sub: string,
+    pathExclusionId: number,
+) => {
+    const pathExclusionRemoteId =
+        await dbQueries.findPathExclusionRemoteId(pathExclusionId);
+
+    if (!pathExclusionRemoteId) {
+        throw new CustomError(
+            "Path exclusion with the requested id does not exist",
+            404,
+        );
+    }
+
+    if (!roles.includes("app-admin") && sub !== pathExclusionRemoteId) {
+        throw new CustomError("Forbidden", 403);
+    }
+};
 
 export default userRouter;

@@ -2620,35 +2620,25 @@ export const findLicenseConclusionById = async (
     return licenseConclusion;
 };
 
-export const findLicenseConclusionUserId = async (
+export const findLicenseConclusionRemoteId = async (
     id: number,
 ): Promise<string | null> => {
-    let licenseConclusion: { userId: string } | null = null;
-    let retries = initialRetryCount;
-    let querySuccess = false;
+    const licenseConclusion = await retry(async () => {
+        return prisma.licenseConclusion.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                curator: {
+                    select: {
+                        remoteId: true,
+                    },
+                },
+            },
+        });
+    });
 
-    while (!querySuccess && retries > 0) {
-        try {
-            licenseConclusion = await prisma.licenseConclusion.findUnique({
-                where: {
-                    id: id,
-                },
-                select: {
-                    userId: true,
-                },
-            });
-            querySuccess = true;
-        } catch (error) {
-            console.log(
-                "Error with trying to find LicenseConclusionUserId: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-    return licenseConclusion ? licenseConclusion.userId : null;
+    return licenseConclusion?.curator.remoteId || null;
 };
 
 type LicenseConclusionWithCurator = Prisma.LicenseConclusionGetPayload<{
@@ -3109,7 +3099,6 @@ type BCWithRelatedLCs = Prisma.BulkConclusionGetPayload<{
                 fileSha256: true;
             };
         };
-        userId: true;
     };
 }>;
 
@@ -3145,7 +3134,6 @@ export const findBCWithRelatedLCsById = async (
                             fileSha256: true,
                         },
                     },
-                    userId: true,
                 },
             });
             break;
@@ -3304,34 +3292,25 @@ export const findBulkConclusionsWithRelations = async (
     return bulkConclusions;
 };
 
-export const findBulkConclusionUserId = async (
+export const findBulkConclusionRemoteId = async (
     id: number,
 ): Promise<string | null> => {
-    let bulkConclusion: { userId: string } | null = null;
-    let retries = initialRetryCount;
+    const bulkConclusion = await retry(async () => {
+        return prisma.bulkConclusion.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                curator: {
+                    select: {
+                        remoteId: true,
+                    },
+                },
+            },
+        });
+    });
 
-    while (retries > 0) {
-        try {
-            bulkConclusion = await prisma.bulkConclusion.findUnique({
-                where: {
-                    id: id,
-                },
-                select: {
-                    userId: true,
-                },
-            });
-            break;
-        } catch (error) {
-            console.log(
-                "Error with trying to find BulkConclusionUserId: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-    return bulkConclusion?.userId || null;
+    return bulkConclusion?.curator.remoteId || null;
 };
 
 export const findBulkConclusionsByPackageId = async (
@@ -3386,34 +3365,25 @@ export const findPathExclusionById = async (
     return pathExclusion;
 };
 
-export const findPathExclusionUserId = async (
+export const findPathExclusionRemoteId = async (
     id: number,
 ): Promise<string | null> => {
-    let pathExclusion: { userId: string } | null = null;
-    let retries = initialRetryCount;
+    const pathExclusion = await retry(async () => {
+        return prisma.pathExclusion.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                curator: {
+                    select: {
+                        remoteId: true,
+                    },
+                },
+            },
+        });
+    });
 
-    while (retries > 0) {
-        try {
-            pathExclusion = await prisma.pathExclusion.findUnique({
-                where: {
-                    id: id,
-                },
-                select: {
-                    userId: true,
-                },
-            });
-            break;
-        } catch (error) {
-            console.log(
-                "Error with trying to find PathExclusion userId: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-    return pathExclusion ? pathExclusion.userId : null;
+    return pathExclusion?.curator.remoteId || null;
 };
 
 type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
