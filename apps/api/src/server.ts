@@ -129,6 +129,11 @@ cron.schedule("*/5 * * * *", () => {
     cronJobs.jobStateQuery();
 });
 
+// Run cleanJobQueue once a day at midnight
+cron.schedule("0 0 * * *", () => {
+    cronJobs.cleanJobQueue();
+});
+
 // Run onStartUp function before starting the server
 (async () => {
     // Run onStartUp function only in production
