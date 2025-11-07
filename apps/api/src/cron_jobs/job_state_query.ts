@@ -216,36 +216,29 @@ export const jobStateQuery = async () => {
                 if (flaggedJob) {
                     if (flaggedJob.dbState === dbState) {
                         flaggedJob.flagCount++;
-                        if (flaggedJob.flagCount > 6) {
-                            /* Case where API has crashed / stopped during saving results phase */
+
+                        const maxFlagCountForSavingResults =
+                            parseInt(
+                                process.env
+                                    .MAX_FLAG_COUNT_SAVING_RESULTS as string,
+                            ) || 12;
+
+                        if (
+                            flaggedJob.flagCount > maxFlagCountForSavingResults
+                        ) {
+                            /* Case where saving the results has taken longer than the max allowed time. */
                             console.log(
                                 scannerJobId +
-                                    ": Restarting saving results phase as the job has been in the savingResults state for 30 minutes",
+                                    ": Setting state to failed as saving results hasn't completed in " +
+                                    maxFlagCountForSavingResults * 5 +
+                                    " minutes",
                             );
 
-                            const workQueueJob =
-                                await workQueue.getJob(scannerJobId);
-
-                            if (
-                                workQueueJob &&
-                                workQueueJob.returnvalue?.result
-                            ) {
-                                saveJobResults(
-                                    scannerJobId,
-                                    JSON.parse(workQueueJob.returnvalue.result),
-                                    undefined,
-                                );
-                            } else {
-                                console.log(
-                                    scannerJobId +
-                                        ": Job has completed, but no result was found. Changing state to failed.",
-                                );
-                                // Update scanner job and its children (if any), and related packages
-                                await updateScannerJobAndPackagesStateToFailedRecursive(
-                                    scannerJobId,
-                                    "Job was cleaned up automatically as it was completed, but no result was found.",
-                                );
-                            }
+                            // Update scanner job and its children (if any), and related packages
+                            await updateScannerJobAndPackagesStateToFailedRecursive(
+                                scannerJobId,
+                                "Job was cleaned up automatically as it was stuck in the saving results state.",
+                            );
 
                             flaggedMap.delete(scannerJobId);
                         }

@@ -1615,6 +1615,7 @@ export const findScannerJobsByPackageId = async (
 
 export const findScannerJobsByState = async (
     state: string,
+    onlyParentJobs: boolean = false,
 ): Promise<
     {
         id: string;
@@ -1638,6 +1639,7 @@ export const findScannerJobsByState = async (
             scannerJobs = await prisma.scannerJob.findMany({
                 where: {
                     state: state,
+                    parentId: onlyParentJobs ? null : undefined,
                 },
                 select: {
                     id: true,
