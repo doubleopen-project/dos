@@ -161,10 +161,10 @@ export const processPackageAndSendToScanner = async (
                         jobId: scannerJobId,
                     },
                 );
-                // Disable eslint rule for unused variable as the error needs to be caught, but not used.
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
-                throw new Error("Adding job to job queue was unsuccessful.");
+                throw new Error(
+                    `Adding job to job queue was unsuccessful. Error: ${error}`,
+                );
             }
 
             await dbQueries.updateScannerJob(scannerJobId, {
