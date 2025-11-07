@@ -20,6 +20,7 @@
         "KEYCLOAK_URL",
         "LOG_LEVEL",
         "MAX_FLAG_COUNT_PROCESSING",
+        "MAX_FLAG_COUNT_SAVING_RESULTS",
         "NEW_JOB_RETRIES",
         "NEW_JOB_RETRY_INTERVAL",
         "NEXT_PUBLIC_API_URL",
