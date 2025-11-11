@@ -1697,18 +1697,18 @@ declare const adminAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        userId: zod.ZodString;
-                        newUserId: zod.ZodString;
+                        curatorId: zod.ZodString;
+                        newCuratorId: zod.ZodString;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        userId: string;
-                        newUserId: string;
+                        curatorId: string;
+                        newCuratorId: string;
                     },
                     {
-                        userId: string;
-                        newUserId: string;
+                        curatorId: string;
+                        newCuratorId: string;
                     }
                 >;
             },
@@ -18522,18 +18522,18 @@ declare const dosAPI: [
                 type: "Body";
                 schema: zod.ZodObject<
                     {
-                        userId: zod.ZodString;
-                        newUserId: zod.ZodString;
+                        curatorId: zod.ZodString;
+                        newCuratorId: zod.ZodString;
                     },
                     "strip",
                     zod.ZodTypeAny,
                     {
-                        userId: string;
-                        newUserId: string;
+                        curatorId: string;
+                        newCuratorId: string;
                     },
                     {
-                        userId: string;
-                        newUserId: string;
+                        curatorId: string;
+                        newCuratorId: string;
                     }
                 >;
             },

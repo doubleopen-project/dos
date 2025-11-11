@@ -3767,6 +3767,14 @@ export const getOrCreateCurator = async (
     return curator.id;
 };
 
+export const findCuratorById = async (id: string): Promise<Curator | null> => {
+    return await retry(async () => {
+        return prisma.curator.findUnique({
+            where: { id: id },
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
@@ -4797,10 +4805,11 @@ export const updateScannerJobAndPackagesStateToFailedRecursive = async (
     }
 };
 
-// Transaction to update the user ID for all clearance items that a user has made
-export const updateClearanceItemsUserId = async (
-    oldUserId: string,
-    newUserId: string,
+// Transaction to update the curator ID for all clearance items that a user has made
+export const updateClearanceItemsCurator = async (
+    oldCuratorId: string,
+    newCuratorId: string,
+    remoteId: string,
 ): Promise<{
     pathExclusions: number;
     bulkConclusions: number;
@@ -4816,26 +4825,35 @@ export const updateClearanceItemsUserId = async (
             const result = await prisma.$transaction([
                 prisma.pathExclusion.updateMany({
                     where: {
-                        userId: oldUserId,
+                        curator: {
+                            id: oldCuratorId,
+                        },
                     },
                     data: {
-                        userId: newUserId,
+                        curatorId: newCuratorId,
+                        userId: remoteId,
                     },
                 }),
                 prisma.bulkConclusion.updateMany({
                     where: {
-                        userId: oldUserId,
+                        curator: {
+                            id: oldCuratorId,
+                        },
                     },
                     data: {
-                        userId: newUserId,
+                        curatorId: newCuratorId,
+                        userId: remoteId,
                     },
                 }),
                 prisma.licenseConclusion.updateMany({
                     where: {
-                        userId: oldUserId,
+                        curator: {
+                            id: oldCuratorId,
+                        },
                     },
                     data: {
-                        userId: newUserId,
+                        curatorId: newCuratorId,
+                        userId: remoteId,
                     },
                 }),
             ]);

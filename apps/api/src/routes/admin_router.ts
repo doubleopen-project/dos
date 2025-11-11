@@ -9,16 +9,16 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
     countScannedPackages,
+    findCuratorById,
     findScannedPackages,
     getCurators,
-    updateClearanceItemsUserId,
+    updateClearanceItemsCurator,
 } from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
 import {
     addRealmRolesToUser,
     createUser,
     deleteUser,
-    getUser,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 import { authzPermission } from "../middlewares/authz_permission";
@@ -267,29 +267,34 @@ adminRouter.put(
     authzPermission({ resource: "Users", scopes: ["PUT"] }),
     async (req, res) => {
         try {
-            const { userId, newUserId } = req.body;
+            const { curatorId, newCuratorId } = req.body;
 
-            if (userId === newUserId) {
+            if (curatorId === newCuratorId) {
                 throw new CustomError(
-                    "userId and newUserId cannot be the same",
+                    "curatorId and newCuratorId cannot be the same",
                     400,
-                    "newUserId",
+                    "newCuratorId",
                 );
             }
 
-            const foundUser = await getUser(newUserId);
+            const foundCurator = await findCuratorById(newCuratorId);
 
-            if (!foundUser) {
+            if (!foundCurator) {
                 throw new CustomError(
-                    `User with ID ${newUserId} not found`,
+                    `Curator with ID ${newCuratorId} not found`,
                     404,
-                    "newUserId",
+                    "newCuratorId",
                 );
             }
 
-            const counts = await updateClearanceItemsUserId(userId, newUserId);
+            const counts = await updateClearanceItemsCurator(
+                curatorId,
+                newCuratorId,
+                foundCurator.remoteId,
+            );
+
             res.status(200).json({
-                message: `Reassigned clearance items from user ${userId} to user ${newUserId}`,
+                message: `Reassigned clearance items from curator ${curatorId} to curator ${newCuratorId}`,
                 counts: counts,
             });
         } catch (error) {
