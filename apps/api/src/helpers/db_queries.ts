@@ -2844,7 +2844,6 @@ type BulkConclusionWithPackageRelation = Prisma.BulkConclusionGetPayload<{
                 purl: true;
             };
         };
-        userId: true;
     };
 }>;
 
@@ -2873,7 +2872,6 @@ export const findBulkConclusionById = async (
                             purl: true,
                         },
                     },
-                    userId: true,
                 },
             });
             break;
