@@ -224,15 +224,9 @@ export const createLicenseFindingMatch = async (input: {
     return licenseFindingMatch;
 };
 
-export const createLicenseConclusion = async (input: {
-    concludedLicenseExpressionSPDX: string;
-    detectedLicenseExpressionSPDX: string | null;
-    comment: string | null;
-    local: boolean | undefined;
-    contextPurl: string;
-    fileSha256: string;
-    userId: string;
-}): Promise<LicenseConclusion> => {
+export const createLicenseConclusion = async (
+    input: Prisma.LicenseConclusionCreateInput,
+): Promise<LicenseConclusion> => {
     let retries = initialRetryCount;
     let licenseConclusion: LicenseConclusion | null = null;
 
@@ -281,15 +275,9 @@ export const createManyLicenseConclusions = async (
     return batchCreate;
 };
 
-export const createBulkConclusion = async (input: {
-    pattern: string;
-    concludedLicenseExpressionSPDX: string;
-    detectedLicenseExpressionSPDX: string | null;
-    comment: string | null;
-    local: boolean | undefined;
-    packageId: number;
-    userId: string;
-}): Promise<BulkConclusion> => {
+export const createBulkConclusion = async (
+    input: Prisma.BulkConclusionCreateInput,
+): Promise<BulkConclusion> => {
     let retries = initialRetryCount;
     let bulkConclusion: BulkConclusion | null = null;
 
@@ -401,13 +389,9 @@ export const createSystemIssue = async (
     return systemIssue;
 };
 
-export const createPathExclusion = async (input: {
-    pattern: string;
-    reason: string;
-    comment: string | null;
-    packageId: number;
-    userId: string;
-}): Promise<PathExclusion> => {
+export const createPathExclusion = async (
+    input: Prisma.PathExclusionCreateInput,
+): Promise<PathExclusion> => {
     let retries = initialRetryCount;
     let pathExclusion: PathExclusion | null = null;
 

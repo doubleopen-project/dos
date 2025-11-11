@@ -441,7 +441,7 @@ userRouter.post(
                 comment: req.body.comment || null,
                 local: req.body.local,
                 contextPurl: contextPurl,
-                fileSha256: req.params.sha256,
+                file: { connect: { sha256: req.params.sha256 } },
                 userId: req.kauth.grant.access_token.content.sub,
             });
 
@@ -955,7 +955,7 @@ userRouter.post(
                     req.body.detectedLicenseExpressionSPDX || null,
                 comment: req.body.comment || null,
                 local: req.body.local,
-                packageId: packageId,
+                package: { connect: { id: packageId } },
                 userId: req.kauth.grant.access_token.content.sub,
             });
 
@@ -1585,7 +1585,7 @@ userRouter.post(
                 pattern: req.body.pattern,
                 reason: req.body.reason,
                 comment: req.body.comment || null,
-                packageId: packageId,
+                package: { connect: { id: packageId } },
                 userId: req.kauth.grant.access_token.content.sub,
             });
 
