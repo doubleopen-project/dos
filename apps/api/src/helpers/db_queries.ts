@@ -4807,7 +4807,6 @@ export const updateScannerJobAndPackagesStateToFailedRecursive = async (
 export const updateClearanceItemsCurator = async (
     oldCuratorId: string,
     newCuratorId: string,
-    remoteId: string,
 ): Promise<{
     pathExclusions: number;
     bulkConclusions: number;
@@ -4829,7 +4828,6 @@ export const updateClearanceItemsCurator = async (
                     },
                     data: {
                         curatorId: newCuratorId,
-                        userId: remoteId,
                     },
                 }),
                 prisma.bulkConclusion.updateMany({
@@ -4840,7 +4838,6 @@ export const updateClearanceItemsCurator = async (
                     },
                     data: {
                         curatorId: newCuratorId,
-                        userId: remoteId,
                     },
                 }),
                 prisma.licenseConclusion.updateMany({
@@ -4851,7 +4848,6 @@ export const updateClearanceItemsCurator = async (
                     },
                     data: {
                         curatorId: newCuratorId,
-                        userId: remoteId,
                     },
                 }),
             ]);

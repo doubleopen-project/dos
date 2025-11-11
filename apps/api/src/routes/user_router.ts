@@ -345,7 +345,6 @@ userRouter.post(
                 local: req.body.local,
                 contextPurl: contextPurl,
                 file: { connect: { sha256: req.params.sha256 } },
-                userId: req.kauth.grant.access_token.content.sub,
                 curator: { connect: { id: curatorId } },
             });
 
@@ -763,7 +762,6 @@ userRouter.post(
                 comment: req.body.comment || null,
                 local: req.body.local,
                 package: { connect: { id: packageId } },
-                userId: req.kauth.grant.access_token.content.sub,
                 curator: { connect: { id: curatorId } },
             });
 
@@ -806,7 +804,6 @@ userRouter.post(
                         contextPurl: contextPurl,
                         fileSha256: fileTree.fileSha256,
                         bulkConclusionId: bulkConclusion.id,
-                        userId: req.kauth.grant.access_token.content.sub,
                         curatorId: curatorId,
                     });
             }
@@ -1037,7 +1034,6 @@ userRouter.put(
                             contextPurl: origBulk.package.purl,
                             fileSha256: fileTree.fileSha256,
                             bulkConclusionId: origBulk.id,
-                            userId: req.kauth.grant.access_token.content.sub,
                             curatorId: curatorId,
                         });
                     }
@@ -1308,7 +1304,6 @@ userRouter.post(
                 reason: req.body.reason,
                 comment: req.body.comment || null,
                 package: { connect: { id: packageId } },
-                userId: req.kauth.grant.access_token.content.sub,
                 curator: { connect: { id: curatorId } },
             });
 

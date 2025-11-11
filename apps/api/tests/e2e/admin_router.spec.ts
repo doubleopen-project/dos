@@ -104,7 +104,6 @@ test.describe("API lets authenticated admins to", () => {
                     sha256: "0cbc1f28243bae937e4a2ca774779471484a8b73cf901d0db68ac1642d8c6828",
                 },
             },
-            userId: adminUserId,
             curator: { connect: { id: curatorId } },
         });
         licenseConclusionIds.push(licenseConclusion1.id);
@@ -121,7 +120,6 @@ test.describe("API lets authenticated admins to", () => {
                     sha256: "3033e4e29fa8ea20d8936e68e3f31d53ae6d34912c7c9ebc30709d4481356f50",
                 },
             },
-            userId: adminUserId,
             curator: { connect: { id: curatorId } },
         });
 
