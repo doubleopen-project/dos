@@ -226,10 +226,10 @@ export const adminAPI = makeApi([
     },
     {
         method: "get",
-        path: "/clearance-items/distinct-users",
-        description:
-            "Get information about the distinct users that have made clearance items",
-        response: schemas.GetDistinctUsersForItemsRes,
+        path: "/curators",
+        description: "Get the curators that have made clearance items",
+        alias: "GetCurators",
+        response: schemas.GetCuratorsRes,
         errors,
     },
     {

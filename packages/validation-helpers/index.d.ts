@@ -1571,44 +1571,30 @@ declare const adminAPI: [
     },
     {
         method: "get";
-        path: "/clearance-items/distinct-users";
-        description: "Get information about the distinct users that have made clearance items";
-        response: zod.ZodObject<
-            {
-                users: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodString;
-                            username: zod.ZodOptional<zod.ZodString>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: string;
-                            username?: string | undefined;
-                        },
-                        {
-                            id: string;
-                            username?: string | undefined;
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                users: {
+        path: "/curators";
+        description: "Get the curators that have made clearance items";
+        alias: "GetCurators";
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    remoteId: zod.ZodString;
+                    username: zod.ZodString;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    username: string;
                     id: string;
-                    username?: string | undefined;
-                }[];
-            },
-            {
-                users: {
+                    remoteId: string;
+                },
+                {
+                    username: string;
                     id: string;
-                    username?: string | undefined;
-                }[];
-            }
+                    remoteId: string;
+                }
+            >,
+            "many"
         >;
         errors: [
             {
@@ -18410,44 +18396,30 @@ declare const dosAPI: [
     },
     {
         method: "get";
-        path: "/admin/clearance-items/distinct-users";
-        description: "Get information about the distinct users that have made clearance items";
-        response: zod.ZodObject<
-            {
-                users: zod.ZodArray<
-                    zod.ZodObject<
-                        {
-                            id: zod.ZodString;
-                            username: zod.ZodOptional<zod.ZodString>;
-                        },
-                        "strip",
-                        zod.ZodTypeAny,
-                        {
-                            id: string;
-                            username?: string | undefined;
-                        },
-                        {
-                            id: string;
-                            username?: string | undefined;
-                        }
-                    >,
-                    "many"
-                >;
-            },
-            "strip",
-            zod.ZodTypeAny,
-            {
-                users: {
+        path: "/admin/curators";
+        description: "Get the curators that have made clearance items";
+        alias: "GetCurators";
+        response: zod.ZodArray<
+            zod.ZodObject<
+                {
+                    id: zod.ZodString;
+                    remoteId: zod.ZodString;
+                    username: zod.ZodString;
+                },
+                "strip",
+                zod.ZodTypeAny,
+                {
+                    username: string;
                     id: string;
-                    username?: string | undefined;
-                }[];
-            },
-            {
-                users: {
+                    remoteId: string;
+                },
+                {
+                    username: string;
                     id: string;
-                    username?: string | undefined;
-                }[];
-            }
+                    remoteId: string;
+                }
+            >,
+            "many"
         >;
         errors: [
             {
