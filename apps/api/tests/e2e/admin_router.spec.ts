@@ -158,12 +158,29 @@ test.describe("API lets authenticated admins to", () => {
         expect(curatorIdCount).toBe(1);
     });
 
-    test("reassign clearance items to a new user ID", async () => {
-        const newUserId = userId;
+    test("reassign clearance items to a new curator ID", async () => {
+        await getOrCreateCurator(userId, "test-user");
+
+        const curatorsRes = await apiContext.get("curators");
+        expect(curatorsRes.ok()).toBe(true);
+        const curators: Curators = await curatorsRes.json();
+
+        const adminCuratorId = curators.find(
+            (curator) => curator.remoteId === adminUserId,
+        )?.id;
+
+        expect(adminCuratorId).toBeDefined();
+
+        const userCuratorId = curators.find(
+            (curator) => curator.remoteId === userId,
+        )?.id;
+
+        expect(userCuratorId).toBeDefined();
+
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
-                userId: adminUserId,
-                newUserId: newUserId,
+                curatorId: adminCuratorId,
+                newCuratorId: userCuratorId,
             },
         });
         expect(response.ok()).toBe(true);
@@ -212,11 +229,11 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("reassign clearance items to a new user ID", async () => {
+    test("reassign clearance items to a new curator ID", async () => {
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
-                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
-                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+                curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
             },
         });
         expect(response.status()).toBe(403);
@@ -260,11 +277,11 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("reassign clearance items to a new user ID", async () => {
+    test("reassign clearance items to a new curator ID", async () => {
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
-                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
-                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+                curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
             },
         });
         expect(response.status()).toBe(403);
@@ -304,12 +321,12 @@ test.describe("API doesn't let unauthenticated users to", () => {
         expect(response.status()).toBe(401);
     });
 
-    test("reassign clearance items to a new user ID", async () => {
+    test("reassign clearance items to a new curator ID", async () => {
         // Attempt to reassign clearance items without authentication.
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
-                userId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
-                newUserId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+                curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
             },
         });
         expect(response.status()).toBe(401);

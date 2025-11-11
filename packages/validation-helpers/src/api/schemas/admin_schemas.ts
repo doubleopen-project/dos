@@ -117,8 +117,8 @@ export const GetCuratorsRes = z.array(
 //---------------- PUT reassign clearance items ----------------
 
 export const PutReassignClearanceItemsReq = z.object({
-    userId: z.string().uuid(),
-    newUserId: z.string().uuid(),
+    curatorId: z.string().uuid(),
+    newCuratorId: z.string().uuid(),
 });
 
 export const PutReassignClearanceItemsRes = z.object({
