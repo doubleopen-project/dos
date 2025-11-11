@@ -104,13 +104,15 @@ export const GetPackagesRes = z.object({
     ),
 });
 
-//---------------- GET distinct user IDs ----------------
+//---------------- GET curators ----------------
 
-export const GetDistinctUsersForItemsRes = z.object({
-    users: z.array(
-        z.object({ id: z.string(), username: z.string().optional() }),
-    ),
-});
+export const GetCuratorsRes = z.array(
+    z.object({
+        id: z.string(),
+        remoteId: z.string(),
+        username: z.string(),
+    }),
+);
 
 //---------------- PUT reassign clearance items ----------------
 

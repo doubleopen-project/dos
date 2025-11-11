@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import test, { APIRequestContext, expect } from "@playwright/test";
+import { ZodiosResponseByAlias } from "@zodios/core";
+import { adminAPI } from "validation-helpers";
 import {
     createLicenseConclusion,
     deleteLicenseConclusion,
@@ -12,6 +14,8 @@ import { getUsers } from "../../src/helpers/keycloak_queries";
 import { getAccessToken } from "./utils/get_access_token";
 
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
+
+type Curators = ZodiosResponseByAlias<typeof adminAPI, "GetCurators">;
 
 test.describe("API lets authenticated admins to", () => {
     let keycloakToken: string;
@@ -133,28 +137,25 @@ test.describe("API lets authenticated admins to", () => {
         await apiContext.dispose();
     });
 
-    test("retrieve data on distinct users that have made clearance items", async () => {
-        const distinctUsersRes = await apiContext.get(
-            "clearance-items/distinct-users",
-        );
-        expect(distinctUsersRes.ok()).toBe(true);
+    test("retrieve curators", async () => {
+        const curatorsRes = await apiContext.get("curators");
+        expect(curatorsRes.ok()).toBe(true);
 
-        const distinctUsers = await distinctUsersRes.json();
-        expect(distinctUsers.users.length).toBeGreaterThan(0);
+        const curators: Curators = await curatorsRes.json();
+        expect(curators.length).toBeGreaterThan(0);
 
-        expect(distinctUsers.users).toContainEqual(
+        expect(curators).toContainEqual(
             expect.objectContaining({
-                id: adminUserId,
+                remoteId: adminUserId,
                 username: "test-admin",
             }),
         );
 
         // Expect to find the admin user ID in the list of distinct user IDs only once.
-        const userIdCount = distinctUsers.users.filter(
-            (user: { id: string; username: string | undefined }) =>
-                user.id === adminUserId,
+        const curatorIdCount = curators.filter(
+            (curator) => curator.remoteId === adminUserId,
         ).length;
-        expect(userIdCount).toBe(1);
+        expect(curatorIdCount).toBe(1);
     });
 
     test("reassign clearance items to a new user ID", async () => {
@@ -206,8 +207,8 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve data on distinct users that have made clearance items", async () => {
-        const response = await apiContext.get("clearance-items/distinct-users");
+    test("retrieve curators", async () => {
+        const response = await apiContext.get("curators");
         expect(response.status()).toBe(403);
     });
 
@@ -254,8 +255,8 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve data on distinct users that have made clearance items", async () => {
-        const response = await apiContext.get("clearance-items/distinct-users");
+    test("retrieve curators", async () => {
+        const response = await apiContext.get("curators");
         expect(response.status()).toBe(403);
     });
 
@@ -297,7 +298,7 @@ test.describe("API doesn't let unauthenticated users to", () => {
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve data on distinct users that have made clearance items", async () => {
+    test("retrieve curators", async () => {
         // Attempt to retrieve distinct users without authentication.
         const response = await apiContext.get("clearance-items/distinct-users");
         expect(response.status()).toBe(401);

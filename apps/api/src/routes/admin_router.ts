@@ -10,7 +10,7 @@ import * as dbOperations from "../helpers/db_operations";
 import {
     countScannedPackages,
     findScannedPackages,
-    getDistinctUserIdsForItems,
+    getCurators,
     updateClearanceItemsUserId,
 } from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
@@ -19,7 +19,6 @@ import {
     createUser,
     deleteUser,
     getUser,
-    getUsers,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 import { authzPermission } from "../middlewares/authz_permission";
@@ -249,19 +248,11 @@ adminRouter.get(
 );
 
 adminRouter.get(
-    "/clearance-items/distinct-users",
+    "/curators",
     authzPermission({ resource: "Users", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            const distinctUserIds = await getDistinctUserIdsForItems();
-            const users = await getUsers();
-
-            const distinctUsers = Array.from(distinctUserIds).map((userId) => ({
-                id: userId,
-                username: users.find((user) => user.id === userId)?.username,
-            }));
-
-            res.status(200).json({ users: distinctUsers });
+            res.status(200).json(await getCurators());
         } catch (error) {
             console.log("Error: ", error);
             // Find out if error is a Prisma error or an unknown error
