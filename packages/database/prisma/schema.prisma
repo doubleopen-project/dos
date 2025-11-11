@@ -121,8 +121,6 @@ model BulkConclusion {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
-  userId String @db.Uuid
-
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
@@ -130,7 +128,6 @@ model BulkConclusion {
 
   @@index([packageId])
   @@index([updatedAt])
-  @@index([userId])
   @@index([curatorId])
 }
 
@@ -148,8 +145,6 @@ model LicenseConclusion {
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
 
-  userId String @db.Uuid
-
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
@@ -159,7 +154,6 @@ model LicenseConclusion {
   @@index([fileSha256])
   @@index([bulkConclusionId])
   @@index([updatedAt])
-  @@index([userId])
   @@index([curatorId])
 }
 
@@ -225,14 +219,11 @@ model PathExclusion {
   packageId Int
   package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
-  userId String @db.Uuid
-
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
   @@index([packageId])
   @@index([updatedAt])
-  @@index([userId])
   @@index([curatorId])
 }
 

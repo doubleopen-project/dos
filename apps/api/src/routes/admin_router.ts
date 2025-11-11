@@ -290,7 +290,6 @@ adminRouter.put(
             const counts = await updateClearanceItemsCurator(
                 curatorId,
                 newCuratorId,
-                foundCurator.remoteId,
             );
 
             res.status(200).json({
