@@ -9,11 +9,14 @@ import {
     createSystemIssue,
     findScannerJobsByState,
     findSystemIssues,
+    getCurators,
+    updateCurator,
     updateManyPackagesScanStatuses,
     updateManyScannerJobStates,
     updateScannerJobAndPackagesStateToFailedRecursive,
     updateSystemIssue,
 } from "./db_queries";
+import { getUser } from "./keycloak_queries";
 
 const workQueue = QueueService.getInstance();
 
@@ -26,6 +29,7 @@ export const onStartUp = async () => {
     try {
         await checkJobsInProcessingState();
         await checkJobsInSavingResultsState();
+        await updateCurators();
 
         log.info(
             "All onStartUp checks completed successfully. Moving on to start the server.",
@@ -187,6 +191,26 @@ const checkJobsInSavingResultsState = async () => {
                 job.id,
                 "Saving results failed, due to server crash or restart.",
             );
+        }
+    }
+};
+
+const updateCurators = async () => {
+    log.info("Updating curators...");
+
+    const curators = await getCurators();
+
+    for (const curator of curators) {
+        const remoteUser = await getUser(curator.remoteId);
+
+        if (remoteUser && remoteUser.username !== curator.username) {
+            log.info(
+                `Updating curator ${curator.id} with latest info from Keycloak.`,
+            );
+
+            await updateCurator(curator.id, {
+                username: remoteUser.username,
+            });
         }
     }
 };
