@@ -998,6 +998,20 @@ export const updateSystemIssue = async (
     return systemIssue;
 };
 
+export const updateCurator = async (
+    id: string,
+    input: Prisma.CuratorUpdateInput,
+): Promise<Curator> => {
+    return await retry(async () => {
+        return prisma.curator.update({
+            where: {
+                id: id,
+            },
+            data: input,
+        });
+    });
+};
+
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {
