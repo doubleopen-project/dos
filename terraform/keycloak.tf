@@ -12,7 +12,7 @@ terraform {
 }
 
 locals {
-    keycloak_url = "http://auth:8080/"
+    keycloak_url = "http://auth:8080"
 }
 
 provider "keycloak" {
