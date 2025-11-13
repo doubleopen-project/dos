@@ -67,7 +67,7 @@
         "eslint-config-custom-server": "*",
         "mocha": "11.7.5",
         "tsconfig": "*",
-        "tsup": "8.5.0",
+        "tsup": "8.5.1",
         "typescript": "5.9.3"
     }
 }
