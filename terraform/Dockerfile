@@ -2,7 +2,7 @@
 # 
 # SPDX-License-Identifier: MIT
 
-FROM hashicorp/terraform:1.13
+FROM hashicorp/terraform:1.14
 
 # These are needed for running the role mapper patching script
 RUN apk add --no-cache curl jq
