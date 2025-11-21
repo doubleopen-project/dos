@@ -124,7 +124,8 @@ model BulkConclusion {
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
-  licenseConclusions LicenseConclusion[]
+  licenseConclusions            LicenseConclusion[]
+  clearanceGroupBulkConclusions ClearanceGroup_BulkConclusion[]
 
   @@index([packageId])
   @@index([updatedAt])
@@ -150,6 +151,8 @@ model LicenseConclusion {
 
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
+
+  clearanceGroupLicenseConclusions ClearanceGroup_LicenseConclusion[]
 
   @@index([fileSha256])
   @@index([bulkConclusionId])
@@ -222,6 +225,8 @@ model PathExclusion {
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
+  clearanceGroupPathExclusions ClearanceGroup_PathExclusion[]
+
   @@index([packageId])
   @@index([updatedAt])
   @@index([curatorId])
@@ -287,7 +292,64 @@ model Curator {
   username  String
   remoteId  String   @unique @db.Uuid
 
-  bulkConclusions    BulkConclusion[]
-  licenseConclusions LicenseConclusion[]
-  pathExclusions     PathExclusion[]
+  bulkConclusions        BulkConclusion[]
+  licenseConclusions     LicenseConclusion[]
+  pathExclusions         PathExclusion[]
+  clearanceGroupCurators ClearanceGroup_Curator[]
+}
+
+model ClearanceGroup {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @unique
+
+  clearanceGroupLicenseConclusions ClearanceGroup_LicenseConclusion[]
+  clearanceGroupBulkConclusions    ClearanceGroup_BulkConclusion[]
+  clearanceGroupPathExclusions     ClearanceGroup_PathExclusion[]
+  curators                         ClearanceGroup_Curator[]
+}
+
+model ClearanceGroup_LicenseConclusion {
+  clearanceGroupId    Int
+  clearanceGroup      ClearanceGroup    @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
+  licenseConclusionId Int
+  licenseConclusion   LicenseConclusion @relation(fields: [licenseConclusionId], references: [id], onDelete: Cascade)
+
+  @@id([clearanceGroupId, licenseConclusionId])
+  @@index([clearanceGroupId])
+  @@index([licenseConclusionId])
+}
+
+model ClearanceGroup_BulkConclusion {
+  clearanceGroupId Int
+  clearanceGroup   ClearanceGroup @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
+  bulkConclusionId Int
+  bulkConclusion   BulkConclusion @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
+
+  @@id([clearanceGroupId, bulkConclusionId])
+  @@index([clearanceGroupId])
+  @@index([bulkConclusionId])
+}
+
+model ClearanceGroup_PathExclusion {
+  clearanceGroupId Int
+  clearanceGroup   ClearanceGroup @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
+  pathExclusionId  Int
+  pathExclusion    PathExclusion  @relation(fields: [pathExclusionId], references: [id], onDelete: Cascade)
+
+  @@id([clearanceGroupId, pathExclusionId])
+  @@index([clearanceGroupId])
+  @@index([pathExclusionId])
+}
+
+model ClearanceGroup_Curator {
+  clearanceGroupId Int
+  clearanceGroup   ClearanceGroup @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
+  curatorId        String         @db.Uuid
+  curator          Curator        @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+
+  @@id([clearanceGroupId, curatorId])
+  @@index([clearanceGroupId])
+  @@index([curatorId])
 }
