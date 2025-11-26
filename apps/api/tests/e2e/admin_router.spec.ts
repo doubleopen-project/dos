@@ -13,7 +13,11 @@ import {
     deleteLicenseConclusion,
     getOrCreateCurator,
 } from "../../src/helpers/db_queries";
-import { getUsers } from "../../src/helpers/keycloak_queries";
+import {
+    createUser,
+    deleteUser,
+    getUsers,
+} from "../../src/helpers/keycloak_queries";
 import { getAccessToken } from "./utils/get_access_token";
 
 const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
@@ -157,6 +161,27 @@ test.describe("API lets authenticated admins to", () => {
             (curator) => curator.remoteId === adminUserId,
         ).length;
         expect(curatorIdCount).toBe(1);
+    });
+
+    test("add new curator", async () => {
+        const user = await createUser({
+            username: "test-user-tmp",
+            credentials: [
+                { type: "password", value: "test-user-tmp", temporary: false },
+            ],
+        });
+        const newCuratorRes = await apiContext.post("curators", {
+            data: {
+                remoteId: user.id,
+            },
+        });
+        expect(newCuratorRes.ok()).toBe(true);
+        const newCurator = await newCuratorRes.json();
+        expect(newCurator.remoteId).toBe(user.id);
+        expect(newCurator.username).toBe("test-user-tmp");
+
+        // Clean up by deleting the created user in Keycloak.
+        await deleteUser(user.id);
     });
 
     test("reassign clearance items to a new curator ID", async () => {
@@ -347,6 +372,15 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
+    test("add a new curator", async () => {
+        const response = await apiContext.post("curators", {
+            data: {
+                remoteId: "some-remote-id",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
+
     test("reassign clearance items to a new curator ID", async () => {
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
@@ -453,6 +487,15 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
+    test("add a new curator", async () => {
+        const response = await apiContext.post("curators", {
+            data: {
+                remoteId: "some-remote-id",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
+
     test("reassign clearance items to a new curator ID", async () => {
         const response = await apiContext.put("clearance-items/reassign", {
             data: {
@@ -552,6 +595,15 @@ test.describe("API doesn't let unauthenticated users to", () => {
     test("retrieve curators", async () => {
         // Attempt to retrieve distinct users without authentication.
         const response = await apiContext.get("clearance-items/distinct-users");
+        expect(response.status()).toBe(401);
+    });
+
+    test("add a new curator", async () => {
+        const response = await apiContext.post("curators", {
+            data: {
+                remoteId: "some-remote-id",
+            },
+        });
         expect(response.status()).toBe(401);
     });
 
