@@ -104,15 +104,25 @@ export const GetPackagesRes = z.object({
     ),
 });
 
+// Curator schemas
+
+const Curator = z.object({
+    id: z.string(),
+    remoteId: z.string(),
+    username: z.string(),
+});
+
 //---------------- GET curators ----------------
 
-export const GetCuratorsRes = z.array(
-    z.object({
-        id: z.string(),
-        remoteId: z.string(),
-        username: z.string(),
-    }),
-);
+export const GetCuratorsRes = z.array(Curator);
+
+//---------------- POST curator ----------------
+
+export const PostCuratorReq = z.object({
+    remoteId: z.string().uuid(),
+});
+
+export const PostCuratorRes = Curator;
 
 //---------------- PUT reassign clearance items ----------------
 

@@ -11,6 +11,7 @@ import {
     countClearanceGroups,
     countScannedPackages,
     createClearanceGroup,
+    createCurator,
     deleteClearanceGroup,
     findCuratorById,
     findScannedPackages,
@@ -25,6 +26,7 @@ import {
     addRealmRolesToUser,
     createUser,
     deleteUser,
+    getUser,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
 
@@ -231,6 +233,40 @@ adminRouter.get("/curators", async (req, res) => {
         // Find out if error is a Prisma error or an unknown error
         const err = await getErrorCodeAndMessage(error);
         res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.post("/curators", async (req, res) => {
+    try {
+        const remoteId = req.body.remoteId;
+        const user = await getUser(remoteId);
+
+        if (!user) {
+            throw new CustomError(
+                `User with remote ID ${remoteId} not found.`,
+                404,
+                "remoteId",
+            );
+        }
+
+        const newCurator = await createCurator({
+            remoteId: remoteId,
+            username: user.username,
+        });
+
+        res.status(200).json(newCurator);
+    } catch (error) {
+        console.log("Error: ", error);
+        if (error instanceof CustomError) {
+            res.status(error.statusCode).send({
+                message: error.message,
+                path: error.path,
+            });
+        } else {
+            // Find out if error is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 

@@ -233,6 +233,21 @@ export const adminAPI = makeApi([
         errors,
     },
     {
+        method: "post",
+        path: "/curators",
+        description: "Create a new curator account",
+        alias: "PostCurator",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostCuratorReq,
+            },
+        ],
+        response: schemas.PostCuratorRes,
+        errors,
+    },
+    {
         method: "put",
         path: "/clearance-items/reassign",
         description: "Reassign clearance items to a new user ID",

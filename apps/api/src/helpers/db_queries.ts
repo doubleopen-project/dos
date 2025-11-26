@@ -530,6 +530,16 @@ export const createClearanceGroup = async (
     });
 };
 
+export const createCurator = async (
+    input: Prisma.CuratorCreateInput,
+): Promise<Curator> => {
+    return await retry(async () => {
+        return prisma.curator.create({
+            data: input,
+        });
+    });
+};
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (
