@@ -305,13 +305,13 @@ const ExclusionForm = ({
                                 updateIsLoading ||
                                 Boolean(
                                     mode === "Add" &&
-                                        user &&
-                                        user.permissions &&
-                                        !hasPermission(
-                                            user.permissions,
-                                            "ClearanceItems",
-                                            "POST",
-                                        ),
+                                    user &&
+                                    user.permissions &&
+                                    !hasPermission(
+                                        user.permissions,
+                                        "ClearanceItems",
+                                        "POST",
+                                    ),
                                 )
                             }
                         >

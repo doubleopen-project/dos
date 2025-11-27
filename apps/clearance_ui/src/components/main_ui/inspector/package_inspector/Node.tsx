@@ -94,8 +94,8 @@ const Node = ({
                         bgcolor={uniqueLicenses.get(license) || "gray"}
                         filtered={Boolean(
                             licenseFilter &&
-                                licenseFilter.toLowerCase() ===
-                                    license.toLowerCase(),
+                            licenseFilter.toLowerCase() ===
+                                license.toLowerCase(),
                         )}
                     />,
                 );
