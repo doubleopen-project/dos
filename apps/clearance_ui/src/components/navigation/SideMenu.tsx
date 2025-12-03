@@ -18,7 +18,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { hasPermission } from "@/helpers/hasPermission";
 
 const SideMenu = () => {
     const user = useUser();
@@ -46,11 +45,7 @@ const SideMenu = () => {
                 </SheetHeader>
                 {user && (
                     <div className="grid gap-4 py-4">
-                        {hasPermission(
-                            user.permissions || [],
-                            "PackageLibraryData",
-                            "GET",
-                        ) && (
+                        {user.role === "app-admin" && (
                             <SheetClose asChild>
                                 <Link
                                     href="/packages"
