@@ -2,31 +2,18 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import { adminHooks } from "@/hooks/zodiosHooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RequireAdmin } from "@/components/auth/RequireAdmin";
 import PackageList from "@/components/package_library/PackageList";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
-import { hasPermission } from "@/helpers/hasPermission";
 
 export default function PackageLibrary() {
-    const router = useRouter();
     const user = useUser({
         required: true,
     });
-
-    useEffect(() => {
-        if (
-            user &&
-            user.permissions &&
-            !hasPermission(user.permissions, "PackageLibraryData", "GET")
-        ) {
-            router.push("/403");
-        }
-    }, [user, router]);
 
     const {
         data: pkgCntData,
@@ -37,62 +24,47 @@ export default function PackageLibrary() {
     });
 
     return (
-        <div className="flex h-full flex-col p-2">
-            {hasPermission(
-                user?.permissions || [],
-                "PackageLibraryData",
-                "GET",
-            ) && (
-                <>
-                    <div className="m-1 flex-none rounded-md shadow-sm">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Package Library</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p>
-                                    <span>Packages in the library: </span>
-                                    {pkgCntLoading && (
-                                        <span>
-                                            <Loader2 className="mr-2 inline-block h-4 w-4 animate-spin" />
-                                        </span>
-                                    )}
-                                    {pkgCntError && (
-                                        <span className="rounded-md p-1 font-semibold text-red-500">
-                                            Error:{" "}
-                                            {getErrorMessage(pkgCntError)}
-                                        </span>
-                                    )}
-                                    {pkgCntData && (
-                                        <span className="text-xl">
-                                            {pkgCntData.count}
-                                        </span>
-                                    )}
-                                </p>
-                                <br />
-                                <br />
-                                <p className="text-sm">
-                                    This is a list of all packages that are
-                                    currently in the Package Library. You can
-                                    search for packages by name. Clicking a
-                                    package name will take you to the curation
-                                    UI.
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                    <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow-sm">
-                        {pkgCntData && (
-                            <PackageList pkgCnt={pkgCntData.count} />
-                        )}
-                    </div>
-                </>
-            )}
-            {!user && (
-                <div className="flex h-full items-center justify-center">
-                    <Loader2 className="mr-2 h-16 w-16 animate-spin" />
+        <RequireAdmin>
+            <div className="flex h-full flex-col p-2">
+                <div className="m-1 flex-none rounded-md shadow-sm">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Package Library</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p>
+                                <span>Packages in the library: </span>
+                                {pkgCntLoading && (
+                                    <span>
+                                        <Loader2 className="mr-2 inline-block h-4 w-4 animate-spin" />
+                                    </span>
+                                )}
+                                {pkgCntError && (
+                                    <span className="rounded-md p-1 font-semibold text-red-500">
+                                        Error: {getErrorMessage(pkgCntError)}
+                                    </span>
+                                )}
+                                {pkgCntData && (
+                                    <span className="text-xl">
+                                        {pkgCntData.count}
+                                    </span>
+                                )}
+                            </p>
+                            <br />
+                            <br />
+                            <p className="text-sm">
+                                This is a list of all packages that are
+                                currently in the Package Library. You can search
+                                for packages by name. Clicking a package name
+                                will take you to the curation UI.
+                            </p>
+                        </CardContent>
+                    </Card>
                 </div>
-            )}
-        </div>
+                <div className="m-1 flex-1 overflow-auto rounded-lg border py-1 shadow-sm">
+                    {pkgCntData && <PackageList pkgCnt={pkgCntData.count} />}
+                </div>
+            </div>
+        </RequireAdmin>
     );
 }
