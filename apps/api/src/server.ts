@@ -101,7 +101,12 @@ app.use(
 
 app.use(keycloak.middleware());
 
-app.use("/api/admin", cors(corsOptions), keycloak.protect(), adminRouter);
+app.use(
+    "/api/admin",
+    cors(corsOptions),
+    keycloak.protect("realm:app-admin"),
+    adminRouter,
+);
 app.use("/api/auth", cors(corsOptions), authRouter);
 app.use("/api", cors(corsOptions), scannerRouter);
 app.use("/api/user", cors(corsOptions), keycloak.protect(), userRouter);
