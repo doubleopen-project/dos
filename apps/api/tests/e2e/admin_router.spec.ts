@@ -212,6 +212,26 @@ test.describe("API doesn't let authenticated regular users to", () => {
         await apiContext.dispose();
     });
 
+    test("add users", async () => {
+        const response = await apiContext.post("users");
+        expect(response.status()).toBe(403);
+    });
+
+    test("delete users", async () => {
+        const response = await apiContext.delete("users/some-id");
+        expect(response.status()).toBe(403);
+    });
+
+    test("delete scan results", async () => {
+        const response = await apiContext.delete("scan-results");
+        expect(response.status()).toBe(403);
+    });
+
+    test("trigger purl cleanup", async () => {
+        const response = await apiContext.post("purl-cleanup");
+        expect(response.status()).toBe(403);
+    });
+
     test("retrieve packages", async () => {
         const response = await apiContext.get("packages");
         expect(response.status()).toBe(403);
@@ -261,6 +281,26 @@ test.describe("API doesn't let readonly users to", () => {
         await apiContext.dispose();
     });
 
+    test("add users", async () => {
+        const response = await apiContext.post("users");
+        expect(response.status()).toBe(403);
+    });
+
+    test("delete users", async () => {
+        const response = await apiContext.delete("users/some-id");
+        expect(response.status()).toBe(403);
+    });
+
+    test("delete scan results", async () => {
+        const response = await apiContext.delete("scan-results");
+        expect(response.status()).toBe(403);
+    });
+
+    test("trigger purl cleanup", async () => {
+        const response = await apiContext.post("purl-cleanup");
+        expect(response.status()).toBe(403);
+    });
+
     test("retrieve packages", async () => {
         const response = await apiContext.get("packages");
         expect(response.status()).toBe(403);
@@ -299,6 +339,26 @@ test.describe("API doesn't let unauthenticated users to", () => {
     test.afterAll(async () => {
         // Dispose all responses.
         await apiContext.dispose();
+    });
+
+    test("add users", async () => {
+        const response = await apiContext.post("users");
+        expect(response.status()).toBe(401);
+    });
+
+    test("delete users", async () => {
+        const response = await apiContext.delete("users/some-id");
+        expect(response.status()).toBe(401);
+    });
+
+    test("delete scan results", async () => {
+        const response = await apiContext.delete("scan-results");
+        expect(response.status()).toBe(401);
+    });
+
+    test("trigger purl cleanup", async () => {
+        const response = await apiContext.post("purl-cleanup");
+        expect(response.status()).toBe(401);
     });
 
     test("retrieve packages", async () => {
