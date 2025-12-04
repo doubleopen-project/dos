@@ -237,16 +237,6 @@ resource "keycloak_openid_client_authorization_resource" "clearance_items" {
     ]
 }
 
-# Add resource for maintenance tasks.
-resource "keycloak_openid_client_authorization_resource" "maintenance" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    name               = "Maintenance"
-    display_name       = "Maintenance"
-    realm_id           = keycloak_realm.dos_dev_realm.id
-
-    scopes = [keycloak_openid_client_authorization_scope.create_scope.name]
-}
-
 # Add resource for package data.
 resource "keycloak_openid_client_authorization_resource" "package_data" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
@@ -260,59 +250,7 @@ resource "keycloak_openid_client_authorization_resource" "package_data" {
     ]
 }
 
-# Add resource for package library data.
-resource "keycloak_openid_client_authorization_resource" "package_library_data" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    name               = "PackageLibraryData"
-    display_name       = "Package Library Data"
-    realm_id           = keycloak_realm.dos_dev_realm.id
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.read_scope.name
-    ]
-}
-
-# Add resource for user data.
-resource "keycloak_openid_client_authorization_resource" "users" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    name               = "Users"
-    display_name       = "Users"
-    realm_id           = keycloak_realm.dos_dev_realm.id
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.create_scope.name,
-        keycloak_openid_client_authorization_scope.read_scope.name,
-        keycloak_openid_client_authorization_scope.update_scope.name,
-        keycloak_openid_client_authorization_scope.delete_scope.name
-    ]
-}
-
-# Add resource for work queue.
-resource "keycloak_openid_client_authorization_resource" "work_queue" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    name               = "WorkQueue"
-    display_name       = "Work Queue"
-    realm_id           = keycloak_realm.dos_dev_realm.id
-
-    scopes = [ keycloak_openid_client_authorization_scope.read_scope.name ]
-}
-
 ## Add policies for the authorization services for the DOS API client.
-
-# Add policy that allows only app-admins to access the resource.
-resource "keycloak_openid_client_role_policy" "only_app_admins_policy" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Only app-admins policy"
-    description        = "By applying this policy, only users with the app-admin role will be granted access to the permitted resource."
-    type               = "role"
-    logic              = "POSITIVE"
-    decision_strategy  = "UNANIMOUS"
-    role {
-        id = keycloak_role.realm_role_app_admin.id
-        required = false
-    }
-}
 
 # Add policy that allows any users to access the resource.
 resource "keycloak_openid_client_role_policy" "any_user_policy" {
@@ -358,29 +296,6 @@ resource "keycloak_openid_client_role_policy" "only_app_users_and_app_admins_pol
 
 ## Add permissions for the authorization services for the DOS API client.
 
-# Add permission for creating and deleting users, and reading and updating user data.
-resource "keycloak_openid_client_authorization_permission" "crud_users_permission" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Create and delete users, and read and update user data"
-    type               = "scope"
-
-    policies = [
-        keycloak_openid_client_role_policy.only_app_admins_policy.id
-    ]
-
-    resources = [
-        keycloak_openid_client_authorization_resource.users.id
-    ]
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.create_scope.id,
-        keycloak_openid_client_authorization_scope.read_scope.id,
-        keycloak_openid_client_authorization_scope.update_scope.id,
-        keycloak_openid_client_authorization_scope.delete_scope.id
-    ]
-}
-
 # Add permission for creating, updating and deleting clearance items.
 resource "keycloak_openid_client_authorization_permission" "cud_clearance_items_permission" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
@@ -423,26 +338,6 @@ resource "keycloak_openid_client_authorization_permission" "r_clearance_items_pe
     ]
 }
 
-# Add permission for deleting package data.
-resource "keycloak_openid_client_authorization_permission" "d_package_data_permission" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Delete package data"
-    type               = "scope"
-
-    policies = [
-        keycloak_openid_client_role_policy.only_app_admins_policy.id
-    ]
-
-    resources = [
-        keycloak_openid_client_authorization_resource.package_data.id
-    ]
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.delete_scope.id
-    ]
-}
-
 # Add permission for reading package and file data.
 resource "keycloak_openid_client_authorization_permission" "r_package_data_permission" {
     resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
@@ -456,66 +351,6 @@ resource "keycloak_openid_client_authorization_permission" "r_package_data_permi
 
     resources = [
         keycloak_openid_client_authorization_resource.package_data.id
-    ]
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.read_scope.id
-    ]
-}
-
-# Add permission for reading package library data.
-resource "keycloak_openid_client_authorization_permission" "r_package_library_data_permission" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Read package library data"
-    type               = "scope"
-
-    policies = [
-        keycloak_openid_client_role_policy.only_app_admins_policy.id
-    ]
-
-    resources = [
-        keycloak_openid_client_authorization_resource.package_library_data.id
-    ]
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.read_scope.id
-    ]
-}
-
-# Add permission for performing maintenance tasks.
-resource "keycloak_openid_client_authorization_permission" "c_maintenance_permission" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "Perform maintenance tasks"
-    type               = "scope"
-
-    policies = [
-        keycloak_openid_client_role_policy.only_app_admins_policy.id
-    ]
-
-    resources = [
-        keycloak_openid_client_authorization_resource.maintenance.id
-    ]
-
-    scopes = [
-        keycloak_openid_client_authorization_scope.create_scope.id
-    ]
-}
-
-# Add permission for reading work queue.
-resource "keycloak_openid_client_authorization_permission" "r_work_queue_permission" {
-    resource_server_id = keycloak_openid_client.dos_api_openid_client.resource_server_id
-    realm_id           = keycloak_realm.dos_dev_realm.id
-    name               = "View work queue"
-    type               = "scope"
-
-    policies = [
-        keycloak_openid_client_role_policy.only_app_admins_policy.id
-    ]
-
-    resources = [
-        keycloak_openid_client_authorization_resource.work_queue.id
     ]
 
     scopes = [
