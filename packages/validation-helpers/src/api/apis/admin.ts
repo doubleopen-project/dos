@@ -379,4 +379,24 @@ export const adminAPI = makeApi([
         response: schemas.ClearanceGroupWithCurators,
         errors,
     },
+    {
+        method: "post",
+        path: "/clearance-groups/:id/curators",
+        description: "Add curators to a clearance group",
+        alias: "AddCuratorsToClearanceGroup",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostCuratorsToClearanceGroupReq,
+            },
+        ],
+        response: schemas.ClearanceGroupWithCurators,
+        errors,
+    },
 ]);
