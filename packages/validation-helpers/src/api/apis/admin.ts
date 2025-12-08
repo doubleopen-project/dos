@@ -297,4 +297,56 @@ export const adminAPI = makeApi([
         response: commonSchemas.EmptyResponse,
         errors,
     },
+    {
+        method: "get",
+        path: "/clearance-groups",
+        description: "Get clearance groups",
+        alias: "GetClearanceGroups",
+        parameters: [
+            {
+                name: "pageSize",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageSize,
+            },
+            {
+                name: "pageIndex",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageIndex,
+            },
+            {
+                name: "sortBy",
+                type: "Query",
+                schema: schemas.QueryParamClearanceGroupSortBy,
+            },
+            {
+                name: "sortOrder",
+                type: "Query",
+                schema: commonSchemas.QueryParamSortOrder,
+            },
+            {
+                name: "name",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by name (substring match)",
+            },
+        ],
+        response: schemas.GetClearanceGroupsRes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/clearance-groups/count",
+        description: "Get clearance groups count",
+        alias: "GetClearanceGroupsCount",
+        parameters: [
+            {
+                name: "name",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterValue,
+                description: "Filter by name (substring match)",
+            },
+        ],
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
 ]);

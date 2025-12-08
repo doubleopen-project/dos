@@ -239,6 +239,37 @@ test.describe("API lets authenticated admins to", () => {
         );
         expect(deleteResponse.ok()).toBe(true);
     });
+
+    test("retrieve clearance groups", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        const response = await apiContext.get("clearance-groups");
+        expect(response.ok()).toBe(true);
+        const clearanceGroups = await response.json();
+        expect(clearanceGroups.length).toBeGreaterThan(0);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
+
+    test("retrieve clearance groups count", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        const response = await apiContext.get("clearance-groups");
+        expect(response.ok()).toBe(true);
+        const clearanceGroups = await response.json();
+        const countResponse = await apiContext.get("clearance-groups/count");
+        expect(countResponse.ok()).toBe(true);
+        const countResponseBody = await countResponse.json();
+        expect(countResponseBody.count).toBe(clearanceGroups.length);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -329,6 +360,16 @@ test.describe("API doesn't let authenticated regular users to", () => {
 
     test("delete a clearance group", async () => {
         const response = await apiContext.delete("clearance-groups/1");
+        expect(response.status()).toBe(403);
+    });
+
+    test("retrieve clearance groups", async () => {
+        const response = await apiContext.get("clearance-groups");
+        expect(response.status()).toBe(403);
+    });
+
+    test("retrieve clearance groups count", async () => {
+        const response = await apiContext.get("clearance-groups/count");
         expect(response.status()).toBe(403);
     });
 });
@@ -422,6 +463,16 @@ test.describe("API doesn't let readonly users to", () => {
         const response = await apiContext.delete("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
+
+    test("retrieve clearance groups", async () => {
+        const response = await apiContext.get("clearance-groups");
+        expect(response.status()).toBe(403);
+    });
+
+    test("retrieve clearance groups count", async () => {
+        const response = await apiContext.get("clearance-groups/count");
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -508,6 +559,16 @@ test.describe("API doesn't let unauthenticated users to", () => {
 
     test("delete a clearance group", async () => {
         const response = await apiContext.delete("clearance-groups/1");
+        expect(response.status()).toBe(401);
+    });
+
+    test("retrieve clearance groups", async () => {
+        const response = await apiContext.get("clearance-groups");
+        expect(response.status()).toBe(401);
+    });
+
+    test("retrieve clearance groups count", async () => {
+        const response = await apiContext.get("clearance-groups/count");
         expect(response.status()).toBe(401);
     });
 });

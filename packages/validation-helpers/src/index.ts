@@ -19,3 +19,4 @@ export {
     bcPatternGlobSchema,
     pePatternGlobSchema,
 } from "./param_schemas/pattern_schemas";
+export type { ClearanceGroupSortBy } from "./api/schemas/admin_schemas";
