@@ -6,6 +6,7 @@
 // @ts-ignore: has no exported member 'ScannerJob'
 import {
     BulkConclusion,
+    ClearanceGroup,
     CopyrightFinding,
     Curator,
     File,
@@ -516,6 +517,16 @@ export const createFileTreeIfNotExists = async (
     if (!fileTree) throw new Error("Error: Unable to create FileTree");
 
     return fileTree;
+};
+
+export const createClearanceGroup = async (
+    input: Prisma.ClearanceGroupCreateInput,
+): Promise<ClearanceGroup> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.create({
+            data: input,
+        });
+    });
 };
 
 // ------------------------------ Update ------------------------------
@@ -4124,6 +4135,18 @@ export const deleteFileTreesByPackageId = async (
     if (!batchDelete) throw new Error("Error: Unable to delete FileTrees");
 
     return batchDelete;
+};
+
+export const deleteClearanceGroup = async (
+    id: number,
+): Promise<ClearanceGroup> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.delete({
+            where: {
+                id: id,
+            },
+        });
+    });
 };
 
 // ------------------------------ Count --------------------------------

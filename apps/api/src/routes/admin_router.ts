@@ -9,6 +9,7 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
     countScannedPackages,
+    createClearanceGroup,
     findCuratorById,
     findScannedPackages,
     getCurators,
@@ -268,6 +269,30 @@ adminRouter.put("/clearance-items/reassign", async (req, res) => {
             });
         } else {
             // Find out if error is a Prisma error or an unknown error
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+adminRouter.post("/clearance-groups", async (req, res) => {
+    try {
+        const newGroup = await createClearanceGroup({
+            name: req.body.name,
+        });
+        res.status(200).json(newGroup);
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            res.status(400).json({
+                message: `Clearance group with name '${req.body.name}' already exists.`,
+                path: "name",
+            });
+        } else {
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
         }
