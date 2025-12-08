@@ -14,6 +14,7 @@ import {
     createClearanceGroupCurators,
     createCurator,
     deleteClearanceGroup,
+    deleteClearanceGroupCurator,
     findCuratorById,
     findScannedPackages,
     getClearanceGroupById,
@@ -479,5 +480,24 @@ adminRouter.post("/clearance-groups/:id/curators", async (req, res) => {
         res.status(err.statusCode).json({ message: err.message });
     }
 });
+
+adminRouter.delete(
+    "/clearance-groups/:groupId/curators/:curatorId",
+    async (req, res) => {
+        try {
+            const clearanceGroupId = req.params.groupId;
+            const curatorId = req.params.curatorId;
+
+            await deleteClearanceGroupCurator(clearanceGroupId, curatorId);
+
+            res.status(200).json(await getClearanceGroupById(clearanceGroupId));
+        } catch (error) {
+            console.log("Error: ", error);
+
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    },
+);
 
 export default adminRouter;

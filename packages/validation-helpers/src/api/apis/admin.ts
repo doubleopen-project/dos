@@ -399,4 +399,24 @@ export const adminAPI = makeApi([
         response: schemas.ClearanceGroupWithCurators,
         errors,
     },
+    {
+        method: "delete",
+        path: "/clearance-groups/:groupId/curators/:curatorId",
+        description: "Remove a curator from a clearance group",
+        alias: "RemoveCuratorFromClearanceGroup",
+        parameters: [
+            {
+                name: "groupId",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "curatorId",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ClearanceGroupWithCurators,
+        errors,
+    },
 ]);

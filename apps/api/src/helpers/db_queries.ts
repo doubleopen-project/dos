@@ -7,6 +7,7 @@
 import {
     BulkConclusion,
     ClearanceGroup,
+    ClearanceGroup_Curator,
     CopyrightFinding,
     Curator,
     File,
@@ -4244,6 +4245,22 @@ export const deleteClearanceGroup = async (
         return prisma.clearanceGroup.delete({
             where: {
                 id: id,
+            },
+        });
+    });
+};
+
+export const deleteClearanceGroupCurator = async (
+    clearanceGroupId: number,
+    curatorId: string,
+): Promise<ClearanceGroup_Curator> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup_Curator.delete({
+            where: {
+                clearanceGroupId_curatorId: {
+                    clearanceGroupId,
+                    curatorId,
+                },
             },
         });
     });
