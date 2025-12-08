@@ -139,6 +139,18 @@ export const ClearanceGroup = z.object({
     updatedAt: z.coerce.date(),
 });
 
+export const ClearanceGroupWithCurators = ClearanceGroup.extend({
+    curators: z.array(
+        z.object({
+            curator: z.object({
+                id: z.string(),
+                remoteId: z.string(),
+                username: z.string(),
+            }),
+        }),
+    ),
+});
+
 //-------------- POST clearance-group --------------
 
 export const PostClearanceGroupReq = z.object({

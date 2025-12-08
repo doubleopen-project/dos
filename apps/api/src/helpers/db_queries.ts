@@ -3830,6 +3830,53 @@ export const getClearanceGroups = async (
     });
 };
 
+type ClearanceGroupWithRelations = Prisma.ClearanceGroupGetPayload<{
+    select: {
+        id: true;
+        name: true;
+        createdAt: true;
+        updatedAt: true;
+        curators: {
+            select: {
+                curator: {
+                    select: {
+                        id: true;
+                        remoteId: true;
+                        username: true;
+                    };
+                };
+            };
+        };
+    };
+}>;
+
+export const getClearanceGroupById = async (
+    id: number,
+): Promise<ClearanceGroupWithRelations> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.findUniqueOrThrow({
+            where: { id: id },
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                updatedAt: true,
+                curators: {
+                    select: {
+                        curator: {
+                            select: {
+                                id: true,
+                                remoteId: true,
+                                username: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files

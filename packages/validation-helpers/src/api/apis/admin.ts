@@ -349,4 +349,19 @@ export const adminAPI = makeApi([
         response: commonSchemas.GetCountRes,
         errors,
     },
+    {
+        method: "get",
+        path: "/clearance-groups/:id",
+        description: "Get clearance group by ID",
+        alias: "GetClearanceGroupById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+        ],
+        response: schemas.ClearanceGroupWithCurators,
+        errors,
+    },
 ]);

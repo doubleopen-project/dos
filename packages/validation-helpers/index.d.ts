@@ -2498,6 +2498,187 @@ declare const adminAPI: [
             },
         ];
     },
+    {
+        method: "get";
+        path: "/clearance-groups/:id";
+        description: "Get clearance group by ID";
+        alias: "GetClearanceGroupById";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodNumber;
+                name: zod.ZodString;
+                createdAt: zod.ZodDate;
+                updatedAt: zod.ZodDate;
+                curators: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            curator: zod.ZodObject<
+                                {
+                                    id: zod.ZodString;
+                                    remoteId: zod.ZodString;
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                },
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        },
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            },
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const authAPI: [
@@ -5293,28 +5474,28 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                             fileSha256: string;
                         },
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                             fileSha256: string;
                         }
@@ -5328,14 +5509,14 @@ declare const userAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                     fileSha256: string;
                 }[];
@@ -5344,14 +5525,14 @@ declare const userAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                     fileSha256: string;
                 }[];
@@ -6008,27 +6189,27 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                         },
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                         }
                     >,
@@ -6041,14 +6222,14 @@ declare const userAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                 }[];
             },
@@ -6056,14 +6237,14 @@ declare const userAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                 }[];
             }
@@ -6735,14 +6916,14 @@ declare const userAPI: [
                                     }[];
                                 };
                             }[];
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -6759,14 +6940,14 @@ declare const userAPI: [
                                     }[];
                                 };
                             }[];
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -6790,14 +6971,14 @@ declare const userAPI: [
                             }[];
                         };
                     }[];
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -6816,14 +6997,14 @@ declare const userAPI: [
                             }[];
                         };
                     }[];
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -7377,14 +7558,14 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -7392,14 +7573,14 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -7414,14 +7595,14 @@ declare const userAPI: [
                 bulkConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -7431,14 +7612,14 @@ declare const userAPI: [
                 bulkConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -8483,12 +8664,12 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                             package: {
                                 purl: string;
                             };
@@ -8496,12 +8677,12 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                             package: {
                                 purl: string;
                             };
@@ -8516,12 +8697,12 @@ declare const userAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                     package: {
                         purl: string;
                     };
@@ -8531,12 +8712,12 @@ declare const userAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                     package: {
                         purl: string;
                     };
@@ -9393,22 +9574,22 @@ declare const userAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                         },
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                         }
                     >,
                     "many"
@@ -9420,24 +9601,24 @@ declare const userAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                 }[];
             }
         >;
@@ -12970,28 +13151,28 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                             fileSha256: string;
                         },
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                             fileSha256: string;
                         }
@@ -13005,14 +13186,14 @@ declare const dosAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                     fileSha256: string;
                 }[];
@@ -13021,14 +13202,14 @@ declare const dosAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                     fileSha256: string;
                 }[];
@@ -13685,27 +13866,27 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                         },
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             contextPurl: string;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             bulkConclusionId: number | null;
                         }
                     >,
@@ -13718,14 +13899,14 @@ declare const dosAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                 }[];
             },
@@ -13733,14 +13914,14 @@ declare const dosAPI: [
                 licenseConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     contextPurl: string;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     bulkConclusionId: number | null;
                 }[];
             }
@@ -14412,14 +14593,14 @@ declare const dosAPI: [
                                     }[];
                                 };
                             }[];
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -14436,14 +14617,14 @@ declare const dosAPI: [
                                     }[];
                                 };
                             }[];
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -14467,14 +14648,14 @@ declare const dosAPI: [
                             }[];
                         };
                     }[];
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -14493,14 +14674,14 @@ declare const dosAPI: [
                             }[];
                         };
                     }[];
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -15054,14 +15235,14 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -15069,14 +15250,14 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
+                            curator: {
+                                username: string;
+                            };
                             detectedLicenseExpressionSPDX: string | null;
                             concludedLicenseExpressionSPDX: string;
                             comment: string | null;
                             pattern: string | null;
                             local: boolean;
-                            curator: {
-                                username: string;
-                            };
                             package: {
                                 purl: string;
                             };
@@ -15091,14 +15272,14 @@ declare const dosAPI: [
                 bulkConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -15108,14 +15289,14 @@ declare const dosAPI: [
                 bulkConclusions: {
                     id: number;
                     updatedAt: Date;
+                    curator: {
+                        username: string;
+                    };
                     detectedLicenseExpressionSPDX: string | null;
                     concludedLicenseExpressionSPDX: string;
                     comment: string | null;
                     pattern: string | null;
                     local: boolean;
-                    curator: {
-                        username: string;
-                    };
                     package: {
                         purl: string;
                     };
@@ -16160,12 +16341,12 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                             package: {
                                 purl: string;
                             };
@@ -16173,12 +16354,12 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                             package: {
                                 purl: string;
                             };
@@ -16193,12 +16374,12 @@ declare const dosAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                     package: {
                         purl: string;
                     };
@@ -16208,12 +16389,12 @@ declare const dosAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                     package: {
                         purl: string;
                     };
@@ -17070,22 +17251,22 @@ declare const dosAPI: [
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                         },
                         {
                             id: number;
                             updatedAt: Date;
-                            comment: string | null;
-                            pattern: string;
-                            reason: string;
                             curator: {
                                 username: string;
                             };
+                            comment: string | null;
+                            pattern: string;
+                            reason: string;
                         }
                     >,
                     "many"
@@ -17097,24 +17278,24 @@ declare const dosAPI: [
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                 }[];
             },
             {
                 pathExclusions: {
                     id: number;
                     updatedAt: Date;
-                    comment: string | null;
-                    pattern: string;
-                    reason: string;
                     curator: {
                         username: string;
                     };
+                    comment: string | null;
+                    pattern: string;
+                    reason: string;
                 }[];
             }
         >;
@@ -19882,6 +20063,187 @@ declare const dosAPI: [
             },
             {
                 count: number;
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "get";
+        path: "/admin/clearance-groups/:id";
+        description: "Get clearance group by ID";
+        alias: "GetClearanceGroupById";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodNumber;
+                name: zod.ZodString;
+                createdAt: zod.ZodDate;
+                updatedAt: zod.ZodDate;
+                curators: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            curator: zod.ZodObject<
+                                {
+                                    id: zod.ZodString;
+                                    remoteId: zod.ZodString;
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                },
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        },
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            },
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
             }
         >;
         errors: [

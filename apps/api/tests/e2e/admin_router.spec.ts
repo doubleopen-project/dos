@@ -270,6 +270,23 @@ test.describe("API lets authenticated admins to", () => {
         // Clean up by deleting the created clearance group.
         deleteClearanceGroup(createdGroup.id);
     });
+
+    test("retrieve clearance group by id", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        const response = await apiContext.get(
+            `clearance-groups/${createdGroup.id}`,
+        );
+        expect(response.ok()).toBe(true);
+        const clearanceGroup = await response.json();
+        expect(clearanceGroup.id).toBe(createdGroup.id);
+        expect(clearanceGroup.name).toBe(createdGroup.name);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -370,6 +387,11 @@ test.describe("API doesn't let authenticated regular users to", () => {
 
     test("retrieve clearance groups count", async () => {
         const response = await apiContext.get("clearance-groups/count");
+        expect(response.status()).toBe(403);
+    });
+
+    test("retrieve clearance group by id", async () => {
+        const response = await apiContext.get("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
 });
@@ -473,6 +495,11 @@ test.describe("API doesn't let readonly users to", () => {
         const response = await apiContext.get("clearance-groups/count");
         expect(response.status()).toBe(403);
     });
+
+    test("retrieve clearance group by id", async () => {
+        const response = await apiContext.get("clearance-groups/1");
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -569,6 +596,11 @@ test.describe("API doesn't let unauthenticated users to", () => {
 
     test("retrieve clearance groups count", async () => {
         const response = await apiContext.get("clearance-groups/count");
+        expect(response.status()).toBe(401);
+    });
+
+    test("retrieve clearance group by id", async () => {
+        const response = await apiContext.get("clearance-groups/1");
         expect(response.status()).toBe(401);
     });
 });
