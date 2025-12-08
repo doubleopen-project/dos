@@ -68,6 +68,7 @@ test.describe("API lets authenticated admins to", () => {
     let keycloakToken: string;
     let adminUserId: string;
     let userId: string;
+    let adminCuratorId: string;
     let apiContext: APIRequestContext;
     const testPurl =
         "pkg:npm/dos-monorepo@0.0.0?vcs_type=Git&vcs_url=https%3A%2F%2Fgithub.com%2Fdoubleopen-project%2Fdos.git&vcs_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6&resolved_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6";
@@ -96,7 +97,7 @@ test.describe("API lets authenticated admins to", () => {
             },
         });
 
-        const curatorId = await getOrCreateCurator(adminUserId, "test-admin");
+        adminCuratorId = await getOrCreateCurator(adminUserId, "test-admin");
 
         // Add license conclusions for the tests.
         const licenseConclusion1 = await createLicenseConclusion({
@@ -111,7 +112,7 @@ test.describe("API lets authenticated admins to", () => {
                     sha256: "0cbc1f28243bae937e4a2ca774779471484a8b73cf901d0db68ac1642d8c6828",
                 },
             },
-            curator: { connect: { id: curatorId } },
+            curator: { connect: { id: adminCuratorId } },
         });
         licenseConclusionIds.push(licenseConclusion1.id);
 
@@ -127,7 +128,7 @@ test.describe("API lets authenticated admins to", () => {
                     sha256: "3033e4e29fa8ea20d8936e68e3f31d53ae6d34912c7c9ebc30709d4481356f50",
                 },
             },
-            curator: { connect: { id: curatorId } },
+            curator: { connect: { id: adminCuratorId } },
         });
 
         licenseConclusionIds.push(licenseConclusion2.id);
@@ -312,6 +313,29 @@ test.describe("API lets authenticated admins to", () => {
         // Clean up by deleting the created clearance group.
         deleteClearanceGroup(createdGroup.id);
     });
+
+    test("add curators to a clearance group", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        const addCuratorsResponse = await apiContext.post(
+            `clearance-groups/${createdGroup.id}/curators`,
+            {
+                data: {
+                    curatorIds: [adminCuratorId],
+                },
+            },
+        );
+
+        expect(addCuratorsResponse.ok()).toBe(true);
+        const updatedGroup = await addCuratorsResponse.json();
+        expect(updatedGroup.curators.length).toBe(1);
+        expect(updatedGroup.curators[0].curator.id).toBe(adminCuratorId);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -426,6 +450,15 @@ test.describe("API doesn't let authenticated regular users to", () => {
 
     test("retrieve clearance group by id", async () => {
         const response = await apiContext.get("clearance-groups/1");
+        expect(response.status()).toBe(403);
+    });
+
+    test("add curators to a clearance group", async () => {
+        const response = await apiContext.post("clearance-groups/1/curators", {
+            data: {
+                curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+            },
+        });
         expect(response.status()).toBe(403);
     });
 });
@@ -543,6 +576,15 @@ test.describe("API doesn't let readonly users to", () => {
         const response = await apiContext.get("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
+
+    test("add curators to a clearance group", async () => {
+        const response = await apiContext.post("clearance-groups/1/curators", {
+            data: {
+                curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -653,6 +695,15 @@ test.describe("API doesn't let unauthenticated users to", () => {
 
     test("retrieve clearance group by id", async () => {
         const response = await apiContext.get("clearance-groups/1");
+        expect(response.status()).toBe(401);
+    });
+
+    test("add curators to a clearance group", async () => {
+        const response = await apiContext.post("clearance-groups/1/curators", {
+            data: {
+                curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+            },
+        });
         expect(response.status()).toBe(401);
     });
 });

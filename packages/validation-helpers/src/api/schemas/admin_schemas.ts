@@ -188,3 +188,9 @@ export const QueryParamClearanceGroupSortBy =
     ClearanceGroupSortByEnum.optional();
 
 export type ClearanceGroupSortBy = z.infer<typeof ClearanceGroupSortByEnum>;
+
+//------------ POST clearance-group curators ------------
+
+export const PostCuratorsToClearanceGroupReq = z.object({
+    curatorIds: z.array(z.string().uuid()),
+});

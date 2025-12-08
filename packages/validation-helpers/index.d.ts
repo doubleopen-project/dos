@@ -2813,6 +2813,204 @@ declare const adminAPI: [
             },
         ];
     },
+    {
+        method: "post";
+        path: "/clearance-groups/:id/curators";
+        description: "Add curators to a clearance group";
+        alias: "AddCuratorsToClearanceGroup";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        curatorIds: zod.ZodArray<zod.ZodString, "many">;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        curatorIds: string[];
+                    },
+                    {
+                        curatorIds: string[];
+                    }
+                >;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodNumber;
+                name: zod.ZodString;
+                createdAt: zod.ZodDate;
+                updatedAt: zod.ZodDate;
+                curators: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            curator: zod.ZodObject<
+                                {
+                                    id: zod.ZodString;
+                                    remoteId: zod.ZodString;
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                },
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        },
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            },
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
 ];
 
 declare const authAPI: [
@@ -20434,6 +20632,204 @@ declare const dosAPI: [
                 name: "id";
                 type: "Path";
                 schema: zod.ZodNumber;
+            },
+        ];
+        response: zod.ZodObject<
+            {
+                id: zod.ZodNumber;
+                name: zod.ZodString;
+                createdAt: zod.ZodDate;
+                updatedAt: zod.ZodDate;
+                curators: zod.ZodArray<
+                    zod.ZodObject<
+                        {
+                            curator: zod.ZodObject<
+                                {
+                                    id: zod.ZodString;
+                                    remoteId: zod.ZodString;
+                                    username: zod.ZodString;
+                                },
+                                "strip",
+                                zod.ZodTypeAny,
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                },
+                                {
+                                    username: string;
+                                    id: string;
+                                    remoteId: string;
+                                }
+                            >;
+                        },
+                        "strip",
+                        zod.ZodTypeAny,
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        },
+                        {
+                            curator: {
+                                username: string;
+                                id: string;
+                                remoteId: string;
+                            };
+                        }
+                    >,
+                    "many"
+                >;
+            },
+            "strip",
+            zod.ZodTypeAny,
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            },
+            {
+                id: number;
+                name: string;
+                createdAt: Date;
+                updatedAt: Date;
+                curators: {
+                    curator: {
+                        username: string;
+                        id: string;
+                        remoteId: string;
+                    };
+                }[];
+            }
+        >;
+        errors: [
+            {
+                status: 500;
+                description: "Internal server error";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 400;
+                description: "Bad request";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                        path: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    },
+                    {
+                        message: string;
+                        path?: string | null | undefined;
+                    }
+                >;
+            },
+            {
+                status: 403;
+                description: "Forbidden";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 401;
+                description: "Unauthorized";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+            {
+                status: 404;
+                description: "Not found";
+                schema: zod.ZodObject<
+                    {
+                        message: zod.ZodString;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        message: string;
+                    },
+                    {
+                        message: string;
+                    }
+                >;
+            },
+        ];
+    },
+    {
+        method: "post";
+        path: "/admin/clearance-groups/:id/curators";
+        description: "Add curators to a clearance group";
+        alias: "AddCuratorsToClearanceGroup";
+        parameters: [
+            {
+                name: "id";
+                type: "Path";
+                schema: zod.ZodNumber;
+            },
+            {
+                name: "body";
+                type: "Body";
+                schema: zod.ZodObject<
+                    {
+                        curatorIds: zod.ZodArray<zod.ZodString, "many">;
+                    },
+                    "strip",
+                    zod.ZodTypeAny,
+                    {
+                        curatorIds: string[];
+                    },
+                    {
+                        curatorIds: string[];
+                    }
+                >;
             },
         ];
         response: zod.ZodObject<

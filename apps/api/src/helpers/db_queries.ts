@@ -540,6 +540,17 @@ export const createCurator = async (
     });
 };
 
+export const createClearanceGroupCurators = async (
+    input: Prisma.ClearanceGroup_CuratorCreateManyInput[],
+): Promise<Prisma.BatchPayload> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup_Curator.createMany({
+            data: input,
+            skipDuplicates: true,
+        });
+    });
+};
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (
