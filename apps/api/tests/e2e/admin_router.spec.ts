@@ -7,6 +7,7 @@ import test, { APIRequestContext, expect } from "@playwright/test";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { adminAPI } from "validation-helpers";
 import {
+    createClearanceGroup,
     createLicenseConclusion,
     deleteClearanceGroup,
     deleteLicenseConclusion,
@@ -205,6 +206,28 @@ test.describe("API lets authenticated admins to", () => {
         // Clean up by deleting the created clearance group.
         deleteClearanceGroup(responseBody.id);
     });
+
+    test("update a clearance group", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        const newName = `Updated Clearances ${randHex()}`;
+        const updateResponse = await apiContext.patch(
+            `clearance-groups/${createdGroup.id}`,
+            {
+                data: {
+                    name: newName,
+                },
+            },
+        );
+        expect(updateResponse.ok()).toBe(true);
+        const updatedGroup = await updateResponse.json();
+        expect(updatedGroup.name).toBe(newName);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -279,6 +302,15 @@ test.describe("API doesn't let authenticated regular users to", () => {
         const response = await apiContext.post("clearance-groups", {
             data: {
                 name: "Test Clearance Group",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
+
+    test("update a clearance group", async () => {
+        const response = await apiContext.patch("clearance-groups/1", {
+            data: {
+                name: "Updated Clearance Group Name",
             },
         });
         expect(response.status()).toBe(403);
@@ -360,6 +392,15 @@ test.describe("API doesn't let readonly users to", () => {
         });
         expect(response.status()).toBe(403);
     });
+
+    test("update a clearance group", async () => {
+        const response = await apiContext.patch("clearance-groups/1", {
+            data: {
+                name: "Updated Clearance Group Name",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -430,6 +471,15 @@ test.describe("API doesn't let unauthenticated users to", () => {
         const response = await apiContext.post("clearance-groups", {
             data: {
                 name: "Test Clearance Group",
+            },
+        });
+        expect(response.status()).toBe(401);
+    });
+
+    test("update a clearance group", async () => {
+        const response = await apiContext.patch("clearance-groups/1", {
+            data: {
+                name: "Updated Clearance Group Name",
             },
         });
         expect(response.status()).toBe(401);

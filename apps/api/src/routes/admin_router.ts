@@ -13,6 +13,7 @@ import {
     findCuratorById,
     findScannedPackages,
     getCurators,
+    updateClearanceGroup,
     updateClearanceItemsCurator,
 } from "../helpers/db_queries";
 import { getErrorCodeAndMessage } from "../helpers/error_handling";
@@ -285,6 +286,37 @@ adminRouter.post("/clearance-groups", async (req, res) => {
         console.log("Error: ", error);
 
         if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            res.status(400).json({
+                message: `Clearance group with name '${req.body.name}' already exists.`,
+                path: "name",
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
+    }
+});
+
+adminRouter.patch("/clearance-groups/:id", async (req, res) => {
+    try {
+        const updatedGroup = await updateClearanceGroup(req.params.id, {
+            name: req.body.name,
+        });
+        res.status(200).json(updatedGroup);
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            res.status(404).json({
+                message: `Clearance group with ID '${req.params.id}' not found.`,
+            });
+        } else if (
             error instanceof Prisma.PrismaClientKnownRequestError &&
             error.code === "P2002"
         ) {

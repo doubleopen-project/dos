@@ -1023,6 +1023,20 @@ export const updateCurator = async (
     });
 };
 
+export const updateClearanceGroup = async (
+    id: number,
+    input: Prisma.ClearanceGroupUpdateInput,
+): Promise<ClearanceGroup> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.update({
+            where: {
+                id: id,
+            },
+            data: input,
+        });
+    });
+};
+
 // ------------------------------- Find -------------------------------
 
 export const findFileByHash = async (hash: string): Promise<File | null> => {
