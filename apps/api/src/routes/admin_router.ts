@@ -14,6 +14,7 @@ import {
     deleteClearanceGroup,
     findCuratorById,
     findScannedPackages,
+    getClearanceGroupById,
     getClearanceGroups,
     getCurators,
     updateClearanceGroup,
@@ -396,6 +397,28 @@ adminRouter.get("/clearance-groups/count", async (req, res) => {
 
         const err = await getErrorCodeAndMessage(error);
         res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/clearance-groups/:id", async (req, res) => {
+    try {
+        const clearanceGroups = await getClearanceGroupById(req.params.id);
+
+        res.status(200).json(clearanceGroups);
+    } catch (error) {
+        console.log("Error: ", error);
+
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            res.status(404).json({
+                message: `Clearance group with ID '${req.params.id}' not found.`,
+            });
+        } else {
+            const err = await getErrorCodeAndMessage(error);
+            res.status(err.statusCode).json({ message: err.message });
+        }
     }
 });
 
