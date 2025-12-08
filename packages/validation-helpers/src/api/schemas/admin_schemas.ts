@@ -144,3 +144,9 @@ export const ClearanceGroup = z.object({
 export const PostClearanceGroupReq = z.object({
     name: z.string().min(1, { message: "Name cannot be empty" }),
 });
+
+//-------------- PATCH clearance-group --------------
+
+export const PatchClearanceGroupReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }),
+});

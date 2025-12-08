@@ -261,4 +261,24 @@ export const adminAPI = makeApi([
         response: schemas.ClearanceGroup,
         errors,
     },
+    {
+        method: "patch",
+        path: "/clearance-groups/:id",
+        description: "Update a clearance group",
+        alias: "UpdateClearanceGroup",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PatchClearanceGroupReq,
+            },
+        ],
+        response: schemas.ClearanceGroup,
+        errors,
+    },
 ]);
