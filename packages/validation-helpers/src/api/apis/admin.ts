@@ -246,4 +246,19 @@ export const adminAPI = makeApi([
         response: schemas.PutReassignClearanceItemsRes,
         errors,
     },
+    {
+        method: "post",
+        path: "/clearance-groups",
+        description: "Create a new clearance group",
+        alias: "PostClearanceGroup",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostClearanceGroupReq,
+            },
+        ],
+        response: schemas.ClearanceGroup,
+        errors,
+    },
 ]);

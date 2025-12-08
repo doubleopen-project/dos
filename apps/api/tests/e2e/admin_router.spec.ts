@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { randHex } from "@ngneat/falso";
 import test, { APIRequestContext, expect } from "@playwright/test";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { adminAPI } from "validation-helpers";
 import {
     createLicenseConclusion,
+    deleteClearanceGroup,
     deleteLicenseConclusion,
     getOrCreateCurator,
 } from "../../src/helpers/db_queries";
@@ -187,6 +189,22 @@ test.describe("API lets authenticated admins to", () => {
             2,
         );
     });
+
+    test("add a new clearance group", async () => {
+        const name = `Test Clearances ${randHex()}`;
+
+        const response = await apiContext.post("clearance-groups", {
+            data: {
+                name: name,
+            },
+        });
+        expect(response.ok()).toBe(true);
+        const responseBody = await response.json();
+        expect(responseBody.name).toBe(name);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(responseBody.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -252,6 +270,15 @@ test.describe("API doesn't let authenticated regular users to", () => {
             data: {
                 curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
                 newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
+
+    test("add a new clearance group", async () => {
+        const response = await apiContext.post("clearance-groups", {
+            data: {
+                name: "Test Clearance Group",
             },
         });
         expect(response.status()).toBe(403);
@@ -324,6 +351,15 @@ test.describe("API doesn't let readonly users to", () => {
         });
         expect(response.status()).toBe(403);
     });
+
+    test("add a new clearance group", async () => {
+        const response = await apiContext.post("clearance-groups", {
+            data: {
+                name: "Test Clearance Group",
+            },
+        });
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -385,6 +421,15 @@ test.describe("API doesn't let unauthenticated users to", () => {
             data: {
                 curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
                 newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+            },
+        });
+        expect(response.status()).toBe(401);
+    });
+
+    test("add a new clearance group", async () => {
+        const response = await apiContext.post("clearance-groups", {
+            data: {
+                name: "Test Clearance Group",
             },
         });
         expect(response.status()).toBe(401);

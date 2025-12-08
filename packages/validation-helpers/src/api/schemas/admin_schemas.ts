@@ -129,3 +129,18 @@ export const PutReassignClearanceItemsRes = z.object({
         licenseConclusions: z.number(),
     }),
 });
+
+//---------------- Clearance Group Schemas ----------------
+
+export const ClearanceGroup = z.object({
+    id: z.number(),
+    name: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+});
+
+//-------------- POST clearance-group --------------
+
+export const PostClearanceGroupReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }),
+});
