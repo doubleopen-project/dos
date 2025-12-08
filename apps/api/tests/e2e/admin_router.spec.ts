@@ -8,6 +8,7 @@ import { ZodiosResponseByAlias } from "@zodios/core";
 import { adminAPI } from "validation-helpers";
 import {
     createClearanceGroup,
+    createClearanceGroupCurators,
     createLicenseConclusion,
     deleteClearanceGroup,
     deleteLicenseConclusion,
@@ -336,6 +337,27 @@ test.describe("API lets authenticated admins to", () => {
         // Clean up by deleting the created clearance group.
         deleteClearanceGroup(createdGroup.id);
     });
+
+    test("remove curator from a clearance group", async () => {
+        const createdGroup = await createClearanceGroup({
+            name: `Test Clearances ${randHex()}`,
+        });
+
+        await createClearanceGroupCurators([
+            { clearanceGroupId: createdGroup.id, curatorId: adminCuratorId },
+        ]);
+
+        const deleteCuratorResponse = await apiContext.delete(
+            `clearance-groups/${createdGroup.id}/curators/${adminCuratorId}`,
+        );
+
+        expect(deleteCuratorResponse.ok()).toBe(true);
+        const groupAfterDeletion = await deleteCuratorResponse.json();
+        expect(groupAfterDeletion.curators.length).toBe(0);
+
+        // Clean up by deleting the created clearance group.
+        deleteClearanceGroup(createdGroup.id);
+    });
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
@@ -459,6 +481,13 @@ test.describe("API doesn't let authenticated regular users to", () => {
                 curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
             },
         });
+        expect(response.status()).toBe(403);
+    });
+
+    test("remove curator from a clearance group", async () => {
+        const response = await apiContext.delete(
+            "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+        );
         expect(response.status()).toBe(403);
     });
 });
@@ -585,6 +614,13 @@ test.describe("API doesn't let readonly users to", () => {
         });
         expect(response.status()).toBe(403);
     });
+
+    test("remove curator from a clearance group", async () => {
+        const response = await apiContext.delete(
+            "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+        );
+        expect(response.status()).toBe(403);
+    });
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
@@ -704,6 +740,13 @@ test.describe("API doesn't let unauthenticated users to", () => {
                 curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
             },
         });
+        expect(response.status()).toBe(401);
+    });
+
+    test("remove curator from a clearance group", async () => {
+        const response = await apiContext.delete(
+            "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+        );
         expect(response.status()).toBe(401);
     });
 });
