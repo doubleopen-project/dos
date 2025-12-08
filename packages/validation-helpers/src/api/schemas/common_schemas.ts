@@ -125,3 +125,5 @@ export const QueryParamFilterInt = z.number().optional();
 export const GetCountRes = z.object({
     count: z.number(),
 });
+
+export const EmptyResponse = z.void();

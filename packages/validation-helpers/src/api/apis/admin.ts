@@ -281,4 +281,20 @@ export const adminAPI = makeApi([
         response: schemas.ClearanceGroup,
         errors,
     },
+    {
+        method: "delete",
+        path: "/clearance-groups/:id",
+        description: "Delete a clearance group",
+        alias: "DeleteClearanceGroup",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamIdInteger,
+            },
+        ],
+        status: 204,
+        response: commonSchemas.EmptyResponse,
+        errors,
+    },
 ]);
