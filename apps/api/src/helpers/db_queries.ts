@@ -23,6 +23,7 @@ import {
     SystemIssue,
 } from "database";
 import { omit } from "lodash";
+import { ClearanceGroupSortBy } from "validation-helpers";
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
 const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -3812,6 +3813,23 @@ export const findCuratorById = async (id: string): Promise<Curator | null> => {
     });
 };
 
+export const getClearanceGroups = async (
+    skip: number = 0,
+    take: number = 10,
+    orderProperty: ClearanceGroupSortBy = "id",
+    orderPropertyValue: "asc" | "desc" = "asc",
+    where?: Prisma.ClearanceGroupWhereInput,
+): Promise<ClearanceGroup[]> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.findMany({
+            skip: skip,
+            take: take,
+            orderBy: { [orderProperty]: orderPropertyValue },
+            where: where,
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
@@ -4640,6 +4658,16 @@ export const countLicenseConclusions = async (
         }
     }
     return count;
+};
+
+export const countClearanceGroups = async (
+    where?: Prisma.ClearanceGroupWhereInput,
+): Promise<number> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.count({
+            where: where,
+        });
+    });
 };
 
 // ------------------------------ Transactions --------------------------------

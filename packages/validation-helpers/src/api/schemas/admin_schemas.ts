@@ -150,3 +150,19 @@ export const PostClearanceGroupReq = z.object({
 export const PatchClearanceGroupReq = z.object({
     name: z.string().min(1, { message: "Name cannot be empty" }),
 });
+
+//--------------- GET clearance-groups --------------
+
+export const GetClearanceGroupsRes = z.array(ClearanceGroup);
+
+const ClearanceGroupSortByEnum = z.enum([
+    "id",
+    "name",
+    "createdAt",
+    "updatedAt",
+]);
+
+export const QueryParamClearanceGroupSortBy =
+    ClearanceGroupSortByEnum.optional();
+
+export type ClearanceGroupSortBy = z.infer<typeof ClearanceGroupSortByEnum>;

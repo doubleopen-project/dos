@@ -8,11 +8,13 @@ import { adminAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
+    countClearanceGroups,
     countScannedPackages,
     createClearanceGroup,
     deleteClearanceGroup,
     findCuratorById,
     findScannedPackages,
+    getClearanceGroups,
     getCurators,
     updateClearanceGroup,
     updateClearanceItemsCurator,
@@ -351,6 +353,49 @@ adminRouter.delete("/clearance-groups/:id", async (req, res) => {
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
         }
+    }
+});
+
+adminRouter.get("/clearance-groups", async (req, res) => {
+    try {
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+
+        const clearanceGroups = await getClearanceGroups(
+            skip,
+            pageSize,
+            req.query.sortBy,
+            req.query.sortOrder,
+            {
+                name: {
+                    contains: req.query.name,
+                },
+            },
+        );
+
+        res.status(200).json(clearanceGroups);
+    } catch (error) {
+        console.log("Error: ", error);
+
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/clearance-groups/count", async (req, res) => {
+    try {
+        const count = await countClearanceGroups({
+            name: {
+                contains: req.query.name,
+            },
+        });
+        res.status(200).json({ count: count });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
     }
 });
 
