@@ -55,6 +55,23 @@ export const PutUserRes = z.object({
     message: z.string(),
 });
 
+//-------- GET clearance groups for user ---------
+
+export const GetUserClearanceGroupsRes = z.object({
+    writer: z.array(
+        z.object({
+            id: z.number(),
+            name: z.string(),
+        }),
+    ),
+    reader: z.array(
+        z.object({
+            id: z.number(),
+            name: z.string(),
+        }),
+    ),
+});
+
 //------------------ GET license conclusion -------------------
 export const QueryParamSortLCBy = z
     .enum([
