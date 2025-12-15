@@ -88,6 +88,8 @@ services:
             interval: 10s
             timeout: 5s
             retries: 20
+        volumes:
+            - keycloak-data:/opt/keycloak/data
 
     terraform:
         build:
@@ -187,6 +189,8 @@ volumes:
     redis-data:
         driver: local
     minio-data:
+        driver: local
+    keycloak-data:
         driver: local
 
 networks:
