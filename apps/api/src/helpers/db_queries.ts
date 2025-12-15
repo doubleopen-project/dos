@@ -3881,6 +3881,20 @@ export const getClearanceGroupById = async (
     });
 };
 
+export const getAllClearanceGroups = async (
+    where: Prisma.ClearanceGroupWhereInput,
+): Promise<{ id: number; name: string }[]> => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.findMany({
+            where: where,
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files

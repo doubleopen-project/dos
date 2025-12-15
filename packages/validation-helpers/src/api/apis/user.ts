@@ -33,6 +33,14 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/user/clearance-groups",
+        description: "Get clearance groups that the user has access to",
+        alias: "GetUserClearanceGroups",
+        response: schemas.GetUserClearanceGroupsRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/license-conclusions",
         alias: "GetLicenseConclusions",
         description: "Get license conclusions. Alias: GetLicenseConclusions",

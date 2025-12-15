@@ -57,6 +57,52 @@ userRouter.put("/user", async (req, res) => {
     }
 });
 
+userRouter.get("/user/clearance-groups", async (req, res) => {
+    try {
+        const remoteId = req.kauth.grant.access_token.content.sub;
+        const writerClearanceGroups = await dbQueries.getAllClearanceGroups({
+            curators: {
+                some: {
+                    curator: {
+                        remoteId: remoteId,
+                    },
+                    role: "WRITER",
+                },
+            },
+        });
+
+        res.status(200).json({
+            writer: writerClearanceGroups,
+            reader: req.kauth.grant.access_token.content.realm_access.roles.includes(
+                "app-admin",
+            )
+                ? await dbQueries.getAllClearanceGroups({
+                      id: {
+                          notIn: writerClearanceGroups.map((cg) => cg.id),
+                      },
+                  })
+                : await dbQueries.getAllClearanceGroups({
+                      id: {
+                          notIn: writerClearanceGroups.map((cg) => cg.id),
+                      },
+                      curators: {
+                          some: {
+                              curator: {
+                                  remoteId: remoteId,
+                              },
+                              role: "READER",
+                          },
+                      },
+                  }),
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
 userRouter.get(
     "/license-conclusions",
     // @ts-expect-error - Types of property 'query' are incompatible. This error does not affect the functionality of the code.
