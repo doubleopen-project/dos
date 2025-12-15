@@ -9,7 +9,7 @@ import {
     getCoreRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import debounce from "lodash.debounce";
+import { debounce } from "es-toolkit/function";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
 import {

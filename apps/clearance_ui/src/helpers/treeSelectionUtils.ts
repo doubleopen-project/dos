@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { sortBy } from "lodash";
+import { sortBy } from "es-toolkit/array";
 import { minimatch } from "minimatch";
 import { NodeApi } from "react-arborist";
 import type { TreeNode } from "@/types/index";
@@ -141,7 +141,7 @@ export const createGlob = (selectedNodes: NodeApi<TreeNode>[]) => {
         remainingNodes.filter(
             (node) => node.isInternal && node.data.selectionStatus === 1,
         ),
-        "level",
+        ["level"],
     )) {
         remainingNodes = removeNodeAndDescendants(dir, remainingNodes);
         // Push to glob only if the pattern is not already included
