@@ -289,7 +289,7 @@ model Curator {
   id        String   @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  username  String
+  username  String   @unique
   remoteId  String   @unique @db.Uuid
 
   bulkConclusions        BulkConclusion[]
