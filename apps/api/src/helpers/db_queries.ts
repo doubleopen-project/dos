@@ -23,7 +23,7 @@ import {
     ScannerJob,
     SystemIssue,
 } from "database";
-import { omit } from "lodash";
+import { omit } from "es-toolkit/object";
 import { ClearanceGroupSortBy } from "validation-helpers";
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
