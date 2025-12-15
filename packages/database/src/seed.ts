@@ -5,8 +5,11 @@
 import fs from "fs";
 import path from "path";
 import readline from "readline";
+import { Zodios } from "@zodios/core";
 import admZip from "adm-zip";
+import { authConfig } from "common-helpers";
 import { objectExistsCheck, S3Client, uploadFile } from "s3-helpers";
+import { keycloakAPI, type ClientCredentialsToken } from "validation-helpers";
 import { prisma } from "./client";
 
 if (process.env.NODE_ENV === "production")
@@ -18,6 +21,8 @@ const s3Client = S3Client(
     process.env.SPACES_KEY,
     process.env.SPACES_SECRET,
 );
+
+const kcClient = new Zodios(authConfig.url, keycloakAPI);
 
 async function main() {
     const fileExists = fs.existsSync(
@@ -238,6 +243,74 @@ async function main() {
                     endLine: obj.endLine,
                 },
             });
+    }
+
+    console.log("Upserting Clearance Group to database");
+
+    const clearanceGroup = await prisma.clearanceGroup.upsert({
+        where: {
+            name: "Test Clearance Group",
+        },
+        update: {},
+        create: {
+            name: "Test Clearance Group",
+        },
+    });
+
+    console.log("Adding users as Curators to the Clearance Group");
+
+    const token = (await kcClient.PostToken(
+        {
+            client_id: authConfig.clientIdAPI,
+            grant_type: "client_credentials",
+            client_secret: authConfig.clientSecretAPI,
+        },
+        {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            params: {
+                realm: authConfig.realm,
+            },
+        },
+    )) as ClientCredentialsToken; // The endpoint provides a union type, but we know it's a ClientCredentialsToken with this type of request
+
+    const users = await kcClient.GetUsers({
+        params: {
+            realm: authConfig.realm,
+        },
+        headers: {
+            Authorization: `Bearer ${token.access_token}`,
+        },
+    });
+
+    for (const user of users) {
+        const curator = await prisma.curator.upsert({
+            where: {
+                remoteId: user.id,
+            },
+            update: {
+                username: user.username,
+            },
+            create: {
+                remoteId: user.id,
+                username: user.username,
+            },
+        });
+
+        await prisma.clearanceGroup_Curator.upsert({
+            where: {
+                clearanceGroupId_curatorId: {
+                    clearanceGroupId: clearanceGroup.id,
+                    curatorId: curator.id,
+                },
+            },
+            update: {},
+            create: {
+                clearanceGroupId: clearanceGroup.id,
+                curatorId: curator.id,
+            },
+        });
     }
 }
 
