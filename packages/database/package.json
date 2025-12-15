@@ -18,8 +18,10 @@
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
+        "@keycloak/keycloak-admin-client": "^26.5.0",
         "@prisma/client": "6.19.1",
         "adm-zip": "0.5.16",
+        "common-helpers": "*",
         "s3-helpers": "*"
     },
     "devDependencies": {
