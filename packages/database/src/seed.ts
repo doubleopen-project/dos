@@ -5,7 +5,9 @@
 import fs from "fs";
 import path from "path";
 import readline from "readline";
+import KcAdminClient from "@keycloak/keycloak-admin-client";
 import admZip from "adm-zip";
+import { authConfig } from "common-helpers";
 import { objectExistsCheck, S3Client, uploadFile } from "s3-helpers";
 import { prisma } from "./client";
 
@@ -18,6 +20,11 @@ const s3Client = S3Client(
     process.env.SPACES_KEY,
     process.env.SPACES_SECRET,
 );
+
+const kcClient = new KcAdminClient({
+    baseUrl: authConfig.url,
+    realmName: authConfig.realm,
+});
 
 async function main() {
     const fileExists = fs.existsSync(
@@ -238,6 +245,71 @@ async function main() {
                     endLine: obj.endLine,
                 },
             });
+    }
+
+    console.log("Upserting Clearance Group to database");
+
+    const clearanceGroup = await prisma.clearanceGroup.upsert({
+        where: {
+            name: "Test Clearance Group",
+        },
+        update: {},
+        create: {
+            name: "Test Clearance Group",
+        },
+    });
+
+    console.log("Adding users as Curators to the Clearance Group");
+
+    await kcClient.auth({
+        clientId: authConfig.clientIdAPI,
+        clientSecret: authConfig.clientSecretAPI,
+        grantType: "client_credentials",
+    });
+
+    const users = await kcClient.users.find({
+        realm: authConfig.realm,
+    });
+
+    for (const user of users) {
+        if (!user.id || !user.username) continue;
+
+        const realmRoles = await kcClient.users.listRealmRoleMappings({
+            id: user.id,
+            realm: authConfig.realm,
+        });
+
+        const curator = await prisma.curator.upsert({
+            where: {
+                remoteId: user.id,
+            },
+            update: {
+                username: user.username,
+            },
+            create: {
+                remoteId: user.id,
+                username: user.username,
+            },
+        });
+
+        await prisma.clearanceGroup_Curator.upsert({
+            where: {
+                clearanceGroupId_curatorId: {
+                    clearanceGroupId: clearanceGroup.id,
+                    curatorId: curator.id,
+                },
+            },
+            update: {},
+            create: {
+                clearanceGroupId: clearanceGroup.id,
+                curatorId: curator.id,
+                role: realmRoles.some(
+                    (role) => role.name === "app-read-only-user",
+                )
+                    ? "READER"
+                    : "WRITER",
+            },
+        });
     }
 }
 
