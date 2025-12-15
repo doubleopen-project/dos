@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 import { zodiosRouter } from "@zodios/express";
-import { Package, Prisma } from "database";
+import { Package, Prisma, Role } from "database";
+import express from "express";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
@@ -54,6 +55,34 @@ userRouter.put("/user", async (req, res) => {
             console.log("Error: ", error);
             res.status(500).send({ message: "Internal server error" });
         }
+    }
+});
+
+userRouter.get("/user/clearance-groups", async (req, res) => {
+    try {
+        const remoteId = req.kauth.grant.access_token.content.sub;
+        const writerClearanceGroups =
+            await dbQueries.findAccessibleClearanceGroups(
+                remoteId,
+                Role.WRITER,
+            );
+
+        const readerClearanceGroups =
+            await dbQueries.findAccessibleClearanceGroups(
+                !isAdmin(req) ? remoteId : undefined,
+                !isAdmin(req) ? Role.READER : undefined,
+                writerClearanceGroups.map((cg) => cg.id),
+            );
+
+        res.status(200).json({
+            writer: writerClearanceGroups,
+            reader: readerClearanceGroups,
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
     }
 });
 
@@ -1674,5 +1703,10 @@ const ensureAdminOrPathExclusionBelongsToUser = async (
         throw new CustomError("Forbidden", 403);
     }
 };
+
+const isAdmin = (req: Pick<express.Request, "kauth">): boolean =>
+    req.kauth.grant.access_token.content.realm_access.roles.includes(
+        "app-admin",
+    );
 
 export default userRouter;

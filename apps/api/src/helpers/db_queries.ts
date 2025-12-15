@@ -19,6 +19,7 @@ import {
     PathExclusion,
     Prisma,
     prisma,
+    Role,
     ScanIssue,
     ScannerJob,
     SystemIssue,
@@ -3876,6 +3877,37 @@ export const getClearanceGroupById = async (
                         role: true,
                     },
                 },
+            },
+        });
+    });
+};
+
+export const findAccessibleClearanceGroups = async (
+    remoteId?: string,
+    role?: Role,
+    excludedGroupIds?: number[],
+) => {
+    return await retry(async () => {
+        return prisma.clearanceGroup.findMany({
+            where: {
+                id: excludedGroupIds ? { notIn: excludedGroupIds } : undefined,
+                curators:
+                    remoteId || role
+                        ? {
+                              some: {
+                                  curator: remoteId
+                                      ? {
+                                            remoteId: remoteId,
+                                        }
+                                      : undefined,
+                                  role: role,
+                              },
+                          }
+                        : undefined,
+            },
+            select: {
+                id: true,
+                name: true,
             },
         });
     });
