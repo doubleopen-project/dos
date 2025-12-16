@@ -15,6 +15,7 @@ import SideMenu from "@/components/navigation/SideMenu";
 import UserMenuItem from "@/components/navigation/UserMenuItem";
 import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 import { cn } from "@/lib/utils";
+import ClearanceGroupSelector from "../common/ClearanceGroupSelector";
 
 const fira_code = Fira_Code({
     weight: "500",
@@ -63,10 +64,14 @@ const Navbar = () => {
                     </span>
                 </Link>
                 {user && mainPurl && (
-                    <div className="flex-row items-center">
-                        <Label className="text-xs break-all">{mainPurl}</Label>
-                        <CopyToClipboard copyText={mainPurl} />
-                    </div>
+                    <>
+                        <div className="flex-row items-center">
+                            <Label className="text-xs break-all">
+                                {mainPurl}
+                            </Label>
+                            <CopyToClipboard copyText={mainPurl} />
+                        </div>
+                    </>
                 )}
                 {user && path && (
                     <>
@@ -80,8 +85,9 @@ const Navbar = () => {
                     </>
                 )}
             </div>
-            <div>
+            <div className="flex">
                 <UserMenuItem className="mr-1" />
+                {user && <ClearanceGroupSelector className="mr-1" />}
                 <ModeToggle className="mr-1" />
             </div>
         </div>
