@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
+import ClearanceGroupSelector from "@/components/common/clearance_groups/ClearanceGroupSelector";
 import CopyToClipboard from "@/components/common/CopyToClipboard";
 import { ModeToggle } from "@/components/common/ModeToggle";
 import SideMenu from "@/components/navigation/SideMenu";
@@ -80,8 +81,9 @@ const Navbar = () => {
                     </>
                 )}
             </div>
-            <div>
+            <div className="flex">
                 <UserMenuItem className="mr-1" />
+                {user && <ClearanceGroupSelector className="mr-1" />}
                 <ModeToggle className="mr-1" />
             </div>
         </div>

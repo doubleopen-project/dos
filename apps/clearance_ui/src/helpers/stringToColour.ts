@@ -24,3 +24,7 @@ export const stringToColourRGBA = (str: string, alpha: number) => {
         .toString(16)
         .padStart(2, "0")}`;
 };
+
+export const clearanceGroupColor = (groupName: string) => {
+    return stringToColourRGBA(groupName + " doubleopen", 0.5);
+};
