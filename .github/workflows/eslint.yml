@@ -37,6 +37,11 @@ jobs:
             - name: Create Prisma client
               run: npm run db:generate
 
+            - name: Build project
+              run: npm run build
+              env:
+                  NEXT_PUBLIC_API_URL: http://localhost:5000
+
             - name: Run ESLint
               run: npm run lint
               continue-on-error: false
