@@ -5,7 +5,7 @@
     "scripts": {
         "build": "next build",
         "dev": "dotenv -e ../../.env -- next dev",
-        "lint": "next lint",
+        "lint": "eslint .",
         "start": "next start",
         "test": "jest --verbose",
         "test:watch": "jest --watchAll --verbose",
@@ -74,7 +74,7 @@
         "@testing-library/react": "16.3.1",
         "@types/js-yaml": "4.0.9",
         "@types/node": "24.10.4",
-        "@types/react": "19.2.0",
+        "@types/react": "19.2.7",
         "@types/react-copy-to-clipboard": "5.0.7",
         "@types/spdx-expression-parse": "3.0.5",
         "dotenv-cli": "^11.0.0",

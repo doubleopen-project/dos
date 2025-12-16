@@ -8,7 +8,6 @@ declare module "@tanstack/table-core" {
     // Meta data for the table and columns that is accessible in the DataTable
     // component, the columns object and different cell components.
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface TableMeta<TData extends RowData> {
         // Keeps track of the rows that are being edited to enable showing
         // the editable cell components.
@@ -28,7 +27,6 @@ declare module "@tanstack/table-core" {
         updateOriginalData: (rowId: number) => void;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
         // The type of the column, used to determine the type of the cell
         type?: string;

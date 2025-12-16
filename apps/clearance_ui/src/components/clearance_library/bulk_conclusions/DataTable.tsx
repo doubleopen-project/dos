@@ -41,8 +41,7 @@ export function DataTable<TData, TValue>({
         parseAsString,
     );
     // The setPageIndex cannot be recognized as a callable expression without the pageIndex, so it
-    // is added here and an eslint-disable-next-line is added to ignore the unused variable
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // is added here.
     const [pageIndex, setPageIndex] = useQueryState(
         "pageIndex",
         parseAsInteger.withDefault(1),
