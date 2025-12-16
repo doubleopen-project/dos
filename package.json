@@ -18,7 +18,6 @@
         "build:validation": "turbo run build --filter=validation-helpers --no-daemon",
         "build:spdx-validation": "turbo run build --filter=spdx-validation --no-daemon",
         "build:s3": "turbo run build --filter=s3-helpers --no-daemon",
-        "copy-types": "turbo run copy-types",
         "db:format": "turbo run db:format",
         "db:generate": "turbo run db:generate",
         "db:migrate:dev": "dotenv -- prisma migrate dev --schema ./packages/database/prisma/schema.prisma",

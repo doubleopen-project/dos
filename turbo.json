@@ -62,7 +62,6 @@
             "dependsOn": ["^build"],
             "outputs": [".next/**", "!.next/cache/**", "dist/**"]
         },
-        "copy-types": {},
         "db:format": {},
         "db:generate": {
             "cache": false

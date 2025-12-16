@@ -2,9 +2,9 @@
     "name": "spdx-validation",
     "main": "./dist/src/index.js",
     "module": "./dist/src/index.mjs",
-    "types": "./index.d.ts",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
-        "build": "tsup && prettier --write dist/src/index.d.ts && (head -n 12 src/index.ts && cat dist/src/index.d.ts) > temp_file && mv temp_file index.d.ts",
+        "build": "tsup",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\"",
         "test": "jest --verbose ./dist/tests/test.js"
     },
