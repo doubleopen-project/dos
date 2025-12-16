@@ -2,13 +2,18 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../prisma/generated/prisma/client";
+
+const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+});
 
 // Workaround to get the correct type for the prisma client with the computed fields
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
 
 const prismaClientSingleton = () => {
-    return new PrismaClient().$extends({
+    return new PrismaClient({ adapter }).$extends({
         result: {
             licenseFinding: {
                 licenseExpressionSPDX: {

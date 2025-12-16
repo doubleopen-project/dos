@@ -16,10 +16,12 @@
         "db:migrate:reset": "prisma migrate reset --force",
         "db:generate": "prisma generate",
         "db:push": "prisma db push --skip-generate",
+        "db:seed": "prisma db seed",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\""
     },
     "dependencies": {
         "@prisma/client": "7.1.0",
+        "@prisma/adapter-pg": "^7.1.0",
         "adm-zip": "0.5.16",
         "s3-helpers": "*"
     },
@@ -32,8 +34,5 @@
         "tsconfig": "*",
         "tsup": "8.5.1",
         "typescript": "5.9.3"
-    },
-    "prisma": {
-        "seed": "ts-node src/seed.ts"
     }
 }

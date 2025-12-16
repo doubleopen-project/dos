@@ -161,3 +161,6 @@ playwright-artifacts/
 # Terraform
 terraform/.terraform/*
 terraform/terraform.tfstate*
+
+# Prisma generated files
+packages/database/prisma/generated/

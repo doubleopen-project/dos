@@ -75,6 +75,7 @@
         "db:push": {
             "cache": false
         },
+        "db:seed": {},
         "dev:api": {
             "dependsOn": ["^db:generate"]
         },
