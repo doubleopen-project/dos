@@ -9,8 +9,9 @@ import axios from "axios";
 import { Info } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
-import { useUser } from "@/hooks/useUser";
+import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -29,9 +30,9 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import ClearanceActionNotice from "@/components/common/ClearanceActionNotice";
 import ConclusionLicense from "@/components/common/ConclusionLicense";
 import ConclusionSPDX from "@/components/common/ConclusionSPDX";
-import { hasPermission } from "@/helpers/hasPermission";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
@@ -58,7 +59,10 @@ const ConclusionForm = ({
     detectedExpression,
     className,
 }: Props) => {
-    const user = useUser();
+    const { canSubmit } = useClearanceActionState();
+    const selectedGroupId = useContextStore(
+        (s) => s.selectedClearanceGroup?.id,
+    );
     const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
@@ -139,6 +143,7 @@ const ConclusionForm = ({
                     detectedLicenseExpressionSPDX: detectedExpression,
                     comment: data.comment ?? "",
                     local: data.local,
+                    clearanceGroupId: selectedGroupId ?? 0,
                 });
             } else {
                 return;
@@ -162,15 +167,7 @@ const ConclusionForm = ({
 
     return (
         <div className={cn("flex w-full flex-col", className)}>
-            {user &&
-                user.permissions &&
-                !hasPermission(user.permissions, "ClearanceItems", "POST") && (
-                    <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
-                        Feel free to interact with the form but please note that
-                        you do not currently have permission to add license
-                        conclusions.
-                    </div>
-                )}
+            <ClearanceActionNotice />
             <Form {...form}>
                 <form
                     id="conclusionForm"
@@ -285,15 +282,7 @@ const ConclusionForm = ({
                             type="submit"
                             form="conclusionForm"
                             className="ml-4 text-left text-xs"
-                            disabled={
-                                user && user.permissions
-                                    ? !hasPermission(
-                                          user.permissions,
-                                          "ClearanceItems",
-                                          "POST",
-                                      )
-                                    : true
-                            }
+                            disabled={!canSubmit}
                         >
                             Submit
                         </Button>

@@ -3913,6 +3913,31 @@ export const getAllClearanceGroups = async (
     });
 };
 
+export const findCuratorIdByRemoteIdInClearanceGroup = async (
+    remoteId: string,
+    clearanceGroupId: number,
+): Promise<string | null> => {
+    return (
+        (
+            await retry(async () => {
+                return prisma.curator.findFirst({
+                    select: {
+                        id: true,
+                    },
+                    where: {
+                        remoteId: remoteId,
+                        clearanceGroupCurators: {
+                            some: {
+                                clearanceGroupId: clearanceGroupId,
+                            },
+                        },
+                    },
+                });
+            })
+        )?.id || null
+    );
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
