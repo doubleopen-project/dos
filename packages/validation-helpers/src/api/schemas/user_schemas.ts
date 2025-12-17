@@ -156,6 +156,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
 
 export const PostLicenseConclusionReq = z.object({
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
+    clearanceGroupId: z.number(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
