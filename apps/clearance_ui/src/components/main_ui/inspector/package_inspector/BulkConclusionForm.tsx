@@ -13,6 +13,7 @@ import { bcPatternGlobSchema } from "validation-helpers";
 import { z } from "zod";
 import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -74,6 +75,9 @@ const BulkConclusionForm = ({
 }: Props) => {
     const { canSubmit } = useClearanceActionState();
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
+    const selectedGroupId = useContextStore(
+        (s) => s.selectedClearanceGroup?.id,
+    );
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useGetFileTree(
@@ -207,6 +211,7 @@ const BulkConclusionForm = ({
                         concludedLicenseExpressionSPDX,
                     comment: data.comment ?? "",
                     local: data.local,
+                    clearanceGroupId: selectedGroupId ?? 0,
                 });
             } else {
                 return;
