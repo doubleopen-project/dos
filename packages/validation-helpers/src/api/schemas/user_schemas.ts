@@ -159,6 +159,7 @@ export const PostLicenseConclusionReq = z.object({
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
+    clearanceGroupId: z.number(),
 });
 
 export const PostLicenseConclusionRes = z.object({
