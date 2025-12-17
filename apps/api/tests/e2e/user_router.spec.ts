@@ -6,11 +6,14 @@ import { expect } from "@playwright/test";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { test } from "./fixtures/user";
+import { testPurl } from "./utils/constants";
 
 type ClearanceGroups = ZodiosResponseByAlias<
     typeof userAPI,
     "GetUserClearanceGroups"
 >;
+
+const pathPurl = encodeURIComponent(testPurl);
 
 test.describe("GET /user/clearance-groups should", () => {
     test("return clearance groups based on access for a regular user", async ({
@@ -63,5 +66,71 @@ test.describe("GET /user/clearance-groups should", () => {
     }) => {
         const res = await unauthenticatedContext.get("user/clearance-groups");
         expect(res.status()).toBe(401);
+    });
+});
+
+test.describe("POST /packages/:purl/files/:sha256/license-conclusions should", () => {
+    const fileSha256 =
+        "0cbc1f28243bae937e4a2ca774779471484a8b73cf901d0db68ac1642d8c6828";
+
+    test("allow a user to make a license conclusion to a clearance group they have writer access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/files/${fileSha256}/license-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    clearanceGroupId: groups.group1.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+        await userContext.delete(
+            `license-conclusions/${data.licenseConclusionId}`,
+        );
+    });
+
+    test("not allow a user to make a license conclusion to a clearance group they have only reader access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/files/${fileSha256}/license-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    clearanceGroupId: groups.group2.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("not allow a user to make a license conclusion to a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/files/${fileSha256}/license-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    clearanceGroupId: groups.group3.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
     });
 });
