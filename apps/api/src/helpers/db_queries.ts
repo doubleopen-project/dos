@@ -553,6 +553,36 @@ export const createClearanceGroupCurators = async (
     });
 };
 
+export const syncBulkConclusionLCsToClearanceGroups = async (
+    bulkConclusionId: number,
+) => {
+    const clearanceGroupBulkConclusions =
+        await prisma.clearanceGroup_BulkConclusion.findMany({
+            where: {
+                bulkConclusionId: bulkConclusionId,
+            },
+        });
+
+    const licenseConclusions = await prisma.licenseConclusion.findMany({
+        where: {
+            bulkConclusionId: bulkConclusionId,
+        },
+    });
+
+    const clearanceGroupLicenseConclusionInput =
+        clearanceGroupBulkConclusions.flatMap(({ clearanceGroupId }) =>
+            licenseConclusions.map(({ id }) => ({
+                clearanceGroupId,
+                licenseConclusionId: id,
+            })),
+        );
+
+    return prisma.clearanceGroup_LicenseConclusion.createMany({
+        data: clearanceGroupLicenseConclusionInput,
+        skipDuplicates: true,
+    });
+};
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (

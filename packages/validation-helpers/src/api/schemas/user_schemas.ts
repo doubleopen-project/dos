@@ -269,6 +269,7 @@ export const GetBulkConclusionRes = z.object({
 export const PostBulkConclusionReq = z.object({
     pattern: bcPatternGlobSchema,
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
+    clearanceGroupId: z.number(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),

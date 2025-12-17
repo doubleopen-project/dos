@@ -780,10 +780,18 @@ userRouter.post(
     authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
-            const curatorId = await dbQueries.getOrCreateCurator(
-                req.kauth.grant.access_token.content.sub,
-                req.kauth.grant.access_token.content.preferred_username,
-            );
+            const clearanceGroupId = req.body.clearanceGroupId;
+            const curatorId =
+                await dbQueries.findWriterCuratorIdInClearanceGroup(
+                    req.kauth.grant.access_token.content.sub,
+                    clearanceGroupId,
+                );
+
+            if (!curatorId)
+                throw new CustomError(
+                    "Forbidden. You are not allowed to make clearances to the specified clearance group.",
+                    403,
+                );
 
             const contextPurl = req.params.purl;
 
@@ -807,6 +815,13 @@ userRouter.post(
                 local: req.body.local,
                 package: { connect: { id: packageId } },
                 curator: { connect: { id: curatorId } },
+                clearanceGroups: {
+                    create: {
+                        clearanceGroup: {
+                            connect: { id: clearanceGroupId },
+                        },
+                    },
+                },
             });
 
             const licenseConclusionInputs = [];
@@ -869,6 +884,10 @@ userRouter.post(
                     500,
                 );
             }
+
+            await dbQueries.syncBulkConclusionLCsToClearanceGroups(
+                bulkConclusion.id,
+            );
 
             const affectedRecords =
                 await dbQueries.bulkConclusionAffectedRecords(
