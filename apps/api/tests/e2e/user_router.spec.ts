@@ -134,3 +134,73 @@ test.describe("POST /packages/:purl/files/:sha256/license-conclusions should", (
         expect(res.status()).toBe(403);
     });
 });
+
+test.describe("POST /packages/:purl/bulk-conclusions should", () => {
+    test("allow a user to make bulk license conclusions to a clearance group they have writer access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/bulk-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    pattern: "**/.eslintrc.js",
+                    clearanceGroupId: groups.group1.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.matchedPathsCount).toBe(9);
+        expect(data.addedLicenseConclusionsCount).toBe(5);
+        expect(data.affectedFilesInPackageCount).toBe(9);
+        expect(data.affectedFilesAcrossAllPackagesCount).toBe(9);
+
+        await userContext.delete(`bulk-conclusions/${data.bulkConclusionId}`);
+    });
+
+    test("not allow a user to make bulk license conclusions to a clearance group they have only reader access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/bulk-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    pattern: "**/.eslintrc.js",
+                    clearanceGroupId: groups.group2.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("not allow a user to make bulk license conclusions to a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/bulk-conclusions`,
+            {
+                data: {
+                    concludedLicenseExpressionSPDX: "MIT",
+                    pattern: "**/.eslintrc.js",
+                    clearanceGroupId: groups.group3.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+});
