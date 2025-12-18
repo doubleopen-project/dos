@@ -1128,6 +1128,11 @@ userRouter.put(
                 },
             );
 
+            if (newInputs.length > 0)
+                await dbQueries.syncBulkConclusionLCsToClearanceGroups(
+                    bulkConclusionId,
+                );
+
             res.status(200).json({ message: "Bulk conclusion updated" });
         } catch (error) {
             console.log("Error: ", error);
