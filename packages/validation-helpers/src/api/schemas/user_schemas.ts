@@ -473,6 +473,7 @@ export const PostPathExclusionReq = z.object({
                         .join(", "),
             },
         ),
+    clearanceGroupId: z.number(),
     comment: z.nullable(z.string()).optional(),
 });
 
