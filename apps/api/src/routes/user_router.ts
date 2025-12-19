@@ -1361,10 +1361,18 @@ userRouter.post(
     authzPermission({ resource: "ClearanceItems", scopes: ["POST"] }),
     async (req, res) => {
         try {
-            const curatorId = await dbQueries.getOrCreateCurator(
-                req.kauth.grant.access_token.content.sub,
-                req.kauth.grant.access_token.content.preferred_username,
-            );
+            const clearanceGroupId = req.body.clearanceGroupId;
+            const curatorId =
+                await dbQueries.findCuratorIdByRemoteIdInClearanceGroup(
+                    req.kauth.grant.access_token.content.sub,
+                    clearanceGroupId,
+                );
+
+            if (!curatorId)
+                throw new CustomError(
+                    "Forbidden. You are not a curator of the specified clearance group.",
+                    403,
+                );
 
             const purl = req.params.purl;
             const packageId = await dbQueries.findPackageIdByPurl(purl);
@@ -1390,6 +1398,13 @@ userRouter.post(
                 comment: req.body.comment || null,
                 package: { connect: { id: packageId } },
                 curator: { connect: { id: curatorId } },
+                clearanceGroups: {
+                    create: {
+                        clearanceGroup: {
+                            connect: { id: clearanceGroupId },
+                        },
+                    },
+                },
             });
 
             res.status(200).json({

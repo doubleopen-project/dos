@@ -12,6 +12,7 @@ import { pePatternGlobSchema, validReasons } from "validation-helpers";
 import { z } from "zod";
 import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -67,6 +68,9 @@ const ExclusionForm = ({
     setOpen,
 }: Props) => {
     const { canSubmit } = useClearanceActionState();
+    const selectedGroupId = useContextStore(
+        (s) => s.selectedClearanceGroup?.id,
+    );
     const defaultValues: ExclusionFormType = {
         pattern: pattern,
         reason: reason || "",
@@ -174,6 +178,7 @@ const ExclusionForm = ({
                 pattern: data.pattern,
                 reason: data.reason,
                 comment: data.comment,
+                clearanceGroupId: selectedGroupId ?? 0,
             });
         } else if (mode === "Edit") {
             editPathExclusion({
