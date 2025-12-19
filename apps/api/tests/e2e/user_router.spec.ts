@@ -204,3 +204,67 @@ test.describe("POST /packages/:purl/bulk-conclusions should", () => {
         expect(res.status()).toBe(403);
     });
 });
+
+test.describe("POST /packages/:purl/path-exclusions should", () => {
+    test("allow a user to make a path exclusion to a clearance group they have writer access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/path-exclusions`,
+            {
+                data: {
+                    pattern: "**/tests/**",
+                    reason: "TEST_OF",
+                    clearanceGroupId: groups.group1.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+        await userContext.delete(`path-exclusions/${data.pathExclusionId}`);
+    });
+
+    test("not allow a user to make a path exclusion to a clearance group they have only reader access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/path-exclusions`,
+            {
+                data: {
+                    pattern: "**/tests/**",
+                    reason: "TEST_OF",
+                    clearanceGroupId: groups.group2.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("not allow a user to make a path exclusion to a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const res = await userContext.post(
+            `packages/${pathPurl}/path-exclusions`,
+            {
+                data: {
+                    pattern: "**/tests/**",
+                    reason: "TEST_OF",
+                    clearanceGroupId: groups.group3.id,
+                },
+            },
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+});

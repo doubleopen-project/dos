@@ -12,6 +12,7 @@ import { pePatternGlobSchema, validReasons } from "validation-helpers";
 import { z } from "zod";
 import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -67,6 +68,7 @@ const ExclusionForm = ({
     setOpen,
 }: Props) => {
     const { canSubmit } = useClearanceActionState();
+    const selectedGroup = useContextStore((s) => s.selectedClearanceGroup);
     const defaultValues: ExclusionFormType = {
         pattern: pattern,
         reason: reason || "",
@@ -170,11 +172,23 @@ const ExclusionForm = ({
 
     const onSubmit = (data: ExclusionFormType) => {
         if (mode === "Add") {
-            addPathExclusion({
-                pattern: data.pattern,
-                reason: data.reason,
-                comment: data.comment,
-            });
+            if (!selectedGroup) {
+                // This should not happen as the clearance action state disables the submit button
+                // but is added here so TypeScript recognizes selectedGroup is defined below.
+                toast({
+                    variant: "destructive",
+                    title: "ERROR",
+                    description:
+                        "No clearance group selected. Please select a clearance group to add a path exclusion.",
+                });
+            } else {
+                addPathExclusion({
+                    pattern: data.pattern,
+                    reason: data.reason,
+                    comment: data.comment,
+                    clearanceGroupId: selectedGroup.id,
+                });
+            }
         } else if (mode === "Edit") {
             editPathExclusion({
                 pattern: data.pattern,
