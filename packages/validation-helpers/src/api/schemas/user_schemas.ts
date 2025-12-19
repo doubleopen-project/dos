@@ -474,6 +474,7 @@ export const PostPathExclusionReq = z.object({
             },
         ),
     comment: z.nullable(z.string()).optional(),
+    clearanceGroupId: z.number(),
 });
 
 export const PostPathExclusionRes = z.object({
