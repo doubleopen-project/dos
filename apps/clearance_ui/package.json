@@ -52,7 +52,7 @@
         "next-auth": "^4.24.11",
         "next-themes": "0.4.6",
         "node-cache": "^5.1.2",
-        "nuqs": "2.8.5",
+        "nuqs": "2.8.6",
         "packageurl-js": "1.2.1",
         "react-arborist": "3.4.3",
         "react-copy-to-clipboard": "5.1.0",
