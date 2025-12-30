@@ -16,6 +16,15 @@ const ClearanceActionNotice = () => {
         );
     }
 
+    if (blocker === "NO_GROUP") {
+        return (
+            <div className="mr-1 mb-1 rounded-md bg-yellow-100 p-1 text-xs">
+                Please contact a system administrator to ensure you are assigned
+                to a clearance group in order to add clearances.
+            </div>
+        );
+    }
+
     return null;
 };
 
