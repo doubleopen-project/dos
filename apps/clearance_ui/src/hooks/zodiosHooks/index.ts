@@ -4,6 +4,7 @@
 
 import { Zodios } from "@zodios/core";
 import { ZodiosHooks } from "@zodios/react";
+import qs from "qs";
 import { adminAPI, authAPI, userAPI } from "validation-helpers";
 import { getAccessToken } from "@/lib/authTokenManager";
 
@@ -60,4 +61,8 @@ userZodios.axios.interceptors.request.use(
         return Promise.reject(error);
     },
 );
+
+userZodios.axios.defaults.paramsSerializer = (params) =>
+    qs.stringify(params, { arrayFormat: "comma" });
+
 export const userHooks = new ZodiosHooks("userApi", userZodios);
