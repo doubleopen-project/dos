@@ -1,0 +1,31 @@
+// SPDX-FileCopyrightText: 2025 Double Open Oy
+//
+// SPDX-License-Identifier: MIT
+
+import { useClearanceActionState } from "@/hooks/useClearanceActionState";
+
+const ClearanceActionNotice = () => {
+    const { blocker } = useClearanceActionState();
+
+    if (blocker === "NO_PERMISSION") {
+        return (
+            <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
+                Feel free to interact with the form but please note that you do
+                not currently have permission to add clearances.
+            </div>
+        );
+    }
+
+    if (blocker === "NO_GROUP") {
+        return (
+            <div className="mr-1 mb-1 rounded-md bg-yellow-100 p-1 text-xs">
+                Please contact a system administrator to ensure you are assigned
+                to a clearance group in order to add clearances.
+            </div>
+        );
+    }
+
+    return null;
+};
+
+export default ClearanceActionNotice;
