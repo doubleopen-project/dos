@@ -120,6 +120,66 @@ export const QueryParamFilterDate = z.coerce.date().optional();
 export const QueryParamFilterBoolean = z.boolean().optional();
 export const QueryParamFilterInt = z.number().optional();
 
+/*
+export const QueryParamFilterListOfInts = z
+    .string()
+    .trim()
+    .refine(
+        (value) =>
+            value
+                .split(",")
+                .map((part) => part.trim())
+                .every((part) => /^\d+$/.test(part)),
+        { message: "Expected comma-separated integers, e.g. '1,2,3'" },
+    )
+    .optional();*/
+
+/*
+export const QueryParamFilterListOfInts = z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((v) => {
+        if (v == null) return undefined;
+
+        // if it's x[]=1&x[]=2
+        if (Array.isArray(v)) return v.map((s) => s.trim()).filter(Boolean);
+
+        // if it's x=1,2,3
+        return v
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+    })
+    .refine((parts) => parts == null || parts.every((p) => /^\d+$/.test(p)), {
+        message: "Expected comma-separated integers, e.g. '1,2,3'",
+    })
+    .transform((parts) => (parts ? parts.map(Number) : undefined));*/
+
+export const QueryParamFilterListOfInts = z
+    .preprocess((v) => {
+        if (Array.isArray(v)) return v; // reject later as non-string
+        if (typeof v === "number") return String(v);
+        if (typeof v === "string") return v.trim();
+        return v;
+    }, z.string())
+    .refine(
+        (value) =>
+            value
+                .split(",")
+                .map((p) => p.trim())
+                .filter(Boolean)
+                .every((p) => /^\d+$/.test(p)),
+        { message: "Expected comma-separated integers, e.g. '1,2,3'" },
+    )
+    .transform((value) =>
+        value
+            .split(",")
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .map(Number),
+    )
+    .optional();
+
 //------------------ Common response body -------------------
 
 export const GetCountRes = z.object({

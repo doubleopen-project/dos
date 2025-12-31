@@ -2102,6 +2102,7 @@ export const findPackageWithPathExclusionsByPurl = async (
 
 export const getPathExclusionsByPackagePurl = async (
     purl: string,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<
     {
         id: number;
@@ -2112,6 +2113,12 @@ export const getPathExclusionsByPackagePurl = async (
         curator: {
             username: string;
         };
+        clearanceGroupPathExclusions: {
+            clearanceGroup: {
+                id: number;
+                name: string;
+            };
+        }[];
     }[]
 > => {
     let retries = initialRetryCount;
@@ -2135,6 +2142,25 @@ export const getPathExclusionsByPackagePurl = async (
                             curator: {
                                 select: {
                                     username: true,
+                                },
+                            },
+                            clearanceGroupPathExclusions: {
+                                select: {
+                                    clearanceGroup: {
+                                        select: {
+                                            id: true,
+                                            name: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        where: {
+                            clearanceGroupPathExclusions: {
+                                some: {
+                                    clearanceGroupId: {
+                                        in: clearanceGroupIds,
+                                    },
                                 },
                             },
                         },
@@ -2734,10 +2760,29 @@ export const findLicenseConclusionRemoteId = async (
 };
 
 type LicenseConclusionWithCurator = Prisma.LicenseConclusionGetPayload<{
-    include: {
+    select: {
+        id: true;
+        updatedAt: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        comment: true;
+        local: true;
+        bulkConclusionId: true;
+        fileSha256: true;
+        contextPurl: true;
         curator: {
             select: {
                 username: true;
+            };
+        };
+        clearanceGroupLicenseConclusions: {
+            select: {
+                clearanceGroup: {
+                    select: {
+                        id: true;
+                        name: true;
+                    };
+                };
             };
         };
     };
@@ -2771,6 +2816,7 @@ export const findLicenseConclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<LicenseConclusionWithCurator[]> => {
     let licenseConclusions: LicenseConclusionWithCurator[] = [];
     let retries = initialRetryCount;
@@ -2789,13 +2835,49 @@ export const findLicenseConclusions = async (
             licenseConclusions = await prisma.licenseConclusion.findMany({
                 skip: skip,
                 take: take,
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    local: true,
+                    bulkConclusionId: true,
+                    fileSha256: true,
+                    contextPurl: true,
+                    curator: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    clearanceGroupLicenseConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
+                /*
                 include: {
                     curator: {
                         select: {
                             username: true,
                         },
                     },
-                },
+                    clearanceGroupLicenseConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },*/
                 where: {
                     OR: purl
                         ? [
@@ -2893,6 +2975,13 @@ export const findLicenseConclusions = async (
                                     ? null
                                     : undefined
                                 : undefined,
+                    },
+                    clearanceGroupLicenseConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
                     },
                 },
                 orderBy:
@@ -3018,6 +3107,16 @@ type BulkConclusionWithRelations = Prisma.BulkConclusionGetPayload<{
                 username: true;
             };
         };
+        clearanceGroupBulkConclusions: {
+            select: {
+                clearanceGroup: {
+                    select: {
+                        id: true;
+                        name: true;
+                    };
+                };
+            };
+        };
     };
 }>;
 
@@ -3071,6 +3170,16 @@ export const findBulkConclusionWithRelationsById = async (
                             username: true,
                         },
                     },
+                    clearanceGroupBulkConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
                 },
             });
             break;
@@ -3088,6 +3197,7 @@ export const findBulkConclusionWithRelationsById = async (
 
 export const findBulkConclusionsWithRelationsByPackageId = async (
     packageId: number,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<BulkConclusionWithRelations[]> => {
     let retries = initialRetryCount;
     let bulkConclusions: BulkConclusionWithRelations[] = [];
@@ -3115,6 +3225,13 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                             local: false,
                         },
                     ],
+                    clearanceGroupBulkConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
+                    },
                 },
                 select: {
                     id: true,
@@ -3151,6 +3268,16 @@ export const findBulkConclusionsWithRelationsByPackageId = async (
                     curator: {
                         select: {
                             username: true,
+                        },
+                    },
+                    clearanceGroupBulkConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -3258,6 +3385,16 @@ type FindBulkConclusionsWithRelationsResult = Prisma.BulkConclusionGetPayload<{
                 username: true;
             };
         };
+        clearanceGroupBulkConclusions: {
+            select: {
+                clearanceGroup: {
+                    select: {
+                        id: true;
+                        name: true;
+                    };
+                };
+            };
+        };
     };
 }>;
 
@@ -3288,6 +3425,7 @@ export const findBulkConclusionsWithRelations = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<FindBulkConclusionsWithRelationsResult[]> => {
     let retries = initialRetryCount;
     let bulkConclusions: FindBulkConclusionsWithRelationsResult[] = [];
@@ -3312,6 +3450,16 @@ export const findBulkConclusionsWithRelations = async (
                     curator: {
                         select: {
                             username: true,
+                        },
+                    },
+                    clearanceGroupBulkConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -3350,6 +3498,13 @@ export const findBulkConclusionsWithRelations = async (
                     updatedAt: {
                         gte: updatedAtGte,
                         lte: updatedAtLte,
+                    },
+                    clearanceGroupBulkConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
                     },
                 },
                 orderBy:
@@ -3493,6 +3648,16 @@ type PathExclusionWithRelations = Prisma.PathExclusionGetPayload<{
                 username: true;
             };
         };
+        clearanceGroupPathExclusions: {
+            select: {
+                clearanceGroup: {
+                    select: {
+                        id: true;
+                        name: true;
+                    };
+                };
+            };
+        };
     };
 }>;
 
@@ -3519,6 +3684,7 @@ export const findPathExclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<PathExclusionWithRelations[]> => {
     let retries = initialRetryCount;
     let pathExclusions: PathExclusionWithRelations[] = [];
@@ -3540,6 +3706,16 @@ export const findPathExclusions = async (
                     curator: {
                         select: {
                             username: true,
+                        },
+                    },
+                    clearanceGroupPathExclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -3574,6 +3750,13 @@ export const findPathExclusions = async (
                     updatedAt: {
                         gte: updatedAtGte,
                         lte: updatedAtLte,
+                    },
+                    clearanceGroupPathExclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
                     },
                 },
                 orderBy:
@@ -3766,6 +3949,7 @@ export const findLicenseConclusionsByBulkConclusionId = async (
 
 export const findLicenseConclusionsByFileSha256 = async (
     sha256: string,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<LicenseConclusionWithCurator[]> => {
     let licenseConclusions: LicenseConclusionWithCurator[] = [];
     let retries = initialRetryCount;
@@ -3774,15 +3958,41 @@ export const findLicenseConclusionsByFileSha256 = async (
     while (!querySuccess && retries > 0) {
         try {
             licenseConclusions = await prisma.licenseConclusion.findMany({
-                include: {
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    local: true,
+                    bulkConclusionId: true,
+                    fileSha256: true,
+                    contextPurl: true,
                     curator: {
                         select: {
                             username: true,
                         },
                     },
+                    clearanceGroupLicenseConclusions: {
+                        select: {
+                            clearanceGroup: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
                 },
                 where: {
                     fileSha256: sha256,
+                    clearanceGroupLicenseConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
+                    },
                 },
             });
             querySuccess = true;
@@ -3940,6 +4150,29 @@ export const getAllClearanceGroups = async (
             },
         });
     });
+};
+
+export const getClearanceGroupIdsByRemoteId = async (
+    remoteId: string,
+): Promise<number[]> => {
+    return (
+        await retry(async () => {
+            return prisma.clearanceGroup.findMany({
+                select: {
+                    id: true,
+                },
+                where: {
+                    curators: {
+                        some: {
+                            curator: {
+                                remoteId: remoteId,
+                            },
+                        },
+                    },
+                },
+            });
+        })
+    ).map((group) => group.id);
 };
 
 export const findCuratorIdByRemoteIdInClearanceGroup = async (
@@ -4506,6 +4739,7 @@ export const countPathExclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<number> => {
     let retries = initialRetryCount;
     let count = 0;
@@ -4543,6 +4777,13 @@ export const countPathExclusions = async (
                         gte: updatedAtGte,
                         lte: updatedAtLte,
                     },
+                    clearanceGroupPathExclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
+                    },
                 },
             });
             break;
@@ -4571,6 +4812,7 @@ export const countBulkConclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<number> => {
     let retries = initialRetryCount;
     let count = 0;
@@ -4612,6 +4854,13 @@ export const countBulkConclusions = async (
                         gte: updatedAtGte,
                         lte: updatedAtLte,
                     },
+                    clearanceGroupBulkConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
+                    },
                 },
             });
             break;
@@ -4628,6 +4877,7 @@ export const countBulkConclusions = async (
 
 export const countBulkConclusionsForPackage = async (
     packageId: number,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<number> => {
     let retries = initialRetryCount;
     let count = 0;
@@ -4655,6 +4905,13 @@ export const countBulkConclusionsForPackage = async (
                             local: false,
                         },
                     ],
+                    clearanceGroupBulkConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
+                    },
                 },
             });
             break;
@@ -4685,6 +4942,7 @@ export const countLicenseConclusions = async (
     createdAtLte: Date | undefined,
     updatedAtGte: Date | undefined,
     updatedAtLte: Date | undefined,
+    clearanceGroupIds: number[] | undefined,
 ): Promise<number> => {
     let retries = initialRetryCount;
     let count = 0;
@@ -4790,6 +5048,13 @@ export const countLicenseConclusions = async (
                     updatedAt: {
                         gte: updatedAtGte,
                         lte: updatedAtLte,
+                    },
+                    clearanceGroupLicenseConclusions: {
+                        some: {
+                            clearanceGroupId: {
+                                in: clearanceGroupIds,
+                            },
+                        },
                     },
                     NOT: {
                         bulkConclusionId:

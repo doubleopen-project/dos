@@ -26,5 +26,5 @@ export const stringToColourRGBA = (str: string, alpha: number) => {
 };
 
 export const clearanceGroupColor = (groupName: string) => {
-    return stringToColourRGBA(groupName + " doubleopen", 0.5);
+    return stringToColourRGBA(groupName + " doubleopen", 0.7);
 };

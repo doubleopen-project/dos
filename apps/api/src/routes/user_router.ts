@@ -4,6 +4,7 @@
 
 import { zodiosRouter } from "@zodios/express";
 import { Package, Prisma } from "database";
+import express from "express";
 import { getPresignedGetUrl } from "s3-helpers";
 import { userAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
@@ -106,8 +107,10 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
-            // TODO: return only license conclusions that belong to the user
-            // or to a group that the user belongs to
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
 
             if (req.query.purl) {
                 const pkg = await dbQueries.findPackageByPurl(req.query.purl);
@@ -148,6 +151,7 @@ userRouter.get(
                 req.query.createdAtLte,
                 req.query.updatedAtGte,
                 req.query.updatedAtLte,
+                effectiveClearanceGroupIds,
             );
 
             res.status(200).json({
@@ -174,6 +178,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             if (req.query.purl) {
                 const pkg = await dbQueries.findPackageByPurl(req.query.purl);
 
@@ -203,6 +212,7 @@ userRouter.get(
                     req.query.createdAtLte,
                     req.query.updatedAtGte,
                     req.query.updatedAtLte,
+                    effectiveClearanceGroupIds,
                 );
 
             res.status(200).json({ count: licenseConclusionsCount });
@@ -306,14 +316,23 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/files/:sha256/license-conclusions/",
+    // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
             const fileSha256 = req.params.sha256;
             const purl = req.params.purl;
 
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             let licenseConclusions =
-                await dbQueries.findLicenseConclusionsByFileSha256(fileSha256);
+                await dbQueries.findLicenseConclusionsByFileSha256(
+                    fileSha256,
+                    effectiveClearanceGroupIds,
+                );
 
             // Filter out license conclusions that have been marked as local
             // if the context package purl does not match the requested purl
@@ -547,6 +566,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const pageSize = req.query.pageSize;
             const pageIndex = req.query.pageIndex;
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
@@ -572,6 +596,7 @@ userRouter.get(
                     req.query.createdAtLte,
                     req.query.updatedAtGte,
                     req.query.updatedAtLte,
+                    effectiveClearanceGroupIds,
                 );
 
             res.status(200).json({
@@ -598,6 +623,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const bulkConclusionsCount = await dbQueries.countBulkConclusions(
                 req.query.purl,
                 req.query.purlStrict || false,
@@ -612,6 +642,7 @@ userRouter.get(
                 req.query.createdAtLte,
                 req.query.updatedAtGte,
                 req.query.updatedAtLte,
+                effectiveClearanceGroupIds,
             );
 
             res.status(200).json({ count: bulkConclusionsCount });
@@ -703,9 +734,15 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/bulk-conclusions",
+    // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const purl = req.params.purl;
 
             const packageId = await dbQueries.findPackageIdByPurl(purl);
@@ -719,6 +756,7 @@ userRouter.get(
             const bulkConclusions =
                 await dbQueries.findBulkConclusionsWithRelationsByPackageId(
                     packageId,
+                    effectiveClearanceGroupIds,
                 );
 
             res.status(200).json({
@@ -748,9 +786,15 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/bulk-conclusions/count",
+    // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const purl = req.params.purl;
 
             const packageId = await dbQueries.findPackageIdByPurl(purl);
@@ -762,7 +806,10 @@ userRouter.get(
                 );
 
             const bulkConclusionsCount =
-                await dbQueries.countBulkConclusionsForPackage(packageId);
+                await dbQueries.countBulkConclusionsForPackage(
+                    packageId,
+                    effectiveClearanceGroupIds,
+                );
 
             res.status(200).json({
                 count: bulkConclusionsCount,
@@ -1213,6 +1260,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const pageSize = req.query.pageSize;
             const pageIndex = req.query.pageIndex;
             const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
@@ -1235,6 +1287,7 @@ userRouter.get(
                 req.query.createdAtLte,
                 req.query.updatedAtGte,
                 req.query.updatedAtLte,
+                effectiveClearanceGroupIds,
             );
 
             return res.status(200).json({
@@ -1261,6 +1314,11 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const pathExclusionsCount = await dbQueries.countPathExclusions(
                 req.query.purl,
                 req.query.purlStrict || false,
@@ -1273,6 +1331,7 @@ userRouter.get(
                 req.query.createdAtLte,
                 req.query.updatedAtGte,
                 req.query.updatedAtLte,
+                effectiveClearanceGroupIds,
             );
 
             res.status(200).json({
@@ -1324,13 +1383,22 @@ userRouter.get(
 
 userRouter.get(
     "/packages/:purl/path-exclusions",
+    // @ts-expect-error - Types of property 'params' are incompatible. This error does not affect the functionality of the code.
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            const clearanceGroupIds = req.query.clearanceGroupIds;
+
+            const effectiveClearanceGroupIds =
+                await resolveEffectiveClearanceGroupIds(req, clearanceGroupIds);
+
             const purl = req.params.purl;
 
             const pathExclusions =
-                await dbQueries.getPathExclusionsByPackagePurl(purl);
+                await dbQueries.getPathExclusionsByPackagePurl(
+                    purl,
+                    effectiveClearanceGroupIds,
+                );
 
             res.status(200).json({
                 pathExclusions: pathExclusions,
@@ -1770,6 +1838,40 @@ const ensureAdminOrPathExclusionBelongsToUser = async (
     if (!roles.includes("app-admin") && sub !== pathExclusionRemoteId) {
         throw new CustomError("Forbidden", 403);
     }
+};
+
+const resolveEffectiveClearanceGroupIds = async (
+    req: Pick<express.Request, "kauth">,
+    requestedIds: number[] | undefined,
+): Promise<number[] | undefined> => {
+    if (
+        req.kauth.grant.access_token.content.realm_access.roles.includes(
+            "app-admin",
+        )
+    )
+        return requestedIds;
+
+    const accessibleClearanceGroupIds =
+        await dbQueries.getClearanceGroupIdsByRemoteId(
+            req.kauth.grant.access_token.content.sub,
+        );
+
+    if (!requestedIds) return accessibleClearanceGroupIds;
+
+    const missing = requestedIds.filter(
+        (id) => !accessibleClearanceGroupIds.includes(id),
+    );
+
+    if (missing.length > 0) {
+        throw new CustomError(
+            `Forbidden. You do not have access to clearance groups with ids: ${missing.join(
+                ", ",
+            )}`,
+            403,
+        );
+    }
+
+    return requestedIds;
 };
 
 export default userRouter;

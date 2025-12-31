@@ -138,6 +138,17 @@ const ClearanceGroupSelector = ({ className }: { className?: string }) => {
                         size="sm"
                         className="gap-2"
                     >
+                        {selectedGroup && (
+                            <span
+                                className="h-2 w-2 rounded-[2px]"
+                                style={{
+                                    backgroundColor: clearanceGroupColor(
+                                        selectedGroup.name,
+                                    ),
+                                }}
+                                aria-hidden="true"
+                            />
+                        )}
                         <span className="max-w-[220px] truncate">
                             {selectedGroup?.name ||
                                 "No groups with write access"}
