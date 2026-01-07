@@ -2,15 +2,29 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { expect } from "@playwright/test";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
-import { test } from "./fixtures/user";
+import { expect, test } from "./fixtures/user";
 import { testPurl } from "./utils/constants";
 
 type ClearanceGroups = ZodiosResponseByAlias<
     typeof userAPI,
     "GetUserClearanceGroups"
+>;
+
+type GetLicenseConclusionsRes = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetLicenseConclusions"
+>;
+
+type GetBulkConclusionsByPurlRes = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetBulkConclusionsByPurl"
+>;
+
+type GetPathExclusionsByPurlRes = ZodiosResponseByAlias<
+    typeof userAPI,
+    "GetPathExclusionsByPurl"
 >;
 
 const pathPurl = encodeURIComponent(testPurl);
@@ -266,5 +280,430 @@ test.describe("POST /packages/:purl/path-exclusions should", () => {
         );
         expect(res.ok()).toBe(false);
         expect(res.status()).toBe(403);
+    });
+});
+
+test.describe("GET /license-conclusions should", () => {
+    test("return license conclusions only from clearance groups the user has access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("license-conclusions", {
+            params: {
+                hasBulkConclusionId: "false",
+                sortBy: "concludedLicenseExpressionSPDX",
+                sortOrder: "asc",
+            },
+        });
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions.length).toBe(2);
+        expect(data.licenseConclusions[0].id).toBe(
+            groups.group2.licenseConclusion.id,
+        );
+        expect(data.licenseConclusions[1].id).toBe(
+            groups.group1.licenseConclusion.id,
+        );
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get("license-conclusions");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions.length).toBe(0);
+    });
+
+    test("allow filtering license conclusions by clearance group IDs", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("license-conclusions", {
+            params: {
+                clearanceGroupIds: groups.group1.id,
+                hasBulkConclusionId: "false",
+            },
+        });
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions.length).toBe(1);
+        expect(data.licenseConclusions[0].id).toBe(
+            groups.group1.licenseConclusion.id,
+        );
+    });
+
+    test("not allow filtering license conclusions by clearance group IDs the user has no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("license-conclusions", {
+            params: { clearanceGroupIds: groups.group3.id },
+        });
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("return all license conclusions from all clearance groups for an admin user", async ({
+        adminContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await adminContext.get("license-conclusions", {
+            params: { pageSize: "1000", hasBulkConclusionId: "false" },
+        });
+        expect(res.ok()).toBe(true);
+
+        const data: GetLicenseConclusionsRes = await res.json();
+
+        const lcIds = data.licenseConclusions.map((lc) => lc.id);
+
+        expect(lcIds).toContain(groups.group1.licenseConclusion.id);
+        expect(lcIds).toContain(groups.group2.licenseConclusion.id);
+        expect(lcIds).toContain(groups.group3.licenseConclusion.id);
+    });
+});
+
+test.describe("GET /packages/:purl/files/:sha256/license-conclusions/ should", () => {
+    test("return license conclusions based on user access", async ({
+        adminUser,
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const sha256 = groups.group1.licenseConclusion.fileSha256;
+
+        await seed.createLicenseConclusion(
+            "MIT",
+            sha256,
+            adminUser.curatorId,
+            groups.group3.id,
+        );
+
+        const res = await userContext.get(
+            `packages/${pathPurl}/files/${sha256}/license-conclusions`,
+        );
+
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions.length).toBe(1);
+        expect(data.licenseConclusions[0].id).toBe(
+            groups.group1.licenseConclusion.id,
+        );
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get(
+            `packages/${pathPurl}/files/${groups.group1.licenseConclusion.fileSha256}/license-conclusions`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions.length).toBe(0);
+    });
+});
+
+test.describe("GET /bulk-conclusions should", () => {
+    test("return bulk conclusions only from clearance groups the user has access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("bulk-conclusions", {
+            params: {
+                sortBy: "concludedLicenseExpressionSPDX",
+                sortOrder: "asc",
+            },
+        });
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.bulkConclusions.length).toBe(2);
+        expect(data.bulkConclusions[0].id).toBe(
+            groups.group2.bulkConclusion.id,
+        );
+        expect(data.bulkConclusions[1].id).toBe(
+            groups.group1.bulkConclusion.id,
+        );
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get("bulk-conclusions");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.bulkConclusions.length).toBe(0);
+    });
+});
+
+test.describe("GET /packages/:purl/bulk-conclusions should", () => {
+    test("return bulk conclusions for the package based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `packages/${pathPurl}/bulk-conclusions`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data: GetBulkConclusionsByPurlRes = await res.json();
+
+        expect(data.bulkConclusions.length).toBe(2);
+
+        const bcIds = data.bulkConclusions.map((bc) => bc.id);
+        expect(bcIds).toContain(groups.group1.bulkConclusion.id);
+        expect(bcIds).toContain(groups.group2.bulkConclusion.id);
+        expect(bcIds).not.toContain(groups.group3.bulkConclusion.id);
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get(
+            `packages/${pathPurl}/bulk-conclusions`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.bulkConclusions.length).toBe(0);
+    });
+});
+
+test.describe("GET /path-exclusions should", () => {
+    test("return path exclusions only from clearance groups the user has access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("path-exclusions", {
+            params: { sortBy: "reason", sortOrder: "asc" },
+        });
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.pathExclusions.length).toBe(2);
+        expect(data.pathExclusions[0].id).toBe(groups.group1.pathExclusion.id);
+        expect(data.pathExclusions[1].id).toBe(groups.group2.pathExclusion.id);
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+        const res = await noGroupsUserContext.get("path-exclusions");
+        expect(res.ok()).toBe(true);
+        const data = await res.json();
+
+        expect(data.pathExclusions.length).toBe(0);
+    });
+});
+
+test.describe("GET /packages/:purl/path-exclusions should", () => {
+    test("return path exclusions for the package based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `packages/${pathPurl}/path-exclusions`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data: GetPathExclusionsByPurlRes = await res.json();
+
+        expect(data.pathExclusions.length).toBe(2);
+
+        const peIds = data.pathExclusions.map((pe) => pe.id);
+
+        expect(peIds).toContain(groups.group1.pathExclusion.id);
+        expect(peIds).toContain(groups.group2.pathExclusion.id);
+        expect(peIds).not.toContain(groups.group3.pathExclusion.id);
+    });
+
+    test("return empty list if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get(
+            `packages/${pathPurl}/path-exclusions`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.pathExclusions.length).toBe(0);
+    });
+});
+
+test.describe("GET /license-conclusions/count should", () => {
+    test("return correct count of license conclusions based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("license-conclusions/count", {
+            params: { hasBulkConclusionId: "false" },
+        });
+
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(2);
+    });
+
+    test("return zero count if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get("license-conclusions/count");
+
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(0);
+    });
+});
+
+test.describe("GET /bulk-conclusions/count should", () => {
+    test("return correct count of bulk conclusions based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("bulk-conclusions/count");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(2);
+    });
+
+    test("return zero count if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get("bulk-conclusions/count");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(0);
+    });
+});
+
+test.describe("GET /packages/:purl/bulk-conclusions/count should", () => {
+    test("return correct count of bulk conclusions based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `packages/${pathPurl}/bulk-conclusions/count`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(2);
+    });
+
+    test("return zero count if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get(
+            `packages/${pathPurl}/bulk-conclusions/count`,
+        );
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(0);
+    });
+});
+
+test.describe("GET /path-exclusions/count should", () => {
+    test("return correct count of path exclusions based on user access", async ({
+        userContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get("path-exclusions/count");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(2);
+    });
+
+    test("return zero count if user has no access to any clearance groups", async ({
+        noGroupsUserContext,
+        seed,
+    }) => {
+        await seed.createClearanceGroupWithClearances();
+
+        const res = await noGroupsUserContext.get("path-exclusions/count");
+        expect(res.ok()).toBe(true);
+
+        const data = await res.json();
+
+        expect(data.count).toBe(0);
     });
 });
