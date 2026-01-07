@@ -27,6 +27,7 @@ import ActionCell from "@/components/clearance_library/bulk_conclusions/ActionCe
 import TableCell from "@/components/clearance_library/bulk_conclusions/TableCell";
 import TableCellBoolean from "@/components/clearance_library/bulk_conclusions/TableCellBoolean";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
+import ClearanceGroupTooltipIcon from "@/components/common/clearance_groups/ClearanceGroupTooltipIcon";
 import PurlDetails from "@/components/common/PurlDetails";
 
 // Get the table column datatype from the query response
@@ -517,6 +518,22 @@ export const columns = (
                 <Label className="cursor-pointer font-bold">Local</Label>
             ),
             cell: TableCellBoolean,
+        },
+        {
+            accessorKey: "clearanceGroups",
+            header: () => (
+                <Label className="cursor-pointer font-bold">Groups</Label>
+            ),
+            cell: ({ row }) => (
+                <div className="flex flex-wrap gap-1">
+                    {row.original.clearanceGroups.map((cg) => (
+                        <ClearanceGroupTooltipIcon
+                            key={cg.clearanceGroup.id}
+                            clearanceGroup={cg.clearanceGroup}
+                        />
+                    ))}
+                </div>
+            ),
         },
         {
             id: "actions",
