@@ -16,6 +16,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ClearanceGroupTooltipIcon from "@/components/common/clearance_groups/ClearanceGroupTooltipIcon";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
@@ -69,7 +70,7 @@ const LicenseConclusionItem = ({
                         "flex",
                     )}
                 >
-                    <div className="flex">
+                    <div className="flex gap-1">
                         <TooltipProvider delayDuration={0}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -92,7 +93,13 @@ const LicenseConclusionItem = ({
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                        <span className="mt-0.5 ml-1 h-5 font-bold text-gray-700">
+                        {license.clearanceGroups.map((cg) => (
+                            <ClearanceGroupTooltipIcon
+                                key={cg.clearanceGroup.id}
+                                clearanceGroup={cg.clearanceGroup}
+                            />
+                        ))}
+                        <span className="mt-0.5 h-5 font-bold text-gray-700">
                             {
                                 new Date(license.updatedAt)
                                     .toISOString()
