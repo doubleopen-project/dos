@@ -142,6 +142,8 @@ export const PutReassignClearanceItemsRes = z.object({
 
 //---------------- Clearance Group Schemas ----------------
 
+export const CuratorRoleEnum = z.enum(["READER", "WRITER"]);
+
 export const ClearanceGroup = z.object({
     id: z.number(),
     name: z.string(),
@@ -157,6 +159,7 @@ export const ClearanceGroupWithCurators = ClearanceGroup.extend({
                 remoteId: z.string(),
                 username: z.string(),
             }),
+            role: CuratorRoleEnum,
         }),
     ),
 });
@@ -192,5 +195,10 @@ export type ClearanceGroupSortBy = z.infer<typeof ClearanceGroupSortByEnum>;
 //------------ POST clearance-group curators ------------
 
 export const PostCuratorsToClearanceGroupReq = z.object({
-    curatorIds: z.array(z.string().uuid()),
+    curators: z.array(
+        z.object({
+            id: z.string().uuid(),
+            role: CuratorRoleEnum,
+        }),
+    ),
 });

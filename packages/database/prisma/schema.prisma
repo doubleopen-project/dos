@@ -348,8 +348,14 @@ model ClearanceGroup_Curator {
   clearanceGroup   ClearanceGroup @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
   curatorId        String         @db.Uuid
   curator          Curator        @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+  role             Role           @default(READER)
 
   @@id([clearanceGroupId, curatorId])
   @@index([clearanceGroupId])
   @@index([curatorId])
+}
+
+enum Role {
+  WRITER
+  READER
 }

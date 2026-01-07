@@ -463,12 +463,13 @@ adminRouter.get("/clearance-groups/:id", async (req, res) => {
 adminRouter.post("/clearance-groups/:id/curators", async (req, res) => {
     try {
         const clearanceGroupId = req.params.id;
-        const curatorIds = req.body.curatorIds;
+        const curators = req.body.curators;
 
         await createClearanceGroupCurators(
-            curatorIds.map((curatorId: string) => ({
+            curators.map((curator) => ({
                 clearanceGroupId: clearanceGroupId,
-                curatorId: curatorId,
+                curatorId: curator.id,
+                role: curator.role,
             })),
         );
 
