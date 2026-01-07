@@ -124,8 +124,8 @@ model BulkConclusion {
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
-  licenseConclusions            LicenseConclusion[]
-  clearanceGroupBulkConclusions ClearanceGroup_BulkConclusion[]
+  licenseConclusions LicenseConclusion[]
+  clearanceGroups    ClearanceGroup_BulkConclusion[]
 
   @@index([packageId])
   @@index([updatedAt])
@@ -152,7 +152,7 @@ model LicenseConclusion {
   bulkConclusionId Int?
   bulkConclusion   BulkConclusion? @relation(fields: [bulkConclusionId], references: [id], onDelete: Cascade)
 
-  clearanceGroupLicenseConclusions ClearanceGroup_LicenseConclusion[]
+  clearanceGroups ClearanceGroup_LicenseConclusion[]
 
   @@index([fileSha256])
   @@index([bulkConclusionId])
@@ -225,7 +225,7 @@ model PathExclusion {
   curatorId String  @db.Uuid
   curator   Curator @relation(fields: [curatorId], references: [id])
 
-  clearanceGroupPathExclusions ClearanceGroup_PathExclusion[]
+  clearanceGroups ClearanceGroup_PathExclusion[]
 
   @@index([packageId])
   @@index([updatedAt])
@@ -304,10 +304,10 @@ model ClearanceGroup {
   updatedAt DateTime @updatedAt
   name      String   @unique
 
-  clearanceGroupLicenseConclusions ClearanceGroup_LicenseConclusion[]
-  clearanceGroupBulkConclusions    ClearanceGroup_BulkConclusion[]
-  clearanceGroupPathExclusions     ClearanceGroup_PathExclusion[]
-  curators                         ClearanceGroup_Curator[]
+  licenseConclusions ClearanceGroup_LicenseConclusion[]
+  bulkConclusions    ClearanceGroup_BulkConclusion[]
+  pathExclusions     ClearanceGroup_PathExclusion[]
+  curators           ClearanceGroup_Curator[]
 }
 
 model ClearanceGroup_LicenseConclusion {
