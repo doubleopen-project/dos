@@ -9,6 +9,7 @@ import { useUser } from "@/hooks/useUser";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import BCAffectedFilesTooltip from "@/components/common/BCAffectedFilesTooltip";
+import ClearanceGroupBadge from "@/components/common/clearance_groups/ClearanceGroupBadge";
 import DeleteBulkConclusion from "@/components/common/delete_item/DeleteBulkConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
@@ -46,12 +47,22 @@ const BulkConclusion = ({ purl, bulkConclusion, editHandler }: Props) => {
                             {bulkConclusion.curator.username}
                         </div>
                     </div>
-                    <div className="flex text-xs">
-                        <div className="mr-2 flex font-semibold whitespace-nowrap">
-                            Concluded:
+                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex text-xs">
+                            <div className="mr-2 flex font-semibold whitespace-nowrap">
+                                Concluded:
+                            </div>
+                            <div className="rounded-sm bg-green-400 dark:text-black">
+                                {bulkConclusion.concludedLicenseExpressionSPDX}
+                            </div>
                         </div>
-                        <div className="rounded-sm bg-green-400 dark:text-black">
-                            {bulkConclusion.concludedLicenseExpressionSPDX}
+                        <div className="flex space-x-1">
+                            {bulkConclusion.clearanceGroups.map((cg) => (
+                                <ClearanceGroupBadge
+                                    key={cg.clearanceGroup.id}
+                                    clearanceGroup={cg.clearanceGroup}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div className="flex text-xs">

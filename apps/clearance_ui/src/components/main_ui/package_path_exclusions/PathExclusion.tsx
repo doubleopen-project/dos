@@ -7,6 +7,7 @@ import { ZodiosResponseByAlias } from "@zodios/core";
 import { userAPI } from "validation-helpers";
 import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
+import ClearanceGroupBadge from "@/components/common/clearance_groups/ClearanceGroupBadge";
 import DeletePathExclusion from "@/components/common/delete_item/DeletePathExclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
@@ -43,12 +44,22 @@ const PathExclusion = ({ pathExclusion, editHandler }: Props) => {
                             {pathExclusion.curator.username}
                         </div>
                     </div>
-                    <div className="flex text-xs">
-                        <div className="mr-2 flex font-semibold whitespace-nowrap">
-                            Glob pattern:
+                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex text-xs">
+                            <div className="mr-2 flex font-semibold whitespace-nowrap">
+                                Glob pattern:
+                            </div>
+                            <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
+                                {pathExclusion.pattern}
+                            </div>
                         </div>
-                        <div className="rounded-sm bg-slate-200 dark:bg-slate-600">
-                            {pathExclusion.pattern}
+                        <div className="flex space-x-1">
+                            {pathExclusion.clearanceGroups.map((cg) => (
+                                <ClearanceGroupBadge
+                                    key={cg.clearanceGroup.id}
+                                    clearanceGroup={cg.clearanceGroup}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div className="flex text-xs">
