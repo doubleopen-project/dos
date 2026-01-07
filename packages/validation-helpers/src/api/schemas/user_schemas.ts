@@ -99,6 +99,14 @@ export const GetLicenseConclusionsRes = z.object({
             bulkConclusionId: z.nullable(z.number()),
             fileSha256: z.string(),
             contextPurl: z.string(),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -148,6 +156,14 @@ export const GetLicenseConclusionsForFileRes = z.object({
             contextPurl: z.string(),
             curator: z.object({ username: z.string() }),
             bulkConclusionId: z.nullable(z.number()),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -231,6 +247,14 @@ export const GetBulkConclusionsRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -336,6 +360,14 @@ export const GetBulkConclusionsByPurlRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -367,6 +399,14 @@ export const GetPathExclusionsRes = z.object({
             package: z.object({
                 purl: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -501,6 +541,14 @@ export const GetPathExclusionsForPkgRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
