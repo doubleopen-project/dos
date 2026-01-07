@@ -4121,6 +4121,69 @@ export const findCuratorIdByRemoteIdInClearanceGroup = async (
     );
 };
 
+export const getClearanceGroupIdsByLicenseConclusionId = async (
+    licenseConclusionId: number,
+): Promise<number[]> => {
+    return (
+        await retry(async () => {
+            return prisma.clearanceGroup.findMany({
+                select: {
+                    id: true,
+                },
+                where: {
+                    licenseConclusions: {
+                        some: {
+                            licenseConclusionId: licenseConclusionId,
+                        },
+                    },
+                },
+            });
+        })
+    ).map((group) => group.id);
+};
+
+export const getClearanceGroupIdsByBulkConclusionId = async (
+    bulkConclusionId: number,
+): Promise<number[]> => {
+    return (
+        await retry(async () => {
+            return prisma.clearanceGroup.findMany({
+                select: {
+                    id: true,
+                },
+                where: {
+                    bulkConclusions: {
+                        some: {
+                            bulkConclusionId: bulkConclusionId,
+                        },
+                    },
+                },
+            });
+        })
+    ).map((group) => group.id);
+};
+
+export const getClearanceGroupIdsByPathExclusionId = async (
+    pathExclusionId: number,
+): Promise<number[]> => {
+    return (
+        await retry(async () => {
+            return prisma.clearanceGroup.findMany({
+                select: {
+                    id: true,
+                },
+                where: {
+                    pathExclusions: {
+                        some: {
+                            pathExclusionId: pathExclusionId,
+                        },
+                    },
+                },
+            });
+        })
+    ).map((group) => group.id);
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
