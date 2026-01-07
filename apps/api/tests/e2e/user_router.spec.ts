@@ -707,3 +707,219 @@ test.describe("GET /path-exclusions/count should", () => {
         expect(data.count).toBe(0);
     });
 });
+
+test.describe("GET /license-conclusions/:id/affected-files should", () => {
+    test("allow user to get affected files for a license conclusion in a clearance group they have access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await userContext.get(
+            `license-conclusions/${groups.group1.licenseConclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await userContext.get(
+            `license-conclusions/${groups.group2.licenseConclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+    });
+
+    test("not allow user to get affected files for a license conclusion in a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `license-conclusions/${groups.group3.licenseConclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("allow an admin to get affected files for a license conclusion in any clearance group", async ({
+        adminContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await adminContext.get(
+            `license-conclusions/${groups.group1.licenseConclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await adminContext.get(
+            `license-conclusions/${groups.group2.licenseConclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+
+        const res = await adminContext.get(
+            `license-conclusions/${groups.group3.licenseConclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(true);
+    });
+});
+
+test.describe("GET /bulk-conclusions/:id/affected-files should", () => {
+    test("allow user to get affected files for a bulk conclusion in a clearance group they have access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await userContext.get(
+            `bulk-conclusions/${groups.group1.bulkConclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await userContext.get(
+            `bulk-conclusions/${groups.group2.bulkConclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+    });
+
+    test("not allow user to get affected files for a bulk conclusion in a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `bulk-conclusions/${groups.group3.bulkConclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("allow an admin to get affected files for a bulk conclusion in any clearance group", async ({
+        adminContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await adminContext.get(
+            `bulk-conclusions/${groups.group1.bulkConclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await adminContext.get(
+            `bulk-conclusions/${groups.group2.bulkConclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+
+        const res = await adminContext.get(
+            `bulk-conclusions/${groups.group3.bulkConclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(true);
+    });
+});
+
+test.describe("GET /path-exclusions/:id/affected-files should", () => {
+    test("allow user to get affected files for a path exclusion in a clearance group they have access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await userContext.get(
+            `path-exclusions/${groups.group1.pathExclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await userContext.get(
+            `path-exclusions/${groups.group2.pathExclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+    });
+
+    test("not allow user to get affected files for a path exclusion in a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `path-exclusions/${groups.group3.pathExclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("allow an admin to get affected files for a path exclusion in any clearance group", async ({
+        adminContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await adminContext.get(
+            `path-exclusions/${groups.group1.pathExclusion.id}/affected-files`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await adminContext.get(
+            `path-exclusions/${groups.group2.pathExclusion.id}/affected-files`,
+        );
+        expect(res2.ok()).toBe(true);
+
+        const res = await adminContext.get(
+            `path-exclusions/${groups.group3.pathExclusion.id}/affected-files`,
+        );
+        expect(res.ok()).toBe(true);
+    });
+});
+
+test.describe("GET /bulk-conclusions/:id should", () => {
+    test("allow user to get a bulk conclusion in a clearance group they have access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await userContext.get(
+            `bulk-conclusions/${groups.group1.bulkConclusion.id}`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await userContext.get(
+            `bulk-conclusions/${groups.group2.bulkConclusion.id}`,
+        );
+        expect(res2.ok()).toBe(true);
+    });
+
+    test("not allow user to get a bulk conclusion in a clearance group they have no access to", async ({
+        userContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res = await userContext.get(
+            `bulk-conclusions/${groups.group3.bulkConclusion.id}`,
+        );
+        expect(res.ok()).toBe(false);
+        expect(res.status()).toBe(403);
+    });
+
+    test("allow an admin to get a bulk conclusion in any clearance group", async ({
+        adminContext,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const res1 = await adminContext.get(
+            `bulk-conclusions/${groups.group1.bulkConclusion.id}`,
+        );
+        expect(res1.ok()).toBe(true);
+
+        const res2 = await adminContext.get(
+            `bulk-conclusions/${groups.group2.bulkConclusion.id}`,
+        );
+        expect(res2.ok()).toBe(true);
+
+        const res = await adminContext.get(
+            `bulk-conclusions/${groups.group3.bulkConclusion.id}`,
+        );
+        expect(res.ok()).toBe(true);
+    });
+});

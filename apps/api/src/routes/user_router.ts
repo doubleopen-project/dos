@@ -223,6 +223,12 @@ userRouter.get(
         try {
             const licenseConclusionId = req.params.id;
 
+            await ensureUserCanAccessClearanceItem(
+                req,
+                "licenseConclusion",
+                licenseConclusionId,
+            );
+
             const licenseConclusion =
                 await dbQueries.findLicenseConclusionById(licenseConclusionId);
 
@@ -646,6 +652,12 @@ userRouter.get(
         try {
             const bulkConclusionId = req.params.id;
 
+            await ensureUserCanAccessClearanceItem(
+                req,
+                "bulkConclusion",
+                bulkConclusionId,
+            );
+
             const bulkConclusion =
                 await dbQueries.findBulkConclusionById(bulkConclusionId);
 
@@ -976,6 +988,12 @@ userRouter.get(
     async (req, res) => {
         try {
             const bulkConclusionId = req.params.id;
+
+            await ensureUserCanAccessClearanceItem(
+                req,
+                "bulkConclusion",
+                bulkConclusionId,
+            );
 
             const bulkConclusion =
                 await dbQueries.findBulkConclusionById(bulkConclusionId);
@@ -1335,6 +1353,12 @@ userRouter.get(
     authzPermission({ resource: "ClearanceItems", scopes: ["GET"] }),
     async (req, res) => {
         try {
+            await ensureUserCanAccessClearanceItem(
+                req,
+                "pathExclusion",
+                req.params.id,
+            );
+
             const pe = await dbQueries.findPathExclusionById(req.params.id);
 
             if (!pe)
@@ -1857,6 +1881,37 @@ const resolveEffectiveClearanceGroupIds = async (
     }
 
     return requestedIds;
+};
+
+type ClearanceItemType =
+    | "licenseConclusion"
+    | "bulkConclusion"
+    | "pathExclusion";
+
+const clearanceGroupResolvers = {
+    licenseConclusion: dbQueries.getClearanceGroupIdsByLicenseConclusionId,
+    bulkConclusion: dbQueries.getClearanceGroupIdsByBulkConclusionId,
+    pathExclusion: dbQueries.getClearanceGroupIdsByPathExclusionId,
+} satisfies Record<ClearanceItemType, (itemId: number) => Promise<number[]>>;
+
+const ensureUserCanAccessClearanceItem = async (
+    req: Pick<express.Request, "kauth">,
+    itemType: ClearanceItemType,
+    itemId: number,
+): Promise<void> => {
+    if (isAdmin(req)) return;
+
+    const accessibleGroupIds = await resolveEffectiveClearanceGroupIds(
+        req,
+        undefined,
+    );
+
+    const resolveGroups = clearanceGroupResolvers[itemType];
+    const groups = await resolveGroups(itemId);
+
+    if (!groups.some((id) => accessibleGroupIds?.includes(id))) {
+        throw new CustomError("Forbidden", 403);
+    }
 };
 
 export default userRouter;
