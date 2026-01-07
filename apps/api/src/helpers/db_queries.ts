@@ -2705,7 +2705,16 @@ export const findLicenseConclusionRemoteId = async (
 };
 
 type LicenseConclusionWithCurator = Prisma.LicenseConclusionGetPayload<{
-    include: {
+    select: {
+        id: true;
+        updatedAt: true;
+        concludedLicenseExpressionSPDX: true;
+        detectedLicenseExpressionSPDX: true;
+        comment: true;
+        local: true;
+        bulkConclusionId: true;
+        fileSha256: true;
+        contextPurl: true;
         curator: {
             select: {
                 username: true;
@@ -2760,7 +2769,16 @@ export const findLicenseConclusions = async (
             licenseConclusions = await prisma.licenseConclusion.findMany({
                 skip: skip,
                 take: take,
-                include: {
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    local: true,
+                    bulkConclusionId: true,
+                    fileSha256: true,
+                    contextPurl: true,
                     curator: {
                         select: {
                             username: true,
@@ -3745,7 +3763,16 @@ export const findLicenseConclusionsByFileSha256 = async (
     while (!querySuccess && retries > 0) {
         try {
             licenseConclusions = await prisma.licenseConclusion.findMany({
-                include: {
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    concludedLicenseExpressionSPDX: true,
+                    detectedLicenseExpressionSPDX: true,
+                    comment: true,
+                    local: true,
+                    bulkConclusionId: true,
+                    fileSha256: true,
+                    contextPurl: true,
                     curator: {
                         select: {
                             username: true,
