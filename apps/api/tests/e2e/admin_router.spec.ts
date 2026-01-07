@@ -324,7 +324,7 @@ test.describe("API lets authenticated admins to", () => {
             `clearance-groups/${createdGroup.id}/curators`,
             {
                 data: {
-                    curatorIds: [adminCuratorId],
+                    curators: [{ id: adminCuratorId, role: "WRITER" }],
                 },
             },
         );

@@ -3867,6 +3867,7 @@ type ClearanceGroupWithRelations = Prisma.ClearanceGroupGetPayload<{
                         username: true;
                     };
                 };
+                role: true;
             };
         };
     };
@@ -3892,6 +3893,7 @@ export const getClearanceGroupById = async (
                                 username: true,
                             },
                         },
+                        role: true,
                     },
                 },
             },
