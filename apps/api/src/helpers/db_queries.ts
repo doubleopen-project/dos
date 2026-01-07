@@ -2262,53 +2262,6 @@ export const findMostRecentScannerJobByPackageId = async (
     return scannerJob;
 };
 
-type ScanIssueWithRelations = Prisma.ScanIssueGetPayload<{
-    include: {
-        file: {
-            include: {
-                filetrees: {
-                    include: {
-                        package: true;
-                    };
-                };
-            };
-        };
-    };
-}>;
-
-export const findScanIssuesWithRelatedFileAndPackageAndFileTree =
-    async (): Promise<ScanIssueWithRelations[]> => {
-        let scanIssues: ScanIssueWithRelations[] = [];
-        let retries = initialRetryCount;
-        let querySuccess = false;
-
-        while (!querySuccess && retries > 0) {
-            try {
-                scanIssues = await prisma.scanIssue.findMany({
-                    include: {
-                        file: {
-                            include: {
-                                filetrees: {
-                                    include: {
-                                        package: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
-                querySuccess = true;
-            } catch (error) {
-                console.log("Error with trying to find ScanIssues: " + error);
-                handleError(error);
-                retries--;
-                if (retries > 0) await waitToRetry();
-                else throw error;
-            }
-        }
-        return scanIssues;
-    };
-
 export const findTimeoutScanIssuesByPackageIdAndTimeout = async (
     packageId: number,
     timeout: number,
