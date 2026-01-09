@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { pePatternGlobSchema, validReasons } from "validation-helpers";
 import { z } from "zod";
-import { useUser } from "@/hooks/useUser";
+import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { hasPermission } from "@/helpers/hasPermission";
+import ClearanceActionNotice from "@/components/common/ClearanceActionNotice";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 
 const exclusionFormSchema = z.object({
@@ -66,7 +66,7 @@ const ExclusionForm = ({
     comment,
     setOpen,
 }: Props) => {
-    const user = useUser();
+    const { canSubmit } = useClearanceActionState();
     const defaultValues: ExclusionFormType = {
         pattern: pattern,
         reason: reason || "",
@@ -188,16 +188,7 @@ const ExclusionForm = ({
     return (
         <div className="flex w-full flex-col">
             <Label className="mb-1 font-bold">{mode + " path exclusion"}</Label>
-            {mode === "Add" &&
-                user &&
-                user.permissions &&
-                !hasPermission(user.permissions, "ClearanceItems", "POST") && (
-                    <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
-                        Feel free to interact with the form but please note that
-                        you do not currently have permission to add path
-                        exclusions.
-                    </div>
-                )}
+            {mode === "Add" && <ClearanceActionNotice />}
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -303,16 +294,7 @@ const ExclusionForm = ({
                             disabled={
                                 createIsLoading ||
                                 updateIsLoading ||
-                                Boolean(
-                                    mode === "Add" &&
-                                    user &&
-                                    user.permissions &&
-                                    !hasPermission(
-                                        user.permissions,
-                                        "ClearanceItems",
-                                        "POST",
-                                    ),
-                                )
+                                Boolean(mode === "Add" && !canSubmit)
                             }
                         >
                             {createIsLoading || updateIsLoading ? (
