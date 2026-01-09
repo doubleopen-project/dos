@@ -231,7 +231,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(responseBody.name).toBe(name);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(responseBody.id);
+        await deleteClearanceGroup(responseBody.id);
     });
 
     test("update a clearance group", async () => {
@@ -253,7 +253,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(updatedGroup.name).toBe(newName);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 
     test("delete a clearance group", async () => {
@@ -278,7 +278,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(clearanceGroups.length).toBeGreaterThan(0);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 
     test("retrieve clearance groups count", async () => {
@@ -295,7 +295,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(countResponseBody.count).toBe(clearanceGroups.length);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 
     test("retrieve clearance group by id", async () => {
@@ -312,7 +312,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(clearanceGroup.name).toBe(createdGroup.name);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 
     test("add curators to a clearance group", async () => {
@@ -335,7 +335,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(updatedGroup.curators[0].curator.id).toBe(adminCuratorId);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 
     test("remove curator from a clearance group", async () => {
@@ -356,7 +356,7 @@ test.describe("API lets authenticated admins to", () => {
         expect(groupAfterDeletion.curators.length).toBe(0);
 
         // Clean up by deleting the created clearance group.
-        deleteClearanceGroup(createdGroup.id);
+        await deleteClearanceGroup(createdGroup.id);
     });
 });
 
