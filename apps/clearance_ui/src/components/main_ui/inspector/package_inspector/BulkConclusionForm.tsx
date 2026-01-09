@@ -11,7 +11,7 @@ import { useForm, useFormState } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import { bcPatternGlobSchema } from "validation-helpers";
 import { z } from "zod";
-import { useUser } from "@/hooks/useUser";
+import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,10 +39,10 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import ClearanceActionNotice from "@/components/common/ClearanceActionNotice";
 import ConclusionLicense from "@/components/common/ConclusionLicense";
 import ConclusionSPDX from "@/components/common/ConclusionSPDX";
 import { findMatchingPaths } from "@/helpers/findMatchingPaths";
-import { hasPermission } from "@/helpers/hasPermission";
 import { toPathPurl } from "@/helpers/pathParamHelpers";
 import { cn } from "@/lib/utils";
 import { concludedLicenseExpressionSPDXSchema } from "@/schemes/spdx_schema";
@@ -72,7 +72,7 @@ const BulkConclusionForm = ({
     className,
     setOpen,
 }: Props) => {
-    const user = useUser();
+    const { canSubmit } = useClearanceActionState();
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
@@ -233,15 +233,7 @@ const BulkConclusionForm = ({
             <Label className="mb-3 font-bold">
                 Add bulk license conclusion
             </Label>
-            {user &&
-                user.permissions &&
-                !hasPermission(user.permissions, "ClearanceItems", "POST") && (
-                    <div className="mr-1 mb-1 rounded-md bg-red-100 p-1 text-xs">
-                        Feel free to interact with the form but please note that
-                        you do not currently have permission to add license
-                        conclusions.
-                    </div>
-                )}
+            <ClearanceActionNotice />
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -428,15 +420,7 @@ const BulkConclusionForm = ({
                         <Button
                             type="submit"
                             className="mt-2 rounded-md p-1 text-xs"
-                            disabled={
-                                user && user.permissions
-                                    ? !hasPermission(
-                                          user.permissions,
-                                          "ClearanceItems",
-                                          "POST",
-                                      )
-                                    : isLoading
-                            }
+                            disabled={!canSubmit || isLoading}
                         >
                             {isLoading ? (
                                 <>
