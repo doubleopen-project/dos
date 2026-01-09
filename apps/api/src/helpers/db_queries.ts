@@ -5355,3 +5355,92 @@ export const updateClearanceItemsCurator = async (
         licenseConclusions: licenseConclusionCount,
     };
 };
+
+export const assignClearanceItemsToClearanceGroup = async (
+    groupId: number,
+    curatorId: string,
+) => {
+    await prisma.clearanceGroup.findUniqueOrThrow({
+        where: {
+            id: groupId,
+        },
+    });
+
+    return await prisma.$transaction([
+        prisma.clearanceGroup_LicenseConclusion.createMany({
+            data: await prisma.licenseConclusion
+                .findMany({
+                    where: {
+                        curatorId: curatorId,
+                    },
+                })
+                .then((licenseConclusions) =>
+                    licenseConclusions.map((lc) => ({
+                        clearanceGroupId: groupId,
+                        licenseConclusionId: lc.id,
+                    })),
+                ),
+            skipDuplicates: true,
+        }),
+        prisma.clearanceGroup_BulkConclusion.createMany({
+            data: await prisma.bulkConclusion
+                .findMany({
+                    where: {
+                        curatorId: curatorId,
+                    },
+                })
+                .then((bulkConclusions) =>
+                    bulkConclusions.map((bc) => ({
+                        clearanceGroupId: groupId,
+                        bulkConclusionId: bc.id,
+                    })),
+                ),
+            skipDuplicates: true,
+        }),
+        prisma.clearanceGroup_PathExclusion.createMany({
+            data: await prisma.pathExclusion
+                .findMany({
+                    where: {
+                        curatorId: curatorId,
+                    },
+                })
+                .then((pathExclusions) =>
+                    pathExclusions.map((pe) => ({
+                        clearanceGroupId: groupId,
+                        pathExclusionId: pe.id,
+                    })),
+                ),
+            skipDuplicates: true,
+        }),
+        prisma.clearanceGroup_LicenseConclusion.deleteMany({
+            where: {
+                clearanceGroupId: {
+                    not: groupId,
+                },
+                licenseConclusion: {
+                    curatorId: curatorId,
+                },
+            },
+        }),
+        prisma.clearanceGroup_BulkConclusion.deleteMany({
+            where: {
+                clearanceGroupId: {
+                    not: groupId,
+                },
+                bulkConclusion: {
+                    curatorId: curatorId,
+                },
+            },
+        }),
+        prisma.clearanceGroup_PathExclusion.deleteMany({
+            where: {
+                clearanceGroupId: {
+                    not: groupId,
+                },
+                pathExclusion: {
+                    curatorId: curatorId,
+                },
+            },
+        }),
+    ]);
+};

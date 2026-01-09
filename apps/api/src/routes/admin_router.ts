@@ -8,6 +8,7 @@ import { adminAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
+    assignClearanceItemsToClearanceGroup,
     countClearanceGroups,
     countScannedPackages,
     createClearanceGroup,
@@ -497,6 +498,46 @@ adminRouter.delete(
 
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
+        }
+    },
+);
+
+adminRouter.post(
+    "/clearance-groups/:groupId/assign-items",
+    async (req, res) => {
+        try {
+            const clearanceGroupId = req.params.groupId;
+            const curatorId = req.body.curatorId;
+
+            const counts = await assignClearanceItemsToClearanceGroup(
+                clearanceGroupId,
+                curatorId,
+            );
+
+            res.status(200).json({
+                addedToGroup: {
+                    licenseConclusionsCount: counts[0].count,
+                    bulkConclusionsCount: counts[1].count,
+                    pathExclusionsCount: counts[2].count,
+                },
+                removedFromOtherGroups: {
+                    licenseConclusionsCount: counts[3].count,
+                    bulkConclusionsCount: counts[4].count,
+                    pathExclusionsCount: counts[5].count,
+                },
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).send({
+                    message: error.message,
+                    path: error.path,
+                });
+            } else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
     },
 );
