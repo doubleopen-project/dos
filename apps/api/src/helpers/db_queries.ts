@@ -4248,6 +4248,16 @@ export const deleteClearanceGroupCurator = async (
     });
 };
 
+export const deleteCurator = async (id: string) => {
+    return await retry(async () => {
+        return prisma.curator.delete({
+            where: {
+                id: id,
+            },
+        });
+    });
+};
+
 // ------------------------------ Count --------------------------------
 
 export const countFileTreesByPackageId = async (
