@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 # Base image
-FROM node:24.12.0
+FROM node:24.13.0
 
 WORKDIR /app/dos
 
