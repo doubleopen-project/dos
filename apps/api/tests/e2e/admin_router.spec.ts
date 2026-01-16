@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { randHex } from "@ngneat/falso";
-import test, { APIRequestContext, expect } from "@playwright/test";
 import { ZodiosResponseByAlias } from "@zodios/core";
 import { adminAPI } from "validation-helpers";
 import {
@@ -19,45 +18,21 @@ import {
     deleteUser,
     getUsers,
 } from "../../src/helpers/keycloak_queries";
-import { getAccessToken } from "./utils/get_access_token";
-
-const baseUrl = process.env.CI ? "http://api:3001" : "http://localhost:5000";
+import { expect, test } from "./fixtures/admin";
 
 type Curators = ZodiosResponseByAlias<typeof adminAPI, "GetCurators">;
 
 test.describe("API lets authenticated admins to", () => {
-    let keycloakToken: string;
-    let apiContext: APIRequestContext;
-
-    test.beforeAll(async ({ playwright }) => {
-        // Retrieve the access token for the admin user from Keycloak.
-        keycloakToken = await getAccessToken("test-admin", "test-admin");
-        expect(keycloakToken).toBeDefined();
-
-        // Create a new API context for the admin API with the Keycloak token in the headers.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/admin/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${keycloakToken}`,
-            },
-        });
-    });
-
-    test.afterAll(async () => {
-        // Dispose of the API context to clean up resources.
-        await apiContext.dispose();
-    });
-
-    test("retrieve packages", async () => {
-        const packagesRes = await apiContext.get("packages");
+    test("retrieve packages", async ({ adminContext }) => {
+        const packagesRes = await adminContext.get("packages");
         expect(packagesRes.ok()).toBe(true);
 
         const packages = await packagesRes.json();
         expect(packages.packages.length).toBeGreaterThan(0);
     });
 
-    test("retrieve count for packages", async () => {
-        const packagesCountRes = await apiContext.get("packages/count");
+    test("retrieve count for packages", async ({ adminContext }) => {
+        const packagesCountRes = await adminContext.get("packages/count");
         expect(packagesCountRes.ok()).toBe(true);
 
         const packagesCount = await packagesCountRes.json();
@@ -66,16 +41,14 @@ test.describe("API lets authenticated admins to", () => {
 });
 
 test.describe("API lets authenticated admins to", () => {
-    let keycloakToken: string;
     let adminUserId: string;
     let userId: string;
     let adminCuratorId: string;
-    let apiContext: APIRequestContext;
     const testPurl =
         "pkg:npm/dos-monorepo@0.0.0?vcs_type=Git&vcs_url=https%3A%2F%2Fgithub.com%2Fdoubleopen-project%2Fdos.git&vcs_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6&resolved_revision=dc27d024ea5c001def72122c8c0f8c148cec39b6";
     const licenseConclusionIds: number[] = [];
 
-    test.beforeAll(async ({ playwright }) => {
+    test.beforeAll(async () => {
         const adminUser = await getUsers("test-admin");
         expect(adminUser).toBeDefined();
         expect(adminUser.length).toBe(1);
@@ -85,18 +58,6 @@ test.describe("API lets authenticated admins to", () => {
         expect(user).toBeDefined();
         expect(user.length).toBe(1);
         userId = user[0].id;
-
-        // Retrieve the access token for the admin user from Keycloak.
-        keycloakToken = await getAccessToken("test-admin", "test-admin");
-        expect(keycloakToken).toBeDefined();
-
-        // Create a new API context for the admin API with the Keycloak token in the headers.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/admin/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${keycloakToken}`,
-            },
-        });
 
         adminCuratorId = await getOrCreateCurator(adminUserId, "test-admin");
 
@@ -140,12 +101,10 @@ test.describe("API lets authenticated admins to", () => {
         for (const id of licenseConclusionIds) {
             await deleteLicenseConclusion(id);
         }
-        // Dispose of the API context to clean up resources.
-        await apiContext.dispose();
     });
 
-    test("retrieve curators", async () => {
-        const curatorsRes = await apiContext.get("curators");
+    test("retrieve curators", async ({ adminContext }) => {
+        const curatorsRes = await adminContext.get("curators");
         expect(curatorsRes.ok()).toBe(true);
 
         const curators: Curators = await curatorsRes.json();
@@ -165,14 +124,14 @@ test.describe("API lets authenticated admins to", () => {
         expect(curatorIdCount).toBe(1);
     });
 
-    test("add new curator", async () => {
+    test("add new curator", async ({ adminContext }) => {
         const user = await createUser({
             username: "test-user-tmp",
             credentials: [
                 { type: "password", value: "test-user-tmp", temporary: false },
             ],
         });
-        const newCuratorRes = await apiContext.post("curators", {
+        const newCuratorRes = await adminContext.post("curators", {
             data: {
                 remoteId: user.id,
             },
@@ -186,10 +145,12 @@ test.describe("API lets authenticated admins to", () => {
         await deleteUser(user.id);
     });
 
-    test("reassign clearance items to a new curator ID", async () => {
+    test("reassign clearance items to a new curator ID", async ({
+        adminContext,
+    }) => {
         await getOrCreateCurator(userId, "test-user");
 
-        const curatorsRes = await apiContext.get("curators");
+        const curatorsRes = await adminContext.get("curators");
         expect(curatorsRes.ok()).toBe(true);
         const curators: Curators = await curatorsRes.json();
 
@@ -205,7 +166,7 @@ test.describe("API lets authenticated admins to", () => {
 
         expect(userCuratorId).toBeDefined();
 
-        const response = await apiContext.put("clearance-items/reassign", {
+        const response = await adminContext.put("clearance-items/reassign", {
             data: {
                 curatorId: adminCuratorId,
                 newCuratorId: userCuratorId,
@@ -218,10 +179,10 @@ test.describe("API lets authenticated admins to", () => {
         );
     });
 
-    test("add a new clearance group", async () => {
+    test("add a new clearance group", async ({ adminContext }) => {
         const name = `Test Clearances ${randHex()}`;
 
-        const response = await apiContext.post("clearance-groups", {
+        const response = await adminContext.post("clearance-groups", {
             data: {
                 name: name,
             },
@@ -234,13 +195,13 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(responseBody.id);
     });
 
-    test("update a clearance group", async () => {
+    test("update a clearance group", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
         const newName = `Updated Clearances ${randHex()}`;
-        const updateResponse = await apiContext.patch(
+        const updateResponse = await adminContext.patch(
             `clearance-groups/${createdGroup.id}`,
             {
                 data: {
@@ -256,23 +217,23 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(createdGroup.id);
     });
 
-    test("delete a clearance group", async () => {
+    test("delete a clearance group", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
-        const deleteResponse = await apiContext.delete(
+        const deleteResponse = await adminContext.delete(
             `clearance-groups/${createdGroup.id}`,
         );
         expect(deleteResponse.ok()).toBe(true);
     });
 
-    test("retrieve clearance groups", async () => {
+    test("retrieve clearance groups", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
-        const response = await apiContext.get("clearance-groups");
+        const response = await adminContext.get("clearance-groups");
         expect(response.ok()).toBe(true);
         const clearanceGroups = await response.json();
         expect(clearanceGroups.length).toBeGreaterThan(0);
@@ -281,15 +242,15 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(createdGroup.id);
     });
 
-    test("retrieve clearance groups count", async () => {
+    test("retrieve clearance groups count", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
-        const response = await apiContext.get("clearance-groups");
+        const response = await adminContext.get("clearance-groups");
         expect(response.ok()).toBe(true);
         const clearanceGroups = await response.json();
-        const countResponse = await apiContext.get("clearance-groups/count");
+        const countResponse = await adminContext.get("clearance-groups/count");
         expect(countResponse.ok()).toBe(true);
         const countResponseBody = await countResponse.json();
         expect(countResponseBody.count).toBe(clearanceGroups.length);
@@ -298,12 +259,12 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(createdGroup.id);
     });
 
-    test("retrieve clearance group by id", async () => {
+    test("retrieve clearance group by id", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
-        const response = await apiContext.get(
+        const response = await adminContext.get(
             `clearance-groups/${createdGroup.id}`,
         );
         expect(response.ok()).toBe(true);
@@ -315,12 +276,12 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(createdGroup.id);
     });
 
-    test("add curators to a clearance group", async () => {
+    test("add curators to a clearance group", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
 
-        const addCuratorsResponse = await apiContext.post(
+        const addCuratorsResponse = await adminContext.post(
             `clearance-groups/${createdGroup.id}/curators`,
             {
                 data: {
@@ -338,7 +299,7 @@ test.describe("API lets authenticated admins to", () => {
         await deleteClearanceGroup(createdGroup.id);
     });
 
-    test("remove curator from a clearance group", async () => {
+    test("remove curator from a clearance group", async ({ adminContext }) => {
         const createdGroup = await createClearanceGroup({
             name: `Test Clearances ${randHex()}`,
         });
@@ -347,7 +308,7 @@ test.describe("API lets authenticated admins to", () => {
             { clearanceGroupId: createdGroup.id, curatorId: adminCuratorId },
         ]);
 
-        const deleteCuratorResponse = await apiContext.delete(
+        const deleteCuratorResponse = await adminContext.delete(
             `clearance-groups/${createdGroup.id}/curators/${adminCuratorId}`,
         );
 
@@ -361,65 +322,43 @@ test.describe("API lets authenticated admins to", () => {
 });
 
 test.describe("API doesn't let authenticated regular users to", () => {
-    let apiContext: APIRequestContext;
-    let keycloakToken;
-
-    test.beforeAll(async ({ playwright }) => {
-        // Retrieve the access token for the user from Keycloak.
-        keycloakToken = await getAccessToken("test-user", "test-user");
-        expect(keycloakToken).toBeDefined();
-
-        // Create a new API context for the admin API with the Keycloak token in the headers.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/admin/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${keycloakToken}`,
-            },
-        });
-    });
-
-    test.afterAll(async () => {
-        // Dispose of the API context to clean up resources.
-        await apiContext.dispose();
-    });
-
-    test("add users", async () => {
-        const response = await apiContext.post("users");
+    test("add users", async ({ userContext }) => {
+        const response = await userContext.post("users");
         expect(response.status()).toBe(403);
     });
 
-    test("delete users", async () => {
-        const response = await apiContext.delete("users/some-id");
+    test("delete users", async ({ userContext }) => {
+        const response = await userContext.delete("users/some-id");
         expect(response.status()).toBe(403);
     });
 
-    test("delete scan results", async () => {
-        const response = await apiContext.delete("scan-results");
+    test("delete scan results", async ({ userContext }) => {
+        const response = await userContext.delete("scan-results");
         expect(response.status()).toBe(403);
     });
 
-    test("trigger purl cleanup", async () => {
-        const response = await apiContext.post("purl-cleanup");
+    test("trigger purl cleanup", async ({ userContext }) => {
+        const response = await userContext.post("purl-cleanup");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve packages", async () => {
-        const response = await apiContext.get("packages");
+    test("retrieve packages", async ({ userContext }) => {
+        const response = await userContext.get("packages");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve count for packages", async () => {
-        const response = await apiContext.get("packages/count");
+    test("retrieve count for packages", async ({ userContext }) => {
+        const response = await userContext.get("packages/count");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve curators", async () => {
-        const response = await apiContext.get("curators");
+    test("retrieve curators", async ({ userContext }) => {
+        const response = await userContext.get("curators");
         expect(response.status()).toBe(403);
     });
 
-    test("add a new curator", async () => {
-        const response = await apiContext.post("curators", {
+    test("add a new curator", async ({ userContext }) => {
+        const response = await userContext.post("curators", {
             data: {
                 remoteId: "some-remote-id",
             },
@@ -427,8 +366,10 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("reassign clearance items to a new curator ID", async () => {
-        const response = await apiContext.put("clearance-items/reassign", {
+    test("reassign clearance items to a new curator ID", async ({
+        userContext,
+    }) => {
+        const response = await userContext.put("clearance-items/reassign", {
             data: {
                 curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
                 newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
@@ -437,8 +378,8 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("add a new clearance group", async () => {
-        const response = await apiContext.post("clearance-groups", {
+    test("add a new clearance group", async ({ userContext }) => {
+        const response = await userContext.post("clearance-groups", {
             data: {
                 name: "Test Clearance Group",
             },
@@ -446,8 +387,8 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("update a clearance group", async () => {
-        const response = await apiContext.patch("clearance-groups/1", {
+    test("update a clearance group", async ({ userContext }) => {
+        const response = await userContext.patch("clearance-groups/1", {
             data: {
                 name: "Updated Clearance Group Name",
             },
@@ -455,28 +396,28 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("delete a clearance group", async () => {
-        const response = await apiContext.delete("clearance-groups/1");
+    test("delete a clearance group", async ({ userContext }) => {
+        const response = await userContext.delete("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance groups", async () => {
-        const response = await apiContext.get("clearance-groups");
+    test("retrieve clearance groups", async ({ userContext }) => {
+        const response = await userContext.get("clearance-groups");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance groups count", async () => {
-        const response = await apiContext.get("clearance-groups/count");
+    test("retrieve clearance groups count", async ({ userContext }) => {
+        const response = await userContext.get("clearance-groups/count");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance group by id", async () => {
-        const response = await apiContext.get("clearance-groups/1");
+    test("retrieve clearance group by id", async ({ userContext }) => {
+        const response = await userContext.get("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
 
-    test("add curators to a clearance group", async () => {
-        const response = await apiContext.post("clearance-groups/1/curators", {
+    test("add curators to a clearance group", async ({ userContext }) => {
+        const response = await userContext.post("clearance-groups/1/curators", {
             data: {
                 curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
             },
@@ -484,8 +425,8 @@ test.describe("API doesn't let authenticated regular users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("remove curator from a clearance group", async () => {
-        const response = await apiContext.delete(
+    test("remove curator from a clearance group", async ({ userContext }) => {
+        const response = await userContext.delete(
             "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
         );
         expect(response.status()).toBe(403);
@@ -493,64 +434,47 @@ test.describe("API doesn't let authenticated regular users to", () => {
 });
 
 test.describe("API doesn't let readonly users to", () => {
-    let apiContext: APIRequestContext;
-    let keycloakToken;
-
-    test.beforeAll(async ({ playwright }) => {
-        // Retrieve the access token for the readonly user from Keycloak.
-        keycloakToken = await getAccessToken("test-readonly", "test-readonly");
-        expect(keycloakToken).toBeDefined();
-
-        // Create a new API context for the admin API with the Keycloak token in the headers.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/admin/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${keycloakToken}`,
-            },
-        });
-    });
-
-    test.afterAll(async () => {
+    test.afterAll(async ({ readonlyContext }) => {
         // Dispose all responses.
-        await apiContext.dispose();
+        await readonlyContext.dispose();
     });
 
-    test("add users", async () => {
-        const response = await apiContext.post("users");
+    test("add users", async ({ readonlyContext }) => {
+        const response = await readonlyContext.post("users");
         expect(response.status()).toBe(403);
     });
 
-    test("delete users", async () => {
-        const response = await apiContext.delete("users/some-id");
+    test("delete users", async ({ readonlyContext }) => {
+        const response = await readonlyContext.delete("users/some-id");
         expect(response.status()).toBe(403);
     });
 
-    test("delete scan results", async () => {
-        const response = await apiContext.delete("scan-results");
+    test("delete scan results", async ({ readonlyContext }) => {
+        const response = await readonlyContext.delete("scan-results");
         expect(response.status()).toBe(403);
     });
 
-    test("trigger purl cleanup", async () => {
-        const response = await apiContext.post("purl-cleanup");
+    test("trigger purl cleanup", async ({ readonlyContext }) => {
+        const response = await readonlyContext.post("purl-cleanup");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve packages", async () => {
-        const response = await apiContext.get("packages");
+    test("retrieve packages", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("packages");
         expect(response.status()).toBe(403);
     });
-    test("retrieve count for packages", async () => {
-        const response = await apiContext.get("packages/count");
-        expect(response.status()).toBe(403);
-    });
-
-    test("retrieve curators", async () => {
-        const response = await apiContext.get("curators");
+    test("retrieve count for packages", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("packages/count");
         expect(response.status()).toBe(403);
     });
 
-    test("add a new curator", async () => {
-        const response = await apiContext.post("curators", {
+    test("retrieve curators", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("curators");
+        expect(response.status()).toBe(403);
+    });
+
+    test("add a new curator", async ({ readonlyContext }) => {
+        const response = await readonlyContext.post("curators", {
             data: {
                 remoteId: "some-remote-id",
             },
@@ -558,8 +482,10 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("reassign clearance items to a new curator ID", async () => {
-        const response = await apiContext.put("clearance-items/reassign", {
+    test("reassign clearance items to a new curator ID", async ({
+        readonlyContext,
+    }) => {
+        const response = await readonlyContext.put("clearance-items/reassign", {
             data: {
                 curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
                 newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
@@ -568,8 +494,8 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("add a new clearance group", async () => {
-        const response = await apiContext.post("clearance-groups", {
+    test("add a new clearance group", async ({ readonlyContext }) => {
+        const response = await readonlyContext.post("clearance-groups", {
             data: {
                 name: "Test Clearance Group",
             },
@@ -577,8 +503,8 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("update a clearance group", async () => {
-        const response = await apiContext.patch("clearance-groups/1", {
+    test("update a clearance group", async ({ readonlyContext }) => {
+        const response = await readonlyContext.patch("clearance-groups/1", {
             data: {
                 name: "Updated Clearance Group Name",
             },
@@ -586,37 +512,42 @@ test.describe("API doesn't let readonly users to", () => {
         expect(response.status()).toBe(403);
     });
 
-    test("delete a clearance group", async () => {
-        const response = await apiContext.delete("clearance-groups/1");
+    test("delete a clearance group", async ({ readonlyContext }) => {
+        const response = await readonlyContext.delete("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance groups", async () => {
-        const response = await apiContext.get("clearance-groups");
+    test("retrieve clearance groups", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("clearance-groups");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance groups count", async () => {
-        const response = await apiContext.get("clearance-groups/count");
+    test("retrieve clearance groups count", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("clearance-groups/count");
         expect(response.status()).toBe(403);
     });
 
-    test("retrieve clearance group by id", async () => {
-        const response = await apiContext.get("clearance-groups/1");
+    test("retrieve clearance group by id", async ({ readonlyContext }) => {
+        const response = await readonlyContext.get("clearance-groups/1");
         expect(response.status()).toBe(403);
     });
 
-    test("add curators to a clearance group", async () => {
-        const response = await apiContext.post("clearance-groups/1/curators", {
-            data: {
-                curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+    test("add curators to a clearance group", async ({ readonlyContext }) => {
+        const response = await readonlyContext.post(
+            "clearance-groups/1/curators",
+            {
+                data: {
+                    curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+                },
             },
-        });
+        );
         expect(response.status()).toBe(403);
     });
 
-    test("remove curator from a clearance group", async () => {
-        const response = await apiContext.delete(
+    test("remove curator from a clearance group", async ({
+        readonlyContext,
+    }) => {
+        const response = await readonlyContext.delete(
             "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
         );
         expect(response.status()).toBe(403);
@@ -624,60 +555,48 @@ test.describe("API doesn't let readonly users to", () => {
 });
 
 test.describe("API doesn't let unauthenticated users to", () => {
-    let apiContext: APIRequestContext;
-
-    test.beforeAll(async ({ playwright }) => {
-        // Create a new API context for the admin API without authentication.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/admin/`,
-        });
-    });
-
-    test.afterAll(async () => {
-        // Dispose all responses.
-        await apiContext.dispose();
-    });
-
-    test("add users", async () => {
-        const response = await apiContext.post("users");
+    test("add users", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.post("users");
         expect(response.status()).toBe(401);
     });
 
-    test("delete users", async () => {
-        const response = await apiContext.delete("users/some-id");
+    test("delete users", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.delete("users/some-id");
         expect(response.status()).toBe(401);
     });
 
-    test("delete scan results", async () => {
-        const response = await apiContext.delete("scan-results");
+    test("delete scan results", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.delete("scan-results");
         expect(response.status()).toBe(401);
     });
 
-    test("trigger purl cleanup", async () => {
-        const response = await apiContext.post("purl-cleanup");
+    test("trigger purl cleanup", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.post("purl-cleanup");
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve packages", async () => {
+    test("retrieve packages", async ({ unauthenticatedContext }) => {
         // Attempt to retrieve packages without authentication.
-        const response = await apiContext.get("packages");
+        const response = await unauthenticatedContext.get("packages");
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve count for packages", async () => {
+    test("retrieve count for packages", async ({ unauthenticatedContext }) => {
         // Attempt to retrieve package count without authentication.
-        const response = await apiContext.get("packages/count");
+        const response = await unauthenticatedContext.get("packages/count");
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve curators", async () => {
+    test("retrieve curators", async ({ unauthenticatedContext }) => {
         // Attempt to retrieve distinct users without authentication.
-        const response = await apiContext.get("clearance-items/distinct-users");
+        const response = await unauthenticatedContext.get(
+            "clearance-items/distinct-users",
+        );
         expect(response.status()).toBe(401);
     });
 
-    test("add a new curator", async () => {
-        const response = await apiContext.post("curators", {
+    test("add a new curator", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.post("curators", {
             data: {
                 remoteId: "some-remote-id",
             },
@@ -685,19 +604,24 @@ test.describe("API doesn't let unauthenticated users to", () => {
         expect(response.status()).toBe(401);
     });
 
-    test("reassign clearance items to a new curator ID", async () => {
+    test("reassign clearance items to a new curator ID", async ({
+        unauthenticatedContext,
+    }) => {
         // Attempt to reassign clearance items without authentication.
-        const response = await apiContext.put("clearance-items/reassign", {
-            data: {
-                curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
-                newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+        const response = await unauthenticatedContext.put(
+            "clearance-items/reassign",
+            {
+                data: {
+                    curatorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
+                    newCuratorId: "bb7ac15c-c2d9-479e-9342-a879b7e8ea47",
+                },
             },
-        });
+        );
         expect(response.status()).toBe(401);
     });
 
-    test("add a new clearance group", async () => {
-        const response = await apiContext.post("clearance-groups", {
+    test("add a new clearance group", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.post("clearance-groups", {
             data: {
                 name: "Test Clearance Group",
             },
@@ -705,46 +629,63 @@ test.describe("API doesn't let unauthenticated users to", () => {
         expect(response.status()).toBe(401);
     });
 
-    test("update a clearance group", async () => {
-        const response = await apiContext.patch("clearance-groups/1", {
-            data: {
-                name: "Updated Clearance Group Name",
+    test("update a clearance group", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.patch(
+            "clearance-groups/1",
+            {
+                data: {
+                    name: "Updated Clearance Group Name",
+                },
             },
-        });
+        );
         expect(response.status()).toBe(401);
     });
 
-    test("delete a clearance group", async () => {
-        const response = await apiContext.delete("clearance-groups/1");
+    test("delete a clearance group", async ({ unauthenticatedContext }) => {
+        const response =
+            await unauthenticatedContext.delete("clearance-groups/1");
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve clearance groups", async () => {
-        const response = await apiContext.get("clearance-groups");
+    test("retrieve clearance groups", async ({ unauthenticatedContext }) => {
+        const response = await unauthenticatedContext.get("clearance-groups");
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve clearance groups count", async () => {
-        const response = await apiContext.get("clearance-groups/count");
+    test("retrieve clearance groups count", async ({
+        unauthenticatedContext,
+    }) => {
+        const response = await unauthenticatedContext.get(
+            "clearance-groups/count",
+        );
         expect(response.status()).toBe(401);
     });
 
-    test("retrieve clearance group by id", async () => {
-        const response = await apiContext.get("clearance-groups/1");
+    test("retrieve clearance group by id", async ({
+        unauthenticatedContext,
+    }) => {
+        const response = await unauthenticatedContext.get("clearance-groups/1");
         expect(response.status()).toBe(401);
     });
 
-    test("add curators to a clearance group", async () => {
-        const response = await apiContext.post("clearance-groups/1/curators", {
-            data: {
-                curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+    test("add curators to a clearance group", async ({
+        unauthenticatedContext,
+    }) => {
+        const response = await unauthenticatedContext.post(
+            "clearance-groups/1/curators",
+            {
+                data: {
+                    curatorIds: ["bb7ac15c-c2d9-479e-9342-a879b7e8ea46"],
+                },
             },
-        });
+        );
         expect(response.status()).toBe(401);
     });
 
-    test("remove curator from a clearance group", async () => {
-        const response = await apiContext.delete(
+    test("remove curator from a clearance group", async ({
+        unauthenticatedContext,
+    }) => {
+        const response = await unauthenticatedContext.delete(
             "clearance-groups/1/curators/bb7ac15c-c2d9-479e-9342-a879b7e8ea46",
         );
         expect(response.status()).toBe(401);
