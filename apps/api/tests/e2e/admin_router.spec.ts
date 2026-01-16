@@ -691,3 +691,46 @@ test.describe("API doesn't let unauthenticated users to", () => {
         expect(response.status()).toBe(401);
     });
 });
+
+test.describe("POST /clearance-groups/:groupId/assign-items should", () => {
+    test("allow admins to move a curator's clearance items to a specified group", async ({
+        adminContext,
+        regularUser,
+        seed,
+    }) => {
+        const groups = await seed.createClearanceGroupWithClearances();
+
+        const response = await adminContext.post(
+            `clearance-groups/${groups.group2.id}/assign-items`,
+            {
+                data: {
+                    curatorId: regularUser.curatorId,
+                },
+            },
+        );
+        expect(response.status()).toBe(200);
+
+        const data = await response.json();
+
+        expect(data.added.licenseConclusions.linksCreated).toBe(3);
+        expect(data.added.bulkConclusions.linksCreated).toBe(1);
+        expect(data.added.pathExclusions.linksCreated).toBe(1);
+
+        expect(data.removed.licenseConclusions.linksDeleted).toBe(3);
+        expect(data.removed.bulkConclusions.linksDeleted).toBe(1);
+        expect(data.removed.pathExclusions.linksDeleted).toBe(1);
+    });
+
+    test("not allow non-admin users to assign clearance items", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `clearance-groups/1/assign-items`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});

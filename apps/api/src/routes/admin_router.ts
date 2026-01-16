@@ -8,6 +8,7 @@ import { adminAPI } from "validation-helpers";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
+    assignClearanceItemsToClearanceGroup,
     countClearanceGroups,
     countScannedPackages,
     createClearanceGroup,
@@ -20,6 +21,7 @@ import {
     getClearanceGroupById,
     getClearanceGroups,
     getCurators,
+    getUniqueClearanceGroupById,
     updateClearanceGroup,
     updateClearanceItemsCurator,
 } from "../helpers/db_queries";
@@ -497,6 +499,67 @@ adminRouter.delete(
 
             const err = await getErrorCodeAndMessage(error);
             res.status(err.statusCode).json({ message: err.message });
+        }
+    },
+);
+
+adminRouter.post(
+    "/clearance-groups/:groupId/assign-items",
+    async (req, res) => {
+        try {
+            const clearanceGroupId = req.params.groupId;
+            const curatorId = req.body.curatorId;
+
+            const clearanceGroup =
+                await getUniqueClearanceGroupById(clearanceGroupId);
+
+            if (!clearanceGroup) {
+                throw new CustomError(
+                    `Clearance group with ID '${clearanceGroupId}' not found.`,
+                    404,
+                    "clearanceGroupId",
+                );
+            }
+
+            const curator = await findCuratorById(curatorId);
+
+            if (!curator) {
+                throw new CustomError(
+                    `Curator with ID '${curatorId}' not found.`,
+                    404,
+                    "curatorId",
+                );
+            }
+
+            const counts = await assignClearanceItemsToClearanceGroup(
+                clearanceGroupId,
+                curatorId,
+            );
+
+            res.status(200).json({
+                added: {
+                    licenseConclusions: { linksCreated: counts[0].count },
+                    bulkConclusions: { linksCreated: counts[1].count },
+                    pathExclusions: { linksCreated: counts[2].count },
+                },
+                removed: {
+                    licenseConclusions: { linksDeleted: counts[3].count },
+                    bulkConclusions: { linksDeleted: counts[4].count },
+                    pathExclusions: { linksDeleted: counts[5].count },
+                },
+            });
+        } catch (error) {
+            console.log("Error: ", error);
+
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).send({
+                    message: error.message,
+                    path: error.path,
+                });
+            } else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
     },
 );
