@@ -202,3 +202,22 @@ export const PostCuratorsToClearanceGroupReq = z.object({
         }),
     ),
 });
+
+//------------ POST assign clearance items ------------
+
+export const PostAssignClearanceItemsToClearanceGroupReq = z.object({
+    curatorId: z.string().uuid(),
+});
+
+export const PostAssignClearanceItemsToClearanceGroupRes = z.object({
+    added: z.object({
+        licenseConclusions: z.object({ linksCreated: z.number() }),
+        bulkConclusions: z.object({ linksCreated: z.number() }),
+        pathExclusions: z.object({ linksCreated: z.number() }),
+    }),
+    removed: z.object({
+        licenseConclusions: z.object({ linksDeleted: z.number() }),
+        bulkConclusions: z.object({ linksDeleted: z.number() }),
+        pathExclusions: z.object({ linksDeleted: z.number() }),
+    }),
+});
