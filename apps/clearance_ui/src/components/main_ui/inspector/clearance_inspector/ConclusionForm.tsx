@@ -11,6 +11,7 @@ import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -59,6 +60,7 @@ const ConclusionForm = ({
     className,
 }: Props) => {
     const { canSubmit } = useClearanceActionState();
+    const selectedGroup = useContextStore((s) => s.selectedClearanceGroup);
     const defaultValues: ConclusionFormType = {
         concludedLicenseSPDX: "",
         concludedLicenseList: "",
@@ -124,7 +126,17 @@ const ConclusionForm = ({
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
             const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
-            if (
+
+            if (!selectedGroup) {
+                // This should not happen as the clearance action state disables the submit button
+                // but is added here so TypeScript recognizes selectedGroup is defined below.
+                toast({
+                    variant: "destructive",
+                    title: "ERROR",
+                    description:
+                        "No clearance group selected. Please select a clearance group to add a license conclusion.",
+                });
+            } else if (
                 window.confirm(
                     `Do you want to add a license conclusion\n${JSON.stringify(
                         concludedLicenseExpressionSPDX,
@@ -139,6 +151,7 @@ const ConclusionForm = ({
                     detectedLicenseExpressionSPDX: detectedExpression,
                     comment: data.comment ?? "",
                     local: data.local,
+                    clearanceGroupId: selectedGroup.id,
                 });
             } else {
                 return;

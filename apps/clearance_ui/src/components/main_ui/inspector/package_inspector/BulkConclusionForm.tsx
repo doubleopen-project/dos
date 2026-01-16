@@ -13,6 +13,7 @@ import { bcPatternGlobSchema } from "validation-helpers";
 import { z } from "zod";
 import { useClearanceActionState } from "@/hooks/useClearanceActionState";
 import { userHooks } from "@/hooks/zodiosHooks";
+import useContextStore from "@/store/context.store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -74,6 +75,7 @@ const BulkConclusionForm = ({
 }: Props) => {
     const { canSubmit } = useClearanceActionState();
     const [matchingPaths, setMatchingPaths] = useState<string[]>([]);
+    const selectedGroup = useContextStore((s) => s.selectedClearanceGroup);
     const pathPurl = toPathPurl(purl);
     // Fetch the package file tree data
     const { data: fileTreeData } = userHooks.useGetFileTree(
@@ -192,7 +194,16 @@ const BulkConclusionForm = ({
         // If exactly one field has a value, store that into concludedLicenseExpressionSPDX
         if (fieldsWithValue.length === 1) {
             const concludedLicenseExpressionSPDX = fieldsWithValue[0] || "";
-            if (
+            if (!selectedGroup) {
+                // This should not happen as the clearance action state disables the submit button
+                // but is added here so TypeScript recognizes selectedGroup is defined below.
+                toast({
+                    variant: "destructive",
+                    title: "ERROR",
+                    description:
+                        "No clearance group selected. Please select a clearance group to add a bulk conclusion.",
+                });
+            } else if (
                 window.confirm(
                     `Do you want to add a bulk license conclusion\n${JSON.stringify(
                         concludedLicenseExpressionSPDX,
@@ -207,6 +218,7 @@ const BulkConclusionForm = ({
                         concludedLicenseExpressionSPDX,
                     comment: data.comment ?? "",
                     local: data.local,
+                    clearanceGroupId: selectedGroup.id,
                 });
             } else {
                 return;

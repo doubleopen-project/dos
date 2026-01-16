@@ -33,6 +33,14 @@ export const userAPI = makeApi([
     },
     {
         method: "get",
+        path: "/user/clearance-groups",
+        description: "Get clearance groups that the user has access to",
+        alias: "GetUserClearanceGroups",
+        response: schemas.GetUserClearanceGroupsRes,
+        errors,
+    },
+    {
+        method: "get",
         path: "/license-conclusions",
         alias: "GetLicenseConclusions",
         description: "Get license conclusions. Alias: GetLicenseConclusions",
@@ -156,6 +164,13 @@ export const userAPI = makeApi([
                 description:
                     "Refine results to include only entries updated on or before the specified date.",
             },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all license conclusions accessible to the user will be returned.",
+            },
         ],
         response: schemas.GetLicenseConclusionsRes,
         errors,
@@ -266,6 +281,13 @@ export const userAPI = makeApi([
                 description:
                     "Refine count to include only entries updated on or before the specified date.",
             },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Refine count by clearance group ids. If not specified, all license conclusions accessible to the user will be counted.",
+            },
         ],
         response: commonSchemas.GetCountRes,
         errors,
@@ -309,6 +331,13 @@ export const userAPI = makeApi([
                 name: "sha256",
                 type: "Path",
                 schema: commonSchemas.PathParamString("sha256"),
+            },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all license conclusions accessible to the user will be returned.",
             },
         ],
         response: schemas.GetLicenseConclusionsForFileRes,
@@ -388,6 +417,13 @@ export const userAPI = makeApi([
                 type: "Path",
                 schema: commonSchemas.PathParamPurl,
             },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all bulk conclusions accessible to the user will be returned.",
+            },
         ],
         response: schemas.GetBulkConclusionsByPurlRes,
         errors,
@@ -403,6 +439,13 @@ export const userAPI = makeApi([
                 name: "purl",
                 type: "Path",
                 schema: commonSchemas.PathParamPurl,
+            },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Refine count by clearance group ids. If not specified, all bulk conclusions accessible to the user will be counted.",
             },
         ],
         response: commonSchemas.GetCountRes,
@@ -539,6 +582,13 @@ export const userAPI = makeApi([
                 description:
                     "Refine results to include only entries updated on or before the specified date.",
             },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all bulk conclusions accessible to the user will be returned.",
+            },
         ],
         response: schemas.GetBulkConclusionsRes,
         errors,
@@ -633,6 +683,13 @@ export const userAPI = makeApi([
                 schema: commonSchemas.QueryParamFilterDate,
                 description:
                     "Refine results to include only entries updated on or before the specified date.",
+            },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Refine count by clearance group ids. If not specified, all bulk conclusions accessible to the user will be counted.",
             },
         ],
         response: commonSchemas.GetCountRes,
@@ -810,6 +867,13 @@ export const userAPI = makeApi([
                 description:
                     "Refine results to include only entries updated on or before the specified date.",
             },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all path exclusions accessible to the user will be returned.",
+            },
         ],
         response: schemas.GetPathExclusionsRes,
         errors,
@@ -892,6 +956,13 @@ export const userAPI = makeApi([
                 schema: commonSchemas.QueryParamFilterDate,
                 description:
                     "Refine results to include only entries updated on or before the specified date.",
+            },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Refine count by clearance group ids. If not specified, all path exclusions accessible to the user will be counted.",
             },
         ],
         response: commonSchemas.GetCountRes,
@@ -979,6 +1050,13 @@ export const userAPI = makeApi([
                 name: "purl",
                 type: "Path",
                 schema: commonSchemas.PathParamPurl,
+            },
+            {
+                name: "clearanceGroupIds",
+                type: "Query",
+                schema: commonSchemas.QueryParamFilterListOfInts,
+                description:
+                    "Filter by clearance group ids. If not specified, all path exclusions accessible to the user will be returned.",
             },
         ],
         response: schemas.GetPathExclusionsForPkgRes,

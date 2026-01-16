@@ -120,6 +120,33 @@ export const QueryParamFilterDate = z.coerce.date().optional();
 export const QueryParamFilterBoolean = z.boolean().optional();
 export const QueryParamFilterInt = z.number().optional();
 
+export const QueryParamFilterListOfInts = z
+    // Accept either a string or a number (to handle cases where the input is a single number)
+    .preprocess((v) => {
+        if (typeof v === "number") return String(v);
+        if (typeof v === "string") return v.trim();
+        return v;
+    }, z.string())
+    // Validate that the string is a comma-separated list of integers
+    .refine(
+        (value) =>
+            value
+                .split(",")
+                .map((p) => p.trim())
+                .filter(Boolean)
+                .every((p) => /^\d+$/.test(p)),
+        { message: "Expected comma-separated integers, e.g. '1,2,3'" },
+    )
+    // Transform the validated string into an array of integers
+    .transform((value) =>
+        value
+            .split(",")
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .map(Number),
+    )
+    .optional();
+
 //------------------ Common response body -------------------
 
 export const GetCountRes = z.object({

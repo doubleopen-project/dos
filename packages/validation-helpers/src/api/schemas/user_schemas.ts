@@ -55,6 +55,23 @@ export const PutUserRes = z.object({
     message: z.string(),
 });
 
+//-------- GET clearance groups for user ---------
+
+export const GetUserClearanceGroupsRes = z.object({
+    writer: z.array(
+        z.object({
+            id: z.number(),
+            name: z.string(),
+        }),
+    ),
+    reader: z.array(
+        z.object({
+            id: z.number(),
+            name: z.string(),
+        }),
+    ),
+});
+
 //------------------ GET license conclusion -------------------
 export const QueryParamSortLCBy = z
     .enum([
@@ -82,6 +99,14 @@ export const GetLicenseConclusionsRes = z.object({
             bulkConclusionId: z.nullable(z.number()),
             fileSha256: z.string(),
             contextPurl: z.string(),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -131,6 +156,14 @@ export const GetLicenseConclusionsForFileRes = z.object({
             contextPurl: z.string(),
             curator: z.object({ username: z.string() }),
             bulkConclusionId: z.nullable(z.number()),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -139,6 +172,7 @@ export const GetLicenseConclusionsForFileRes = z.object({
 
 export const PostLicenseConclusionReq = z.object({
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
+    clearanceGroupId: z.number(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
@@ -213,6 +247,14 @@ export const GetBulkConclusionsRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -251,6 +293,7 @@ export const GetBulkConclusionRes = z.object({
 export const PostBulkConclusionReq = z.object({
     pattern: bcPatternGlobSchema,
     concludedLicenseExpressionSPDX: concludedLicenseExpressionSPDX,
+    clearanceGroupId: z.number(),
     detectedLicenseExpressionSPDX: z.nullable(z.string()).optional(),
     comment: z.string().optional(),
     local: z.boolean().optional(),
@@ -317,6 +360,14 @@ export const GetBulkConclusionsByPurlRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -348,6 +399,14 @@ export const GetPathExclusionsRes = z.object({
             package: z.object({
                 purl: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });
@@ -454,6 +513,7 @@ export const PostPathExclusionReq = z.object({
                         .join(", "),
             },
         ),
+    clearanceGroupId: z.number(),
     comment: z.nullable(z.string()).optional(),
 });
 
@@ -481,6 +541,14 @@ export const GetPathExclusionsForPkgRes = z.object({
             curator: z.object({
                 username: z.string(),
             }),
+            clearanceGroups: z.array(
+                z.object({
+                    clearanceGroup: z.object({
+                        id: z.number(),
+                        name: z.string(),
+                    }),
+                }),
+            ),
         }),
     ),
 });

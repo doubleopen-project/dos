@@ -10,6 +10,7 @@ import { useUser } from "@/hooks/useUser";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import ClearanceGroupBadge from "@/components/common/clearance_groups/ClearanceGroupBadge";
 import DeleteLicenseConclusion from "@/components/common/delete_item/DeleteLicenseConclusion";
 import EditButton from "@/components/common/edit_item/EditButton";
 import PurlDetails from "@/components/common/PurlDetails";
@@ -57,12 +58,24 @@ const LicenseConclusion = ({ purl, licenseConclusion, editHandler }: Props) => {
                             {licenseConclusion.curator.username}
                         </div>
                     </div>
-                    <div className="flex text-xs">
-                        <div className="mr-2 flex font-semibold whitespace-nowrap">
-                            Concluded:
+                    <div className="flex items-center justify-between text-sm">
+                        <div className="flex text-xs">
+                            <div className="mr-2 flex font-semibold whitespace-nowrap">
+                                Concluded:
+                            </div>
+                            <div className="rounded-sm bg-green-400 dark:text-black">
+                                {
+                                    licenseConclusion.concludedLicenseExpressionSPDX
+                                }
+                            </div>
                         </div>
-                        <div className="rounded-sm bg-green-400 dark:text-black">
-                            {licenseConclusion.concludedLicenseExpressionSPDX}
+                        <div className="flex space-x-1">
+                            {licenseConclusion.clearanceGroups.map((cg) => (
+                                <ClearanceGroupBadge
+                                    key={cg.clearanceGroup.id}
+                                    clearanceGroup={cg.clearanceGroup}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div className="flex text-xs">

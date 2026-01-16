@@ -26,6 +26,7 @@ import {
 import ActionCell from "@/components/clearance_library/path_exclusions/ActionCell";
 import TableCell from "@/components/clearance_library/path_exclusions/TableCell";
 import TableCellSelect from "@/components/clearance_library/path_exclusions/TableCellSelect";
+import ClearanceGroupTooltipIcon from "@/components/common/clearance_groups/ClearanceGroupTooltipIcon";
 import PEAffectedFilesTooltip from "@/components/common/PEAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
 
@@ -397,6 +398,22 @@ export const columns = (
             meta: {
                 type: "textarea",
             },
+        },
+        {
+            accessorKey: "clearanceGroups",
+            header: () => (
+                <Label className="cursor-pointer font-bold">Groups</Label>
+            ),
+            cell: ({ row }) => (
+                <div className="flex flex-wrap gap-1">
+                    {row.original.clearanceGroups.map((cg) => (
+                        <ClearanceGroupTooltipIcon
+                            key={cg.clearanceGroup.id}
+                            clearanceGroup={cg.clearanceGroup}
+                        />
+                    ))}
+                </div>
+            ),
         },
         {
             id: "actions",
