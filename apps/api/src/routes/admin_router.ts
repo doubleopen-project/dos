@@ -9,19 +9,25 @@ import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
     assignClearanceItemsToClearanceGroup,
+    countApiClients,
     countClearanceGroups,
     countScannedPackages,
+    createApiClient,
     createClearanceGroup,
     createClearanceGroupCurators,
     createCurator,
+    deleteApiClient,
     deleteClearanceGroup,
     deleteClearanceGroupCurator,
     findCuratorById,
     findScannedPackages,
+    getApiClientById,
+    getApiClients,
     getClearanceGroupById,
     getClearanceGroups,
     getCurators,
     getUniqueClearanceGroupById,
+    updateApiClient,
     updateClearanceGroup,
     updateClearanceItemsCurator,
 } from "../helpers/db_queries";
@@ -563,5 +569,87 @@ adminRouter.post(
         }
     },
 );
+
+adminRouter.post("/api-clients", async (req, res) => {
+    try {
+        const apiClient = await createApiClient({
+            name: req.body.name,
+            description: req.body.description,
+        });
+        res.status(200).json(apiClient);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/api-clients", async (req, res) => {
+    try {
+        const pageSize = req.query.pageSize;
+        const pageIndex = req.query.pageIndex;
+        const skip = pageSize && pageIndex ? pageSize * pageIndex : 0;
+
+        const apiClients = await getApiClients(
+            skip,
+            pageSize,
+            req.query.sortBy,
+            req.query.sortOrder,
+        );
+
+        res.status(200).json(apiClients);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/api-clients/count", async (req, res) => {
+    try {
+        const count = await countApiClients();
+        res.status(200).json({ count: count });
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.patch("/api-clients/:id", async (req, res) => {
+    try {
+        const updatedClient = await updateApiClient(req.params.id, {
+            name: req.body.name,
+            description: req.body.description,
+        });
+        res.status(200).json(updatedClient);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.delete("/api-clients/:id", async (req, res) => {
+    try {
+        await deleteApiClient(req.params.id);
+        res.status(204).send();
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/api-clients/:id", async (req, res) => {
+    try {
+        const apiClient = await getApiClientById(req.params.id);
+        res.status(200).json(apiClient);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
 
 export default adminRouter;

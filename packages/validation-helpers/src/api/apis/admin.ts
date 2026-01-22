@@ -439,4 +439,108 @@ export const adminAPI = makeApi([
         response: schemas.PostAssignClearanceItemsToClearanceGroupRes,
         errors,
     },
+    {
+        method: "post",
+        path: "/api-clients",
+        description: "Create API client",
+        alias: "CreateApiClient",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostApiClientsReq,
+            },
+        ],
+        response: schemas.ApiClient,
+        errors,
+    },
+    {
+        method: "patch",
+        path: "/api-clients/:id",
+        description: "Update API client",
+        alias: "UpdateApiClient",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PatchApiClientsReq,
+            },
+        ],
+        response: schemas.ApiClient,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/api-clients/:id",
+        description: "Delete API client",
+        alias: "DeleteApiClient",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        status: 204,
+        response: commonSchemas.EmptyResponse,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients",
+        description: "Get API clients",
+        alias: "GetApiClients",
+        parameters: [
+            {
+                name: "pageSize",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageSize,
+            },
+            {
+                name: "pageIndex",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageIndex,
+            },
+            {
+                name: "sortBy",
+                type: "Query",
+                schema: schemas.QueryParamApiClientSortBy,
+            },
+            {
+                name: "sortOrder",
+                type: "Query",
+                schema: commonSchemas.QueryParamSortOrder,
+            },
+        ],
+        response: schemas.ApiClientList,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients/count",
+        description: "Get API clients count",
+        alias: "GetApiClientsCount",
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients/:id",
+        description: "Get API client by ID",
+        alias: "GetApiClientById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiClientWithTokens,
+        errors,
+    },
 ]);
