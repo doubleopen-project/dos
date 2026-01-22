@@ -9,6 +9,7 @@ import {
     createClearanceGroup,
     createClearanceGroupCurators,
     createLicenseConclusion,
+    deleteApiClient,
     deleteClearanceGroup,
     deleteLicenseConclusion,
     getOrCreateCurator,
@@ -21,6 +22,8 @@ import {
 import { expect, test } from "./fixtures/admin";
 
 type Curators = ZodiosResponseByAlias<typeof adminAPI, "GetCurators">;
+
+type ApiClients = ZodiosResponseByAlias<typeof adminAPI, "GetApiClients">;
 
 test.describe("API lets authenticated admins to", () => {
     test("retrieve packages", async ({ adminContext }) => {
@@ -732,5 +735,186 @@ test.describe("POST /clearance-groups/:groupId/assign-items should", () => {
         expect((await readonlyContext.post(url)).status()).toBe(403);
         expect((await noRolesUserContext.post(url)).status()).toBe(403);
         expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("POST /api-clients should", () => {
+    test("allow admins to create API clients", async ({ adminContext }) => {
+        const name = `Test API Client ${randHex()}`;
+
+        const response = await adminContext.post("api-clients", {
+            data: {
+                name: name,
+            },
+        });
+        expect(response.status()).toBe(200);
+
+        const data = await response.json();
+        expect(data.name).toBe(name);
+
+        await deleteApiClient(data.id);
+    });
+
+    test("not allow non-admin users to create API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("PATCH /api-clients/:id should", () => {
+    test("allow admins to update API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const newName = `Updated API Client ${randHex()}`;
+        const updateResponse = await adminContext.patch(
+            `api-clients/${apiClient.id}`,
+            {
+                data: {
+                    name: newName,
+                },
+            },
+        );
+        expect(updateResponse.status()).toBe(200);
+        const updatedClient = await updateResponse.json();
+        expect(updatedClient.name).toBe(newName);
+    });
+
+    test("not allow non-admin users to update API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.patch(url)).status()).toBe(403);
+        expect((await readonlyContext.patch(url)).status()).toBe(403);
+        expect((await noRolesUserContext.patch(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.patch(url)).status()).toBe(401);
+    });
+});
+
+test.describe("DELETE /api-clients/:id should", () => {
+    test("allow admins to delete API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const deleteResponse = await adminContext.delete(
+            `api-clients/${apiClient.id}`,
+        );
+        expect(deleteResponse.status()).toBe(204);
+    });
+
+    test("not allow non-admin users to delete API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.delete(url)).status()).toBe(403);
+        expect((await readonlyContext.delete(url)).status()).toBe(403);
+        expect((await noRolesUserContext.delete(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.delete(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients/:id should", () => {
+    test("allow admins to retrieve API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const getResponse = await adminContext.get(
+            `api-clients/${apiClient.id}`,
+        );
+        expect(getResponse.status()).toBe(200);
+        const retrievedClient = await getResponse.json();
+        expect(retrievedClient.id).toBe(apiClient.id);
+    });
+
+    test("not allow non-admin users to retrieve API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients should", () => {
+    test("allow admins to list API clients", async ({ adminContext, seed }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const listResponse = await adminContext.get(`api-clients`);
+        expect(listResponse.status()).toBe(200);
+        const clients: ApiClients = await listResponse.json();
+        expect(
+            clients.find((client) => client.id === apiClient.id),
+        ).toBeDefined();
+    });
+
+    test("not allow non-admin users to list API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients/count should", () => {
+    test("allow admins to get API clients count", async ({
+        adminContext,
+        seed,
+    }) => {
+        await seed.createApiClient();
+
+        const countResponse = await adminContext.get(`api-clients/count`);
+        expect(countResponse.status()).toBe(200);
+        const countData = await countResponse.json();
+
+        const listResponse = await adminContext.get(`api-clients`);
+        expect(listResponse.status()).toBe(200);
+        const clients: ApiClients = await listResponse.json();
+
+        expect(countData.count).toBeGreaterThan(0);
+        expect(countData.count).toBe(clients.length);
+    });
+
+    test("not allow non-admin users to get API clients count", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/count`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
     });
 });

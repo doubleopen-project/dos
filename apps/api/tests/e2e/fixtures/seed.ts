@@ -4,11 +4,13 @@
 
 import { randHex } from "@ngneat/falso";
 import {
+    createApiClient,
     createBulkConclusion,
     createClearanceGroup,
     createClearanceGroupCurators,
     createLicenseConclusion,
     createPathExclusion,
+    deleteApiClient,
     deleteBulkAndLicenseConclusions,
     deleteClearanceGroup,
     deleteLicenseConclusion,
@@ -330,6 +332,19 @@ export const seedCreateLicenseConclusion = async (
         licenseConclusion: lc,
         cleanup: async () => {
             await deleteLicenseConclusion(lc.id);
+        },
+    };
+};
+
+export const seedCreateApiClient = async () => {
+    const apiClient = await createApiClient({
+        name: `Test API Client ${randHex()}`,
+    });
+
+    return {
+        apiClient: apiClient,
+        cleanup: async () => {
+            await deleteApiClient(apiClient.id);
         },
     };
 };
