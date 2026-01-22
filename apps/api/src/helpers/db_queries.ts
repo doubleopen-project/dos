@@ -25,7 +25,7 @@ import {
     SystemIssue,
 } from "database";
 import { omit } from "es-toolkit/object";
-import { ClearanceGroupSortBy } from "validation-helpers";
+import { ApiClientSortBy, ClearanceGroupSortBy } from "validation-helpers";
 
 const initialRetryCount = parseInt(process.env.DB_RETRIES as string) || 5;
 const retryInterval = parseInt(process.env.DB_RETRY_INTERVAL as string) || 1000;
@@ -583,6 +583,14 @@ export const syncBulkConclusionLCsToClearanceGroups = async (
     });
 };
 
+export const createApiClient = async (input: Prisma.ApiClientCreateInput) => {
+    return await retry(async () => {
+        return prisma.apiClient.create({
+            data: input,
+        });
+    });
+};
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (
@@ -1083,6 +1091,20 @@ export const updateClearanceGroup = async (
 ): Promise<ClearanceGroup> => {
     return await retry(async () => {
         return prisma.clearanceGroup.update({
+            where: {
+                id: id,
+            },
+            data: input,
+        });
+    });
+};
+
+export const updateApiClient = async (
+    id: string,
+    input: Prisma.ApiClientUpdateInput,
+) => {
+    return await retry(async () => {
+        return prisma.apiClient.update({
             where: {
                 id: id,
             },
@@ -4210,6 +4232,74 @@ export const getClearanceGroupIdsByPathExclusionId = async (
     ).map((group) => group.id);
 };
 
+export const getApiClientById = async (id: string) => {
+    return await retry(async () => {
+        return prisma.apiClient.findUniqueOrThrow({
+            where: { id: id },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                createdAt: true,
+                updatedAt: true,
+                apiTokens: {
+                    select: {
+                        id: true,
+                        description: true,
+                        isActive: true,
+                        createdAt: true,
+                        updatedAt: true,
+                    },
+                },
+            },
+        });
+    });
+};
+
+export const getApiClients = async (
+    skip?: number,
+    take?: number,
+    orderProperty?: ApiClientSortBy,
+    orderPropertyValue?: "asc" | "desc",
+    where?: Prisma.ApiClientWhereInput,
+) => {
+    return await retry(async () => {
+        return prisma.apiClient.findMany({
+            skip: skip,
+            take: take,
+            orderBy: orderProperty
+                ? { [orderProperty]: orderPropertyValue }
+                : undefined,
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                createdAt: true,
+                updatedAt: true,
+                apiTokens: {
+                    select: {
+                        id: true,
+                        description: true,
+                        createdAt: true,
+                        updatedAt: true,
+                    },
+                },
+            },
+            where: where,
+        });
+    });
+};
+
+export const getApiClientsCount = async (
+    where?: Prisma.ApiClientWhereInput,
+) => {
+    return await retry(async () => {
+        return prisma.apiClient.count({
+            where: where,
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
@@ -4580,6 +4670,16 @@ export const deleteClearanceGroupCurator = async (
 export const deleteCurator = async (id: string) => {
     return await retry(async () => {
         return prisma.curator.delete({
+            where: {
+                id: id,
+            },
+        });
+    });
+};
+
+export const deleteApiClient = async (id: string) => {
+    return await retry(async () => {
+        return prisma.apiClient.delete({
             where: {
                 id: id,
             },
@@ -5103,6 +5203,16 @@ export const countClearanceGroups = async (
 ): Promise<number> => {
     return await retry(async () => {
         return prisma.clearanceGroup.count({
+            where: where,
+        });
+    });
+};
+
+export const countApiClients = async (
+    where?: Prisma.ApiClientWhereInput,
+): Promise<number> => {
+    return await retry(async () => {
+        return prisma.apiClient.count({
             where: where,
         });
     });

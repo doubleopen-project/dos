@@ -15,6 +15,7 @@ import {
 } from "../../../src/helpers/keycloak_queries";
 import { getAccessToken } from "../utils/get_access_token";
 import {
+    seedCreateApiClient,
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
     seedCreateLicenseConclusion,
@@ -46,6 +47,7 @@ type BaseFixtures = {
             curatorId: string,
             groupId: number,
         ): ReturnType<typeof seedCreateLicenseConclusion>;
+        createApiClient(): ReturnType<typeof seedCreateApiClient>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -210,6 +212,11 @@ export const testBase = test.extend<BaseFixtures>({
                 );
                 registerCleanup(lc.cleanup);
                 return lc;
+            },
+            async createApiClient() {
+                const apiClient = await seedCreateApiClient();
+                registerCleanup(apiClient.cleanup);
+                return apiClient;
             },
         });
     },

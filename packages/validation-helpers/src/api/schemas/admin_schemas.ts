@@ -221,3 +221,46 @@ export const PostAssignClearanceItemsToClearanceGroupRes = z.object({
         pathExclusions: z.object({ linksDeleted: z.number() }),
     }),
 });
+
+//---------------- API Client Schemas ----------------
+
+const ApiToken = z.object({
+    id: z.string().uuid(),
+    description: z.string(),
+    isActive: z.boolean(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+});
+
+export const ApiClient = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    description: z.string().nullable(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+});
+
+export const ApiClientWithTokens = ApiClient.extend({
+    apiTokens: z.array(ApiToken),
+});
+
+export const ApiClientList = z.array(ApiClient);
+
+const ApiClientSortByEnum = z.enum(["id", "name", "createdAt", "updatedAt"]);
+
+export type ApiClientSortBy = z.infer<typeof ApiClientSortByEnum>;
+export const QueryParamApiClientSortBy = ApiClientSortByEnum.optional();
+
+//------------ POST api-clients  ------------
+
+export const PostApiClientsReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }),
+    description: z.string().optional(),
+});
+
+//------------ PATCH api-clients  ------------
+
+export const PatchApiClientsReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }).optional(),
+    description: z.string().optional(),
+});
