@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "@ngneat/falso": "^8.0.0",
-        "@playwright/test": "1.57.0",
+        "@playwright/test": "1.58.0",
         "@types/adm-zip": "0.5.7",
         "@types/braces": "^3.0.4",
         "@types/chai": "5.2.3",
