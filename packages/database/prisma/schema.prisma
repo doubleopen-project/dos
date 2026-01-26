@@ -308,6 +308,7 @@ model ClearanceGroup {
   bulkConclusions    ClearanceGroup_BulkConclusion[]
   pathExclusions     ClearanceGroup_PathExclusion[]
   curators           ClearanceGroup_Curator[]
+  apiTokens          ApiToken_ClearanceGroup[]
 }
 
 model ClearanceGroup_LicenseConclusion {
@@ -358,4 +359,55 @@ model ClearanceGroup_Curator {
 enum Role {
   WRITER
   READER
+}
+
+enum ApiScope {
+  SCAN_DATA
+  CLEARANCE_DATA
+}
+
+model ApiClient {
+  id          String   @id @default(uuid()) @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @unique
+  description String?
+
+  apiTokens ApiToken[]
+}
+
+model ApiToken {
+  id          String   @id @default(uuid()) @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tokenHash   String   @unique
+  description String
+  isActive    Boolean  @default(true)
+
+  apiClientId String    @db.Uuid
+  apiClient   ApiClient @relation(fields: [apiClientId], references: [id], onDelete: Cascade)
+
+  scopes          ApiTokenScope[]
+  clearanceGroups ApiToken_ClearanceGroup[]
+}
+
+model ApiTokenScope {
+  apiTokenId String   @db.Uuid
+  apiToken   ApiToken @relation(fields: [apiTokenId], references: [id], onDelete: Cascade)
+  scope      ApiScope
+
+  @@id([apiTokenId, scope])
+  @@index([apiTokenId])
+}
+
+model ApiToken_ClearanceGroup {
+  apiTokenId       String         @db.Uuid
+  apiToken         ApiToken       @relation(fields: [apiTokenId], references: [id], onDelete: Cascade)
+  clearanceGroupId Int
+  clearanceGroup   ClearanceGroup @relation(fields: [clearanceGroupId], references: [id], onDelete: Cascade)
+  rank             Int
+
+  @@id([apiTokenId, clearanceGroupId])
+  @@index([apiTokenId])
+  @@index([clearanceGroupId])
 }
