@@ -7,38 +7,17 @@ import {
     randSemver,
     randSlug,
 } from "@ngneat/falso";
-import test, { APIRequestContext, expect } from "@playwright/test";
 import { ZodiosResponseByPath } from "@zodios/core";
 import AdmZip from "adm-zip";
 import { dosAPI } from "validation-helpers";
-import { baseUrl } from "./utils/constants";
+import { expect, test } from "./fixtures/scanner";
 
 test.describe.configure({ mode: "default" });
 
-test.describe("API lets authenticated users to", () => {
-    const dosToken: string = "token";
-    let apiContext: APIRequestContext;
-
-    /**
-     * Retrieve the token for an authenticated test user from Keycloak. This can be used in the API
-     * calls to authenticate the user. Also retrieve the DOS token.
-     */
-    test.beforeAll(async ({ playwright }) => {
-        // Create a new API context for the scanner API with the DOS token in the headers.
-        apiContext = await playwright.request.newContext({
-            baseURL: `${baseUrl}/api/`,
-            extraHTTPHeaders: {
-                Authorization: `Bearer ${dosToken}`,
-            },
-        });
-    });
-
-    test.afterAll(async () => {
-        // Close the API context to clean up resources.
-        await apiContext.dispose();
-    });
-
-    test("scan packages and retrieve their results", async ({}) => {
+test.describe("Scanner pipeline should", () => {
+    test("allow to scan packages and retrieve their results", async ({
+        validScanDataTokenContext,
+    }) => {
         /**
          * Zip some test files to be scanned.
          */
@@ -70,9 +49,12 @@ test.describe("API lets authenticated users to", () => {
         const purl = `pkg:npm/${packageName}@${version}`;
 
         // Fetch a presigned URL from the API and upload the zip file to S3.
-        const presignedRes = await apiContext.post("upload-url", {
-            data: { key: zipKey },
-        });
+        const presignedRes = await validScanDataTokenContext.post(
+            "upload-url",
+            {
+                data: { key: zipKey },
+            },
+        );
 
         expect(presignedRes.ok()).toBeTruthy();
 
@@ -85,7 +67,7 @@ test.describe("API lets authenticated users to", () => {
             body: zipBuffer,
         });
 
-        await apiContext.post("job", {
+        await validScanDataTokenContext.post("job", {
             data: {
                 zipFileKey: zipKey,
                 purls: [purl],
@@ -94,9 +76,12 @@ test.describe("API lets authenticated users to", () => {
 
         // Query scan results until they are availabe and include the expected results.
         await expect(async () => {
-            const jobDetailsRes = await apiContext.post("scan-results", {
-                data: { purls: [purl] },
-            });
+            const jobDetailsRes = await validScanDataTokenContext.post(
+                "scan-results",
+                {
+                    data: { purls: [purl] },
+                },
+            );
 
             expect(jobDetailsRes.ok()).toBeTruthy();
 
@@ -118,10 +103,12 @@ test.describe("API lets authenticated users to", () => {
         }).toPass();
     });
 
-    test("adding a job with a non-existent S3 file key should result in job failing", async ({}) => {
+    test("result in the job failing when adding a job with a non-existent S3 file key", async ({
+        validScanDataTokenContext,
+    }) => {
         const purl = `pkg:npm/${randSlug()}@${randSemver()}`;
 
-        const jobRes = await apiContext.post("job", {
+        const jobRes = await validScanDataTokenContext.post("job", {
             data: {
                 zipFileKey: "non-existent.zip",
                 purls: [purl],
@@ -134,7 +121,7 @@ test.describe("API lets authenticated users to", () => {
 
         // Query job state until it is available and is failed.
         await expect(async () => {
-            const jobStateRes = await apiContext.get(
+            const jobStateRes = await validScanDataTokenContext.get(
                 `job-state/${job.scannerJobId}`,
             );
 
