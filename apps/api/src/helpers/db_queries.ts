@@ -5,6 +5,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'ScannerJob'
 import {
+    ApiScope,
     BulkConclusion,
     ClearanceGroup,
     ClearanceGroup_Curator,
@@ -591,6 +592,73 @@ export const createApiClient = async (input: Prisma.ApiClientCreateInput) => {
     });
 };
 
+export const createApiToken = async (
+    tokenHash: string,
+    description: string,
+    apiClientId: string,
+    scopes: ApiScope[],
+    clearanceGroupIds?: number[],
+    isActive?: boolean,
+) => {
+    return await retry(async () => {
+        return prisma.apiToken.create({
+            data: {
+                tokenHash: tokenHash,
+                description: description,
+                isActive: isActive,
+                apiClient: {
+                    connect: { id: apiClientId },
+                },
+                scopes: {
+                    createMany: {
+                        data: scopes.map((scope: ApiScope) => ({
+                            scope: scope,
+                        })),
+                    },
+                },
+                clearanceGroups: clearanceGroupIds
+                    ? {
+                          createMany: {
+                              data: clearanceGroupIds.map(
+                                  (groupId: number, index: number) => ({
+                                      clearanceGroupId: groupId,
+                                      rank: index + 1,
+                                  }),
+                              ),
+                          },
+                      }
+                    : undefined,
+            },
+            select: {
+                id: true,
+                description: true,
+                isActive: true,
+                createdAt: true,
+                updatedAt: true,
+                scopes: {
+                    select: {
+                        scope: true,
+                    },
+                },
+                clearanceGroups: {
+                    select: {
+                        clearanceGroup: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        rank: true,
+                    },
+                    orderBy: {
+                        rank: "asc",
+                    },
+                },
+            },
+        });
+    });
+};
+
 // ------------------------------ Update ------------------------------
 
 export const updateScannerJob = async (
@@ -1109,6 +1177,76 @@ export const updateApiClient = async (
                 id: id,
             },
             data: input,
+        });
+    });
+};
+
+export const updateApiToken = async (
+    id: string,
+    data: {
+        tokenHash?: string;
+        description?: string;
+        isActive?: boolean;
+        scopes?: ApiScope[];
+        clearanceGroupIds?: number[];
+    },
+) => {
+    return await retry(async () => {
+        return prisma.apiToken.update({
+            where: {
+                id: id,
+            },
+            data: {
+                tokenHash: data.tokenHash,
+                description: data.description,
+                isActive: data.isActive,
+                scopes: data.scopes
+                    ? {
+                          deleteMany: {},
+                          createMany: {
+                              data: data.scopes.map((scope: ApiScope) => ({
+                                  scope: scope,
+                              })),
+                          },
+                      }
+                    : undefined,
+                clearanceGroups: data.clearanceGroupIds
+                    ? {
+                          deleteMany: {},
+                          createMany: {
+                              data: data.clearanceGroupIds.map(
+                                  (groupId: number, index: number) => ({
+                                      clearanceGroupId: groupId,
+                                      rank: index + 1,
+                                  }),
+                              ),
+                          },
+                      }
+                    : undefined,
+            },
+            select: {
+                id: true,
+                description: true,
+                isActive: true,
+                createdAt: true,
+                updatedAt: true,
+                scopes: {
+                    select: {
+                        scope: true,
+                    },
+                },
+                clearanceGroups: {
+                    select: {
+                        clearanceGroup: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        rank: true,
+                    },
+                },
+            },
         });
     });
 };
@@ -4298,6 +4436,57 @@ export const getApiClientsCount = async (
             where: where,
         });
     });
+};
+
+export const getApiTokenById = async (id: string) => {
+    return await retry(async () => {
+        return prisma.apiToken.findUnique({
+            where: { id: id },
+            select: {
+                id: true,
+                description: true,
+                isActive: true,
+                createdAt: true,
+                updatedAt: true,
+                scopes: {
+                    select: {
+                        scope: true,
+                    },
+                },
+                clearanceGroups: {
+                    select: {
+                        clearanceGroup: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        rank: true,
+                    },
+                    orderBy: {
+                        rank: "asc",
+                    },
+                },
+            },
+        });
+    });
+};
+
+export const findTokenHashByApiTokenId = async (
+    id: string,
+): Promise<string | null> => {
+    const apiToken = await retry(async () => {
+        return prisma.apiToken.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                tokenHash: true,
+            },
+        });
+    });
+
+    return apiToken?.tokenHash || null;
 };
 
 // ------------------------------ Delete ------------------------------
