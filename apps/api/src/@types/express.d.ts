@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import type { ApiScope } from "database";
+
 declare global {
     namespace Express {
         export interface Request {
@@ -52,6 +54,11 @@ declare global {
                         signed: string;
                     };
                 };
+            };
+            apiTokenAuth?: {
+                apiTokenId: string;
+                scopes: ApiScope[];
+                clearanceGroupIds: number[];
             };
         }
     }

@@ -4489,6 +4489,40 @@ export const findTokenHashByApiTokenId = async (
     return apiToken?.tokenHash || null;
 };
 
+export const findApiTokenByHash = async (tokenHash: string) => {
+    return await retry(async () => {
+        return prisma.apiToken.findUnique({
+            where: { tokenHash: tokenHash },
+            select: {
+                id: true,
+                description: true,
+                isActive: true,
+                createdAt: true,
+                updatedAt: true,
+                scopes: {
+                    select: {
+                        scope: true,
+                    },
+                },
+                clearanceGroups: {
+                    select: {
+                        clearanceGroup: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        rank: true,
+                    },
+                    orderBy: {
+                        rank: "asc",
+                    },
+                },
+            },
+        });
+    });
+};
+
 // ------------------------------ Delete ------------------------------
 
 // Delete all license findings related to files
