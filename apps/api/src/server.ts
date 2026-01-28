@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === "production") {
         "KEYCLOAK_CLIENT_SECRET_API",
         "SESSION_SECRET",
         "COOKIE_SECRET",
+        "TOKEN_HMAC_SECRET",
         "SPACES_ENDPOINT",
         "SPACES_REGION",
         "SPACES_KEY",

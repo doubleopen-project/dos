@@ -40,6 +40,7 @@
         "SPACES_KEY",
         "SPACES_SECRET",
         "SPACES_REGION",
+        "TOKEN_HMAC_SECRET",
         "UL_CONCURRENCY",
         "UL_RETRIES",
         "UL_RETRY_INTERVAL",

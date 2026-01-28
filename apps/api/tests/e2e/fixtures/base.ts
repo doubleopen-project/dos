@@ -4,6 +4,7 @@
 
 import { randNumber } from "@ngneat/falso";
 import { test } from "@playwright/test";
+import { ApiScope } from "database";
 import {
     deleteCurator,
     getOrCreateCurator,
@@ -16,6 +17,7 @@ import {
 import { getAccessToken } from "../utils/get_access_token";
 import {
     seedCreateApiClient,
+    seedCreateApiToken,
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
     seedCreateLicenseConclusion,
@@ -48,6 +50,12 @@ type BaseFixtures = {
             groupId: number,
         ): ReturnType<typeof seedCreateLicenseConclusion>;
         createApiClient(): ReturnType<typeof seedCreateApiClient>;
+        createApiToken(
+            apiClientId: string,
+            scopes?: ApiScope[],
+            clearanceGroupIds?: number[],
+            isActive?: boolean,
+        ): ReturnType<typeof seedCreateApiToken>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -217,6 +225,21 @@ export const testBase = test.extend<BaseFixtures>({
                 const apiClient = await seedCreateApiClient();
                 registerCleanup(apiClient.cleanup);
                 return apiClient;
+            },
+            async createApiToken(
+                apiClientId: string,
+                scopes: ApiScope[] = [ApiScope.SCAN_DATA],
+                clearanceGroupIds?: number[],
+                isActive?: boolean,
+            ) {
+                const apiToken = await seedCreateApiToken(
+                    apiClientId,
+                    scopes,
+                    clearanceGroupIds,
+                    isActive,
+                );
+                registerCleanup(apiToken.cleanup);
+                return apiToken;
             },
         });
     },

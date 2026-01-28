@@ -543,4 +543,90 @@ export const adminAPI = makeApi([
         response: schemas.ApiClientWithTokens,
         errors,
     },
+    {
+        method: "post",
+        path: "/api-clients/:id/api-tokens",
+        description: "Create API token",
+        alias: "CreateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostApiClientTokensReq,
+            },
+        ],
+        response: schemas.PostApiClientTokensRes,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/api-tokens/:id/rotate",
+        description: "Generate a new token and invalidate the old one",
+        alias: "RotateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.RotateTokenRes,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/api-tokens/:id/revoke",
+        description: "Revoke an API token",
+        alias: "RevokeApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
+    {
+        method: "patch",
+        path: "/api-tokens/:id",
+        description: "Update an API token",
+        alias: "UpdateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PatchApiTokensReq,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-tokens/:id",
+        description:
+            "Get API token details by ID. Does not return the token value.",
+        alias: "GetApiTokenById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
 ]);
