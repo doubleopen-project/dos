@@ -3,8 +3,14 @@
 // SPDX-License-Identifier: MIT
 
 import { randHex } from "@ngneat/falso";
+import { ApiScope } from "database";
+import {
+    generateApiToken,
+    hashApiToken,
+} from "../../../src/helpers/api_tokens";
 import {
     createApiClient,
+    createApiToken,
     createBulkConclusion,
     createClearanceGroup,
     createClearanceGroupCurators,
@@ -345,6 +351,34 @@ export const seedCreateApiClient = async () => {
         apiClient: apiClient,
         cleanup: async () => {
             await deleteApiClient(apiClient.id);
+        },
+    };
+};
+
+export const seedCreateApiToken = async (
+    apiClientId: string,
+    scopes: ApiScope[],
+    clearanceGroupIds?: number[],
+    isActive?: boolean,
+) => {
+    const tokenSecret = generateApiToken();
+    const tokenHash = hashApiToken(tokenSecret);
+
+    const apiToken = await createApiToken(
+        tokenHash,
+        "API token",
+        apiClientId,
+        scopes,
+        clearanceGroupIds,
+        isActive,
+    );
+
+    return {
+        apiToken: apiToken,
+        tokenSecret: tokenSecret,
+        cleanup: async () => {
+            // No need to delete the token separately, it will be deleted
+            // when the API client is deleted.
         },
     };
 };

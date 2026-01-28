@@ -5,6 +5,7 @@
 import { zodiosRouter } from "@zodios/express";
 import { Prisma } from "database";
 import { adminAPI } from "validation-helpers";
+import { generateApiToken, hashApiToken } from "../helpers/api_tokens";
 import { CustomError } from "../helpers/custom_error";
 import * as dbOperations from "../helpers/db_operations";
 import {
@@ -13,6 +14,7 @@ import {
     countClearanceGroups,
     countScannedPackages,
     createApiClient,
+    createApiToken,
     createClearanceGroup,
     createClearanceGroupCurators,
     createCurator,
@@ -21,13 +23,16 @@ import {
     deleteClearanceGroupCurator,
     findCuratorById,
     findScannedPackages,
+    findTokenHashByApiTokenId,
     getApiClientById,
     getApiClients,
+    getApiTokenById,
     getClearanceGroupById,
     getClearanceGroups,
     getCurators,
     getUniqueClearanceGroupById,
     updateApiClient,
+    updateApiToken,
     updateClearanceGroup,
     updateClearanceItemsCurator,
 } from "../helpers/db_queries";
@@ -39,6 +44,7 @@ import {
     getUser,
 } from "../helpers/keycloak_queries";
 import { runPurlCleanup } from "../helpers/purl_cleanup_helpers";
+import { authCache } from "../services/auth_cache";
 
 const adminRouter = zodiosRouter(adminAPI);
 
@@ -645,6 +651,98 @@ adminRouter.get("/api-clients/:id", async (req, res) => {
     try {
         const apiClient = await getApiClientById(req.params.id);
         res.status(200).json(apiClient);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.post("/api-clients/:id/api-tokens", async (req, res) => {
+    try {
+        const tokenSecret = generateApiToken();
+        const tokenHash = hashApiToken(tokenSecret);
+
+        const token = await createApiToken(
+            tokenHash,
+            req.body.description,
+            req.params.id,
+            req.body.scopes,
+            req.body.clearanceGroupIds,
+        );
+
+        res.status(200).json({ token: token, tokenSecret: tokenSecret });
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.post("/api-tokens/:id/rotate", async (req, res) => {
+    try {
+        const tokenSecret = generateApiToken();
+        const tokenHash = hashApiToken(tokenSecret);
+
+        await updateApiToken(req.params.id, { tokenHash: tokenHash });
+
+        res.status(200).json({ tokenSecret: tokenSecret });
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.post("/api-tokens/:id/revoke", async (req, res) => {
+    try {
+        const updatedToken = await updateApiToken(req.params.id, {
+            isActive: false,
+        });
+
+        const tokenHash = await findTokenHashByApiTokenId(req.params.id);
+
+        if (tokenHash) authCache.del(tokenHash);
+
+        res.status(200).json(updatedToken);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.patch("/api-tokens/:id", async (req, res) => {
+    try {
+        const updatedToken = await updateApiToken(req.params.id, {
+            description: req.body.description,
+            scopes: req.body.scopes,
+            clearanceGroupIds: req.body.clearanceGroupIds,
+        });
+
+        if (req.body.scopes || req.body.clearanceGroupIds) {
+            const tokenHash = await findTokenHashByApiTokenId(req.params.id);
+
+            if (tokenHash) authCache.del(tokenHash);
+        }
+
+        res.status(200).json(updatedToken);
+    } catch (error) {
+        console.log("Error: ", error);
+        const err = await getErrorCodeAndMessage(error);
+        res.status(err.statusCode).json({ message: err.message });
+    }
+});
+
+adminRouter.get("/api-tokens/:id", async (req, res) => {
+    try {
+        const apiToken = await getApiTokenById(req.params.id);
+
+        if (!apiToken) {
+            res.status(404).json({ message: "API token not found" });
+            return;
+        }
+        res.status(200).json(apiToken);
     } catch (error) {
         console.log("Error: ", error);
         const err = await getErrorCodeAndMessage(error);
