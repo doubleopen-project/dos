@@ -21,6 +21,8 @@ import {
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
     seedCreateLicenseConclusion,
+    seedCreatePackage,
+    seedCreateScannerJob,
 } from "./seed";
 
 type BaseFixtures = {
@@ -56,6 +58,11 @@ type BaseFixtures = {
             clearanceGroupIds?: number[],
             isActive?: boolean,
         ): ReturnType<typeof seedCreateApiToken>;
+        createPackage(status: string): ReturnType<typeof seedCreatePackage>;
+        createScannerJob(
+            state: string,
+            packageId: number,
+        ): ReturnType<typeof seedCreateScannerJob>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -240,6 +247,16 @@ export const testBase = test.extend<BaseFixtures>({
                 );
                 registerCleanup(apiToken.cleanup);
                 return apiToken;
+            },
+            async createPackage(status: string) {
+                const pkg = await seedCreatePackage(status);
+                registerCleanup(pkg.cleanup);
+                return pkg;
+            },
+            async createScannerJob(state: string, packageId: number) {
+                const scannerJob = await seedCreateScannerJob(state, packageId);
+                registerCleanup(scannerJob.cleanup);
+                return scannerJob;
             },
         });
     },
