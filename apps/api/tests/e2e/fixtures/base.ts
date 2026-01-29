@@ -4,6 +4,7 @@
 
 import { randNumber } from "@ngneat/falso";
 import { test } from "@playwright/test";
+import { ApiScope } from "database";
 import {
     deleteCurator,
     getOrCreateCurator,
@@ -15,9 +16,13 @@ import {
 } from "../../../src/helpers/keycloak_queries";
 import { getAccessToken } from "../utils/get_access_token";
 import {
+    seedCreateApiClient,
+    seedCreateApiToken,
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
     seedCreateLicenseConclusion,
+    seedCreatePackage,
+    seedCreateScannerJob,
 } from "./seed";
 
 type BaseFixtures = {
@@ -46,6 +51,18 @@ type BaseFixtures = {
             curatorId: string,
             groupId: number,
         ): ReturnType<typeof seedCreateLicenseConclusion>;
+        createApiClient(): ReturnType<typeof seedCreateApiClient>;
+        createApiToken(
+            apiClientId: string,
+            scopes?: ApiScope[],
+            clearanceGroupIds?: number[],
+            isActive?: boolean,
+        ): ReturnType<typeof seedCreateApiToken>;
+        createPackage(status: string): ReturnType<typeof seedCreatePackage>;
+        createScannerJob(
+            state: string,
+            packageId: number,
+        ): ReturnType<typeof seedCreateScannerJob>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -210,6 +227,37 @@ export const testBase = test.extend<BaseFixtures>({
                 );
                 registerCleanup(lc.cleanup);
                 return lc;
+            },
+
+            async createApiClient() {
+                const apiClient = await seedCreateApiClient();
+                registerCleanup(apiClient.cleanup);
+                return apiClient;
+            },
+            async createApiToken(
+                apiClientId: string,
+                scopes: ApiScope[] = [ApiScope.SCAN_DATA],
+                clearanceGroupIds?: number[],
+                isActive?: boolean,
+            ) {
+                const apiToken = await seedCreateApiToken(
+                    apiClientId,
+                    scopes,
+                    clearanceGroupIds,
+                    isActive,
+                );
+                registerCleanup(apiToken.cleanup);
+                return apiToken;
+            },
+            async createPackage(status: string) {
+                const pkg = await seedCreatePackage(status);
+                registerCleanup(pkg.cleanup);
+                return pkg;
+            },
+            async createScannerJob(state: string, packageId: number) {
+                const scannerJob = await seedCreateScannerJob(state, packageId);
+                registerCleanup(scannerJob.cleanup);
+                return scannerJob;
             },
         });
     },

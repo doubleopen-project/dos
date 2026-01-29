@@ -439,4 +439,194 @@ export const adminAPI = makeApi([
         response: schemas.PostAssignClearanceItemsToClearanceGroupRes,
         errors,
     },
+    {
+        method: "post",
+        path: "/api-clients",
+        description: "Create API client",
+        alias: "CreateApiClient",
+        parameters: [
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostApiClientsReq,
+            },
+        ],
+        response: schemas.ApiClient,
+        errors,
+    },
+    {
+        method: "patch",
+        path: "/api-clients/:id",
+        description: "Update API client",
+        alias: "UpdateApiClient",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PatchApiClientsReq,
+            },
+        ],
+        response: schemas.ApiClient,
+        errors,
+    },
+    {
+        method: "delete",
+        path: "/api-clients/:id",
+        description: "Delete API client",
+        alias: "DeleteApiClient",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        status: 204,
+        response: commonSchemas.EmptyResponse,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients",
+        description: "Get API clients",
+        alias: "GetApiClients",
+        parameters: [
+            {
+                name: "pageSize",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageSize,
+            },
+            {
+                name: "pageIndex",
+                type: "Query",
+                schema: commonSchemas.QueryParamPageIndex,
+            },
+            {
+                name: "sortBy",
+                type: "Query",
+                schema: schemas.QueryParamApiClientSortBy,
+            },
+            {
+                name: "sortOrder",
+                type: "Query",
+                schema: commonSchemas.QueryParamSortOrder,
+            },
+        ],
+        response: schemas.ApiClientList,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients/count",
+        description: "Get API clients count",
+        alias: "GetApiClientsCount",
+        response: commonSchemas.GetCountRes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-clients/:id",
+        description: "Get API client by ID",
+        alias: "GetApiClientById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiClientWithTokens,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/api-clients/:id/api-tokens",
+        description: "Create API token",
+        alias: "CreateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PostApiClientTokensReq,
+            },
+        ],
+        response: schemas.PostApiClientTokensRes,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/api-tokens/:id/rotate",
+        description: "Generate a new token and invalidate the old one",
+        alias: "RotateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.RotateTokenRes,
+        errors,
+    },
+    {
+        method: "post",
+        path: "/api-tokens/:id/revoke",
+        description: "Revoke an API token",
+        alias: "RevokeApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
+    {
+        method: "patch",
+        path: "/api-tokens/:id",
+        description: "Update an API token",
+        alias: "UpdateApiToken",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+            {
+                name: "body",
+                type: "Body",
+                schema: schemas.PatchApiTokensReq,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
+    {
+        method: "get",
+        path: "/api-tokens/:id",
+        description:
+            "Get API token details by ID. Does not return the token value.",
+        alias: "GetApiTokenById",
+        parameters: [
+            {
+                name: "id",
+                type: "Path",
+                schema: commonSchemas.PathParamUuid,
+            },
+        ],
+        response: schemas.ApiTokenWithClearanceGroupsAndScopes,
+        errors,
+    },
 ]);

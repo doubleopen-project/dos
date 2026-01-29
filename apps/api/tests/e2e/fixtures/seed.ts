@@ -3,16 +3,28 @@
 // SPDX-License-Identifier: MIT
 
 import { randHex } from "@ngneat/falso";
+import { ApiScope } from "database";
 import {
+    generateApiToken,
+    hashApiToken,
+} from "../../../src/helpers/api_tokens";
+import {
+    createApiClient,
+    createApiToken,
     createBulkConclusion,
     createClearanceGroup,
     createClearanceGroupCurators,
     createLicenseConclusion,
+    createPackage,
     createPathExclusion,
+    createScannerJob,
+    deleteApiClient,
     deleteBulkAndLicenseConclusions,
     deleteClearanceGroup,
     deleteLicenseConclusion,
+    deletePackage,
     deletePathExclusion,
+    deleteScannerJobsByPackageId,
 } from "../../../src/helpers/db_queries";
 import { testPurl } from "../utils/constants";
 
@@ -330,6 +342,81 @@ export const seedCreateLicenseConclusion = async (
         licenseConclusion: lc,
         cleanup: async () => {
             await deleteLicenseConclusion(lc.id);
+        },
+    };
+};
+
+export const seedCreateApiClient = async () => {
+    const apiClient = await createApiClient({
+        name: `Test API Client ${randHex()}`,
+    });
+
+    return {
+        apiClient: apiClient,
+        cleanup: async () => {
+            await deleteApiClient(apiClient.id);
+        },
+    };
+};
+
+export const seedCreateApiToken = async (
+    apiClientId: string,
+    scopes: ApiScope[],
+    clearanceGroupIds?: number[],
+    isActive?: boolean,
+) => {
+    const tokenSecret = generateApiToken();
+    const tokenHash = hashApiToken(tokenSecret);
+
+    const apiToken = await createApiToken(
+        tokenHash,
+        "API token",
+        apiClientId,
+        scopes,
+        clearanceGroupIds,
+        isActive,
+    );
+
+    return {
+        apiToken: apiToken,
+        tokenSecret: tokenSecret,
+        cleanup: async () => {
+            // No need to delete the token separately, it will be deleted
+            // when the API client is deleted.
+        },
+    };
+};
+
+export const seedCreatePackage = async (status: string) => {
+    const name = `test-package-${randHex({ length: 6 })}`;
+    const pkg = await createPackage({
+        type: "npm",
+        name: name,
+        version: "1.0.0",
+        scanStatus: status,
+    });
+
+    return {
+        package: pkg,
+        cleanup: async () => {
+            await deletePackage(pkg.id);
+        },
+    };
+};
+
+export const seedCreateScannerJob = async (
+    state: string,
+    packageId: number,
+) => {
+    const scannerJob = await createScannerJob({
+        state: state,
+        packageId: packageId,
+    });
+
+    return {
+        scannerJob: scannerJob,
+        cleanup: async () => {
+            await deleteScannerJobsByPackageId(packageId);
         },
     };
 };

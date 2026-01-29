@@ -221,3 +221,106 @@ export const PostAssignClearanceItemsToClearanceGroupRes = z.object({
         pathExclusions: z.object({ linksDeleted: z.number() }),
     }),
 });
+
+//---------------- API Client Schemas ----------------
+
+const ApiToken = z.object({
+    id: z.string().uuid(),
+    description: z.string(),
+    isActive: z.boolean(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+});
+
+export const ApiClient = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    description: z.string().nullable(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+});
+
+export const ApiClientWithTokens = ApiClient.extend({
+    apiTokens: z.array(ApiToken),
+});
+
+export const ApiClientList = z.array(ApiClient);
+
+const ApiClientSortByEnum = z.enum(["id", "name", "createdAt", "updatedAt"]);
+
+export type ApiClientSortBy = z.infer<typeof ApiClientSortByEnum>;
+export const QueryParamApiClientSortBy = ApiClientSortByEnum.optional();
+
+//------------ POST api-clients  ------------
+
+export const PostApiClientsReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }),
+    description: z.string().optional(),
+});
+
+//------------ PATCH api-clients  ------------
+
+export const PatchApiClientsReq = z.object({
+    name: z.string().min(1, { message: "Name cannot be empty" }).optional(),
+    description: z.string().optional(),
+});
+
+//------------ POST api-clients tokens ------------
+
+const ApiScopeEnum = z.enum(["SCAN_DATA", "CLEARANCE_DATA"]);
+
+export const ApiTokenWithClearanceGroupsAndScopes = ApiToken.extend({
+    scopes: z.array(
+        z.object({
+            scope: ApiScopeEnum,
+        }),
+    ),
+    clearanceGroups: z.array(
+        z.object({
+            clearanceGroup: z.object({
+                id: z.number(),
+                name: z.string(),
+            }),
+            rank: z.number(),
+        }),
+    ),
+});
+
+export const PostApiClientTokensReq = z.object({
+    description: z.string().min(1, { message: "Description cannot be empty" }),
+    scopes: z
+        .array(ApiScopeEnum)
+        .min(1, { message: "At least one scope must be selected" }),
+    clearanceGroupIds: z
+        .array(z.number())
+        .optional()
+        .describe(
+            "Array of clearance group IDs ordered by priority (highest priority first).",
+        ),
+});
+
+export const PostApiClientTokensRes = z.object({
+    token: ApiTokenWithClearanceGroupsAndScopes,
+    tokenSecret: z.string(),
+});
+
+export const RotateTokenRes = z.object({
+    tokenSecret: z.string(),
+});
+
+export const PatchApiTokensReq = z.object({
+    description: z
+        .string()
+        .min(1, { message: "Description cannot be empty" })
+        .optional(),
+    scopes: z
+        .array(ApiScopeEnum)
+        .min(1, { message: "At least one scope must be selected" })
+        .optional(),
+    clearanceGroupIds: z
+        .array(z.number())
+        .optional()
+        .describe(
+            "Array of clearance group IDs ordered by priority (highest priority first).",
+        ),
+});

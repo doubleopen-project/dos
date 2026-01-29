@@ -4,11 +4,13 @@
 
 import { randHex } from "@ngneat/falso";
 import { ZodiosResponseByAlias } from "@zodios/core";
+import { ApiScope } from "database";
 import { adminAPI } from "validation-helpers";
 import {
     createClearanceGroup,
     createClearanceGroupCurators,
     createLicenseConclusion,
+    deleteApiClient,
     deleteClearanceGroup,
     deleteLicenseConclusion,
     getOrCreateCurator,
@@ -21,6 +23,8 @@ import {
 import { expect, test } from "./fixtures/admin";
 
 type Curators = ZodiosResponseByAlias<typeof adminAPI, "GetCurators">;
+
+type ApiClients = ZodiosResponseByAlias<typeof adminAPI, "GetApiClients">;
 
 test.describe("API lets authenticated admins to", () => {
     test("retrieve packages", async ({ adminContext }) => {
@@ -732,5 +736,430 @@ test.describe("POST /clearance-groups/:groupId/assign-items should", () => {
         expect((await readonlyContext.post(url)).status()).toBe(403);
         expect((await noRolesUserContext.post(url)).status()).toBe(403);
         expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("POST /api-clients should", () => {
+    test("allow admins to create API clients", async ({ adminContext }) => {
+        const name = `Test API Client ${randHex()}`;
+
+        const response = await adminContext.post("api-clients", {
+            data: {
+                name: name,
+            },
+        });
+        expect(response.status()).toBe(200);
+
+        const data = await response.json();
+        expect(data.name).toBe(name);
+
+        await deleteApiClient(data.id);
+    });
+
+    test("not allow non-admin users to create API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("PATCH /api-clients/:id should", () => {
+    test("allow admins to update API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const newName = `Updated API Client ${randHex()}`;
+        const updateResponse = await adminContext.patch(
+            `api-clients/${apiClient.id}`,
+            {
+                data: {
+                    name: newName,
+                },
+            },
+        );
+        expect(updateResponse.status()).toBe(200);
+        const updatedClient = await updateResponse.json();
+        expect(updatedClient.name).toBe(newName);
+    });
+
+    test("not allow non-admin users to update API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.patch(url)).status()).toBe(403);
+        expect((await readonlyContext.patch(url)).status()).toBe(403);
+        expect((await noRolesUserContext.patch(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.patch(url)).status()).toBe(401);
+    });
+});
+
+test.describe("DELETE /api-clients/:id should", () => {
+    test("allow admins to delete API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const deleteResponse = await adminContext.delete(
+            `api-clients/${apiClient.id}`,
+        );
+        expect(deleteResponse.status()).toBe(204);
+    });
+
+    test("not allow non-admin users to delete API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.delete(url)).status()).toBe(403);
+        expect((await readonlyContext.delete(url)).status()).toBe(403);
+        expect((await noRolesUserContext.delete(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.delete(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients/:id should", () => {
+    test("allow admins to retrieve API clients", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const getResponse = await adminContext.get(
+            `api-clients/${apiClient.id}`,
+        );
+        expect(getResponse.status()).toBe(200);
+        const retrievedClient = await getResponse.json();
+        expect(retrievedClient.id).toBe(apiClient.id);
+    });
+
+    test("not allow non-admin users to retrieve API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients should", () => {
+    test("allow admins to list API clients", async ({ adminContext, seed }) => {
+        const apiClient = (await seed.createApiClient()).apiClient;
+
+        const listResponse = await adminContext.get(`api-clients`);
+        expect(listResponse.status()).toBe(200);
+        const clients: ApiClients = await listResponse.json();
+        expect(
+            clients.find((client) => client.id === apiClient.id),
+        ).toBeDefined();
+    });
+
+    test("not allow non-admin users to list API clients", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-clients/count should", () => {
+    test("allow admins to get API clients count", async ({
+        adminContext,
+        seed,
+    }) => {
+        await seed.createApiClient();
+
+        const countResponse = await adminContext.get(`api-clients/count`);
+        expect(countResponse.status()).toBe(200);
+        const countData = await countResponse.json();
+
+        const listResponse = await adminContext.get(`api-clients`);
+        expect(listResponse.status()).toBe(200);
+        const clients: ApiClients = await listResponse.json();
+
+        expect(countData.count).toBeGreaterThan(0);
+        expect(countData.count).toBe(clients.length);
+    });
+
+    test("not allow non-admin users to get API clients count", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/count`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
+    });
+});
+
+test.describe("POST /api-clients/:id/api-tokens should", () => {
+    test("allow admins to create API tokens", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = await seed.createApiClient();
+        const groups = await seed.createClearanceGroups();
+
+        const response = await adminContext.post(
+            `api-clients/${apiClient.apiClient.id}/api-tokens`,
+            {
+                data: {
+                    description: "Test API Token",
+                    scopes: [ApiScope.SCAN_DATA, ApiScope.CLEARANCE_DATA],
+                    clearanceGroupIds: [
+                        groups.group3.id,
+                        groups.group1.id,
+                        groups.group2.id,
+                    ],
+                },
+            },
+        );
+        expect(response.status()).toBe(200);
+
+        const data = await response.json();
+
+        expect(data.tokenSecret).toBeDefined();
+        expect(data.token.description).toBe("Test API Token");
+        expect(data.token.scopes).toEqual([
+            { scope: ApiScope.SCAN_DATA },
+            { scope: ApiScope.CLEARANCE_DATA },
+        ]);
+        expect(data.token.clearanceGroups.length).toBe(3);
+
+        expect(data.token.clearanceGroups).toEqual([
+            {
+                clearanceGroup: {
+                    id: groups.group3.id,
+                    name: groups.group3.name,
+                },
+                rank: 1,
+            },
+            {
+                clearanceGroup: {
+                    id: groups.group1.id,
+                    name: groups.group1.name,
+                },
+                rank: 2,
+            },
+            {
+                clearanceGroup: {
+                    id: groups.group2.id,
+                    name: groups.group2.name,
+                },
+                rank: 3,
+            },
+        ]);
+    });
+
+    test("not allow non-admin users to create API tokens", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-clients/some-id/api-tokens`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("POST /api-tokens/:id/rotate should", () => {
+    test("allow admins to rotate API tokens", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = await seed.createApiClient();
+        const apiToken = await seed.createApiToken(apiClient.apiClient.id);
+
+        const rotateResponse = await adminContext.post(
+            `api-tokens/${apiToken.apiToken.id}/rotate`,
+        );
+        expect(rotateResponse.status()).toBe(200);
+
+        const rotatedData = await rotateResponse.json();
+
+        expect(rotatedData.tokenSecret).toBeDefined();
+        expect(rotatedData.tokenSecret).not.toBe(apiToken.tokenSecret);
+    });
+
+    test("not allow non-admin users to rotate API tokens", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-tokens/some-id/rotate`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("POST /api-tokens/:id/revoke should", () => {
+    test("allow admins to revoke API tokens", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = await seed.createApiClient();
+        const apiToken = await seed.createApiToken(apiClient.apiClient.id);
+
+        const revokeResponse = await adminContext.post(
+            `api-tokens/${apiToken.apiToken.id}/revoke`,
+        );
+        expect(revokeResponse.status()).toBe(200);
+
+        const revokedData = await revokeResponse.json();
+
+        expect(revokedData.isActive).toBe(false);
+    });
+
+    test("not allow non-admin users to revoke API tokens", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-tokens/some-id/revoke`;
+        expect((await userContext.post(url)).status()).toBe(403);
+        expect((await readonlyContext.post(url)).status()).toBe(403);
+        expect((await noRolesUserContext.post(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.post(url)).status()).toBe(401);
+    });
+});
+
+test.describe("PATCH /api-tokens/:id should", () => {
+    test("remove and add scopes correctly", async ({ adminContext, seed }) => {
+        const apiClient = await seed.createApiClient();
+        const apiToken = await seed.createApiToken(apiClient.apiClient.id, [
+            ApiScope.SCAN_DATA,
+        ]);
+
+        const updateResponse = await adminContext.patch(
+            `api-tokens/${apiToken.apiToken.id}`,
+            {
+                data: {
+                    scopes: [ApiScope.CLEARANCE_DATA],
+                },
+            },
+        );
+        expect(updateResponse.status()).toBe(200);
+        const updatedToken = await updateResponse.json();
+        expect(updatedToken.scopes).toEqual([
+            { scope: ApiScope.CLEARANCE_DATA },
+        ]);
+    });
+
+    test("update clearance groups and their ranks correctly", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = await seed.createApiClient();
+        const groups = await seed.createClearanceGroups();
+        const apiToken = await seed.createApiToken(
+            apiClient.apiClient.id,
+            [ApiScope.SCAN_DATA, ApiScope.CLEARANCE_DATA],
+            [groups.group1.id, groups.group2.id],
+        );
+
+        const updateResponse = await adminContext.patch(
+            `api-tokens/${apiToken.apiToken.id}`,
+            {
+                data: {
+                    clearanceGroupIds: [groups.group3.id, groups.group1.id],
+                },
+            },
+        );
+        expect(updateResponse.status()).toBe(200);
+        const updatedToken = await updateResponse.json();
+        expect(updatedToken.clearanceGroups).toEqual([
+            {
+                clearanceGroup: {
+                    id: groups.group3.id,
+                    name: groups.group3.name,
+                },
+                rank: 1,
+            },
+            {
+                clearanceGroup: {
+                    id: groups.group1.id,
+                    name: groups.group1.name,
+                },
+                rank: 2,
+            },
+        ]);
+    });
+
+    test("not allow non-admin users to update API tokens", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-tokens/some-id`;
+        expect((await userContext.patch(url)).status()).toBe(403);
+        expect((await readonlyContext.patch(url)).status()).toBe(403);
+        expect((await noRolesUserContext.patch(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.patch(url)).status()).toBe(401);
+    });
+});
+
+test.describe("GET /api-tokens/:id should", () => {
+    test("allow admins to retrieve API tokens", async ({
+        adminContext,
+        seed,
+    }) => {
+        const apiClient = await seed.createApiClient();
+        const apiToken = await seed.createApiToken(apiClient.apiClient.id);
+
+        const getResponse = await adminContext.get(
+            `api-tokens/${apiToken.apiToken.id}`,
+        );
+        expect(getResponse.status()).toBe(200);
+        const retrievedToken = await getResponse.json();
+        expect(retrievedToken.description).toBe(apiToken.apiToken.description);
+    });
+
+    test("not allow non-admin users to retrieve API tokens", async ({
+        userContext,
+        readonlyContext,
+        noRolesUserContext,
+        unauthenticatedContext,
+    }) => {
+        const url = `api-tokens/some-id`;
+        expect((await userContext.get(url)).status()).toBe(403);
+        expect((await readonlyContext.get(url)).status()).toBe(403);
+        expect((await noRolesUserContext.get(url)).status()).toBe(403);
+        expect((await unauthenticatedContext.get(url)).status()).toBe(401);
     });
 });

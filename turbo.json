@@ -3,7 +3,6 @@
     "globalDependencies": [".env"],
     "globalEnv": [
         "ALLOWED_ORIGINS",
-        "API_TOKENS",
         "CI",
         "COOKIE_SECRET",
         "DATABASE_URL",
@@ -40,6 +39,7 @@
         "SPACES_KEY",
         "SPACES_SECRET",
         "SPACES_REGION",
+        "TOKEN_HMAC_SECRET",
         "UL_CONCURRENCY",
         "UL_RETRIES",
         "UL_RETRY_INTERVAL",
