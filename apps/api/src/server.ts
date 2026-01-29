@@ -22,7 +22,6 @@ const requiredEnvVars: string[] = ["DATABASE_URL"];
 
 if (process.env.NODE_ENV === "production") {
     requiredEnvVars.push(
-        "API_TOKENS",
         "KEYCLOAK_URL",
         "KEYCLOAK_REALM",
         "KEYCLOAK_CLIENT_ID_API",
