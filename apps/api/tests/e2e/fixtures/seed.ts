@@ -15,12 +15,16 @@ import {
     createClearanceGroup,
     createClearanceGroupCurators,
     createLicenseConclusion,
+    createPackage,
     createPathExclusion,
+    createScannerJob,
     deleteApiClient,
     deleteBulkAndLicenseConclusions,
     deleteClearanceGroup,
     deleteLicenseConclusion,
+    deletePackage,
     deletePathExclusion,
+    deleteScannerJobsByPackageId,
 } from "../../../src/helpers/db_queries";
 import { testPurl } from "../utils/constants";
 
@@ -379,6 +383,40 @@ export const seedCreateApiToken = async (
         cleanup: async () => {
             // No need to delete the token separately, it will be deleted
             // when the API client is deleted.
+        },
+    };
+};
+
+export const seedCreatePackage = async (status: string) => {
+    const name = `test-package-${randHex({ length: 6 })}`;
+    const pkg = await createPackage({
+        type: "npm",
+        name: name,
+        version: "1.0.0",
+        scanStatus: status,
+    });
+
+    return {
+        package: pkg,
+        cleanup: async () => {
+            await deletePackage(pkg.id);
+        },
+    };
+};
+
+export const seedCreateScannerJob = async (
+    state: string,
+    packageId: number,
+) => {
+    const scannerJob = await createScannerJob({
+        state: state,
+        packageId: packageId,
+    });
+
+    return {
+        scannerJob: scannerJob,
+        cleanup: async () => {
+            await deleteScannerJobsByPackageId(packageId);
         },
     };
 };

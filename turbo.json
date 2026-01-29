@@ -3,7 +3,6 @@
     "globalDependencies": [".env"],
     "globalEnv": [
         "ALLOWED_ORIGINS",
-        "API_TOKENS",
         "CI",
         "COOKIE_SECRET",
         "DATABASE_URL",
