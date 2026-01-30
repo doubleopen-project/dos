@@ -2210,56 +2210,90 @@ export const findPackageIdByPurl = async (
     return packageId;
 };
 
-type PackageWithRelations = Prisma.PackageGetPayload<{
-    select: {
-        id: true;
-        pathExclusions: {
-            select: {
-                pattern: true;
-                reason: true;
-                comment: true;
-            };
-        };
-    };
-}>;
-
-export const findPackageWithPathExclusionsByPurl = async (
+export const findApiTokenClearanceGroupsWithClearances = async (
     purl: string,
-): Promise<PackageWithRelations> => {
-    let retries = initialRetryCount;
-    let querySuccess = false;
-    let packageObj: PackageWithRelations | null = null;
-
-    while (!querySuccess && retries > 0) {
-        try {
-            packageObj = await prisma.package.findUnique({
-                where: {
-                    purl: purl,
-                },
-                select: {
-                    id: true,
-                    pathExclusions: {
-                        select: {
-                            pattern: true,
-                            reason: true,
-                            comment: true,
+    apiTokenId: string,
+) => {
+    return await retry(async () => {
+        return prisma.apiToken_ClearanceGroup.findMany({
+            where: {
+                apiTokenId: apiTokenId,
+            },
+            orderBy: {
+                rank: "asc",
+            },
+            select: {
+                clearanceGroup: {
+                    select: {
+                        id: true,
+                        pathExclusions: {
+                            select: {
+                                pathExclusion: {
+                                    select: {
+                                        pattern: true,
+                                        reason: true,
+                                        comment: true,
+                                    },
+                                },
+                            },
+                            where: {
+                                pathExclusion: {
+                                    package: {
+                                        purl: purl,
+                                    },
+                                },
+                            },
+                            orderBy: {
+                                pathExclusion: {
+                                    createdAt: "desc",
+                                },
+                            },
+                        },
+                        licenseConclusions: {
+                            select: {
+                                licenseConclusion: {
+                                    select: {
+                                        detectedLicenseExpressionSPDX: true,
+                                        concludedLicenseExpressionSPDX: true,
+                                        comment: true,
+                                        fileSha256: true,
+                                        file: {
+                                            select: {
+                                                filetrees: {
+                                                    select: {
+                                                        path: true,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            where: {
+                                licenseConclusion: {
+                                    file: {
+                                        filetrees: {
+                                            some: {
+                                                package: {
+                                                    purl: purl,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            orderBy: {
+                                licenseConclusion: {
+                                    createdAt: "desc",
+                                },
+                            },
                         },
                     },
                 },
-            });
-            querySuccess = true;
-        } catch (error) {
-            console.log("Error with trying to find Package: " + error);
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-
-    if (!packageObj) throw new Error("Error: Unable to find Package");
-
-    return packageObj;
+                rank: true,
+            },
+        });
+    });
 };
 
 export const getPathExclusionsByPackagePurl = async (
@@ -3894,82 +3928,6 @@ export const findPathExclusionsByPackageId = async (
     }
 
     return pathExclusions;
-};
-
-export const findLicenseConclusionsByPackagePurl = async (
-    purl: string,
-): Promise<
-    {
-        path: string;
-        detectedLicenseExpressionSPDX: string | null;
-        concludedLicenseExpressionSPDX: string;
-        comment: string | null;
-    }[]
-> => {
-    let retries = initialRetryCount;
-    let querySuccess = false;
-    let filetrees = null;
-
-    while (!querySuccess && retries > 0) {
-        try {
-            filetrees = await prisma.fileTree.findMany({
-                where: {
-                    package: {
-                        purl: purl,
-                    },
-                },
-                select: {
-                    path: true,
-                    file: {
-                        select: {
-                            licenseConclusions: {
-                                select: {
-                                    detectedLicenseExpressionSPDX: true,
-                                    concludedLicenseExpressionSPDX: true,
-                                    comment: true,
-                                    local: true,
-                                    contextPurl: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            });
-            querySuccess = true;
-        } catch (error) {
-            console.log(
-                "Error with trying to find LicenseConclusions: " + error,
-            );
-            handleError(error);
-            retries--;
-            if (retries > 0) await waitToRetry();
-            else throw error;
-        }
-    }
-
-    if (!filetrees) throw new Error("Error: Unable to find LicenseConclusions");
-
-    const licenseConclusions = [];
-
-    for (const filetree of filetrees) {
-        for (const licenseConclusion of filetree.file.licenseConclusions) {
-            if (
-                !licenseConclusion.local ||
-                (licenseConclusion.local &&
-                    licenseConclusion.contextPurl === purl)
-            )
-                licenseConclusions.push({
-                    path: filetree.path,
-                    detectedLicenseExpressionSPDX:
-                        licenseConclusion.detectedLicenseExpressionSPDX,
-                    concludedLicenseExpressionSPDX:
-                        licenseConclusion.concludedLicenseExpressionSPDX,
-                    comment: licenseConclusion.comment,
-                });
-        }
-    }
-
-    return licenseConclusions;
 };
 
 export const findLicenseConclusionsByContextPurl = async (

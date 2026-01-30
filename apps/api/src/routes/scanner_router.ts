@@ -459,15 +459,18 @@ scannerRouter.post(
     requireApiScope(ApiScope.CLEARANCE_DATA),
     async (req, res) => {
         try {
-            // TODO: Return results based on user access rights and choices
-
+            const auth = req.apiTokenAuth;
+            if (!auth) throw new CustomError("Unauthorized", 401);
             console.log(
                 "Searching for configuration for package with purl: " +
                     req.body.purl,
             );
 
             const packageConfiguration =
-                await dbOperations.getPackageConfiguration(req.body.purl);
+                await dbOperations.getPackageConfiguration(
+                    req.body.purl,
+                    auth.apiTokenId,
+                );
 
             res.status(200).json(packageConfiguration);
         } catch (error) {

@@ -719,17 +719,52 @@ type PackageConfiguration = {
 
 export const getPackageConfiguration = async (
     purl: string,
+    apiTokenId: string,
 ): Promise<PackageConfiguration> => {
-    const packageWithPathExclusions =
-        await dbQueries.findPackageWithPathExclusionsByPurl(purl);
+    const atcgs = await dbQueries.findApiTokenClearanceGroupsWithClearances(
+        purl,
+        apiTokenId,
+    );
 
-    if (!packageWithPathExclusions) throw new Error("Package not found");
+    console.dir(atcgs, { depth: null });
+    const pes: PackageConfiguration["pathExclusions"] = [];
 
-    const licenseConclusions =
-        await dbQueries.findLicenseConclusionsByPackagePurl(purl);
+    const lcMap = new Map<
+        string,
+        PackageConfiguration["licenseConclusions"][number]
+    >();
+
+    for (const atcg of atcgs) {
+        for (const pe of atcg.clearanceGroup.pathExclusions) {
+            if (!pes.find((e) => e.pattern === pe.pathExclusion.pattern))
+                pes.push(pe.pathExclusion);
+        }
+
+        for (const lc of atcg.clearanceGroup.licenseConclusions) {
+            for (const ft of lc.licenseConclusion.file.filetrees) {
+                const path = ft.path;
+
+                if (!lcMap.has(path)) {
+                    lcMap.set(path, {
+                        path: path,
+                        detectedLicenseExpressionSPDX:
+                            lc.licenseConclusion.detectedLicenseExpressionSPDX,
+                        concludedLicenseExpressionSPDX:
+                            lc.licenseConclusion.concludedLicenseExpressionSPDX,
+                        comment: lc.licenseConclusion.comment,
+                    });
+                }
+            }
+        }
+    }
+
+    const lcs: PackageConfiguration["licenseConclusions"] = [...lcMap.values()];
+
+    console.log(pes);
+
     return {
-        licenseConclusions: licenseConclusions,
-        pathExclusions: packageWithPathExclusions.pathExclusions,
+        licenseConclusions: lcs,
+        pathExclusions: pes,
     };
 };
 
