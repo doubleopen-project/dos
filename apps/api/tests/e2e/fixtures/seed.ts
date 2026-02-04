@@ -14,6 +14,7 @@ import {
     createBulkConclusion,
     createClearanceGroup,
     createClearanceGroupCurators,
+    createFileTree,
     createLicenseConclusion,
     createPackage,
     createPathExclusion,
@@ -21,6 +22,7 @@ import {
     deleteApiClient,
     deleteBulkAndLicenseConclusions,
     deleteClearanceGroup,
+    deleteFileTreesByPackageId,
     deleteLicenseConclusion,
     deletePackage,
     deletePathExclusion,
@@ -34,8 +36,10 @@ const createLC = async (
     curatorId: string,
     groupId: number,
     bulkConclusionId?: number,
+    createdAt?: Date,
 ) => {
     return await createLicenseConclusion({
+        createdAt: createdAt,
         concludedLicenseExpressionSPDX: concludedExpression,
         contextPurl: testPurl,
         bulkConclusion: bulkConclusionId
@@ -103,10 +107,14 @@ const createPE = async (
     reason: string,
     curatorId: string,
     groupId: number,
+    comment?: string,
+    createdAt?: Date,
 ) => {
     return await createPathExclusion({
+        createdAt: createdAt,
         pattern: pattern,
         reason: reason,
+        comment: comment || null,
         package: {
             connect: {
                 purl: testPurl,
@@ -335,13 +343,45 @@ export const seedCreateLicenseConclusion = async (
     sha256: string,
     curatorId: string,
     groupId: number,
+    createdAt?: Date,
 ) => {
-    const lc = await createLC(concludedExpression, sha256, curatorId, groupId);
+    const lc = await createLC(
+        concludedExpression,
+        sha256,
+        curatorId,
+        groupId,
+        undefined,
+        createdAt,
+    );
 
     return {
         licenseConclusion: lc,
         cleanup: async () => {
             await deleteLicenseConclusion(lc.id);
+        },
+    };
+};
+
+export const seedCreatePathExclusion = async (
+    pattern: string,
+    reason: string,
+    comment: string,
+    curatorId: string,
+    groupId: number,
+    createdAt?: Date,
+) => {
+    const pe = await createPE(
+        pattern,
+        reason,
+        curatorId,
+        groupId,
+        comment,
+        createdAt,
+    );
+    return {
+        pathExclusion: pe,
+        cleanup: async () => {
+            await deletePathExclusion(pe.id);
         },
     };
 };
@@ -417,6 +457,25 @@ export const seedCreateScannerJob = async (
         scannerJob: scannerJob,
         cleanup: async () => {
             await deleteScannerJobsByPackageId(packageId);
+        },
+    };
+};
+
+export const seedCreateFileTree = async (
+    packageId: number,
+    sha256: string,
+    path: string,
+) => {
+    const ft = await createFileTree({
+        packageId: packageId,
+        path: path,
+        fileSha256: sha256,
+    });
+
+    return {
+        ft: ft,
+        cleanup: async () => {
+            await deleteFileTreesByPackageId(packageId);
         },
     };
 };

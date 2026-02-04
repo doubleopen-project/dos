@@ -12,6 +12,7 @@ type Fixtures = {
     revokedTokenContext: APIRequestContext;
     invalidTokenContext: APIRequestContext;
     noTokenContext: APIRequestContext;
+    groupsContext: (clearanceGroupIds: number[]) => Promise<APIRequestContext>;
 };
 
 const scannerRouterBaseUrl = `${baseUrl}/api/`;
@@ -82,6 +83,32 @@ export const test = testBase.extend<Fixtures>({
         });
         await use(ctx);
         await ctx.dispose();
+    },
+
+    groupsContext: async ({ playwright, seed }, use) => {
+        const createdContexts: APIRequestContext[] = [];
+
+        await use(async (clearanceGroupIds) => {
+            const client = await seed.createApiClient();
+            const token = await seed.createApiToken(
+                client.apiClient.id,
+                [ApiScope.CLEARANCE_DATA],
+                clearanceGroupIds,
+            );
+
+            const ctx = await playwright.request.newContext({
+                baseURL: scannerRouterBaseUrl,
+                extraHTTPHeaders: {
+                    Authorization: `Bearer ${token.tokenSecret}`,
+                },
+            });
+            createdContexts.push(ctx);
+            return ctx;
+        });
+
+        for (const ctx of createdContexts) {
+            await ctx.dispose();
+        }
     },
 });
 
