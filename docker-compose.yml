@@ -76,7 +76,7 @@ services:
                 required: true
 
     auth:
-        image: quay.io/keycloak/keycloak:26.4.7
+        image: quay.io/keycloak/keycloak:26.5.2
         command: start-dev
         ports:
             - "8083:8080"
