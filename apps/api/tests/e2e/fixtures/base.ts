@@ -20,8 +20,10 @@ import {
     seedCreateApiToken,
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
+    seedCreateFileTree,
     seedCreateLicenseConclusion,
     seedCreatePackage,
+    seedCreatePathExclusion,
     seedCreateScannerJob,
 } from "./seed";
 
@@ -50,7 +52,16 @@ type BaseFixtures = {
             fileSha256: string,
             curatorId: string,
             groupId: number,
+            createdAt?: Date,
         ): ReturnType<typeof seedCreateLicenseConclusion>;
+        createPathExclusion(
+            pattern: string,
+            reason: string,
+            comment: string,
+            curatorId: string,
+            groupId: number,
+            createdAt?: Date,
+        ): ReturnType<typeof seedCreatePathExclusion>;
         createApiClient(): ReturnType<typeof seedCreateApiClient>;
         createApiToken(
             apiClientId: string,
@@ -63,6 +74,11 @@ type BaseFixtures = {
             state: string,
             packageId: number,
         ): ReturnType<typeof seedCreateScannerJob>;
+        createFileTree(
+            packageId: number,
+            sha256: string,
+            path: string,
+        ): ReturnType<typeof seedCreateFileTree>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -218,15 +234,36 @@ export const testBase = test.extend<BaseFixtures>({
                 fileSha256: string,
                 curatorId: string,
                 groupId: number,
+                createdAt?: Date,
             ) {
                 const lc = await seedCreateLicenseConclusion(
                     concludedExpression,
                     fileSha256,
                     curatorId,
                     groupId,
+                    createdAt,
                 );
                 registerCleanup(lc.cleanup);
                 return lc;
+            },
+            async createPathExclusion(
+                pattern: string,
+                reason: string,
+                comment: string,
+                curatorId: string,
+                groupId: number,
+                createdAt?: Date,
+            ) {
+                const pe = await seedCreatePathExclusion(
+                    pattern,
+                    reason,
+                    comment,
+                    curatorId,
+                    groupId,
+                    createdAt,
+                );
+                registerCleanup(pe.cleanup);
+                return pe;
             },
             async createApiClient() {
                 const apiClient = await seedCreateApiClient();
@@ -257,6 +294,15 @@ export const testBase = test.extend<BaseFixtures>({
                 const scannerJob = await seedCreateScannerJob(state, packageId);
                 registerCleanup(scannerJob.cleanup);
                 return scannerJob;
+            },
+            async createFileTree(
+                packageId: number,
+                sha256: string,
+                path: string,
+            ) {
+                const ft = await seedCreateFileTree(packageId, sha256, path);
+                registerCleanup(ft.cleanup);
+                return ft;
             },
         });
     },
