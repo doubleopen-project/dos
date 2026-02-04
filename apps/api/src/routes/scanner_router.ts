@@ -4,7 +4,7 @@
 
 import { zodiosRouter } from "@zodios/express";
 import { JobStatus } from "bull";
-import { ApiScope, Package, Prisma, ScannerJob } from "database";
+import { ApiScope, Package, ScannerJob } from "database";
 import log from "loglevel";
 import { deleteFile, getPresignedPutUrl, objectExistsCheck } from "s3-helpers";
 import { scannerAPI } from "validation-helpers";
@@ -459,29 +459,37 @@ scannerRouter.post(
     requireApiScope(ApiScope.CLEARANCE_DATA),
     async (req, res) => {
         try {
-            // TODO: Return results based on user access rights and choices
+            // The middlewares have already verified that req.apiTokenAuth exists, so the non-null assertion operator can be safely used here.
+            const auth = req.apiTokenAuth!;
 
             console.log(
                 "Searching for configuration for package with purl: " +
                     req.body.purl,
             );
 
+            const packageId = await dbQueries.findPackageIdByPurl(
+                req.body.purl,
+                "scanned",
+            );
+
+            if (!packageId) throw new CustomError("Package not found", 404);
+
             const packageConfiguration =
-                await dbOperations.getPackageConfiguration(req.body.purl);
+                await dbOperations.getPackageConfiguration(
+                    packageId,
+                    auth.apiTokenId,
+                );
 
             res.status(200).json(packageConfiguration);
         } catch (error) {
             console.log("Error: ", error);
-            if (
-                error instanceof Prisma.PrismaClientKnownRequestError &&
-                error.code === "P2025"
-            ) {
-                return res.status(404).json({
-                    message: "Unable to find results for the requested package",
-                });
-            } else if (error instanceof Error)
-                res.status(404).json({ message: error.message });
-            else res.status(500).json({ message: "Internal server error" });
+
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).json({ message: error.message });
+            } else {
+                const err = await getErrorCodeAndMessage(error);
+                res.status(err.statusCode).json({ message: err.message });
+            }
         }
     },
 );

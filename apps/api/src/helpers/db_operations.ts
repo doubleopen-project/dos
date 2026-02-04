@@ -718,18 +718,53 @@ type PackageConfiguration = {
 };
 
 export const getPackageConfiguration = async (
-    purl: string,
+    packageId: number,
+    apiTokenId: string,
 ): Promise<PackageConfiguration> => {
-    const packageWithPathExclusions =
-        await dbQueries.findPackageWithPathExclusionsByPurl(purl);
+    const atcgs =
+        await dbQueries.findClearanceGroupsForApiTokenWithPackageClearances(
+            packageId,
+            apiTokenId,
+        );
 
-    if (!packageWithPathExclusions) throw new Error("Package not found");
+    const peMap = new Map<
+        string,
+        PackageConfiguration["pathExclusions"][number]
+    >();
 
-    const licenseConclusions =
-        await dbQueries.findLicenseConclusionsByPackagePurl(purl);
+    const lcMap = new Map<
+        string,
+        PackageConfiguration["licenseConclusions"][number]
+    >();
+
+    for (const atcg of atcgs) {
+        for (const pe of atcg.clearanceGroup.pathExclusions) {
+            if (!peMap.has(pe.pathExclusion.pattern)) {
+                peMap.set(pe.pathExclusion.pattern, pe.pathExclusion);
+            }
+        }
+
+        for (const lc of atcg.clearanceGroup.licenseConclusions) {
+            for (const ft of lc.licenseConclusion.file.filetrees) {
+                const path = ft.path;
+
+                if (!lcMap.has(path)) {
+                    lcMap.set(path, {
+                        path: path,
+                        detectedLicenseExpressionSPDX:
+                            lc.licenseConclusion.detectedLicenseExpressionSPDX,
+                        concludedLicenseExpressionSPDX:
+                            lc.licenseConclusion.concludedLicenseExpressionSPDX,
+                        comment: lc.licenseConclusion.comment,
+                    });
+                }
+            }
+        }
+    }
+
     return {
-        licenseConclusions: licenseConclusions,
-        pathExclusions: packageWithPathExclusions.pathExclusions,
+        licenseConclusions: [...lcMap.values()],
+        pathExclusions: [...peMap.values()],
     };
 };
 
