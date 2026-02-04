@@ -13,6 +13,12 @@ import { dosAPI } from "validation-helpers";
 import { expect, test } from "./fixtures/scanner";
 import { testPurl } from "./utils/constants";
 
+type PackageConfigurationRes = ZodiosResponseByPath<
+    typeof dosAPI,
+    "post",
+    "/package-configuration"
+>;
+
 test.describe.configure({ mode: "default" });
 
 test.describe("Scanner pipeline should", () => {
@@ -261,6 +267,311 @@ test.describe("POST /package-configuration should", () => {
         );
 
         expect(res.status()).toBe(200);
+    });
+
+    test("only return clearance items from groups that the API token has access to", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([groups.group1.id]);
+        const pe = await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "TEST_REASON",
+            "Test comment",
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+
+        const lc = await seed.createLicenseConclusion(
+            "MIT",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+
+        await seed.createPathExclusion(
+            "some/other/**",
+            "OTHER",
+            "Other group's exclusion",
+            adminUser.curatorId,
+            groups.group2.id,
+        );
+
+        await seed.createLicenseConclusion(
+            "Apache-2.0",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group2.id,
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+
+        expect(data.pathExclusions).toHaveLength(1);
+        expect(data.pathExclusions[0].pattern).toBe(pe.pathExclusion.pattern);
+        expect(data.licenseConclusions).toHaveLength(1);
+        expect(data.licenseConclusions[0].concludedLicenseExpressionSPDX).toBe(
+            lc.licenseConclusion.concludedLicenseExpressionSPDX,
+        );
+        expect(data.licenseConclusions[0].path).toBe(
+            "packages/spdx-validation/tests/test.ts",
+        );
+    });
+
+    test("return the highest-ranking group's path exclusion if a path exclusion with the same pattern has been added in multiple groups", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([
+            groups.group3.id,
+            groups.group1.id,
+            groups.group2.id,
+        ]);
+
+        await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "OTHER",
+            "Exclusion in middle-ranking group",
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+
+        await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "TEST_TOOL_OF",
+            "Exclusion in lowest-ranking group",
+            adminUser.curatorId,
+            groups.group2.id,
+        );
+
+        const pe = await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "TEST_OF",
+            "Exclusion in highest-ranking group",
+            adminUser.curatorId,
+            groups.group3.id,
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+        expect(data.pathExclusions).toHaveLength(1);
+        expect(data.pathExclusions[0].pattern).toBe(pe.pathExclusion.pattern);
+        expect(data.pathExclusions[0].reason).toBe(pe.pathExclusion.reason);
+        expect(data.pathExclusions[0].comment).toBe(pe.pathExclusion.comment);
+    });
+
+    test("return the highest-ranking group's license conclusion if a license conclusion for the same file has been added in multiple groups", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([
+            groups.group2.id,
+            groups.group3.id,
+            groups.group1.id,
+        ]);
+
+        await seed.createLicenseConclusion(
+            "MIT",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+
+        const lc = await seed.createLicenseConclusion(
+            "GPL-3.0-only",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group2.id,
+        );
+
+        await seed.createLicenseConclusion(
+            "Apache-2.0",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group3.id,
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions).toHaveLength(1);
+        expect(data.licenseConclusions[0].concludedLicenseExpressionSPDX).toBe(
+            lc.licenseConclusion.concludedLicenseExpressionSPDX,
+        );
+        expect(data.licenseConclusions[0].path).toBe(
+            "packages/spdx-validation/tests/test.ts",
+        );
+    });
+
+    test("return the newest path exclusion if there are multiple path exclusions with the same pattern in the same group", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([groups.group1.id]);
+
+        await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "TEST_REASON",
+            "Older exclusion",
+            adminUser.curatorId,
+            groups.group1.id,
+            new Date("2024-01-01"),
+        );
+
+        const pe = await seed.createPathExclusion(
+            "apps/api/tests/**",
+            "TEST_REASON",
+            "Newer exclusion",
+            adminUser.curatorId,
+            groups.group1.id,
+            new Date("2024-02-01"),
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+
+        expect(data.pathExclusions).toHaveLength(1);
+        expect(data.pathExclusions[0].pattern).toBe(pe.pathExclusion.pattern);
+        expect(data.pathExclusions[0].comment).toBe(pe.pathExclusion.comment);
+    });
+
+    test("return the newest license conclusion if there are multiple license conclusions for the same file in the same group", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([groups.group1.id]);
+
+        await seed.createLicenseConclusion(
+            "MIT",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group1.id,
+            new Date("2024-01-01"),
+        );
+
+        const lc = await seed.createLicenseConclusion(
+            "GPL-3.0-only",
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f",
+            adminUser.curatorId,
+            groups.group1.id,
+            new Date("2024-02-01"),
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions).toHaveLength(1);
+        expect(data.licenseConclusions[0].concludedLicenseExpressionSPDX).toBe(
+            lc.licenseConclusion.concludedLicenseExpressionSPDX,
+        );
+        expect(data.licenseConclusions[0].path).toBe(
+            "packages/spdx-validation/tests/test.ts",
+        );
+    });
+
+    test("return license conclusions for all paths that reference the concluded file in the package", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([groups.group1.id]);
+
+        await seed.createLicenseConclusion(
+            "MIT",
+            "bb2b91e0ecc75a9341153734abcc0047c4d8cbedfaa22134c8cf7ecabd8b58e4",
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data: PackageConfigurationRes = await res.json();
+
+        expect(data.licenseConclusions).toHaveLength(2);
+        const paths = data.licenseConclusions.map((lc) => lc.path);
+        expect(paths).toContain("apps/api/.eslintrc.js");
+        expect(paths).toContain("apps/scanner_agent/.eslintrc.js");
+    });
+
+    test("only include license conclusion paths from the requested package", async ({
+        groupsContext,
+        seed,
+        adminUser,
+    }) => {
+        const groups = await seed.createClearanceGroups();
+
+        const ctx = await groupsContext([groups.group1.id]);
+
+        const pkg2 = await seed.createPackage("scanned");
+
+        const pkg2Path = "some/other/path/.eslintrc.js";
+        const fileSha256 =
+            "bcee13fdc99511c341921f96949618bf102bb888e7f4e6481e29c2187e36d21f";
+
+        await seed.createFileTree(pkg2.package.id, fileSha256, pkg2Path);
+
+        await seed.createLicenseConclusion(
+            "MIT",
+            fileSha256,
+            adminUser.curatorId,
+            groups.group1.id,
+        );
+
+        const res = await ctx.post("package-configuration", {
+            data: { purl: testPurl },
+        });
+
+        expect(res.status()).toBe(200);
+
+        const data = await res.json();
+
+        expect(data.licenseConclusions).toHaveLength(1);
+        expect(data.licenseConclusions[0].path).not.toBe(pkg2Path);
     });
 
     test("forbid requests with an invalid API token", async ({
