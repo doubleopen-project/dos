@@ -35,6 +35,7 @@ USER nextjs
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/clearance_ui/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/node_modules/next ./node_modules/next
 COPY --from=installer --chown=nextjs:nodejs /app/apps/clearance_ui/.next/static ./apps/clearance_ui/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/clearance_ui/public ./apps/clearance_ui/public
 
