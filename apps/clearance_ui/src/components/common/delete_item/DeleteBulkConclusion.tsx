@@ -63,7 +63,11 @@ const DeleteBulkConclusion = ({
                     <strong>
                         {bulkConclusion.concludedLicenseExpressionSPDX}
                     </strong>{" "}
-                    with the pattern <strong>{bulkConclusion.pattern}</strong>.
+                    with the pattern{" "}
+                    <strong className="break-all">
+                        {bulkConclusion.pattern}
+                    </strong>
+                    .
                     <br />
                     <br />
                     Do you want to delete this bulk conclusion?
