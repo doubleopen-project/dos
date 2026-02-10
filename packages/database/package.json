@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@types/adm-zip": "0.5.7",
-        "@types/node": "24.10.12",
+        "@types/node": "24.10.13",
         "eslint-config-custom-server": "*",
         "prisma": "6.19.2",
         "ts-node": "10.9.2",
