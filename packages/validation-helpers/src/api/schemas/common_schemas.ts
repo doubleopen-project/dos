@@ -75,9 +75,10 @@ export const purlSchema = (required: boolean) => {
                         purl.replace(/%2F/g, "/").replace(/\/@/g, "/%40"),
                     );
                     return true;
-                    // Disable eslint rule for unused variable as the error needs to be caught, but not used.
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
+                    console.log(
+                        `Validation error for purl "${purl}": ${error}`,
+                    );
                     return false;
                 }
             },
