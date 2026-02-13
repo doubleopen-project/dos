@@ -49,7 +49,7 @@ jobs:
 
             - name: Docker metadata for Worker
               id: meta-worker
-              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
               with:
                   images: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/worker
@@ -72,7 +72,7 @@ jobs:
 
             - name: Docker metadata for API
               id: meta-api
-              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
               with:
                   images: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/api
@@ -95,7 +95,7 @@ jobs:
 
             - name: Docker metadata for Clearance UI
               id: meta-clearance-ui
-              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+              uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
               with:
                   images: |
                       ${{ secrets.DOCKER_HUB_USERNAME }}/clearance-ui
