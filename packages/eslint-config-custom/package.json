@@ -9,12 +9,12 @@
         "eslint": "10.0.0",
         "eslint-config-next": "15.5.12",
         "eslint-config-prettier": "10.1.8",
-        "eslint-config-turbo": "2.8.9",
+        "eslint-config-turbo": "2.8.10",
         "eslint-plugin-jest-dom": "5.5.0",
         "eslint-plugin-playwright": "2.6.0",
         "eslint-plugin-react": "7.37.5",
         "eslint-plugin-react-hooks": "6.1.0",
         "eslint-plugin-testing-library": "7.16.0",
-        "eslint-plugin-turbo": "2.8.9"
+        "eslint-plugin-turbo": "2.8.10"
     }
 }
