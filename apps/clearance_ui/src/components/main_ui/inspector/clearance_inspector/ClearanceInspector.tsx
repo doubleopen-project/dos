@@ -44,6 +44,13 @@ const ClearanceInspector = ({
         { enabled: !!path && !!purl },
     );
 
+    const panelIds = {
+        detectedLicense: "clearance-detected-license",
+        licenseMatches: "clearance-license-matches",
+        licenseConclusions: "clearance-license-conclusions",
+        conclusionForm: "clearance-conclusion-form",
+    } as const;
+
     return (
         <>
             {isLoading && (
@@ -54,12 +61,18 @@ const ClearanceInspector = ({
             {data && (
                 <div style={{ height: height }}>
                     <ResizablePanelGroup
-                        direction="vertical"
-                        onLayout={(sizes: number[]) => {
-                            setClearanceHeights(sizes);
+                        orientation="vertical"
+                        onLayoutChanged={(layout) => {
+                            setClearanceHeights([
+                                layout[panelIds.detectedLicense],
+                                layout[panelIds.licenseMatches],
+                                layout[panelIds.licenseConclusions],
+                                layout[panelIds.conclusionForm],
+                            ]);
                         }}
                     >
                         <ResizablePanel
+                            id={panelIds.detectedLicense}
                             defaultSize={defaultClearanceHeights[0]}
                             minSize={6}
                         >
@@ -70,6 +83,7 @@ const ClearanceInspector = ({
                         </ResizablePanel>
                         <ResizableHandle withHandle />
                         <ResizablePanel
+                            id={panelIds.licenseMatches}
                             defaultSize={defaultClearanceHeights[1]}
                             minSize={7}
                         >
@@ -77,6 +91,7 @@ const ClearanceInspector = ({
                         </ResizablePanel>
                         <ResizableHandle withHandle />
                         <ResizablePanel
+                            id={panelIds.licenseConclusions}
                             defaultSize={defaultClearanceHeights[2]}
                             minSize={6}
                         >
@@ -87,6 +102,7 @@ const ClearanceInspector = ({
                         </ResizablePanel>
                         <ResizableHandle withHandle />
                         <ResizablePanel
+                            id={panelIds.conclusionForm}
                             defaultSize={defaultClearanceHeights[3]}
                             minSize={30}
                         >

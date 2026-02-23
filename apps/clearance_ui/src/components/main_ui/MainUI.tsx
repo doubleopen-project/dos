@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import useSettingsStore from "@/store/settings.store";
 import {
@@ -43,18 +43,31 @@ const MainUI = ({
         }
     }, [firstRef]);
 
+    const panelIds = {
+        package: "main-package",
+        file: "main-file",
+        clearance: "main-clearance",
+    } as const;
+
     return (
         <div className="flex h-full flex-col">
             <ClearanceToolbar />
             <ResizablePanelGroup
-                direction="horizontal"
+                orientation="horizontal"
                 className="border"
-                onLayout={(sizes: number[]) => {
-                    setMainWidths(sizes);
+                onLayoutChanged={(layout) => {
+                    setMainWidths([
+                        layout[panelIds.package],
+                        layout[panelIds.file],
+                        layout[panelIds.clearance],
+                    ]);
                 }}
             >
                 {/* 1st column: Package Inspector */}
-                <ResizablePanel defaultSize={defaultMainWidths[0]}>
+                <ResizablePanel
+                    id={panelIds.package}
+                    defaultSize={defaultMainWidths[0]}
+                >
                     <div className="mr-1 flex h-full flex-col overflow-auto p-2">
                         <PackageInspector purl={purl} path={path} />
                     </div>
@@ -62,7 +75,10 @@ const MainUI = ({
                 <ResizableHandle withHandle />
 
                 {/* 2nd column: File Inspector */}
-                <ResizablePanel defaultSize={defaultMainWidths[1]}>
+                <ResizablePanel
+                    id={panelIds.file}
+                    defaultSize={defaultMainWidths[1]}
+                >
                     {path ? (
                         <div className="ml-1 h-full flex-1 overflow-auto p-2">
                             <FileInspector purl={purl} path={path} />
@@ -76,7 +92,10 @@ const MainUI = ({
                 <ResizableHandle withHandle />
 
                 {/* 3rd column: Clearance Inspector */}
-                <ResizablePanel defaultSize={defaultMainWidths[2]}>
+                <ResizablePanel
+                    id={panelIds.clearance}
+                    defaultSize={defaultMainWidths[2]}
+                >
                     <div ref={firstRef}>
                         <Label className="text-muted-foreground block bg-[#FFEBF0] pl-1 text-xs font-bold dark:bg-[#3D000F]">
                             Package
