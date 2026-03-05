@@ -59,5 +59,8 @@
             "schedule": ["after 9am on monday"]
         }
     ],
-    "prHourlyLimit": 5
+    "prHourlyLimit": 5,
+    "lockFileMaintenance": {
+        "enabled": true
+    }
 }
