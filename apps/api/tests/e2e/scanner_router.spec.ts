@@ -203,8 +203,8 @@ test.describe("POST /job should", () => {
         invalidTokenContext,
         noTokenContext,
     }) => {
-        const url = "upload-url";
-        const body = { key: "some-object-key.zip" };
+        const url = "job";
+        const body = { zipFileKey: "key.zip", purls: ["pkg:npm/example@1.0"] };
         expect(
             (
                 await validClearanceDataTokenContext.post(url, { data: body })
