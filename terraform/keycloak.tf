@@ -131,6 +131,13 @@ data "keycloak_role" "realm_management_manage_users_role" {
     name = "manage-users"
 }
 
+# Get the "view-realm" role from the realm-management client.
+data "keycloak_role" "realm_management_view_realm_role" {
+    realm_id  = keycloak_realm.dos_dev_realm.id
+    client_id = data.keycloak_openid_client.realm_management_client.id
+    name      = "view-realm"
+}
+
 # Assign the "view-users" role to the service account of the API client.
 resource "keycloak_openid_client_service_account_role" "api_client_role_view_users" {
     realm_id = keycloak_realm.dos_dev_realm.id
@@ -145,6 +152,14 @@ resource "keycloak_openid_client_service_account_role" "api_client_role_manage_u
     service_account_user_id = keycloak_openid_client.dos_api_openid_client.service_account_user_id
     client_id = data.keycloak_openid_client.realm_management_client.id
     role = data.keycloak_role.realm_management_manage_users_role.name
+}
+
+# Assign the "view-realm" role to the service account of the API client.
+resource "keycloak_openid_client_service_account_role" "api_client_role_view_realm" {
+    realm_id                = keycloak_realm.dos_dev_realm.id
+    service_account_user_id = keycloak_openid_client.dos_api_openid_client.service_account_user_id
+    client_id               = data.keycloak_openid_client.realm_management_client.id
+    role                    = data.keycloak_role.realm_management_view_realm_role.name
 }
 
 ### Roles
