@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 import {
     randCodeSnippet,
+    randDirectoryPath,
     randGitCommitSha,
     randSemver,
     randSlug,
@@ -10,6 +11,7 @@ import {
 import { ZodiosResponseByPath } from "@zodios/core";
 import AdmZip from "adm-zip";
 import { dosAPI } from "validation-helpers";
+import { findPackageByPurl } from "../../src/helpers/db_queries";
 import { expect, test } from "./fixtures/scanner";
 import { testPurl } from "./utils/constants";
 
@@ -141,6 +143,135 @@ test.describe("Scanner pipeline should", () => {
                 "Internal server error. Zip file download failed.",
             );
         }).toPass();
+    });
+
+    test("correctly parse package purl for an npm project preserving the name and namespace casing", async ({
+        validScanDataTokenContext,
+    }) => {
+        const purl = `pkg:npm/%40MyOrg/MyPackage@1.0.0#src${randDirectoryPath()}/${randSlug()}`;
+        const zip = new AdmZip();
+        zip.addFile(
+            "test.txt",
+            Buffer.from(`${randCodeSnippet({ length: 50 })}`),
+        );
+
+        const zipBuffer = zip.toBuffer();
+        const zipKey = `${randSlug()}.zip`;
+
+        const presignedRes = await validScanDataTokenContext.post(
+            "upload-url",
+            {
+                data: { key: zipKey },
+            },
+        );
+
+        expect(presignedRes.ok()).toBeTruthy();
+
+        const { presignedUrl } = await presignedRes.json();
+
+        expect(presignedUrl).toBeDefined();
+
+        await fetch(presignedUrl!, {
+            method: "PUT",
+            body: zipBuffer,
+        });
+
+        const jobRes = await validScanDataTokenContext.post("job", {
+            data: {
+                zipFileKey: zipKey,
+                purls: [purl],
+            },
+        });
+
+        expect(jobRes.ok()).toBeTruthy();
+
+        const job = await jobRes.json();
+
+        expect(job.scannerJobId).toBeDefined();
+
+        // Query scan results until they are available.
+        await expect(async () => {
+            const jobDetailsRes = await validScanDataTokenContext.post(
+                "scan-results",
+                {
+                    data: { purls: [purl] },
+                },
+            );
+
+            expect(jobDetailsRes.ok()).toBeTruthy();
+        }).toPass();
+
+        const pkg = await findPackageByPurl(purl);
+
+        expect(pkg).toBeDefined();
+        expect(pkg?.type).toBe("npm");
+        expect(pkg?.name).toBe("MyPackage");
+        expect(pkg?.namespace).toBe("@MyOrg");
+    });
+
+    test("correctly parse package purl with encoding in the version field", async ({
+        validScanDataTokenContext,
+    }) => {
+        const purl = `pkg:npm/%40MyOrg/MyPackage@1.0.0%2Bbuild.123#src${randDirectoryPath()}/${randSlug()}`;
+        const zip = new AdmZip();
+        zip.addFile(
+            "test.txt",
+            Buffer.from(`${randCodeSnippet({ length: 50 })}`),
+        );
+
+        const zipBuffer = zip.toBuffer();
+        const zipKey = `${randSlug()}.zip`;
+
+        const presignedRes = await validScanDataTokenContext.post(
+            "upload-url",
+            {
+                data: { key: zipKey },
+            },
+        );
+
+        expect(presignedRes.ok()).toBeTruthy();
+
+        const { presignedUrl } = await presignedRes.json();
+
+        expect(presignedUrl).toBeDefined();
+
+        await fetch(presignedUrl!, {
+            method: "PUT",
+            body: zipBuffer,
+        });
+
+        const jobRes = await validScanDataTokenContext.post("job", {
+            data: {
+                zipFileKey: zipKey,
+                purls: [purl],
+            },
+        });
+
+        expect(jobRes.ok()).toBeTruthy();
+
+        const job = await jobRes.json();
+
+        expect(job.scannerJobId).toBeDefined();
+
+        // Query scan results until they are available.
+        await expect(async () => {
+            const jobDetailsRes = await validScanDataTokenContext.post(
+                "scan-results",
+                {
+                    data: { purls: [purl] },
+                },
+            );
+
+            expect(jobDetailsRes.ok()).toBeTruthy();
+        }).toPass();
+
+        const pkg = await findPackageByPurl(purl);
+
+        expect(pkg).toBeDefined();
+        expect(pkg?.type).toBe("npm");
+        expect(pkg?.name).toBe("MyPackage");
+        expect(pkg?.namespace).toBe("@MyOrg");
+        expect(pkg?.version).toBe("1.0.0+build.123");
     });
 });
 
