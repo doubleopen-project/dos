@@ -65,7 +65,7 @@
         "tailwindcss-animate": "1.0.7",
         "validation-helpers": "*",
         "zod": "3.22.4",
-        "zustand": "5.0.11"
+        "zustand": "5.0.12"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "15.5.12",
