@@ -68,12 +68,22 @@ describe("parsePurlAndQualifiers tests", () => {
         expect(parsedPurl.namespace).toBe("@radix-ui");
         expect(parsedPurl.name).toBe("react-context");
         expect(parsedPurl.version).toBe("1.0.0");
-        expect(parsedPurl.subpath).toBe(null);
+        expect(parsedPurl.subpath).toBe(undefined);
         expect(parsedPurl.qualifiers?.download_url).toBe(
             "https://registry.npmjs.org/@radix-ui/react-context/-/react-context-1.0.0.tgz",
         );
         expect(parsedPurl.qualifiers?.checksum).toBe(
             "sha1:f38e30c5859a9fb5e9aa9a9da452ee3ed9e0aee0",
         );
+    });
+
+    it("should decode a PURL for an NPM package preserving the casing of the name and namespace", function () {
+        const purl = "pkg:npm/%40MyOrg/MyPackage@1.0.0";
+        const parsedPurl = parsePurlAndQualifiers(purl);
+
+        expect(parsedPurl.type).toBe("npm");
+        expect(parsedPurl.namespace).toBe("@MyOrg");
+        expect(parsedPurl.name).toBe("MyPackage");
+        expect(parsedPurl.version).toBe("1.0.0");
     });
 });

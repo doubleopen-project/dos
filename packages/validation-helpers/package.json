@@ -12,7 +12,7 @@
         "@zodios/express": "10.6.0",
         "check-password-strength": "3.0.0",
         "is-glob": "4.0.3",
-        "packageurl-js": "1.2.1",
+        "packageurl-js": "2.0.1",
         "spdx-validation": "*",
         "zod": "3.22.4"
     },
