@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { getCleanPurl } from "common-helpers";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import ClearanceToolbar from "@/components/main_ui/ClearanceToolbar";
 import { getProvenanceType } from "@/helpers/getProvenanceType";
@@ -27,14 +27,12 @@ const Details = () => {
     // purl exists and is of correct type, so we can continue
 
     const parsedPurl = parsePurlAndQualifiers(purl);
-    const mainPurl = new PackageURL(
+    const mainPurl = getCleanPurl(
         parsedPurl.type,
         parsedPurl.namespace,
         parsedPurl.name,
         parsedPurl.version,
-        null,
-        null,
-    ).toString();
+    );
     const provenanceType = getProvenanceType(purl);
 
     return (

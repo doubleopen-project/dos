@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
-import { PackageURL } from "packageurl-js";
+import { getCleanPurl } from "common-helpers";
 import {
     Accordion,
     AccordionContent,
@@ -22,14 +22,12 @@ type Props = {
 
 const PurlDetails = ({ purl, hideBorder, hideCopyToClipboard }: Props) => {
     const parsedPurl = parsePurlAndQualifiers(purl);
-    const mainPurl = new PackageURL(
+    const mainPurl = getCleanPurl(
         parsedPurl.type,
         parsedPurl.namespace,
         parsedPurl.name,
         parsedPurl.version,
-        null,
-        null,
-    ).toString();
+    );
 
     return (
         <div className="flex justify-between">
