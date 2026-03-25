@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: MIT
 
 import React from "react";
+import { getCleanPurl } from "common-helpers";
 import { Fira_Code } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PackageURL } from "packageurl-js";
 import { useUser } from "@/hooks/useUser";
 import { Label } from "@/components/ui/label";
 import ClearanceGroupSelector from "@/components/common/clearance_groups/ClearanceGroupSelector";
@@ -31,14 +31,12 @@ const Navbar = () => {
 
     if (typeof purl === "string") {
         const parsedPurl = parsePurlAndQualifiers(purl);
-        mainPurl = new PackageURL(
+        mainPurl = getCleanPurl(
             parsedPurl.type,
             parsedPurl.namespace,
             parsedPurl.name,
             parsedPurl.version,
-            null,
-            null,
-        ).toString();
+        );
     }
 
     return (
