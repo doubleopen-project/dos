@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Options } from "nuqs";
-import { PackageURL } from "packageurl-js";
 import { userAPI } from "validation-helpers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,7 @@ import TableCell from "@/components/clearance_library/license_conclusions/TableC
 import ClearanceGroupTooltipIcon from "@/components/common/clearance_groups/ClearanceGroupTooltipIcon";
 import LCAffectedFilesTooltip from "@/components/common/LCAffectedFilesTooltip";
 import PurlDetails from "@/components/common/PurlDetails";
+import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 // Get the table column datatype from the query response
 // Note: for reusing the component, this needs to be changed
@@ -177,7 +177,7 @@ export const columns = (
                 );
             },
             cell: ({ row }) => {
-                const pkg = PackageURL.fromString(row.original.contextPurl);
+                const pkg = parsePurlAndQualifiers(row.original.contextPurl);
                 const pkgName = pkg.name + ":" + pkg.version;
                 return (
                     <TooltipProvider>

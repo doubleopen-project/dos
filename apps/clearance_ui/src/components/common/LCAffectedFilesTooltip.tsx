@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 
 import { Loader2 } from "lucide-react";
-import { PackageURL } from "packageurl-js";
 import { userHooks } from "@/hooks/zodiosHooks";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,6 +12,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getErrorMessage } from "@/helpers/getErrorMessage";
+import { parsePurlAndQualifiers } from "@/helpers/parsePurlAndQualifiers";
 
 type Props = {
     licenseConclusionId: number;
@@ -90,13 +90,13 @@ const LCAffectedFilesTooltip = ({
                                         (aff, index) => (
                                             <div key={index}>
                                                 {
-                                                    PackageURL.fromString(
+                                                    parsePurlAndQualifiers(
                                                         aff.package.purl,
                                                     ).name
                                                 }
                                                 :
                                                 {
-                                                    PackageURL.fromString(
+                                                    parsePurlAndQualifiers(
                                                         aff.package.purl,
                                                     ).version
                                                 }{" "}
