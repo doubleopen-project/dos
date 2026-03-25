@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { getCleanPurl } from "common-helpers";
 import { FileTree, Package } from "database";
-import { PackageURL } from "packageurl-js";
 import * as dbQueries from "./db_queries";
+import { parsePurl } from "./purl_helpers";
 
 export const runPurlCleanup = async (options: {
     dryRun?: boolean;
@@ -81,15 +82,13 @@ const getPackageMap = async (pkgNameStartsWith?: string) => {
 
     for (const pkg of packages) {
         try {
-            const parsedPurl = PackageURL.fromString(pkg.purl);
-            const cleanPurl = new PackageURL(
+            const parsedPurl = parsePurl(pkg.purl);
+            const cleanPurl = getCleanPurl(
                 parsedPurl.type,
                 parsedPurl.namespace,
                 parsedPurl.name,
                 parsedPurl.version,
-                null,
-                null,
-            ).toString();
+            );
 
             if (pkgMap.has(cleanPurl)) {
                 pkgMap.get(cleanPurl)?.push(pkg);
