@@ -25,7 +25,7 @@
         "s3-helpers": "*"
     },
     "devDependencies": {
-        "@types/adm-zip": "0.5.7",
+        "@types/adm-zip": "0.5.8",
         "@types/node": "24.12.0",
         "eslint-config-custom-server": "*",
         "prisma": "6.19.2",
