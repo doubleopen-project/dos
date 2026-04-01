@@ -20,7 +20,7 @@
     "dependencies": {
         "@keycloak/keycloak-admin-client": "^26.5.0",
         "@prisma/client": "6.19.2",
-        "adm-zip": "0.5.16",
+        "adm-zip": "0.5.17",
         "common-helpers": "*",
         "s3-helpers": "*"
     },
