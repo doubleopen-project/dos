@@ -1,11 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended",
-        "helpers:pinGitHubActionDigestsToSemver",
-        ":semanticCommitScopeDisabled",
-        ":semanticCommitTypeAll(deps)"
-    ],
+    "extends": ["github>doubleopen-project/.github//renovate-config"],
     "schedule": ["after 9am and before 7pm every weekday"],
     "timezone": "Europe/Tallinn",
     "customManagers": [
@@ -19,7 +14,6 @@
             "datasourceTemplate": "node"
         }
     ],
-    "labels": ["dependencies"],
     "packageRules": [
         {
             "matchPackageNames": ["@zodios/express"],
