@@ -284,8 +284,8 @@ test.describe("GET /versions should", () => {
         const body = await res.json();
 
         expect(body.dosVersion).toBe("1.0.0");
-        expect(body.scannerVersion.name).toBe("scancode-toolkit");
-        expect(body.scannerVersion.version).toMatch(/^\d+\.\d+\.\d+$/);
+        expect(body.scannerInfo.name).toBe("scancode-toolkit");
+        expect(body.scannerInfo.version).toMatch(/^\d+\.\d+\.\d+$/);
     });
 });
 
