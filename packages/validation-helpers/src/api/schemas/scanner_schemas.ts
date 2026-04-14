@@ -16,7 +16,7 @@ export const GetHealthRes = z.object({
 
 export const GetVersionsRes = z.object({
     dosVersion: z.string(),
-    scannerVersion: z.object({
+    scannerInfo: z.object({
         name: z.string(),
         version: z.string(),
     }),

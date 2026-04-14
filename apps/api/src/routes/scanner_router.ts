@@ -44,7 +44,7 @@ scannerRouter.get("/health", async (req, res) => {
 scannerRouter.get("/versions", async (req, res) => {
     res.status(200).json({
         dosVersion: "1.0.0",
-        scannerVersion: {
+        scannerInfo: {
             name: "scancode-toolkit",
             version: __SCANCODE_VERSION__,
         },
