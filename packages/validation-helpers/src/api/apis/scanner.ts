@@ -16,6 +16,14 @@ export const scannerAPI = makeApi([
         errors,
     },
     {
+        method: "get",
+        path: "/versions",
+        description:
+            "Get DOS and scanner versions. The scanner version reflects what is currently used for scanning new files. Earlier scan results in the database may have been produced with a different scanner version.",
+        response: schemas.GetVersionsRes,
+        errors,
+    },
+    {
         method: "post",
         path: "/scan-results",
         description:
