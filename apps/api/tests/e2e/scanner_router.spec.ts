@@ -275,6 +275,20 @@ test.describe("Scanner pipeline should", () => {
     });
 });
 
+test.describe("GET /versions should", () => {
+    test("return DOS and scanner versions", async ({ noTokenContext }) => {
+        const res = await noTokenContext.get("versions");
+
+        expect(res.status()).toBe(200);
+
+        const body = await res.json();
+
+        expect(body.dosVersion).toBe("1.0.0");
+        expect(body.scannerVersion.name).toBe("scancode-toolkit");
+        expect(body.scannerVersion.version).toMatch(/^\d+\.\d+\.\d+$/);
+    });
+});
+
 test.describe("POST /scan-results should", () => {
     test("forbid requests with an invalid API token", async ({
         validClearanceDataTokenContext,

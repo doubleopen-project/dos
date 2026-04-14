@@ -40,6 +40,17 @@ scannerRouter.get("/health", async (req, res) => {
     res.status(200).json({ message: "DOS API running" });
 });
 
+// Get DOS and scanner versions
+scannerRouter.get("/versions", async (req, res) => {
+    res.status(200).json({
+        dosVersion: "1.0.0",
+        scannerVersion: {
+            name: "scancode-toolkit",
+            version: __SCANCODE_VERSION__,
+        },
+    });
+});
+
 // Get scan results for package with purl
 scannerRouter.post(
     "/scan-results",

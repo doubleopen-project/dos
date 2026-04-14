@@ -12,6 +12,16 @@ export const GetHealthRes = z.object({
     message: z.string(),
 });
 
+//---------------- GET versions ----------------
+
+export const GetVersionsRes = z.object({
+    dosVersion: z.string(),
+    scannerVersion: z.object({
+        name: z.string(),
+        version: z.string(),
+    }),
+});
+
 //---------------- POST scan-results ----------------
 
 export const PostScanResultsReq = z.union([
