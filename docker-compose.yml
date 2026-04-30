@@ -160,7 +160,7 @@ services:
                 - NEXT_PUBLIC_API_URL=http://api:3001/api/
         environment:
             - NEXTAUTH_URL=http://clearance-ui:3000
-            - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+            - NEXTAUTH_SECRET=secret
             - KEYCLOAK_URL=http://auth:8080
         ports:
             - 3002:3000
