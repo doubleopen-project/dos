@@ -17,7 +17,6 @@ jobs:
     unittest:
         name: Unit testing
         runs-on: ubuntu-latest
-        environment: unittest-environment
         steps:
             - name: Checkout code
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -37,7 +36,7 @@ jobs:
             - name: Run prisma generate
               run: npm run db:generate
               env:
-                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+                  DATABASE_URL: ${{ vars.DATABASE_URL }}
 
             - name: Build project
               run: npm run build
@@ -49,4 +48,4 @@ jobs:
               run: npm run test
               continue-on-error: false
               env:
-                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+                  DATABASE_URL: ${{ vars.DATABASE_URL }}
