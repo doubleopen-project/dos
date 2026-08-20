@@ -65,7 +65,7 @@ model FileTree {
   path      String
 
   packageId Int
-  package   Package @relation(fields: [packageId], references: [id])
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
   fileSha256 String
   file       File   @relation(fields: [fileSha256], references: [sha256])
