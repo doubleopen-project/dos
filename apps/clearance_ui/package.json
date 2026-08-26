@@ -59,7 +59,7 @@
         "react-copy-to-clipboard": "5.1.1",
         "react-hook-form": "7.85.0",
         "react-icons": "5.7.0",
-        "react-resizable-panels": "4.12.2",
+        "react-resizable-panels": "4.12.3",
         "spdx-validation": "*",
         "tailwind-merge": "3.6.0",
         "tailwindcss-animate": "1.0.7",
