@@ -14,6 +14,7 @@ import {
     createBulkConclusion,
     createClearanceGroup,
     createClearanceGroupCurators,
+    createFile,
     createFileTree,
     createLicenseConclusion,
     createPackage,
@@ -22,6 +23,7 @@ import {
     deleteApiClient,
     deleteBulkAndLicenseConclusions,
     deleteClearanceGroup,
+    deleteFile,
     deleteFileTreesByPackageId,
     deleteLicenseConclusion,
     deletePackage,
@@ -476,6 +478,20 @@ export const seedCreateFileTree = async (
         ft: ft,
         cleanup: async () => {
             await deleteFileTreesByPackageId(packageId);
+        },
+    };
+};
+
+export const seedCreateFile = async (sha256: string, scanStatus: string) => {
+    const file = await createFile({
+        sha256: sha256,
+        scanStatus: scanStatus,
+    });
+
+    return {
+        file: file,
+        cleanup: async () => {
+            await deleteFile(sha256);
         },
     };
 };
