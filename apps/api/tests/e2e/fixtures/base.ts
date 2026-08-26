@@ -20,6 +20,7 @@ import {
     seedCreateApiToken,
     seedCreateClearanceGroups,
     seedCreateClearanceGroupWithClearances,
+    seedCreateFile,
     seedCreateFileTree,
     seedCreateLicenseConclusion,
     seedCreatePackage,
@@ -79,6 +80,10 @@ type BaseFixtures = {
             sha256: string,
             path: string,
         ): ReturnType<typeof seedCreateFileTree>;
+        createFile(
+            sha256: string,
+            scanStatus: string,
+        ): ReturnType<typeof seedCreateFile>;
     };
     registerCleanup: (fn: () => Promise<void>) => void;
 };
@@ -303,6 +308,11 @@ export const testBase = test.extend<BaseFixtures>({
                 const ft = await seedCreateFileTree(packageId, sha256, path);
                 registerCleanup(ft.cleanup);
                 return ft;
+            },
+            async createFile(sha256: string, scanStatus: string) {
+                const file = await seedCreateFile(sha256, scanStatus);
+                registerCleanup(file.cleanup);
+                return file;
             },
         });
     },

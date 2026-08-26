@@ -4659,6 +4659,16 @@ export const deleteBulkConclusion = async (
     return bulkConclusion;
 };
 
+export const deleteFile = async (sha256: string): Promise<File> => {
+    return await retry(async () => {
+        return prisma.file.delete({
+            where: {
+                sha256: sha256,
+            },
+        });
+    });
+};
+
 export const deleteFilesByFileHashes = async (
     fileHashes: string[],
 ): Promise<{ count: number }> => {
