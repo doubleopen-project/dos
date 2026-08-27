@@ -159,7 +159,20 @@ export const createFile = async (
     return file;
 };
 
-type CreateFileTreeType = {
+export const createManyFiles = async (
+    input: Prisma.FileCreateManyInput[],
+): Promise<{ count: number }> => {
+    if (input.length === 0) return { count: 0 };
+
+    return retry(() =>
+        prisma.file.createMany({
+            data: input,
+            skipDuplicates: true,
+        }),
+    );
+};
+
+export type CreateFileTreeType = {
     path: string;
     packageId: number;
     fileSha256: string;
@@ -188,6 +201,18 @@ export const createFileTree = async (
     if (!fileTree) throw new Error("Error: Unable to create FileTree");
 
     return fileTree;
+};
+
+export const createManyFileTrees = async (
+    input: CreateFileTreeType[],
+): Promise<{ count: number }> => {
+    if (input.length === 0) return { count: 0 };
+
+    return retry(() =>
+        prisma.fileTree.createMany({
+            data: input,
+        }),
+    );
 };
 
 export const createLicenseFinding = async (input: {
@@ -1274,6 +1299,26 @@ export const findFileByHash = async (hash: string): Promise<File | null> => {
     return file;
 };
 
+export const findFilesByHashes = async (
+    hashes: string[],
+): Promise<Pick<File, "sha256" | "scanStatus">[]> => {
+    if (hashes.length === 0) return [];
+
+    return retry(() =>
+        prisma.file.findMany({
+            where: {
+                sha256: {
+                    in: hashes,
+                },
+            },
+            select: {
+                sha256: true,
+                scanStatus: true,
+            },
+        }),
+    );
+};
+
 export const findFileSha256AndScannerByPurlAndPath = async (
     purl: string,
     path: string,
@@ -1424,6 +1469,37 @@ export const findFileTree = async (
     }
 
     return fileTree;
+};
+
+export const findFileTreesByPackageIdsAndPaths = async (
+    packageIds: number[],
+    paths: string[],
+): Promise<
+    {
+        packageId: number;
+        path: string;
+        fileSha256: string;
+    }[]
+> => {
+    if (packageIds.length === 0 || paths.length === 0) return [];
+
+    return retry(() =>
+        prisma.fileTree.findMany({
+            where: {
+                packageId: {
+                    in: packageIds,
+                },
+                path: {
+                    in: paths,
+                },
+            },
+            select: {
+                packageId: true,
+                path: true,
+                fileSha256: true,
+            },
+        }),
+    );
 };
 
 export const findFileTreeByHashAndPackageId = async (
