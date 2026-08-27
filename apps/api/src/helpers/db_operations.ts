@@ -631,75 +631,113 @@ export const saveJobResults = async (
     }
 };
 
+// A helper function to split an array into chunks of a specified size.
+const chunkArray = <T>(array: T[], chunkSize = 1000): T[][] => {
+    const chunks: T[][] = [];
+
+    for (let i = 0; i < array.length; i += chunkSize) {
+        chunks.push(array.slice(i, i + chunkSize));
+    }
+
+    return chunks;
+};
+
 export const findFilesToBeScanned = async (
     packageIds: number[],
     files: Map<string, string[]>,
 ): Promise<{ hash: string; path: string }[]> => {
     const filesToBeScanned: { hash: string; path: string }[] = [];
-    const CONCURRENCY_LIMIT =
-        parseInt(process.env.DB_CONCURRENCY as string) || 10;
-    const promises: Promise<void>[] = [];
+    const fileHashes = [...files.keys()];
+    const fileEntries = [...files.entries()];
+    const getFileTreeKey = (packageId: number, path: string) =>
+        `${packageId}\0${path}`;
 
-    for (const [hash, paths] of files) {
-        const queryTask = (async () => {
-            // Check if File already exists
-            let file = await dbQueries.findFileByHash(hash);
+    const scanStatusByHash = new Map<string, string>();
 
-            if (paths.length > 1) {
-                // Multiple paths for the same hash
-                if (!file) {
-                    // Create new File
-                    file = await dbQueries.createFile({
-                        sha256: hash,
-                        scanStatus: "notStarted",
-                    });
-                }
-                // Create FileTrees for file
-                for (const path of paths) {
-                    for (const packageId of packageIds) {
-                        await dbQueries.createFileTreeIfNotExists({
-                            path: path,
+    // Find existing File rows.
+    for (const hashes of chunkArray(fileHashes)) {
+        const foundFiles = await dbQueries.findFilesByHashes(hashes);
+
+        for (const file of foundFiles) {
+            scanStatusByHash.set(file.sha256, file.scanStatus);
+        }
+    }
+
+    const missingFileHashes = fileHashes.filter(
+        (hash) => !scanStatusByHash.has(hash),
+    );
+
+    // Create missing File rows.
+    for (const hashes of chunkArray(missingFileHashes)) {
+        await dbQueries.createManyFiles(
+            hashes.map((hash) => ({
+                sha256: hash,
+                scanStatus: "notStarted",
+            })),
+        );
+
+        for (const hash of hashes) {
+            scanStatusByHash.set(hash, "notStarted");
+        }
+    }
+
+    // Find files that need to be scanned based on their scan status.
+    for (const [hash, paths] of fileEntries) {
+        if (scanStatusByHash.get(hash) !== "scanned") {
+            filesToBeScanned.push({ hash, path: paths[0] });
+        }
+    }
+
+    // Process FileTree rows in chunks to avoid memory issues with large datasets.
+    for (const fileEntryChunk of chunkArray(fileEntries)) {
+        const pathsInChunk = new Set<string>();
+
+        // Collect the paths needed to look up existing FileTree rows.
+        for (const [, paths] of fileEntryChunk) {
+            for (const path of paths) {
+                pathsInChunk.add(path);
+            }
+        }
+
+        // Find existing FileTree rows for this chunk of file entries.
+        const existingFileTrees =
+            await dbQueries.findFileTreesByPackageIdsAndPaths(packageIds, [
+                ...pathsInChunk,
+            ]);
+
+        const existingFileTreeKeys = new Set(
+            existingFileTrees.map((fileTree) =>
+                getFileTreeKey(fileTree.packageId, fileTree.path),
+            ),
+        );
+
+        const fileTreesToCreate: dbQueries.CreateFileTreeType[] = [];
+
+        // Find missing FileTree rows to create.
+        for (const [hash, paths] of fileEntryChunk) {
+            for (const path of paths) {
+                for (const packageId of packageIds) {
+                    if (
+                        !existingFileTreeKeys.has(
+                            getFileTreeKey(packageId, path),
+                        )
+                    ) {
+                        fileTreesToCreate.push({
+                            packageId,
+                            path,
                             fileSha256: hash,
-                            packageId: packageId,
                         });
                     }
                 }
-                // Push file to be scanned if scanStatus is 'notStarted' or 'failed', with the first path
-                if (
-                    file.scanStatus === "notStarted" ||
-                    file.scanStatus === "failed"
-                ) {
-                    filesToBeScanned.push({ hash: hash, path: paths[0] });
-                }
-            } else if (file) {
-                for (const packageId of packageIds) {
-                    await dbQueries.createFileTreeIfNotExists({
-                        path: paths[0],
-                        fileSha256: hash,
-                        packageId: packageId,
-                    });
-                }
-                if (
-                    file.scanStatus === "notStarted" ||
-                    file.scanStatus === "failed"
-                ) {
-                    filesToBeScanned.push({ hash: hash, path: paths[0] });
-                }
-            } else {
-                filesToBeScanned.push({ hash: hash, path: paths[0] });
             }
-        })();
+        }
 
-        promises.push(queryTask);
-
-        if (promises.length >= CONCURRENCY_LIMIT) {
-            await Promise.all(promises);
-            promises.length = 0;
+        // Create the FileTree rows in batches.
+        for (const fileTrees of chunkArray(fileTreesToCreate)) {
+            await dbQueries.createManyFileTrees(fileTrees);
         }
     }
-    if (promises.length > 0) {
-        await Promise.all(promises);
-    }
+
     return filesToBeScanned;
 };
 

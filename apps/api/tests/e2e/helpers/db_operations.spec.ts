@@ -20,9 +20,15 @@ const seeded2 =
 const newFileHash = () => randomUUID().replace(/-/g, "");
 
 test.describe("findFilesToBeScanned should", () => {
-    test("return files that have not yet been scanned", async ({ seed }) => {
+    test("return files that have not yet been scanned", async ({
+        seed,
+        registerCleanup,
+    }) => {
         const new1 = newFileHash();
         const new2 = newFileHash();
+        registerCleanup(async () => {
+            await deleteFilesByFileHashes([new1, new2]);
+        });
         const pkg = (await seed.createPackage("notScanned")).package;
 
         const result = await findFilesToBeScanned(
@@ -69,14 +75,14 @@ test.describe("findFilesToBeScanned should", () => {
                 packageId: pkg.id,
                 fileSha256: new1,
             }),
-        ).toBeNull();
+        ).not.toBeNull();
         expect(
             await findFileTree({
                 path: "src/new2.ts",
                 packageId: pkg.id,
                 fileSha256: new2,
             }),
-        ).toBeNull();
+        ).not.toBeNull();
     });
 
     test("create FileTree entries when File entry already exists", async ({
@@ -161,7 +167,7 @@ test.describe("findFilesToBeScanned should", () => {
         const new1 = newFileHash();
         const new2 = newFileHash();
         registerCleanup(async () => {
-            await deleteFilesByFileHashes([new1]);
+            await deleteFilesByFileHashes([new1, new2]);
         });
 
         const pkg = (await seed.createPackage("notScanned")).package;
@@ -226,7 +232,7 @@ test.describe("findFilesToBeScanned should", () => {
                 packageId: pkg.id,
                 fileSha256: new2,
             }),
-        ).toBeNull();
+        ).not.toBeNull();
     });
 
     for (const scanStatus of ["notStarted", "failed"] as const) {
