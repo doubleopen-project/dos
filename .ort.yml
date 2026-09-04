@@ -30,6 +30,21 @@ excludes:
     reason: "TEST_OF"
     comment: "This directory contains tests for SPDX validation."
 
+resolutions:
+  issues:
+  - message: "invalid: @typescript-eslint/eslint-plugin@.*"
+    reason: "BUILD_TOOL_ISSUE"
+    comment: "npm reports @typescript-eslint/eslint-plugin as invalid during ORT's
+      analyzer phase. ORT runs a fresh npm install in a temporary directory with
+      allowDynamicVersions enabled. In this monorepo, @typescript-eslint/eslint-plugin
+      is pinned at 8.58.2 in package-lock.json, while @typescript-eslint/parser is
+      installed at 8.59.0 (a later patch release brought in by a separate renovate
+      update). Although 8.59.0 satisfies the plugin's peer dependency range of
+      ^8.58.2, npm flags the plugin as invalid due to version skew across the
+      workspace packages during the fresh install. The package is a dev-only linting
+      tool already excluded at scope level via the devDependencies scope exclude, so
+      this has no effect on production dependency analysis."
+
 license_choices:
   repository_license_choices:
   - given: CC0-1.0 OR MIT
