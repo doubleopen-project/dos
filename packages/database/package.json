@@ -28,7 +28,7 @@
         "@types/adm-zip": "0.5.8",
         "@types/node": "24.13.3",
         "eslint-config-custom-server": "*",
-        "prisma": "6.19.3",
+        "prisma": "7.10.0",
         "ts-node": "10.9.2",
         "tsconfig": "*",
         "tsup": "8.5.1",
